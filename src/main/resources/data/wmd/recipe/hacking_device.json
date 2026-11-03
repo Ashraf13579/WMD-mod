@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PGP",
+    "CAC",
+    "PBP"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:steel_plate"
+    },
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "A": {
+      "item": "minecraft:ender_eye"
+    },
+    "B": {
+      "item": "wmd:battery_t1"
+    }
+  },
+  "result": {
+    "id": "wmd:hacking_device",
+    "count": 1
+  }
+}

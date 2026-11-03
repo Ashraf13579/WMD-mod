@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " G ",
+    " C ",
+    "PBP"
+  ],
+  "key": {
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    },
+    "P": {
+      "item": "wmd:steel_plate"
+    },
+    "B": {
+      "item": "wmd:battery_t1"
+    }
+  },
+  "result": {
+    "id": "wmd:perimeter_sensor",
+    "count": 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "max_lifetime": 6,
+  "loop": false,
+  "rate": 1,
+  "count": 30,
+  "emitter_settings": {
+    "shape": "wmd:brc_jet_s",
+    "particle_settings": "wmd:brc_jet_s",
+    "force_spawn": true
+  },
+  "particle_data": "wmd:rod_jet_s"
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " H ",
+    "HPH",
+    " H "
+  ],
+  "key": {
+    "H": {
+      "item": "wmd:heat_shield_tile"
+    },
+    "P": {
+      "item": "wmd:steel_plate"
+    }
+  },
+  "result": {
+    "id": "wmd:launch_plate",
+    "count": 4
+  }
+}

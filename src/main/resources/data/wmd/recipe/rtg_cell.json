@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TKT",
+    "TPT",
+    " A "
+  ],
+  "key": {
+    "T": {
+      "item": "wmd:tungsten_plate"
+    },
+    "P": {
+      "item": "wmd:plutonium"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "K": {
+      "item": "wmd:chip_space_1"
+    }
+  },
+  "result": {
+    "id": "wmd:rtg_cell",
+    "count": 1
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "wmd:block/napalm_fire"
+      },
+      {
+        "model": "wmd:block/napalm_fire",
+        "y": 90
+      }
+    ]
+  }
+}

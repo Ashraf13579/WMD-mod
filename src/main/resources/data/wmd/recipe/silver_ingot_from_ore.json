@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": {
+    "tag": "c:ores/silver"
+  },
+  "result": {
+    "id": "wmd:silver_ingot"
+  },
+  "experience": 0.7,
+  "cookingtime": 200
+}

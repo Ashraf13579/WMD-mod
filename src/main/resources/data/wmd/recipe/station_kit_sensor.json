@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WGW",
+    "APA",
+    "FKF"
+  ],
+  "key": {
+    "W": {
+      "item": "wmd:gold_wire"
+    },
+    "G": {
+      "item": "wmd:blast_glass"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "P": {
+      "item": "wmd:power_core"
+    },
+    "F": {
+      "item": "wmd:orbital_frame"
+    },
+    "K": {
+      "item": "wmd:chip_space_3"
+    }
+  },
+  "result": {
+    "id": "wmd:station_kit_sensor",
+    "count": 1
+  }
+}

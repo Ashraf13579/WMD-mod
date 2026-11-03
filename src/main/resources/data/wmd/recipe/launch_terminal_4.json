@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "DAD",
+    "ATA",
+    "DLD"
+  ],
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "T": {
+      "item": "wmd:launch_terminal_3"
+    },
+    "L": {
+      "tag": "c:ingots/aluminum"
+    }
+  },
+  "result": {
+    "id": "wmd:launch_terminal_4",
+    "count": 1
+  }
+}

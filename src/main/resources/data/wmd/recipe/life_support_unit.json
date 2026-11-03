@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "OEO",
+    "AKA",
+    "GEG"
+  ],
+  "key": {
+    "O": {
+      "item": "wmd:oxygen_tank"
+    },
+    "E": {
+      "item": "wmd:carbon_electrode"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "G": {
+      "item": "wmd:blast_glass"
+    },
+    "K": {
+      "item": "wmd:chip_space_2"
+    }
+  },
+  "result": {
+    "id": "wmd:life_support_unit",
+    "count": 1
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " E ",
+    "GAG",
+    " P "
+  ],
+  "key": {
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "G": {
+      "item": "wmd:gold_wire"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "P": {
+      "item": "wmd:titanium_plate"
+    }
+  },
+  "result": {
+    "id": "wmd:link_card",
+    "count": 1
+  }
+}

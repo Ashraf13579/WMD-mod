@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "night=false": {
+      "model": "wmd:block/station_light"
+    },
+    "night=true": {
+      "model": "wmd:block/station_light_night"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SAS",
+    "TMT",
+    "SAS"
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:superconducting_coil"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "M": {
+      "item": "wmd:antimatter_cell"
+    }
+  },
+  "result": {
+    "id": "wmd:power_core",
+    "count": 1
+  }
+}

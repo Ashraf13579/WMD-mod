@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "wmd:magnesium_block"
+    }
+  ],
+  "result": {
+    "id": "wmd:magnesium_ingot",
+    "count": 9
+  }
+}

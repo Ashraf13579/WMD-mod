@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GFG",
+    "PFP",
+    "GFG"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:gold_block"
+    },
+    "F": {
+      "item": "wmd:orbital_frame"
+    },
+    "P": {
+      "item": "wmd:power_core"
+    }
+  },
+  "result": {
+    "id": "wmd:station_kit_mirror",
+    "count": 1
+  }
+}

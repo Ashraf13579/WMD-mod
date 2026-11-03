@@ -1,0 +1,12 @@
+{
+  "max_lifetime": 2,
+  "loop": false,
+  "rate": 1,
+  "count": 20,
+  "emitter_settings": {
+    "shape": "wmd:decoy_burst",
+    "particle_settings": "wmd:decoy_flare",
+    "force_spawn": true
+  },
+  "particle_data": "wmd:decoy_flare"
+}

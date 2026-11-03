@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RRR",
+    "CKC",
+    "SSS"
+  ],
+  "key": {
+    "R": {
+      "item": "wmd:refractory_brick"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "K": {
+      "tag": "c:ingots/copper"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "result": {
+    "id": "wmd:furnace",
+    "count": 1
+  }
+}

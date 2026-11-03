@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "MXM",
+    "MCM"
+  ],
+  "key": {
+    "M": {
+      "tag": "c:ingots/steel"
+    },
+    "X": {
+      "item": "minecraft:dropper"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:upgrade_auto_eject",
+    "count": 1
+  }
+}

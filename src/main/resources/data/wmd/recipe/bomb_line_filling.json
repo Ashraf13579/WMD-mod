@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BKB",
+    "CFC",
+    "SSS"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "K": {
+      "item": "minecraft:cauldron"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "F": {
+      "item": "minecraft:blast_furnace"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "result": {
+    "id": "wmd:bomb_line_filling",
+    "count": 1
+  }
+}

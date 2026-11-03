@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PRP",
+    "ATA",
+    "CKC"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/titanium"
+    },
+    "R": {
+      "item": "wmd:radar_component"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "T": {
+      "item": "wmd:tungsten_alloy_casing"
+    },
+    "C": {
+      "item": "wmd:titanium_casing"
+    },
+    "K": {
+      "item": "wmd:chip_space_1"
+    }
+  },
+  "result": {
+    "id": "wmd:ground_station",
+    "count": 1
+  }
+}

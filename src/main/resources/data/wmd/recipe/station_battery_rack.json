@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PBP",
+    "PXP",
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:aluminium_plate"
+    },
+    "B": {
+      "item": "wmd:battery_t1"
+    },
+    "X": {
+      "item": "wmd:advanced_circuit"
+    },
+    "C": {
+      "item": "wmd:chip_space_2"
+    }
+  },
+  "result": {
+    "id": "wmd:station_battery_rack",
+    "count": 1
+  }
+}

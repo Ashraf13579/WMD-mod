@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SGS",
+    "KCK",
+    "SGS"
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:superconducting_coil"
+    },
+    "G": {
+      "item": "wmd:guidance_t4"
+    },
+    "K": {
+      "item": "wmd:chip_space_3"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:tug_core",
+    "count": 1
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [" B ", " F ", " A "],
+  "key": { "B": { "item": "wmd:busbar" }, "F": { "item": "wmd:reactor_frame" }, "A": { "item": "wmd:advanced_circuit" } },
+  "result": {
+    "id": "wmd:reactor_power_port",
+    "count": 1
+  }
+}

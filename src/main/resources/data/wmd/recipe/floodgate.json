@@ -1,0 +1,27 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SBS",
+  "SGS",
+  "SPS"
+ ],
+ "key": {
+  "S": {
+   "tag": "c:ingots/steel"
+  },
+  "B": {
+   "item": "minecraft:bucket"
+  },
+  "G": {
+   "item": "minecraft:iron_bars"
+  },
+  "P": {
+   "item": "wmd:fluid_pipe"
+  }
+ },
+ "result": {
+  "id": "wmd:floodgate",
+  "count": 1
+ }
+}

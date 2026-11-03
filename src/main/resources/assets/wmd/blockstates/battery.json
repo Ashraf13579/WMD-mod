@@ -1,0 +1,2284 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_bottom",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_bottom",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_bottom",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_bottom",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_bottom",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_bottom",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "back_bottom",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "back_bottom",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "back_bottom",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "back_bottom",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "back_bottom",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "back_bottom",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "back_top",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "back_top",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "back_top",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "back_top",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "back_top",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "back_top",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_bottom",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_bottom",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_bottom",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_bottom",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "x": 180,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_bottom",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "x": 90,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_bottom",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "x": 270,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "back_bottom",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "back_bottom",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "back_bottom",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "back_bottom",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "x": 180,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "back_bottom",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "x": 90,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "back_bottom",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "x": 270,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "back_top",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "back_top",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "back_top",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "back_top",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "x": 180,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "back_top",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "x": 90,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "back_top",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "x": 270,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "x": 180,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "x": 90,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "x": 270,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "x": 180,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "x": 90,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "x": 270,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "x": 180,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "x": 90,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "x": 270,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "x": 180,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "x": 90,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "x": 270,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "x": 180,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "x": 90,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "x": 270,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_bottom",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_bottom",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "x": 270,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_bottom",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "x": 90,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_bottom",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "x": 180,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_bottom",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_bottom",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "back_bottom",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "back_bottom",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "x": 270,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "back_bottom",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "x": 90,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "back_bottom",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "x": 180,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "back_bottom",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "back_bottom",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "back_top",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "back_top",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "x": 270,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "back_top",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "x": 90,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "back_top",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "x": 180,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "back_top",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "back_top",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "x": 270,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "x": 90,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "x": 180,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "x": 270,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "x": 90,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "x": 180,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "x": 270,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "x": 90,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "x": 180,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "x": 270,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "x": 90,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "x": 180,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "x": 270,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "x": 90,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "x": 180,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_bottom",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_bottom",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_bottom",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_bottom",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "x": 180,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_bottom",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "x": 270,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_bottom",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_fb",
+        "x": 90,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "back_bottom",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "back_bottom",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "back_bottom",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "back_bottom",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "x": 180,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "back_bottom",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "x": 270,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "back_bottom",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bb",
+        "x": 90,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "back_top",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "back_top",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "back_top",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "back_top",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "x": 180,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "back_top",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "x": 270,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "back_top",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_bt",
+        "x": 90,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "x": 180,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "x": 270,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "0",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_0",
+        "x": 90,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "x": 180,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "x": 270,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "1",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_1",
+        "x": 90,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "x": 180,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "x": 270,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "2",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_2",
+        "x": 90,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "x": 180,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "x": 270,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "3",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_3",
+        "x": 90,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "up"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "north"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "south"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "down"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "x": 180,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "east"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "x": 270,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "part": "front_top",
+        "charge": "4",
+        "mount": "west"
+      },
+      "apply": {
+        "model": "wmd:block/battery_ft_4",
+        "x": 90,
+        "y": 270
+      }
+    }
+  ]
+}

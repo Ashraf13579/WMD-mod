@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SAS",
+    "ATA",
+    "SLS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "T": {
+      "item": "wmd:launch_terminal_1"
+    },
+    "L": {
+      "tag": "c:ingots/aluminum"
+    }
+  },
+  "result": {
+    "id": "wmd:launch_terminal_2",
+    "count": 1
+  }
+}

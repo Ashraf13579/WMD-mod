@@ -1,0 +1,1 @@
+{"format_version":"1.12.0","minecraft:geometry":[{"description":{"identifier":"geometry.station_bunk","texture_width":16,"texture_height":16,"visible_bounds_width":16,"visible_bounds_height":24,"visible_bounds_offset":[0,10,0]},"bones":[{"name":"bunk","pivot":[0,0,0]},{"name":"door","pivot":[0,0,-7.0],"parent":"bunk"},{"name":"lamp","pivot":[0,28,12],"parent":"bunk"}]}]}

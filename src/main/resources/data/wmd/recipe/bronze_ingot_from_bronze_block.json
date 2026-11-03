@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "wmd:bronze_block"
+    }
+  ],
+  "result": {
+    "id": "wmd:bronze_ingot",
+    "count": 9
+  }
+}

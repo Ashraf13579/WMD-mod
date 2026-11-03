@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " I ",
+    "ICI",
+    " I "
+  ],
+  "key": {
+    "I": {
+      "tag": "c:ingots/aluminum"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    }
+  },
+  "result": {
+    "id": "wmd:aluminium_casing",
+    "count": 1
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "feature": "wmd:ore_tin",
+  "placement": [
+    {
+      "type": "wmd:ore_switch",
+      "ore": "tin"
+    },
+    {
+      "type": "minecraft:count",
+      "count": 14
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "min_inclusive": {
+          "absolute": -16
+        },
+        "max_inclusive": {
+          "absolute": 48
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

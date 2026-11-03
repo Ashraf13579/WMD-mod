@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SDS",
+    "CGC",
+    "XPX"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "D": {
+      "item": "wmd:drill_bit"
+    },
+    "C": {
+      "item": "wmd:aluminium_casing"
+    },
+    "G": {
+      "item": "wmd:generator_engine"
+    },
+    "P": {
+      "item": "wmd:basic_circuit"
+    },
+    "X": {
+      "item": "wmd:chip_mining_1"
+    }
+  },
+  "result": {
+    "id": "wmd:mining_rig",
+    "count": 1
+  }
+}

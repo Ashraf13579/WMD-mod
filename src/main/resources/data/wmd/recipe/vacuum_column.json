@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RSR",
+    "CAC",
+    "RSR"
+  ],
+  "key": {
+    "R": {
+      "item": "wmd:refractory_brick"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "A": {
+      "tag": "c:ingots/aluminum"
+    }
+  },
+  "result": {
+    "id": "wmd:vacuum_column",
+    "count": 1
+  }
+}

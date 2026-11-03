@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RSR",
+    "CXC",
+    "RSR"
+  ],
+  "key": {
+    "R": {
+      "item": "wmd:refractory_brick"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "C": {
+      "item": "wmd:aluminium_casing"
+    },
+    "X": {
+      "item": "wmd:raw_bauxite"
+    }
+  },
+  "result": {
+    "id": "wmd:fcc",
+    "count": 1
+  }
+}

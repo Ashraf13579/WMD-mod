@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SES",
+    "BMB",
+    "SKS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "E": {
+      "item": "wmd:carbon_electrode"
+    },
+    "B": {
+      "item": "wmd:basic_circuit"
+    },
+    "M": {
+      "item": "wmd:machine_casing"
+    },
+    "K": {
+      "item": "wmd:chip_space_2"
+    }
+  },
+  "result": {
+    "id": "wmd:oxygen_station",
+    "count": 1
+  }
+}

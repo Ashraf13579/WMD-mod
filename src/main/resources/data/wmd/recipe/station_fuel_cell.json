@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "wmd:titanium_plate"
+    },
+    {
+      "item": "wmd:titanium_plate"
+    },
+    {
+      "type": "neoforge:components",
+      "items": "wmd:canister",
+      "components": {
+        "wmd:canister_fluid": {
+          "id": "wmd:jet_fuel",
+          "amount": 4000
+        }
+      }
+    }
+  ],
+  "result": {
+    "id": "wmd:station_fuel_cell",
+    "count": 2
+  }
+}

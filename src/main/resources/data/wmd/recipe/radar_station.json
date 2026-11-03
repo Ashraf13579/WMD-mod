@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ASA",
+    "CPC",
+    "ABA"
+  ],
+  "key": {
+    "A": {
+      "tag": "c:ingots/aluminum"
+    },
+    "S": {
+      "tag": "c:ingots/silver"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "P": {
+      "item": "wmd:advanced_circuit"
+    },
+    "B": {
+      "item": "wmd:basic_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:radar_station",
+    "count": 1
+  }
+}

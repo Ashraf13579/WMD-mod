@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BGB",
+    "APA",
+    "FKF"
+  ],
+  "key": {
+    "B": {
+      "item": "wmd:superconducting_coil"
+    },
+    "G": {
+      "item": "wmd:blast_glass"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "P": {
+      "item": "wmd:power_core"
+    },
+    "F": {
+      "item": "wmd:orbital_frame"
+    },
+    "K": {
+      "item": "wmd:chip_space_3"
+    }
+  },
+  "result": {
+    "id": "wmd:station_kit_turret",
+    "count": 1
+  }
+}

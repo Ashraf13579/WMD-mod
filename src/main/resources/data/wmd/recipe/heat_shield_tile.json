@@ -1,0 +1,20 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "RR",
+  "RA"
+ ],
+ "key": {
+  "R": {
+   "item": "wmd:refractory_brick"
+  },
+  "A": {
+   "tag": "c:ingots/aluminum"
+  }
+ },
+ "result": {
+  "id": "wmd:heat_shield_tile",
+  "count": 2
+ }
+}

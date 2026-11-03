@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GGG",
+    "LAL",
+    "SCS"
+  ],
+  "key": {
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "L": {
+      "tag": "c:ingots/aluminum"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    }
+  },
+  "result": {
+    "id": "wmd:research_station",
+    "count": 1
+  }
+}

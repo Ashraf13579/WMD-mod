@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "MXM",
+    "MCM"
+  ],
+  "key": {
+    "M": {
+      "tag": "c:ingots/aluminum"
+    },
+    "X": {
+      "item": "wmd:fluid_pipe"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:upgrade_throughput",
+    "count": 1
+  }
+}

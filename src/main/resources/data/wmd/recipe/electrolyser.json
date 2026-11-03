@@ -1,0 +1,30 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SES",
+  "CBC",
+  "SKS"
+ ],
+ "key": {
+  "S": {
+   "tag": "c:ingots/steel"
+  },
+  "E": {
+   "item": "wmd:carbon_electrode"
+  },
+  "C": {
+   "item": "wmd:machine_casing"
+  },
+  "B": {
+   "item": "wmd:basic_circuit"
+  },
+  "K": {
+   "tag": "c:ingots/copper"
+  }
+ },
+ "result": {
+  "id": "wmd:electrolyser",
+  "count": 1
+ }
+}

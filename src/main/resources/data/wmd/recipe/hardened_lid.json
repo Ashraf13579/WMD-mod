@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ASA",
+    "SCS",
+    "ASA"
+  ],
+  "key": {
+    "A": { "item": "wmd:armour_plate" },
+    "S": { "tag": "c:ingots/steel" },
+    "C": { "item": "wmd:advanced_circuit" }
+  },
+  "result": {
+    "id": "wmd:hardened_lid",
+    "count": 1
+  }
+}

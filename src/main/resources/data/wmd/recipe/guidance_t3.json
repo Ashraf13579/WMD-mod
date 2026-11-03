@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "wmd:guidance_t2"
+    },
+    {
+      "item": "wmd:advanced_circuit"
+    },
+    {
+      "tag": "c:ingots/steel"
+    },
+    {
+      "item": "wmd:gold_wire"
+    },
+    {
+      "item": "wmd:gold_wire"
+    },
+    {
+      "item": "wmd:advanced_circuit"
+    }
+  ],
+  "result": {
+    "id": "wmd:guidance_t3",
+    "count": 1
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CAC",
+    "TXT",
+    "CBC"
+  ],
+  "key": {
+    "C": {
+      "item": "wmd:superconducting_coil"
+    },
+    "A": {
+      "item": "wmd:antimatter_cell"
+    },
+    "T": {
+      "item": "wmd:tungsten_tile"
+    },
+    "X": {
+      "item": "wmd:chip_defence_2"
+    },
+    "B": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:forcefield_generator",
+    "count": 1
+  }
+}

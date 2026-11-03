@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " A ",
+    "TCT",
+    "PWP"
+  ],
+  "key": {
+    "A": {
+      "item": "wmd:cam_pod"
+    },
+    "T": {
+      "item": "wmd:tungsten_plate"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "P": {
+      "item": "wmd:steel_plate"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    }
+  },
+  "result": {
+    "id": "wmd:sentry_turret",
+    "count": 1
+  }
+}

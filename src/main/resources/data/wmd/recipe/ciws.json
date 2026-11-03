@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "LPL",
+    "TCT",
+    "XBX"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:advanced_circuit"
+    },
+    "B": {
+      "item": "wmd:battery_t1"
+    },
+    "C": {
+      "item": "wmd:titanium_casing"
+    },
+    "T": {
+      "tag": "c:ingots/tungsten"
+    },
+    "X": {
+      "item": "wmd:chip_defence_2"
+    },
+    "L": {
+      "item": "wmd:steel_plate"
+    }
+  },
+  "result": {
+    "id": "wmd:ciws",
+    "count": 1
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SWS",
+    "SWS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    }
+  },
+  "result": {
+    "id": "wmd:electric_fence",
+    "count": 8
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GSG",
+    "ANA",
+    "PCP"
+  ],
+  "key": {
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "S": {
+      "item": "wmd:basic_circuit"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "N": {
+      "item": "wmd:network_card"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    }
+  },
+  "result": {
+    "id": "wmd:cc_planner",
+    "count": 1
+  }
+}

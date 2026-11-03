@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SPS",
+    "CWC",
+    "LLL"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "P": {
+      "item": "wmd:advanced_circuit"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "W": {
+      "item": "wmd:power_port"
+    },
+    "L": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "result": {
+    "id": "wmd:bomb_line_core",
+    "count": 1
+  }
+}

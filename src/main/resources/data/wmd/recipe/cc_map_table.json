@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TRT",
+    "AGA",
+    "SKS"
+  ],
+  "key": {
+    "T": {
+      "tag": "c:plates/titanium"
+    },
+    "R": {
+      "item": "wmd:radar_component"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "K": {
+      "item": "wmd:chip_space_1"
+    }
+  },
+  "result": {
+    "id": "wmd:cc_map_table",
+    "count": 1
+  }
+}

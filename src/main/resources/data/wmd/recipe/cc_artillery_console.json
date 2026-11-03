@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GAG",
+    "ANA",
+    "SKS"
+  ],
+  "key": {
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "N": {
+      "item": "wmd:network_card"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "K": {
+      "item": "wmd:chip_defence_2"
+    }
+  },
+  "result": {
+    "id": "wmd:cc_artillery_console",
+    "count": 1
+  }
+}

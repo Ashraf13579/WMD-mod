@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BBB",
+    "PCP",
+    "PSP"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:iron_bars"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "S": {
+      "item": "minecraft:piston"
+    }
+  },
+  "result": {
+    "id": "wmd:smoke_machine",
+    "count": 1
+  }
+}

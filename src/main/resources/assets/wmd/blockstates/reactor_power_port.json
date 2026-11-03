@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "formed=false": {
+      "model": "wmd:block/reactor_power_port"
+    },
+    "formed=true": {
+      "model": "wmd:block/invisible"
+    }
+  }
+}

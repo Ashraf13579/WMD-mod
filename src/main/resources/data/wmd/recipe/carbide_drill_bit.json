@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " T ",
+    "TDT",
+    "XS "
+  ],
+  "key": {
+    "T": {
+      "tag": "c:ingots/tungsten"
+    },
+    "D": {
+      "item": "wmd:drill_bit"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "X": {
+      "item": "wmd:chip_metallurgy_2"
+    }
+  },
+  "result": {
+    "id": "wmd:carbide_drill_bit",
+    "count": 1
+  }
+}

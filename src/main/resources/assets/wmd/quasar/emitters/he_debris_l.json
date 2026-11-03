@@ -1,0 +1,12 @@
+{
+  "max_lifetime": 1,
+  "loop": false,
+  "rate": 1,
+  "count": 100,
+  "emitter_settings": {
+    "shape": "wmd:he_debris_l",
+    "particle_settings": "wmd:he_debris_l",
+    "force_spawn": true
+  },
+  "particle_data": "wmd:he_debris_l"
+}

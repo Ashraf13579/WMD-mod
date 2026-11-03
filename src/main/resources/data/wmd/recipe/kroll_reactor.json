@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SAS",
+    "CFC",
+    "XPX"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "A": {
+      "tag": "c:ingots/aluminum"
+    },
+    "C": {
+      "item": "wmd:aluminium_casing"
+    },
+    "F": {
+      "item": "minecraft:blast_furnace"
+    },
+    "P": {
+      "item": "wmd:advanced_circuit"
+    },
+    "X": {
+      "item": "wmd:chip_metallurgy_2"
+    }
+  },
+  "result": {
+    "id": "wmd:kroll_reactor",
+    "count": 1
+  }
+}

@@ -1,0 +1,30 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SBS",
+  "CFC",
+  "SKS"
+ ],
+ "key": {
+  "S": {
+   "tag": "c:ingots/steel"
+  },
+  "B": {
+   "tag": "c:ingots/bronze"
+  },
+  "C": {
+   "item": "wmd:machine_casing"
+  },
+  "F": {
+   "item": "minecraft:furnace"
+  },
+  "K": {
+   "tag": "c:ingots/copper"
+  }
+ },
+ "result": {
+  "id": "wmd:coal_generator",
+  "count": 1
+ }
+}

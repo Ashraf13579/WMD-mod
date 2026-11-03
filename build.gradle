@@ -1,0 +1,185 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.neoforged.gradle.userdev' version '7.0.192'
+}
+
+tasks.named('wrapper', Wrapper).configure {
+
+    distributionType = Wrapper.DistributionType.BIN
+}
+
+version = mod_version
+group = mod_group_id
+
+repositories {
+
+    maven {
+        name = 'GeckoLib'
+        url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        content { includeGroup 'software.bernie.geckolib' }
+    }
+
+    maven {
+        name = 'BlameJared'
+        url = 'https://maven.blamejared.com/'
+        content { includeGroup 'mezz.jei'; includeGroup 'net.mezzdev.config'; includeGroup 'foundry.veil'; includeGroup 'gg.moonflower'; includeGroup 'io.github.ocelot' }
+    }
+
+    maven {
+        name = 'RyanHCode'
+        url = 'https://maven.ryanhcode.dev/releases'
+        content { includeGroup 'foundry.imguimc'; includeGroup 'dev.ryanhcode.sable'; includeGroup 'dev.ryanhcode.sable-companion' }
+    }
+
+    maven {
+        name = 'BlueColored'
+        url = 'https://repo.bluecolored.de/releases'
+        content { includeGroup 'de.bluecolored.bluemap' }
+    }
+    maven {
+        name = 'MavenCentralFlowMath'
+        url = 'https://repo1.maven.org/maven2/'
+        content { includeGroup 'com.flowpowered' }
+    }
+
+    maven {
+        name = 'SquidDev'
+        url = 'https://maven.squiddev.cc'
+        content { includeGroup 'cc.tweaked' }
+    }
+
+    maven {
+        name = 'Modrinth'
+        url = 'https://api.modrinth.com/maven'
+        content { includeGroup 'maven.modrinth' }
+    }
+}
+
+base {
+    archivesName = mod_id
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+runs {
+
+    configureEach {
+
+        systemProperty 'forge.logging.markers', 'REGISTRIES'
+
+        systemProperty 'forge.logging.console.level', 'debug'
+
+        modSource project.sourceSets.main
+    }
+
+    client {
+
+        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    }
+
+    server {
+        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        argument '--nogui'
+    }
+
+    gameTestServer {
+        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    }
+
+    data {
+
+        arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
+
+dependencies {
+
+    implementation "net.neoforged:neoforge:${neo_version}"
+
+    implementation "software.bernie.geckolib:geckolib-neoforge-1.21.1:4.8.1"
+
+    compileOnly "maven.modrinth:distanthorizons:3.3.3-1.21.1"
+    localRuntime "maven.modrinth:distanthorizons:3.3.3-1.21.1"
+
+    compileOnly "maven.modrinth:jade:15.10.6+neoforge"
+    localRuntime "maven.modrinth:jade:15.10.6+neoforge"
+
+    compileOnly "cc.tweaked:cc-tweaked-1.21.1-forge-api:1.120.2"
+    compileOnly "cc.tweaked:cc-tweaked-1.21.1-common-api:1.120.2"
+    compileOnly "cc.tweaked:cc-tweaked-1.21.1-core-api:1.120.2"
+
+    localRuntime "maven.modrinth:spark:1.10.124-neoforge-1.21.1"
+
+    compileOnly "mezz.jei:jei-1.21.1-common-api:19.64.0.455"
+    compileOnly "mezz.jei:jei-1.21.1-neoforge-api:19.64.0.455"
+
+    localRuntime "mezz.jei:jei-1.21.1-neoforge:19.64.0.455"
+
+    compileOnly("foundry.veil:veil-neoforge-1.21.1:4.5.2") { exclude group: 'maven.modrinth'; exclude group: 'me.fallenbreath' }
+    localRuntime("foundry.veil:veil-neoforge-1.21.1:4.5.2") { exclude group: 'maven.modrinth'; exclude group: 'me.fallenbreath' }
+
+    compileOnly("dev.ryanhcode.sable:sable-common-1.21.1:2.0.6") { transitive = false }
+    compileOnly "dev.ryanhcode.sable-companion:sable-companion-common-1.21.1:1.6.0"
+
+    compileOnly("de.bluecolored.bluemap:BlueMapAPI:2.7.2") { transitive = false }
+    compileOnly "com.flowpowered:flow-math:1.0.3"
+
+    if (project.findProperty('dev_sable') != 'false') {
+        localRuntime("dev.ryanhcode.sable:sable-neoforge-1.21.1:2.0.6") { transitive = false }
+    }
+
+
+
+}
+
+tasks.withType(ProcessResources).configureEach {
+    var replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version            : neo_version,
+            neo_min_version        : neo_min_version,
+            loader_version_range   : loader_version_range,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            mod_version            : mod_version,
+            mod_authors            : mod_authors,
+            mod_description        : mod_description
+    ]
+    inputs.properties replaceProperties
+
+    filesMatching(['META-INF/neoforge.mods.toml']) {
+        expand replaceProperties
+    }
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/repo"
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}

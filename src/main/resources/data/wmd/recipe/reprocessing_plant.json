@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PKP",
+    "TAT",
+    "PXP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "K": {
+      "item": "minecraft:cauldron"
+    },
+    "T": {
+      "item": "wmd:tungsten_alloy_casing"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "X": {
+      "item": "wmd:chip_nuclear_1"
+    }
+  },
+  "result": {
+    "id": "wmd:reprocessing_plant",
+    "count": 1
+  }
+}

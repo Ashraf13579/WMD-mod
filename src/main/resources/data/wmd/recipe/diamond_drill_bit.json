@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " X ",
+    "XDX",
+    " T "
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:diamond"
+    },
+    "D": {
+      "item": "wmd:carbide_drill_bit"
+    },
+    "T": {
+      "tag": "c:ingots/tungsten"
+    }
+  },
+  "result": {
+    "id": "wmd:diamond_drill_bit",
+    "count": 1
+  }
+}

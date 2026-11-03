@@ -1,0 +1,1 @@
+{"format_version":"1.12.0","minecraft:geometry":[{"description":{"identifier":"geometry.c4_charge","texture_width":16,"texture_height":16,"visible_bounds_width":16,"visible_bounds_height":24,"visible_bounds_offset":[0,10,0]},"bones":[{"name":"base","pivot":[0,0,0]},{"name":"led","pivot":[-1.0,4.6,-1.2],"parent":"base"}]}]}

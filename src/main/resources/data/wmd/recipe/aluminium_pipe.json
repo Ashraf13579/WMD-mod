@@ -1,0 +1,21 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "PAP",
+  "A A",
+  "PAP"
+ ],
+ "key": {
+  "P": {
+   "item": "wmd:fluid_pipe"
+  },
+  "A": {
+   "tag": "c:ingots/aluminum"
+  }
+ },
+ "result": {
+  "id": "wmd:aluminium_pipe",
+  "count": 4
+ }
+}

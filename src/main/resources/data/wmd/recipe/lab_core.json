@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SPS",
+    "CWC",
+    "LLL"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:advanced_circuit"
+    },
+    "L": {
+      "tag": "c:ingots/lead"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "W": {
+      "item": "wmd:power_port"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "result": {
+    "id": "wmd:lab_core",
+    "count": 1
+  }
+}

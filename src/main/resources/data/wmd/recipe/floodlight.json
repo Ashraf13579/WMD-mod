@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PGP",
+    "PLP",
+    " B "
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:steel_plate"
+    },
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "L": {
+      "item": "minecraft:redstone_lamp"
+    },
+    "B": {
+      "item": "wmd:battery_t1"
+    }
+  },
+  "result": {
+    "id": "wmd:floodlight",
+    "count": 1
+  }
+}

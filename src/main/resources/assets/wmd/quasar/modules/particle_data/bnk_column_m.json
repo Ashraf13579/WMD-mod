@@ -1,0 +1,67 @@
+{
+  "render_style": "veil:cube",
+  "additive": false,
+  "should_collide": false,
+  "face_velocity": false,
+  "modules": [
+    {
+      "module": "initial_velocity",
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "strength": 1.36
+    },
+    {
+      "module": "gravity",
+      "strength": 0.04
+    },
+    {
+      "module": "drag",
+      "strength": 0.96
+    },
+    {
+      "module": "size",
+      "size": "0.510 * (1.0 + q.agePercent)"
+    },
+    {
+      "module": "color",
+      "gradient": {
+        "rgb_points": [
+          {
+            "percent": 0.0,
+            "color": [
+              120,
+              95,
+              70
+            ]
+          },
+          {
+            "percent": 1.0,
+            "color": [
+              90,
+              80,
+              72
+            ]
+          }
+        ],
+        "alpha_points": [
+          {
+            "percent": 0.0,
+            "alpha": 1.0
+          },
+          {
+            "percent": 0.9,
+            "alpha": 1.0
+          },
+          {
+            "percent": 1.0,
+            "alpha": 0.0
+          }
+        ]
+      },
+      "interpolant": "q.agePercent"
+    }
+  ]
+}

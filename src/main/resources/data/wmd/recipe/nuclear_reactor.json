@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["AXA", "ATA", "AXA"],
+  "key": { "A": { "item": "wmd:advanced_circuit" }, "X": { "item": "wmd:chip_nuclear_1" }, "T": { "item": "wmd:tungsten_alloy_casing" } },
+  "result": {
+    "id": "wmd:nuclear_reactor",
+    "count": 1
+  }
+}

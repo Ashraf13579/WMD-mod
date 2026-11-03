@@ -1,0 +1,15 @@
+{
+ "loader": "wmd:pipe",
+ "textures": {
+  "particle": "wmd:block/fluid_pipe_collar",
+  "pipe": "wmd:block/fluid_pipe",
+  "collar": "wmd:block/fluid_pipe_collar",
+  "bolt": "wmd:block/fluid_pipe_bolt",
+  "dark": "wmd:block/fluid_pipe_gasket",
+  "wheel_on": "wmd:block/valve_wheel_on",
+  "wheel_off": "wmd:block/valve_wheel_off",
+  "arrow": "wmd:block/valve_arrow"
+ },
+ "kind": "valve",
+ "parent": "minecraft:block/block"
+}

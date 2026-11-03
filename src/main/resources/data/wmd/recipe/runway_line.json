@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "TTT",
+    "TWT",
+    "TTT"
+  ],
+  "key": {
+    "T": {
+      "item": "wmd:runway_tile"
+    },
+    "W": {
+      "item": "minecraft:white_dye"
+    }
+  },
+  "result": {
+    "id": "wmd:runway_line",
+    "count": 8
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "formed=false": {
+      "model": "wmd:block/generator_engine"
+    },
+    "formed=true": {
+      "model": "wmd:block/generator_engine"
+    }
+  }
+}

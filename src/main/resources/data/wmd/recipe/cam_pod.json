@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:glass_pane"
+    },
+    {
+      "item": "wmd:advanced_circuit"
+    },
+    {
+      "tag": "c:plates/aluminum"
+    },
+    {
+      "item": "wmd:gold_wire"
+    }
+  ],
+  "result": {
+    "id": "wmd:cam_pod",
+    "count": 1
+  }
+}

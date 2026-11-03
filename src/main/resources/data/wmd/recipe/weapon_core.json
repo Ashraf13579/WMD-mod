@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WSW",
+    "GMK",
+    "WSW"
+  ],
+  "key": {
+    "W": {
+      "item": "wmd:tungsten_alloy_casing"
+    },
+    "S": {
+      "item": "wmd:superconducting_coil"
+    },
+    "G": {
+      "item": "wmd:guidance_t4"
+    },
+    "M": {
+      "item": "wmd:antimatter_cell"
+    },
+    "K": {
+      "item": "wmd:chip_space_3"
+    }
+  },
+  "result": {
+    "id": "wmd:weapon_core",
+    "count": 1
+  }
+}

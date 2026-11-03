@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "breach=false": {
+      "model": "wmd:block/station_hatch_frame"
+    },
+    "breach=true": {
+      "model": "wmd:block/station_hatch_frame_breach"
+    }
+  }
+}

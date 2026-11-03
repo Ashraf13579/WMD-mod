@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PGP",
+    "GCG",
+    "PGP"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:titanium_plate"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "C": {
+      "item": "wmd:superconducting_coil"
+    }
+  },
+  "result": {
+    "id": "wmd:empty_trap_cell",
+    "count": 2
+  }
+}

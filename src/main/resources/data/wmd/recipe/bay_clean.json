@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SGS",
+    "CAC",
+    "SSS"
+  ],
+  "key": {
+    "S": { "tag": "c:ingots/steel" },
+    "G": { "tag": "c:glass_blocks" },
+    "C": { "item": "wmd:machine_casing" },
+    "A": { "item": "wmd:advanced_circuit" }
+  },
+  "result": { "id": "wmd:bay_clean", "count": 1 }
+}

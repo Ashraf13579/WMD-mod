@@ -1,0 +1,12 @@
+{
+  "max_lifetime": 2,
+  "loop": false,
+  "rate": 1,
+  "count": 308,
+  "emitter_settings": {
+    "shape": "wmd:he_ring_l",
+    "particle_settings": "wmd:emp_ring_l",
+    "force_spawn": true
+  },
+  "particle_data": "wmd:emp_ring_l"
+}

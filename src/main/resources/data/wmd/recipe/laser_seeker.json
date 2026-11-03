@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SGS",
+    "PCP",
+    " R "
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:silicon"
+    },
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "P": {
+      "item": "wmd:aluminium_plate"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "wmd:laser_seeker",
+    "count": 1
+  }
+}

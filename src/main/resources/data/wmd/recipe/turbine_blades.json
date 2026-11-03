@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TXT",
+    " S ",
+    "T T"
+  ],
+  "key": {
+    "T": {
+      "tag": "c:ingots/titanium"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "X": {
+      "item": "wmd:chip_metallurgy_2"
+    }
+  },
+  "result": {
+    "id": "wmd:turbine_blades",
+    "count": 1
+  }
+}

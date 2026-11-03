@@ -1,0 +1,12 @@
+{
+  "max_lifetime": 40,
+  "loop": false,
+  "rate": 2,
+  "count": 39,
+  "emitter_settings": {
+    "shape": "wmd:chf_glitter_l",
+    "particle_settings": "wmd:decoy_glitter",
+    "force_spawn": true
+  },
+  "particle_data": "wmd:decoy_glitter"
+}

@@ -1,0 +1,53 @@
+{
+ "replace": false,
+ "values": [
+  {
+   "id": "#c:ores",
+   "required": false
+  },
+  {
+   "id": "#c:raw_materials",
+   "required": false
+  },
+  {
+   "id": "#c:ingots",
+   "required": false
+  },
+  {
+   "id": "#c:dusts",
+   "required": false
+  },
+  {
+   "id": "#c:gems",
+   "required": false
+  },
+  {
+   "id": "#c:nuggets",
+   "required": false
+  },
+  {
+   "id": "#minecraft:coals",
+   "required": false
+  },
+  {
+   "id": "#c:sands",
+   "required": false
+  },
+  {
+   "id": "minecraft:gravel",
+   "required": false
+  },
+  {
+   "id": "minecraft:clay_ball",
+   "required": false
+  },
+  {
+   "id": "minecraft:redstone",
+   "required": false
+  },
+  {
+   "id": "minecraft:glass",
+   "required": false
+  }
+ ]
+}

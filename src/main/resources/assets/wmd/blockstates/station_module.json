@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "look=deck": {
+      "model": "wmd:block/station_deck"
+    },
+    "look=band": {
+      "model": "wmd:block/station_band"
+    },
+    "look=none": {
+      "model": "wmd:block/invisible"
+    }
+  }
+}

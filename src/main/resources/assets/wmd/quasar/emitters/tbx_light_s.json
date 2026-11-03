@@ -1,0 +1,12 @@
+{
+  "max_lifetime": 1,
+  "loop": false,
+  "rate": 1,
+  "count": 4,
+  "emitter_settings": {
+    "shape": "wmd:tbx_ball_s",
+    "particle_settings": "wmd:tbx_ball_s",
+    "force_spawn": true
+  },
+  "particle_data": "wmd:tbx_light_s"
+}

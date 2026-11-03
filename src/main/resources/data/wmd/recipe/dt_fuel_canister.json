@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "wmd:titanium_plate"
+    },
+    {
+      "item": "wmd:titanium_plate"
+    },
+    {
+      "type": "neoforge:components",
+      "items": "wmd:canister",
+      "components": {
+        "wmd:canister_fluid": {
+          "id": "wmd:deuterium",
+          "amount": 4000
+        }
+      }
+    },
+    {
+      "type": "neoforge:components",
+      "items": "wmd:canister",
+      "components": {
+        "wmd:canister_fluid": {
+          "id": "wmd:tritium",
+          "amount": 4000
+        }
+      }
+    }
+  ],
+  "result": {
+    "id": "wmd:dt_fuel_canister",
+    "count": 1
+  }
+}

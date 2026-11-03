@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:heavy_weighted_pressure_plate"
+    },
+    {
+      "item": "wmd:he_charge"
+    },
+    {
+      "item": "wmd:steel_plate"
+    },
+    {
+      "item": "wmd:basic_circuit"
+    }
+  ],
+  "result": {
+    "id": "wmd:pressure_mine",
+    "count": 1
+  }
+}

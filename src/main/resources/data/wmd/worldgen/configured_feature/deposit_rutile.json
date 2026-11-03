@@ -1,0 +1,13 @@
+{
+  "type": "wmd:ore_deposit",
+  "config": {
+    "state": {
+      "Name": "wmd:rutile_deposit"
+    },
+    "radius_min": 6,
+    "radius_max": 9,
+    "height_min": 3,
+    "height_max": 4,
+    "density": 0.75
+  }
+}

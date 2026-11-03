@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BBB",
+    "TAT",
+    "WXW"
+  ],
+  "key": {
+    "B": {
+      "item": "wmd:turbine_blades"
+    },
+    "T": {
+      "item": "wmd:tungsten_alloy_casing"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "X": {
+      "item": "wmd:chip_nuclear_1"
+    }
+  },
+  "result": {
+    "id": "wmd:steam_turbine",
+    "count": 1
+  }
+}

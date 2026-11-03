@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "wmd:uraninite_deposit",
+    "wmd:salvage_turret",
+    "wmd:station_hull",
+    "wmd:station_hull_seam",
+    "wmd:station_band",
+    "wmd:station_deck",
+    "wmd:station_window",
+    "wmd:station_light",
+    "wmd:station_hatch_frame",
+    "wmd:station_hatch"
+  ]
+}

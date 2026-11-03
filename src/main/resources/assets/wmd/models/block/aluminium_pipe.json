@@ -1,0 +1,10 @@
+{
+ "loader": "wmd:pipe",
+ "textures": {
+  "particle": "wmd:block/fluid_pipe_collar_aluminium",
+  "pipe": "wmd:block/fluid_pipe",
+  "collar": "wmd:block/fluid_pipe_collar_aluminium",
+  "bolt": "wmd:block/fluid_pipe_bolt",
+  "dark": "wmd:block/fluid_pipe_gasket"
+ }
+}

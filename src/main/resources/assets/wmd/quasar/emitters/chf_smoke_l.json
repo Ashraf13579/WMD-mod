@@ -1,0 +1,12 @@
+{
+  "max_lifetime": 60,
+  "loop": false,
+  "rate": 2,
+  "count": 19,
+  "emitter_settings": {
+    "shape": "wmd:chf_smoke_l",
+    "particle_settings": "wmd:chf_smoke_l",
+    "force_spawn": true
+  },
+  "particle_data": "wmd:chf_smoke_l"
+}

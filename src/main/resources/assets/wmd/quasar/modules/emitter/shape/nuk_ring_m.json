@@ -1,0 +1,14 @@
+{
+  "shape": "veil:disc",
+  "dimensions": [
+    8.5,
+    0.1,
+    8.5
+  ],
+  "rotation": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "from_surface": true
+}

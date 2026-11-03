@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "wmd:raw_titanium",
+    "wmd:raw_tungsten",
+    "wmd:raw_uranium",
+    "wmd:raw_tin",
+    "wmd:raw_lead",
+    "wmd:raw_silver",
+    "wmd:raw_platinum",
+    "wmd:raw_bauxite",
+    "minecraft:raw_iron",
+    "minecraft:raw_copper",
+    "minecraft:raw_gold",
+    { "id": "#c:raw_materials", "required": false }
+  ]
+}

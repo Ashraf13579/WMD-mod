@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "P",
+    "C"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:tungsten_plate"
+    },
+    "C": {
+      "item": "wmd:titanium_casing"
+    }
+  },
+  "result": {
+    "id": "wmd:tungsten_alloy_casing",
+    "count": 1
+  }
+}

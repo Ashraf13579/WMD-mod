@@ -1,0 +1,16 @@
+WMD ASSETS - ALL RIGHTS RESERVED
+
+Copyright (c) 2026 Ashraf. All rights reserved.
+
+The following are NOT open source and are not covered by the MIT license in LICENSE:
+  - everything under src/main/resources/assets (models, meshes, geometry, textures, sounds, icons, GUI art, shaders)
+  - the name "WMD", the WMD logo and the mod's branding
+
+You MAY:
+  - download and play the mod
+  - include the unmodified official release in modpacks and on servers
+  - make videos, streams and screenshots of it
+
+You may NOT, without written permission:
+  - copy, extract, modify or redistribute these assets, in whole or in part, in other mods, resource packs or projects
+  - publish builds of this repository under the WMD name or with these assets as your own release

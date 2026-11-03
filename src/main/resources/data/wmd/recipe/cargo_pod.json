@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TFT",
+    "SCS",
+    "TFT"
+  ],
+  "key": {
+    "T": {
+      "item": "wmd:titanium_plate"
+    },
+    "F": {
+      "item": "wmd:orbital_frame"
+    },
+    "S": {
+      "item": "wmd:solar_cell"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    }
+  },
+  "result": {
+    "id": "wmd:cargo_pod",
+    "count": 1
+  }
+}

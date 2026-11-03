@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GCG",
+    "ATA",
+    "SKS"
+  ],
+  "key": {
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "C": {
+      "item": "minecraft:compass"
+    },
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "K": {
+      "item": "wmd:chip_space_1"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "result": {
+    "id": "wmd:cc_sat_globe",
+    "count": 1
+  }
+}

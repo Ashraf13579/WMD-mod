@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "HH",
+    "HG",
+    "HH"
+  ],
+  "key": {
+    "H": {
+      "item": "wmd:station_hull"
+    },
+    "G": {
+      "item": "wmd:blast_glass"
+    }
+  },
+  "result": {
+    "id": "wmd:station_hatch",
+    "count": 1
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "render_style": "veil:cube",
+  "additive": true,
+  "should_collide": true,
+  "face_velocity": false,
+  "modules": [
+    {
+      "module": "initial_velocity",
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "strength": 0.5
+    },
+    {
+      "module": "gravity",
+      "strength": 0.035
+    },
+    {
+      "module": "drag",
+      "strength": 0.985
+    },
+    {
+      "module": "color",
+      "gradient": {
+        "rgb_points": [
+          {
+            "percent": 0.0,
+            "color": [
+              255,
+              240,
+              180
+            ]
+          },
+          {
+            "percent": 0.3,
+            "color": [
+              255,
+              170,
+              60
+            ]
+          },
+          {
+            "percent": 0.75,
+            "color": [
+              220,
+              70,
+              20
+            ]
+          },
+          {
+            "percent": 1.0,
+            "color": [
+              60,
+              40,
+              30
+            ]
+          }
+        ],
+        "alpha_points": [
+          {
+            "percent": 0.0,
+            "alpha": 1.0
+          },
+          {
+            "percent": 0.7,
+            "alpha": 0.85
+          },
+          {
+            "percent": 1.0,
+            "alpha": 0.0
+          }
+        ]
+      },
+      "interpolant": "q.agePercent"
+    },
+    {
+      "module": "trail",
+      "settings": [
+        {
+          "trailFrequency": 1,
+          "trailLength": 18,
+          "trailColor": [
+            0.95,
+            0.95,
+            0.95,
+            0.6
+          ],
+          "trailWidthModifier": 0.14,
+          "trailPointModifier": 0.0,
+          "billboard": true,
+          "additive": false
+        }
+      ]
+    },
+    {
+      "module": "sub_emitter_collision",
+      "subemitter": "wmd:inc_burn"
+    },
+    {
+      "module": "die_on_collision"
+    }
+  ]
+}

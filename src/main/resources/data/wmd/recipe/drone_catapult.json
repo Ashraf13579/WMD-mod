@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "PCP",
+    "AWA"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "A": {
+      "item": "wmd:aluminium_plate"
+    },
+    "W": {
+      "item": "wmd:power_port"
+    }
+  },
+  "result": {
+    "id": "wmd:drone_catapult",
+    "count": 1
+  }
+}

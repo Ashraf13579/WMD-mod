@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CBC",
+    "TXT",
+    "CBC"
+  ],
+  "key": {
+    "C": {
+      "item": "wmd:superconducting_coil"
+    },
+    "B": {
+      "tag": "c:storage_blocks/titanium"
+    },
+    "T": {
+      "item": "wmd:tungsten_tile"
+    },
+    "X": {
+      "item": "wmd:chip_antimatter_1"
+    }
+  },
+  "result": {
+    "id": "wmd:antimatter_collider",
+    "count": 1
+  }
+}

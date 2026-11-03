@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "FFF",
+    "PKP",
+    "FFF"
+  ],
+  "key": {
+    "F": {
+      "item": "wmd:orbital_frame"
+    },
+    "P": {
+      "item": "wmd:power_core"
+    },
+    "K": {
+      "item": "wmd:chip_space_3"
+    }
+  },
+  "result": {
+    "id": "wmd:station_kit_bay",
+    "count": 1
+  }
+}

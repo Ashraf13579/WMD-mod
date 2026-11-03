@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TTT",
+    "HXA",
+    "SCS"
+  ],
+  "key": {
+    "T": {
+      "item": "wmd:tungsten_plate"
+    },
+    "H": {
+      "item": "wmd:howitzer"
+    },
+    "X": {
+      "item": "wmd:chip_metallurgy_3"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "S": {
+      "item": "wmd:steel_block"
+    },
+    "C": {
+      "item": "wmd:titanium_casing"
+    }
+  },
+  "result": {
+    "id": "wmd:super_gun",
+    "count": 1
+  }
+}

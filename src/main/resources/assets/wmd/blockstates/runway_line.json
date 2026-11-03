@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "axis=z": {
+      "model": "wmd:block/runway_line"
+    },
+    "axis=x": {
+      "model": "wmd:block/runway_line",
+      "y": 90
+    }
+  }
+}

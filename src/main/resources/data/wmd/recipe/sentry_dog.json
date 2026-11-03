@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "SRS",
+    "T T"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:steel_plate"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "R": {
+      "item": "minecraft:redstone_block"
+    },
+    "T": {
+      "item": "minecraft:piston"
+    }
+  },
+  "result": {
+    "id": "wmd:sentry_dog",
+    "count": 1
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TTT",
+    "GAG",
+    "SXS"
+  ],
+  "key": {
+    "T": {
+      "item": "wmd:titanium_plate"
+    },
+    "G": {
+      "item": "wmd:guidance_t1"
+    },
+    "A": {
+      "item": "wmd:aluminium_casing"
+    },
+    "S": {
+      "item": "wmd:steel_block"
+    },
+    "X": {
+      "item": "wmd:chip_rocketry_2"
+    }
+  },
+  "result": {
+    "id": "wmd:mlrs",
+    "count": 1
+  }
+}

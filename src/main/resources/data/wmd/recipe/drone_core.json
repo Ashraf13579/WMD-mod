@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SPS",
+    "CWC",
+    "AAA"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "P": {
+      "item": "wmd:advanced_circuit"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "W": {
+      "item": "wmd:power_port"
+    },
+    "A": {
+      "item": "wmd:aluminium_plate"
+    }
+  },
+  "result": {
+    "id": "wmd:drone_core",
+    "count": 1
+  }
+}

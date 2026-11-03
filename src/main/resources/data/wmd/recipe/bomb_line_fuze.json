@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BPB",
+    "CRC",
+    "SSS"
+  ],
+  "key": {
+    "B": {
+      "item": "wmd:basic_circuit"
+    },
+    "P": {
+      "item": "wmd:advanced_circuit"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "R": {
+      "item": "minecraft:redstone_block"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "result": {
+    "id": "wmd:bomb_line_fuze",
+    "count": 1
+  }
+}

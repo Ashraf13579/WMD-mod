@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TRT",
+    "ARA",
+    "SBS"
+  ],
+  "key": {
+    "T": {
+      "tag": "c:plates/titanium"
+    },
+    "R": {
+      "item": "wmd:radar_component"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "B": {
+      "item": "wmd:reinforced_concrete"
+    }
+  },
+  "result": {
+    "id": "wmd:early_warning_array",
+    "count": 1
+  }
+}

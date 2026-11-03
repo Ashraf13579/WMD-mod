@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "wmd:block/tin_ore"
+    }
+  }
+}

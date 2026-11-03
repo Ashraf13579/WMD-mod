@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TWT",
+    "WAW",
+    "SKS"
+  ],
+  "key": {
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "K": {
+      "item": "wmd:chip_space_1"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    },
+    "W": {
+      "item": "wmd:gold_wire"
+    }
+  },
+  "result": {
+    "id": "wmd:cc_comms_array",
+    "count": 1
+  }
+}

@@ -1,0 +1,90 @@
+{
+ "textures": {
+  "particle": "wmd:block/fluid_pipe",
+  "0": "wmd:block/fluid_pipe_flange"
+ },
+ "elements": [
+  {
+   "from": [
+    3,
+    4,
+    0
+   ],
+   "to": [
+    13,
+    12,
+    1.6
+   ],
+   "faces": {
+    "north": {
+     "texture": "#0",
+     "uv": [
+      3,
+      3,
+      13,
+      13
+     ]
+    },
+    "east": {
+     "texture": "#0"
+    },
+    "south": {
+     "texture": "#0"
+    },
+    "west": {
+     "texture": "#0"
+    },
+    "up": {
+     "texture": "#0"
+    },
+    "down": {
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "from": [
+    4,
+    3,
+    0
+   ],
+   "to": [
+    12,
+    13,
+    1.6
+   ],
+   "faces": {
+    "north": {
+     "texture": "#0",
+     "uv": [
+      3,
+      3,
+      13,
+      13
+     ]
+    },
+    "east": {
+     "texture": "#0"
+    },
+    "south": {
+     "texture": "#0",
+     "uv": [
+      3,
+      3,
+      13,
+      13
+     ]
+    },
+    "west": {
+     "texture": "#0"
+    },
+    "up": {
+     "texture": "#0"
+    },
+    "down": {
+     "texture": "#0"
+    }
+   }
+  }
+ ]
+}

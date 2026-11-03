@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "SIS",
+    "SKS"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "K": {
+      "tag": "c:storage_blocks/iron"
+    }
+  },
+  "result": {
+    "id": "wmd:stamp_mill",
+    "count": 1
+  }
+}

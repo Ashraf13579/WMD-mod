@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "PKP",
+    "CTC",
+    "PLP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/titanium"
+    },
+    "K": {
+      "item": "wmd:chip_space_2"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "T": {
+      "item": "wmd:oxygen_tank"
+    },
+    "L": {
+      "item": "wmd:aluminium_casing"
+    }
+  },
+  "result": {
+    "id": "wmd:eva_torso",
+    "count": 1
+  }
+}

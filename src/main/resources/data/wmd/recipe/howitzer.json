@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "CAG",
+    "SXS"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "wmd:aluminium_casing"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "G": {
+      "item": "minecraft:piston"
+    },
+    "S": {
+      "item": "wmd:steel_block"
+    },
+    "X": {
+      "item": "wmd:chip_defence_2"
+    }
+  },
+  "result": {
+    "id": "wmd:howitzer",
+    "count": 1
+  }
+}

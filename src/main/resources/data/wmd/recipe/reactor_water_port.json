@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [" P ", " F ", " A "],
+  "key": { "P": { "item": "wmd:fluid_pipe" }, "F": { "item": "wmd:reactor_frame" }, "A": { "item": "wmd:advanced_circuit" } },
+  "result": {
+    "id": "wmd:reactor_water_port",
+    "count": 1
+  }
+}

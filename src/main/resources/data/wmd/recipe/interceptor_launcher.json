@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SCS",
+    "CPC",
+    "SBS"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:advanced_circuit"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "B": {
+      "item": "wmd:battery_t1"
+    }
+  },
+  "result": {
+    "id": "wmd:interceptor_launcher",
+    "count": 1
+  }
+}

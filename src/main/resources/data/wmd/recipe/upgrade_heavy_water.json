@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " G ",
+    "TCT",
+    " E "
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "T": {
+      "tag": "c:ingots/titanium"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "E": {
+      "item": "wmd:carbon_electrode"
+    }
+  },
+  "result": {
+    "id": "wmd:upgrade_heavy_water",
+    "count": 1
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "SHS",
+    "GCG"
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:steel_plate"
+    },
+    "H": {
+      "item": "wmd:he_charge"
+    },
+    "G": {
+      "item": "minecraft:gunpowder"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:javelin_round",
+    "count": 1
+  }
+}

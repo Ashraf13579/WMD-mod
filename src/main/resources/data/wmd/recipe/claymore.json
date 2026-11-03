@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "wmd:he_charge"
+    },
+    {
+      "item": "wmd:he_charge"
+    },
+    {
+      "item": "wmd:steel_plate"
+    },
+    {
+      "item": "wmd:basic_circuit"
+    },
+    {
+      "item": "minecraft:tripwire_hook"
+    }
+  ],
+  "result": {
+    "id": "wmd:claymore",
+    "count": 1
+  }
+}

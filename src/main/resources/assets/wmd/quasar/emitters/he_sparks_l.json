@@ -1,0 +1,12 @@
+{
+  "max_lifetime": 1,
+  "loop": false,
+  "rate": 1,
+  "count": 140,
+  "emitter_settings": {
+    "shape": "wmd:he_fire_l",
+    "particle_settings": "wmd:he_sparks_l",
+    "force_spawn": true
+  },
+  "particle_data": "wmd:he_sparks_l"
+}

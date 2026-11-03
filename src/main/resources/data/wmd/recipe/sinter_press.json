@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TKT",
+    "CAC",
+    "XPX"
+  ],
+  "key": {
+    "T": {
+      "tag": "c:plates/titanium"
+    },
+    "K": {
+      "item": "minecraft:piston"
+    },
+    "C": {
+      "item": "wmd:titanium_casing"
+    },
+    "A": {
+      "item": "minecraft:anvil"
+    },
+    "P": {
+      "item": "wmd:advanced_circuit"
+    },
+    "X": {
+      "item": "wmd:chip_metallurgy_3"
+    }
+  },
+  "result": {
+    "id": "wmd:sinter_press",
+    "count": 1
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PWP",
+    "MCM",
+    "PBP"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:steel_plate"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "M": {
+      "item": "minecraft:magma_block"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    }
+  },
+  "result": {
+    "id": "wmd:lava_generator",
+    "count": 1
+  }
+}

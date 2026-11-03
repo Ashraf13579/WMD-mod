@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CTC",
+    "BAB",
+    "CXC"
+  ],
+  "key": {
+    "C": {
+      "item": "wmd:superconducting_coil"
+    },
+    "T": {
+      "item": "wmd:tungsten_tile"
+    },
+    "B": {
+      "tag": "c:storage_blocks/titanium"
+    },
+    "A": {
+      "item": "wmd:antimatter_cell"
+    },
+    "X": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:missile_teleporter",
+    "count": 1
+  }
+}

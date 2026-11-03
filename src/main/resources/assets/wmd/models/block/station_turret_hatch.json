@@ -1,0 +1,70 @@
+{
+  "parent": "minecraft:block/block",
+  "ambientocclusion": false,
+  "textures": {
+    "top": "wmd:block/station_hatch_top",
+    "side": "wmd:block/station_band",
+    "particle": "wmd:block/station_hatch_top"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        0,
+        1
+      ],
+      "to": [
+        15,
+        1.5,
+        15
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            1,
+            1,
+            15,
+            15
+          ],
+          "texture": "#top"
+        },
+        "north": {
+          "uv": [
+            1,
+            14,
+            15,
+            15.5
+          ],
+          "texture": "#side"
+        },
+        "south": {
+          "uv": [
+            1,
+            14,
+            15,
+            15.5
+          ],
+          "texture": "#side"
+        },
+        "west": {
+          "uv": [
+            1,
+            14,
+            15,
+            15.5
+          ],
+          "texture": "#side"
+        },
+        "east": {
+          "uv": [
+            1,
+            14,
+            15,
+            15.5
+          ],
+          "texture": "#side"
+        }
+      }
+    }
+  ]
+}

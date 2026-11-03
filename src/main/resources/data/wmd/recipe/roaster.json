@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RTR",
+    "CFC",
+    "XPR"
+  ],
+  "key": {
+    "R": {
+      "item": "wmd:refractory_brick"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    },
+    "C": {
+      "item": "wmd:titanium_casing"
+    },
+    "F": {
+      "item": "minecraft:blast_furnace"
+    },
+    "P": {
+      "item": "wmd:advanced_circuit"
+    },
+    "X": {
+      "item": "wmd:chip_metallurgy_3"
+    }
+  },
+  "result": {
+    "id": "wmd:roaster",
+    "count": 1
+  }
+}

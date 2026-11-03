@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "AMA",
+    "CBC",
+    "ARA"
+  ],
+  "key": {
+    "A": {
+      "item": "wmd:armour_plate"
+    },
+    "M": {
+      "item": "wmd:machine_casing"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "B": {
+      "item": "wmd:busbar"
+    },
+    "R": {
+      "item": "wmd:reinforced_concrete"
+    }
+  },
+  "result": {
+    "id": "wmd:missile_depot",
+    "count": 1
+  }
+}

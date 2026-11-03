@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CTC",
+    "BXB",
+    "CAC"
+  ],
+  "key": {
+    "C": {
+      "item": "wmd:superconducting_coil"
+    },
+    "T": {
+      "item": "wmd:tungsten_tile"
+    },
+    "B": {
+      "tag": "c:storage_blocks/titanium"
+    },
+    "X": {
+      "item": "wmd:chip_fusion_1"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:fusion_reactor",
+    "count": 1
+  }
+}

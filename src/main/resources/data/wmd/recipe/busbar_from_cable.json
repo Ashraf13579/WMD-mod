@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CCC",
+    "TTT"
+  ],
+  "key": {
+    "C": {
+      "item": "wmd:aluminium_cable"
+    },
+    "T": {
+      "tag": "c:ingots/tin"
+    }
+  },
+  "result": {
+    "id": "wmd:busbar",
+    "count": 8
+  }
+}

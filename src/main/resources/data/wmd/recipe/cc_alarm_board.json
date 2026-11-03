@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SGS",
+    "ABA",
+    "SKS"
+  ],
+  "key": {
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "B": {
+      "item": "minecraft:bell"
+    },
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "K": {
+      "item": "wmd:chip_space_1"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "result": {
+    "id": "wmd:cc_alarm_board",
+    "count": 1
+  }
+}

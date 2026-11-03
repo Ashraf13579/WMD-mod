@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "MXM",
+    "MCM"
+  ],
+  "key": {
+    "M": {
+      "tag": "c:ingots/steel"
+    },
+    "X": {
+      "tag": "minecraft:wool"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:upgrade_muffler",
+    "count": 1
+  }
+}

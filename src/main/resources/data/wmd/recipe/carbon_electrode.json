@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "C",
+    "C",
+    "K"
+  ],
+  "key": {
+    "C": {
+      "tag": "wmd:electrode_carbon"
+    },
+    "K": {
+      "tag": "c:ingots/copper"
+    }
+  },
+  "result": {
+    "id": "wmd:carbon_electrode",
+    "count": 2
+  }
+}

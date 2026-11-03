@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "wmd:lead_ore",
+    "wmd:deepslate_lead_ore"
+  ]
+}

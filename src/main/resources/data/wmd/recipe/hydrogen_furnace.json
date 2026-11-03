@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TRT",
+    "CFC",
+    "XPS"
+  ],
+  "key": {
+    "T": {
+      "tag": "c:ingots/titanium"
+    },
+    "R": {
+      "item": "wmd:refractory_brick"
+    },
+    "C": {
+      "item": "wmd:titanium_casing"
+    },
+    "F": {
+      "item": "minecraft:blast_furnace"
+    },
+    "P": {
+      "item": "wmd:advanced_circuit"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "X": {
+      "item": "wmd:chip_metallurgy_3"
+    }
+  },
+  "result": {
+    "id": "wmd:hydrogen_furnace",
+    "count": 1
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SDS",
+    "PCK",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "K": {
+      "tag": "c:ingots/copper"
+    }
+  },
+  "result": {
+    "id": "wmd:wire_drawer",
+    "count": 1
+  }
+}

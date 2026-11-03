@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " A ",
+    "CBC",
+    "P P"
+  ],
+  "key": {
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    },
+    "B": {
+      "item": "wmd:battery_t1"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "result": {
+    "id": "wmd:parts_runner",
+    "count": 1
+  }
+}

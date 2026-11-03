@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "wmd:tin_ore",
+    "wmd:deepslate_tin_ore",
+    "wmd:lead_ore",
+    "wmd:deepslate_lead_ore"
+  ]
+}

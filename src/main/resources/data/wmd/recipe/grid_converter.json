@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SUS",
+    "CPC",
+    "XKS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "U": {
+      "item": "wmd:busbar"
+    },
+    "C": {
+      "item": "wmd:titanium_casing"
+    },
+    "P": {
+      "item": "wmd:basic_circuit"
+    },
+    "K": {
+      "item": "wmd:copper_wire"
+    },
+    "X": {
+      "item": "wmd:chip_power_2"
+    }
+  },
+  "result": {
+    "id": "wmd:grid_converter",
+    "count": 1
+  }
+}

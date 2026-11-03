@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "P P",
+    "TCT"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:steel_plate"
+    },
+    "T": {
+      "item": "wmd:titanium_plate"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    }
+  },
+  "result": {
+    "id": "wmd:drone_hangar",
+    "count": 1
+  }
+}

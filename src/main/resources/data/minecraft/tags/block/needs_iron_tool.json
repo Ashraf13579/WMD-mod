@@ -1,0 +1,27 @@
+{
+  "replace": false,
+  "values": [
+    "wmd:tungsten_ore",
+    "wmd:deepslate_tungsten_ore",
+    "wmd:silver_ore",
+    "wmd:deepslate_silver_ore",
+    "wmd:platinum_ore",
+    "wmd:deepslate_platinum_ore",
+    "wmd:reinforced_concrete",
+    "wmd:armour_plate",
+    "wmd:titanium_ore",
+    "wmd:deepslate_titanium_ore",
+    "wmd:rutile_deposit",
+    "wmd:wolframite_deposit",
+    "wmd:steel_block",
+    "wmd:aluminium_block",
+    "wmd:titanium_block",
+    "wmd:tungsten_block",
+    "wmd:tin_block",
+    "wmd:lead_block",
+    "wmd:bronze_block",
+    "wmd:silver_block",
+    "wmd:platinum_block",
+    "wmd:magnesium_block"
+  ]
+}

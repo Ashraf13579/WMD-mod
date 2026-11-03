@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PAP",
+    "CXC",
+    "SBS"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "C": {
+      "item": "wmd:aluminium_casing"
+    },
+    "X": {
+      "item": "wmd:chip_defence_2"
+    },
+    "S": {
+      "item": "wmd:steel_block"
+    },
+    "B": {
+      "item": "wmd:network_card"
+    }
+  },
+  "result": {
+    "id": "wmd:counter_battery_radar",
+    "count": 1
+  }
+}

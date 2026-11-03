@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "P",
+    "C",
+    "P"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:steel_plate"
+    },
+    "C": {
+      "item": "wmd:reinforced_concrete"
+    }
+  },
+  "result": {
+    "id": "wmd:armour_plate",
+    "count": 2
+  }
+}

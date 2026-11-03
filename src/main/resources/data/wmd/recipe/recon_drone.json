@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " G ",
+    "TAT",
+    " I "
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glass_pane"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "I": {
+      "item": "wmd:titanium_impeller"
+    }
+  },
+  "result": {
+    "id": "wmd:recon_drone",
+    "count": 1
+  }
+}

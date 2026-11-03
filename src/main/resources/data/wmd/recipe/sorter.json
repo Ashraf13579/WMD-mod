@@ -1,0 +1,27 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SDS",
+  "DCD",
+  "SRS"
+ ],
+ "key": {
+  "S": {
+   "tag": "c:ingots/steel"
+  },
+  "D": {
+   "item": "wmd:item_duct"
+  },
+  "C": {
+   "item": "wmd:basic_circuit"
+  },
+  "R": {
+   "item": "minecraft:comparator"
+  }
+ },
+ "result": {
+  "id": "wmd:sorter",
+  "count": 1
+ }
+}

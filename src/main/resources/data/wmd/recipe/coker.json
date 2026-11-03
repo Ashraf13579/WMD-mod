@@ -1,0 +1,30 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SRS",
+  "CFC",
+  "SBS"
+ ],
+ "key": {
+  "S": {
+   "tag": "c:ingots/steel"
+  },
+  "R": {
+   "item": "wmd:refractory_brick"
+  },
+  "C": {
+   "item": "wmd:machine_casing"
+  },
+  "F": {
+   "item": "minecraft:furnace"
+  },
+  "B": {
+   "item": "wmd:basic_circuit"
+  }
+ },
+ "result": {
+  "id": "wmd:coker",
+  "count": 1
+ }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "wmd:blast_glass"
+    },
+    {
+      "item": "wmd:aluminium_plate"
+    }
+  ],
+  "result": {
+    "id": "wmd:station_window",
+    "count": 1
+  }
+}

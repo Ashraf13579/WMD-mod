@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " C ",
+    "HTH",
+    "HAH"
+  ],
+  "key": {
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "H": {
+      "item": "wmd:station_hull"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "A": {
+      "item": "wmd:aluminium_casing"
+    }
+  },
+  "result": {
+    "id": "wmd:station_repair_kit",
+    "count": 1
+  }
+}

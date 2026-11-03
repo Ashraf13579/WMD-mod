@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "wmd:aluminium_plate"
+    },
+    {
+      "item": "wmd:aluminium_plate"
+    },
+    {
+      "item": "wmd:drone_avionics"
+    },
+    {
+      "item": "wmd:drone_propulsion"
+    },
+    {
+      "item": "minecraft:tnt"
+    }
+  ],
+  "result": {
+    "id": "wmd:swarm_drone_pack",
+    "count": 1
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "MXM",
+    "MCM"
+  ],
+  "key": {
+    "M": {
+      "tag": "c:ingots/titanium"
+    },
+    "X": {
+      "item": "wmd:ciws_ammo"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:upgrade_ciws_drum",
+    "count": 1
+  }
+}

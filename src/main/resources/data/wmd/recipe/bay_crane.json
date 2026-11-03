@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SES",
+    "CAC",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "E": {
+      "item": "wmd:rocket_engine"
+    }
+  },
+  "result": {
+    "id": "wmd:bay_crane",
+    "count": 1
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "render_style": "veil:cube",
+  "additive": true,
+  "should_collide": false,
+  "face_velocity": false,
+  "modules": [
+    {
+      "module": "drag",
+      "strength": 0.9
+    },
+    {
+      "module": "wind",
+      "wind_direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "wind_speed": 0.4,
+      "strength": 1.0
+    },
+    {
+      "module": "color",
+      "gradient": {
+        "rgb_points": [
+          {
+            "percent": 0.0,
+            "color": [
+              255,
+              255,
+              255
+            ]
+          },
+          {
+            "percent": 0.3,
+            "color": [
+              170,
+              215,
+              255
+            ]
+          },
+          {
+            "percent": 1.0,
+            "color": [
+              60,
+              110,
+              255
+            ]
+          }
+        ],
+        "alpha_points": [
+          {
+            "percent": 0.0,
+            "alpha": 1.0
+          },
+          {
+            "percent": 0.7,
+            "alpha": 0.9
+          },
+          {
+            "percent": 1.0,
+            "alpha": 0.0
+          }
+        ]
+      },
+      "interpolant": "q.agePercent"
+    },
+    {
+      "module": "trail",
+      "settings": [
+        {
+          "trailFrequency": 1,
+          "trailLength": 6,
+          "trailColor": [
+            0.7,
+            0.85,
+            1.0,
+            0.9
+          ],
+          "trailWidthModifier": 0.05,
+          "trailPointModifier": 0.0,
+          "billboard": true,
+          "additive": true
+        }
+      ]
+    },
+    {
+      "module": "light",
+      "gradient": {
+        "color": "0xFF9FC8FF"
+      },
+      "brightness": "1.5 - q.agePercent * 1.5",
+      "radius": 6.8
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SFS",
+    "CWC",
+    "SSS"
+  ],
+  "key": {
+    "F": {
+      "item": "wmd:fluid_pipe"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "W": {
+      "item": "wmd:power_port"
+    }
+  },
+  "result": {
+    "id": "wmd:lab_filler",
+    "count": 1
+  }
+}

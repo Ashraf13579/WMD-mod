@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " P ",
+    "TFT",
+    " A "
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:fluid_pipe"
+    },
+    "T": {
+      "item": "wmd:titanium_plate"
+    },
+    "F": {
+      "item": "wmd:reactor_frame"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:reactor_steam_port",
+    "count": 1
+  }
+}

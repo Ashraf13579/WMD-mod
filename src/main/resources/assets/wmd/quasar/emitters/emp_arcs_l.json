@@ -1,0 +1,12 @@
+{
+  "max_lifetime": 30,
+  "loop": false,
+  "rate": 2,
+  "count": 26,
+  "emitter_settings": {
+    "shape": "wmd:emp_arcs_l",
+    "particle_settings": "wmd:emp_arcs_l",
+    "force_spawn": true
+  },
+  "particle_data": "wmd:emp_arcs_l"
+}

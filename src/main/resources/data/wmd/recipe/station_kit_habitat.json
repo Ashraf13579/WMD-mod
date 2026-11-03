@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "FLF",
+    "GKG",
+    "FLF"
+  ],
+  "key": {
+    "F": {
+      "item": "wmd:orbital_frame"
+    },
+    "L": {
+      "item": "wmd:life_support_unit"
+    },
+    "G": {
+      "item": "wmd:blast_glass"
+    },
+    "K": {
+      "item": "wmd:chip_space_3"
+    }
+  },
+  "result": {
+    "id": "wmd:station_kit_habitat",
+    "count": 1
+  }
+}

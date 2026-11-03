@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RMR",
+    "CPC",
+    "XBX"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:advanced_circuit"
+    },
+    "B": {
+      "item": "wmd:battery_t1"
+    },
+    "C": {
+      "item": "wmd:titanium_casing"
+    },
+    "M": {
+      "item": "wmd:armour_plate"
+    },
+    "R": {
+      "item": "wmd:reinforced_concrete"
+    },
+    "X": {
+      "item": "wmd:chip_rocketry_2"
+    }
+  },
+  "result": {
+    "id": "wmd:interceptor_silo_t3",
+    "count": 1
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "variants": {
+    "formed=false,mount=up": {
+      "model": "wmd:block/radar_station"
+    },
+    "formed=false,mount=north": {
+      "model": "wmd:block/radar_station",
+      "x": 90
+    },
+    "formed=false,mount=south": {
+      "model": "wmd:block/radar_station",
+      "x": 270
+    },
+    "formed=false,mount=down": {
+      "model": "wmd:block/radar_station",
+      "x": 180
+    },
+    "formed=false,mount=east": {
+      "model": "wmd:block/radar_station"
+    },
+    "formed=false,mount=west": {
+      "model": "wmd:block/radar_station"
+    },
+    "formed=true,mount=up": {
+      "model": "wmd:block/radar_part"
+    },
+    "formed=true,mount=north": {
+      "model": "wmd:block/radar_part",
+      "x": 90
+    },
+    "formed=true,mount=south": {
+      "model": "wmd:block/radar_part",
+      "x": 270
+    },
+    "formed=true,mount=down": {
+      "model": "wmd:block/radar_part",
+      "x": 180
+    },
+    "formed=true,mount=east": {
+      "model": "wmd:block/radar_part"
+    },
+    "formed=true,mount=west": {
+      "model": "wmd:block/radar_part"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "LPL",
+    "CWC",
+    "HHH"
+  ],
+  "key": {
+    "H": {
+      "item": "wmd:heat_shield_tile"
+    },
+    "P": {
+      "item": "wmd:advanced_circuit"
+    },
+    "L": {
+      "tag": "c:ingots/lead"
+    },
+    "C": {
+      "item": "wmd:aluminium_casing"
+    },
+    "W": {
+      "item": "wmd:power_port"
+    }
+  },
+  "result": {
+    "id": "wmd:warhead_reactor",
+    "count": 1
+  }
+}

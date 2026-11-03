@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "tag": "c:ingots/silver"
+    }
+  },
+  "result": {
+    "id": "wmd:silver_block",
+    "count": 1
+  }
+}

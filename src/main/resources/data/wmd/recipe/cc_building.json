@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CAC",
+    "GRG",
+    "SKS"
+  ],
+  "key": {
+    "C": {
+      "item": "wmd:titanium_casing"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "R": {
+      "item": "wmd:radar_component"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "K": {
+      "item": "wmd:chip_space_1"
+    }
+  },
+  "result": {
+    "id": "wmd:cc_building",
+    "count": 1
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PTP",
+    "TCT",
+    "WTW"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:steel_plate"
+    },
+    "T": {
+      "item": "wmd:battery_t1"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    }
+  },
+  "result": {
+    "id": "wmd:battery_t2_cabinet",
+    "count": 1
+  }
+}

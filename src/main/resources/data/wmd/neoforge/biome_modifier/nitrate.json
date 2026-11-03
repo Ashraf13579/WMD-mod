@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#wmd:has_nitrate",
+  "features": "wmd:ore_nitrate",
+  "step": "underground_ores"
+}

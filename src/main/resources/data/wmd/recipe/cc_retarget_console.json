@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GUG",
+    "AAA",
+    "SKS"
+  ],
+  "key": {
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "U": {
+      "item": "wmd:uplink_cell"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "K": {
+      "item": "wmd:chip_space_1"
+    }
+  },
+  "result": {
+    "id": "wmd:cc_retarget_console",
+    "count": 1
+  }
+}

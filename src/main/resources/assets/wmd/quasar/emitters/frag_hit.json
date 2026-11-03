@@ -1,0 +1,12 @@
+{
+  "max_lifetime": 1,
+  "loop": false,
+  "rate": 1,
+  "count": 6,
+  "emitter_settings": {
+    "shape": "wmd:frag_hit",
+    "particle_settings": "wmd:frag_hit",
+    "force_spawn": true
+  },
+  "particle_data": "wmd:frag_hit"
+}

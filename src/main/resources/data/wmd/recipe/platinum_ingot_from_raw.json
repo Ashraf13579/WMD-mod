@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": {
+    "tag": "c:raw_materials/platinum"
+  },
+  "result": {
+    "id": "wmd:platinum_ingot"
+  },
+  "experience": 0.7,
+  "cookingtime": 200
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "CWC",
+    "SSS"
+  ],
+  "key": {
+    "W": {
+      "item": "wmd:power_port"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    }
+  },
+  "result": {
+    "id": "wmd:lab_press",
+    "count": 1
+  }
+}

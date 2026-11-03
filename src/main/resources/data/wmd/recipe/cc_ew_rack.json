@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SWS",
+    "AWA",
+    "SKS"
+  ],
+  "key": {
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "K": {
+      "item": "wmd:chip_space_1"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "W": {
+      "item": "wmd:gold_wire"
+    }
+  },
+  "result": {
+    "id": "wmd:cc_ew_rack",
+    "count": 1
+  }
+}

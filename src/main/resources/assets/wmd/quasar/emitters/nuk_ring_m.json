@@ -1,0 +1,12 @@
+{
+  "max_lifetime": 3,
+  "loop": false,
+  "rate": 1,
+  "count": 306,
+  "emitter_settings": {
+    "shape": "wmd:nuk_ring_m",
+    "particle_settings": "wmd:nuk_ring_m",
+    "force_spawn": true
+  },
+  "particle_data": "wmd:nuk_ring_m"
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "CIC",
+    " T "
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:solar_cell"
+    },
+    "C": {
+      "tag": "c:ingots/copper"
+    },
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "T": {
+      "item": "minecraft:smooth_stone"
+    }
+  },
+  "result": {
+    "id": "wmd:solar_panel",
+    "count": 1
+  }
+}

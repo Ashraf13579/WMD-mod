@@ -1,0 +1,9 @@
+{
+ "multipart": [
+  {
+   "apply": {
+    "model": "wmd:block/item_duct"
+   }
+  }
+ ]
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CGC",
+    "AXA",
+    "CTC"
+  ],
+  "key": {
+    "C": {
+      "item": "wmd:superconducting_coil"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "X": {
+      "item": "wmd:chip_defence_2"
+    },
+    "T": {
+      "item": "wmd:tungsten_tile"
+    }
+  },
+  "result": {
+    "id": "wmd:laser_defence",
+    "count": 1
+  }
+}

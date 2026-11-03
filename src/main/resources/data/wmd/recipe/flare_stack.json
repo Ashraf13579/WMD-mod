@@ -1,0 +1,30 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SIS",
+  "CFC",
+  "SBS"
+ ],
+ "key": {
+  "S": {
+   "tag": "c:ingots/steel"
+  },
+  "I": {
+   "item": "minecraft:iron_bars"
+  },
+  "C": {
+   "item": "wmd:machine_casing"
+  },
+  "F": {
+   "item": "minecraft:furnace"
+  },
+  "B": {
+   "tag": "c:ingots/bronze"
+  }
+ },
+ "result": {
+  "id": "wmd:flare_stack",
+  "count": 1
+ }
+}

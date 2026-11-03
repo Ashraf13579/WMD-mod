@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GGG",
+    "LWL",
+    "AAA"
+  ],
+  "key": {
+    "G": {
+      "item": "wmd:blast_glass"
+    },
+    "L": {
+      "item": "minecraft:lapis_lazuli"
+    },
+    "W": {
+      "item": "wmd:gold_wire"
+    },
+    "A": {
+      "item": "wmd:aluminium_plate"
+    }
+  },
+  "result": {
+    "id": "wmd:solar_cell",
+    "count": 4
+  }
+}

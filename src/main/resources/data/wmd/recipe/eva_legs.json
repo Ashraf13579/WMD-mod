@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "PPP",
+    "AKA",
+    "P P"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/titanium"
+    },
+    "A": {
+      "item": "wmd:aluminium_plate"
+    },
+    "K": {
+      "item": "wmd:chip_space_2"
+    }
+  },
+  "result": {
+    "id": "wmd:eva_legs",
+    "count": 1
+  }
+}

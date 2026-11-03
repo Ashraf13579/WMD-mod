@@ -1,0 +1,164 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "lit": "false"
+      },
+      "apply": {
+        "model": "wmd:block/busbar_core"
+      }
+    },
+    {
+      "when": {
+        "lit": "true"
+      },
+      "apply": {
+        "model": "wmd:block/busbar_core_lit"
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "north": "true"
+          },
+          {
+            "plug_north": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "wmd:block/busbar_arm"
+      }
+    },
+    {
+      "when": {
+        "plug_north": "true"
+      },
+      "apply": {
+        "model": "wmd:block/busbar_plug"
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "east": "true"
+          },
+          {
+            "plug_east": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "wmd:block/busbar_arm",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "plug_east": "true"
+      },
+      "apply": {
+        "model": "wmd:block/busbar_plug",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "south": "true"
+          },
+          {
+            "plug_south": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "wmd:block/busbar_arm",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "plug_south": "true"
+      },
+      "apply": {
+        "model": "wmd:block/busbar_plug",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "west": "true"
+          },
+          {
+            "plug_west": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "wmd:block/busbar_arm",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "plug_west": "true"
+      },
+      "apply": {
+        "model": "wmd:block/busbar_plug",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "up": "true"
+          },
+          {
+            "plug_up": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "wmd:block/busbar_arm_up"
+      }
+    },
+    {
+      "when": {
+        "plug_up": "true"
+      },
+      "apply": {
+        "model": "wmd:block/busbar_plug_up"
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "down": "true"
+          },
+          {
+            "plug_down": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "wmd:block/busbar_arm_down"
+      }
+    },
+    {
+      "when": {
+        "plug_down": "true"
+      },
+      "apply": {
+        "model": "wmd:block/busbar_plug_down"
+      }
+    }
+  ]
+}

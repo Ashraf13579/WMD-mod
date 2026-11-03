@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "BXB",
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:titanium_plate"
+    },
+    "C": {
+      "item": "wmd:superconducting_coil"
+    },
+    "B": {
+      "tag": "c:storage_blocks/titanium"
+    },
+    "X": {
+      "item": "wmd:chip_antimatter_1"
+    }
+  },
+  "result": {
+    "id": "wmd:antimatter_store",
+    "count": 1
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PBP",
+    "CKC",
+    "SSS"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "B": {
+      "tag": "c:storage_blocks/steel"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "K": {
+      "item": "minecraft:redstone_block"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "result": {
+    "id": "wmd:rolling_mill",
+    "count": 1
+  }
+}

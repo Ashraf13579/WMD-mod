@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "P",
+    "C"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:titanium_plate"
+    },
+    "C": {
+      "item": "wmd:aluminium_casing"
+    }
+  },
+  "result": {
+    "id": "wmd:titanium_casing",
+    "count": 1
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "PAP",
+    "PGP",
+    " K "
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/titanium"
+    },
+    "A": {
+      "item": "wmd:aluminium_plate"
+    },
+    "G": {
+      "item": "wmd:blast_glass"
+    },
+    "K": {
+      "item": "wmd:chip_space_2"
+    }
+  },
+  "result": {
+    "id": "wmd:eva_helmet",
+    "count": 1
+  }
+}

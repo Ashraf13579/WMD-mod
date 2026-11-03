@@ -1,0 +1,1 @@
+{ "parent": "minecraft:block/cube_bottom_top", "textures": { "top": "wmd:block/launch_plate", "bottom": "wmd:block/launch_plate_side", "side": "wmd:block/launch_plate_side" } }

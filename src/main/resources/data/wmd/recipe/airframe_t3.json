@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "wmd:airframe_t2"
+    },
+    {
+      "item": "wmd:advanced_circuit"
+    },
+    {
+      "item": "wmd:steel_plate"
+    },
+    {
+      "item": "wmd:titanium_plate"
+    }
+  ],
+  "result": {
+    "id": "wmd:airframe_t3",
+    "count": 1
+  }
+}

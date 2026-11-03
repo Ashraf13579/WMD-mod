@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "LCL",
+    "APA",
+    "XBX"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:advanced_circuit"
+    },
+    "B": {
+      "item": "wmd:battery_t1"
+    },
+    "C": {
+      "item": "wmd:aluminium_casing"
+    },
+    "A": {
+      "tag": "c:ingots/aluminum"
+    },
+    "X": {
+      "item": "wmd:chip_defence_2"
+    },
+    "L": {
+      "item": "wmd:steel_plate"
+    }
+  },
+  "result": {
+    "id": "wmd:interceptor_battery_t2",
+    "count": 1
+  }
+}

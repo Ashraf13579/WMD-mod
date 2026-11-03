@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " T ",
+    "TST",
+    "XT "
+  ],
+  "key": {
+    "T": {
+      "tag": "c:ingots/titanium"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "X": {
+      "item": "wmd:chip_metallurgy_2"
+    }
+  },
+  "result": {
+    "id": "wmd:titanium_impeller",
+    "count": 1
+  }
+}

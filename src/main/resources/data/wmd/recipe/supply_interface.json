@@ -1,0 +1,30 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SDS",
+  "ACA",
+  "SMS"
+ ],
+ "key": {
+  "S": {
+   "tag": "c:ingots/steel"
+  },
+  "D": {
+   "item": "wmd:item_duct"
+  },
+  "A": {
+   "item": "wmd:advanced_circuit"
+  },
+  "C": {
+   "tag": "c:chests"
+  },
+  "M": {
+   "item": "wmd:machine_casing"
+  }
+ },
+ "result": {
+  "id": "wmd:supply_interface",
+  "count": 1
+ }
+}

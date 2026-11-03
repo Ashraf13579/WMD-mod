@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SBS",
+    "CAC",
+    "XWX"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "B": {
+      "item": "wmd:turbine_blades"
+    },
+    "C": {
+      "item": "wmd:titanium_casing"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "X": {
+      "item": "wmd:chip_power_2"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    }
+  },
+  "result": {
+    "id": "wmd:gas_turbine",
+    "count": 1
+  }
+}

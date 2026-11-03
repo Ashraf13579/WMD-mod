@@ -1,0 +1,23 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  " L ",
+  "SPS"
+ ],
+ "key": {
+  "L": {
+   "item": "minecraft:lever"
+  },
+  "S": {
+   "tag": "c:ingots/steel"
+  },
+  "P": {
+   "item": "wmd:fluid_pipe"
+  }
+ },
+ "result": {
+  "id": "wmd:fluid_valve",
+  "count": 1
+ }
+}

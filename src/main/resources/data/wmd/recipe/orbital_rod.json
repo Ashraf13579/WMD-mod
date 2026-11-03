@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BCB",
+    "BGB",
+    "BKB"
+  ],
+  "key": {
+    "B": {
+      "item": "wmd:tungsten_block"
+    },
+    "C": {
+      "item": "wmd:tungsten_alloy_casing"
+    },
+    "G": {
+      "item": "wmd:guidance_t4"
+    },
+    "K": {
+      "item": "wmd:chip_space_3"
+    }
+  },
+  "result": {
+    "id": "wmd:orbital_rod",
+    "count": 1
+  }
+}

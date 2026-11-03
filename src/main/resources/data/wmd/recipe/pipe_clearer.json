@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "S",
+    "B",
+    "T"
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:steel_ingot"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "T": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "wmd:pipe_clearer"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " I ",
+    "ACA",
+    "AKA"
+  ],
+  "key": {
+    "I": {
+      "item": "wmd:titanium_pipe"
+    },
+    "A": {
+      "item": "wmd:aluminium_plate"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    },
+    "K": {
+      "item": "wmd:chip_space_2"
+    }
+  },
+  "result": {
+    "id": "wmd:oxygen_tank",
+    "count": 1
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "HFH",
+    "AEA",
+    "AJA"
+  ],
+  "key": {
+    "H": {
+      "item": "wmd:heat_shield_tile"
+    },
+    "F": {
+      "item": "wmd:he_charge"
+    },
+    "A": {
+      "item": "wmd:aluminium_airframe"
+    },
+    "E": {
+      "item": "wmd:rocket_engine"
+    },
+    "J": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "result": {
+    "id": "wmd:missile_t1",
+    "count": 1
+  }
+}

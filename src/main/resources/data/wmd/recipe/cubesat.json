@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SAS",
+    "LGL"
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:silicon"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "L": {
+      "tag": "c:plates/aluminum"
+    },
+    "G": {
+      "item": "minecraft:spyglass"
+    }
+  },
+  "result": {
+    "id": "wmd:cubesat",
+    "count": 1
+  }
+}

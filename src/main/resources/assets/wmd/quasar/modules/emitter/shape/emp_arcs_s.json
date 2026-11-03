@@ -1,0 +1,14 @@
+{
+  "shape": "veil:sphere",
+  "dimensions": [
+    1.0,
+    1.0,
+    1.0
+  ],
+  "rotation": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "from_surface": true
+}

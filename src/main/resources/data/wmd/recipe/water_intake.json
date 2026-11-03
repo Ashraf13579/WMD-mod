@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SIS",
+    "CBC",
+    "SPS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "I": {
+      "item": "wmd:bronze_impeller"
+    },
+    "C": {
+      "item": "wmd:aluminium_casing"
+    },
+    "B": {
+      "tag": "c:ingots/bronze"
+    },
+    "P": {
+      "item": "wmd:basic_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:water_intake",
+    "count": 1
+  }
+}

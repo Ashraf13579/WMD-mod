@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "tag": "c:ingots/tungsten"
+    }
+  },
+  "result": {
+    "id": "wmd:tungsten_block",
+    "count": 1
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TGT",
+    "CAC",
+    "THT"
+  ],
+  "key": {
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "G": {
+      "item": "wmd:guidance_t4"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "A": {
+      "item": "wmd:airframe_t4"
+    },
+    "H": {
+      "item": "wmd:heat_shield_tile"
+    }
+  },
+  "result": {
+    "id": "wmd:mirv_bus",
+    "count": 1
+  }
+}

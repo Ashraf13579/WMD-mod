@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "FXF",
+    "BPB",
+    "FXF"
+  ],
+  "key": {
+    "F": {
+      "item": "wmd:orbital_frame"
+    },
+    "X": {
+      "item": "wmd:weapon_core"
+    },
+    "B": {
+      "item": "wmd:tungsten_block"
+    },
+    "P": {
+      "item": "wmd:power_core"
+    }
+  },
+  "result": {
+    "id": "wmd:station_kit_rod",
+    "count": 1
+  }
+}

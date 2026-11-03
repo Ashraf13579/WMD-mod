@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "HWH",
+    "HCH"
+  ],
+  "key": {
+    "H": {
+      "item": "wmd:he_charge"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:c4_charge",
+    "count": 2
+  }
+}

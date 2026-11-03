@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "FLF",
+    "GKG",
+    "FPF"
+  ],
+  "key": {
+    "F": {
+      "item": "wmd:orbital_frame"
+    },
+    "L": {
+      "item": "wmd:life_support_unit"
+    },
+    "P": {
+      "item": "wmd:power_core"
+    },
+    "G": {
+      "item": "wmd:blast_glass"
+    },
+    "K": {
+      "item": "wmd:chip_space_3"
+    }
+  },
+  "result": {
+    "id": "wmd:station_kit_core",
+    "count": 1
+  }
+}

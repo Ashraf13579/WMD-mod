@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CCC",
+    "CEC",
+    "SPS"
+  ],
+  "key": {
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "E": {
+      "item": "wmd:generator_engine"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "P": {
+      "item": "wmd:power_port"
+    }
+  },
+  "result": {
+    "id": "wmd:diesel_generator",
+    "count": 1
+  }
+}

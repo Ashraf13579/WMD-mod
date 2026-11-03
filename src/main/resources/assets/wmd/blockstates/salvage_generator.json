@@ -1,0 +1,106 @@
+{
+  "variants": {
+    "facing=north,mount=up": {
+      "model": "wmd:block/salvage_generator"
+    },
+    "facing=north,mount=north": {
+      "model": "wmd:block/salvage_generator",
+      "x": 90
+    },
+    "facing=north,mount=south": {
+      "model": "wmd:block/salvage_generator",
+      "x": 270
+    },
+    "facing=north,mount=down": {
+      "model": "wmd:block/salvage_generator",
+      "x": 180
+    },
+    "facing=north,mount=east": {
+      "model": "wmd:block/salvage_generator"
+    },
+    "facing=north,mount=west": {
+      "model": "wmd:block/salvage_generator"
+    },
+    "facing=east,mount=up": {
+      "model": "wmd:block/salvage_generator",
+      "y": 90
+    },
+    "facing=east,mount=north": {
+      "model": "wmd:block/salvage_generator",
+      "y": 90
+    },
+    "facing=east,mount=south": {
+      "model": "wmd:block/salvage_generator",
+      "y": 90
+    },
+    "facing=east,mount=down": {
+      "model": "wmd:block/salvage_generator",
+      "x": 180,
+      "y": 270
+    },
+    "facing=east,mount=east": {
+      "model": "wmd:block/salvage_generator",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,mount=west": {
+      "model": "wmd:block/salvage_generator",
+      "x": 270,
+      "y": 90
+    },
+    "facing=south,mount=up": {
+      "model": "wmd:block/salvage_generator",
+      "y": 180
+    },
+    "facing=south,mount=north": {
+      "model": "wmd:block/salvage_generator",
+      "x": 270,
+      "y": 180
+    },
+    "facing=south,mount=south": {
+      "model": "wmd:block/salvage_generator",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,mount=down": {
+      "model": "wmd:block/salvage_generator",
+      "x": 180,
+      "y": 180
+    },
+    "facing=south,mount=east": {
+      "model": "wmd:block/salvage_generator",
+      "y": 180
+    },
+    "facing=south,mount=west": {
+      "model": "wmd:block/salvage_generator",
+      "y": 180
+    },
+    "facing=west,mount=up": {
+      "model": "wmd:block/salvage_generator",
+      "y": 270
+    },
+    "facing=west,mount=north": {
+      "model": "wmd:block/salvage_generator",
+      "y": 270
+    },
+    "facing=west,mount=south": {
+      "model": "wmd:block/salvage_generator",
+      "y": 270
+    },
+    "facing=west,mount=down": {
+      "model": "wmd:block/salvage_generator",
+      "x": 180,
+      "y": 90
+    },
+    "facing=west,mount=east": {
+      "model": "wmd:block/salvage_generator",
+      "x": 270,
+      "y": 270
+    },
+    "facing=west,mount=west": {
+      "model": "wmd:block/salvage_generator",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

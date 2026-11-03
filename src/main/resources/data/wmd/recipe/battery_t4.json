@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "XTX",
+    "TCT",
+    "XTX"
+  ],
+  "key": {
+    "X": {
+      "item": "wmd:titanium_plate"
+    },
+    "T": {
+      "item": "wmd:battery_t3"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:battery_t4",
+    "count": 1
+  }
+}

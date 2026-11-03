@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["R R", " T ", "RAR"],
+  "key": { "R": { "item": "wmd:tungsten_rod" }, "T": { "item": "wmd:tungsten_alloy_casing" }, "A": { "item": "wmd:advanced_circuit" } },
+  "result": {
+    "id": "wmd:control_rod_drive",
+    "count": 1
+  }
+}

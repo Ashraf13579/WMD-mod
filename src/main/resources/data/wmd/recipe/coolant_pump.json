@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [" I ", " C ", " W "],
+  "key": { "I": { "item": "wmd:titanium_impeller" }, "C": { "item": "wmd:titanium_casing" }, "W": { "item": "wmd:copper_wire" } },
+  "result": {
+    "id": "wmd:coolant_pump",
+    "count": 1
+  }
+}

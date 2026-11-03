@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PTP",
+    "TWT",
+    "PTP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:ingots/platinum"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    }
+  },
+  "result": {
+    "id": "wmd:superconducting_coil",
+    "count": 1
+  }
+}

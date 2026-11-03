@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RPR",
+    "RXR",
+    "RPR"
+  ],
+  "key": {
+    "R": {
+      "item": "wmd:reinforced_concrete"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "X": {
+      "item": "wmd:chip_nuclear_1"
+    }
+  },
+  "result": {
+    "id": "wmd:cooling_tower",
+    "count": 1
+  }
+}

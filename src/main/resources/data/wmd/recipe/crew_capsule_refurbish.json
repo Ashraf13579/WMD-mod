@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "wmd:used_crew_capsule"
+    },
+    {
+      "item": "wmd:heat_shield_tile"
+    },
+    {
+      "item": "wmd:heat_shield_tile"
+    },
+    {
+      "item": "wmd:heat_shield_tile"
+    },
+    {
+      "item": "wmd:heat_shield_tile"
+    },
+    {
+      "item": "minecraft:white_wool"
+    },
+    {
+      "item": "minecraft:white_wool"
+    },
+    {
+      "item": "wmd:basic_circuit"
+    }
+  ],
+  "result": {
+    "id": "wmd:crew_capsule",
+    "count": 1
+  }
+}

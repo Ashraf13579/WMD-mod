@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " L ",
+    "LRL",
+    " P "
+  ],
+  "key": {
+    "L": {
+      "item": "wmd:lithium_dust"
+    },
+    "R": {
+      "item": "wmd:tungsten_rod"
+    },
+    "P": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "result": {
+    "id": "wmd:breeder_rod",
+    "count": 1
+  }
+}

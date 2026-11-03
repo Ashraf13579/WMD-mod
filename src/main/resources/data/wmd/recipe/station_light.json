@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "wmd:station_hull"
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    },
+    {
+      "item": "wmd:copper_wire"
+    }
+  ],
+  "result": {
+    "id": "wmd:station_light",
+    "count": 1
+  }
+}

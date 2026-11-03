@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " E ",
+    "PRE",
+    " E "
+  ],
+  "key": {
+    "E": {
+      "item": "wmd:enriched_uranium"
+    },
+    "P": {
+      "tag": "c:plates/titanium"
+    },
+    "R": {
+      "item": "wmd:tungsten_rod"
+    }
+  },
+  "result": {
+    "id": "wmd:fuel_rod",
+    "count": 1
+  }
+}

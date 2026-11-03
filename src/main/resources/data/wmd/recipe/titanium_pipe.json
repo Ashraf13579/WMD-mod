@@ -1,0 +1,21 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "PTP",
+  "T T",
+  "PTP"
+ ],
+ "key": {
+  "P": {
+   "item": "wmd:aluminium_pipe"
+  },
+  "T": {
+   "tag": "c:ingots/titanium"
+  }
+ },
+ "result": {
+  "id": "wmd:titanium_pipe",
+  "count": 4
+ }
+}

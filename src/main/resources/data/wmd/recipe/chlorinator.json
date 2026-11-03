@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RAR",
+    "CPC",
+    "XSR"
+  ],
+  "key": {
+    "R": {
+      "item": "wmd:refractory_brick"
+    },
+    "A": {
+      "tag": "c:ingots/aluminum"
+    },
+    "C": {
+      "item": "wmd:aluminium_casing"
+    },
+    "P": {
+      "item": "wmd:advanced_circuit"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "X": {
+      "item": "wmd:chip_metallurgy_2"
+    }
+  },
+  "result": {
+    "id": "wmd:chlorinator",
+    "count": 1
+  }
+}

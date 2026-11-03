@@ -1,0 +1,1013 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "wmd:alarm",
+      "required": false
+    },
+    {
+      "id": "wmd:alkylation_unit",
+      "required": false
+    },
+    {
+      "id": "wmd:aluminium_block",
+      "required": false
+    },
+    {
+      "id": "wmd:aluminium_pipe",
+      "required": false
+    },
+    {
+      "id": "wmd:antimatter_collider",
+      "required": false
+    },
+    {
+      "id": "wmd:antimatter_store",
+      "required": false
+    },
+    {
+      "id": "wmd:arc_furnace",
+      "required": false
+    },
+    {
+      "id": "wmd:armour_plate",
+      "required": false
+    },
+    {
+      "id": "wmd:atmospheric_column",
+      "required": false
+    },
+    {
+      "id": "wmd:battery",
+      "required": false
+    },
+    {
+      "id": "wmd:battery_t1",
+      "required": false
+    },
+    {
+      "id": "wmd:battery_t2_cabinet",
+      "required": false
+    },
+    {
+      "id": "wmd:battery_t3",
+      "required": false
+    },
+    {
+      "id": "wmd:battery_t4",
+      "required": false
+    },
+    {
+      "id": "wmd:bauxite_ore",
+      "required": false
+    },
+    {
+      "id": "wmd:bay_clean",
+      "required": false
+    },
+    {
+      "id": "wmd:bay_core",
+      "required": false
+    },
+    {
+      "id": "wmd:bay_crane",
+      "required": false
+    },
+    {
+      "id": "wmd:bay_cryo",
+      "required": false
+    },
+    {
+      "id": "wmd:bay_extend",
+      "required": false
+    },
+    {
+      "id": "wmd:bay_paint",
+      "required": false
+    },
+    {
+      "id": "wmd:bay_rack",
+      "required": false
+    },
+    {
+      "id": "wmd:bay_rack_r",
+      "required": false
+    },
+    {
+      "id": "wmd:bay_warhead",
+      "required": false
+    },
+    {
+      "id": "wmd:bay_weld",
+      "required": false
+    },
+    {
+      "id": "wmd:blast_furnace",
+      "required": false
+    },
+    {
+      "id": "wmd:blast_glass",
+      "required": false
+    },
+    {
+      "id": "wmd:bomb_bay",
+      "required": false
+    },
+    {
+      "id": "wmd:bomb_line_core",
+      "required": false
+    },
+    {
+      "id": "wmd:bomb_line_cradle",
+      "required": false
+    },
+    {
+      "id": "wmd:bomb_line_filling",
+      "required": false
+    },
+    {
+      "id": "wmd:bomb_line_fuze",
+      "required": false
+    },
+    {
+      "id": "wmd:bomb_line_press",
+      "required": false
+    },
+    {
+      "id": "wmd:bomb_line_storage",
+      "required": false
+    },
+    {
+      "id": "wmd:bomb_rack",
+      "required": false
+    },
+    {
+      "id": "wmd:bomb_sight",
+      "required": false
+    },
+    {
+      "id": "wmd:bronze_block",
+      "required": false
+    },
+    {
+      "id": "wmd:busbar",
+      "required": false
+    },
+    {
+      "id": "wmd:c4_charge",
+      "required": false
+    },
+    {
+      "id": "wmd:camera_relay",
+      "required": false
+    },
+    {
+      "id": "wmd:camo_net",
+      "required": false
+    },
+    {
+      "id": "wmd:cargo_pod_hull",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_air_defence",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_alarm_board",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_artillery_console",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_building",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_comms_array",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_ew_rack",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_gps_rack",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_interceptor_console",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_iron_dome",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_launch_console",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_map_printer",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_map_table",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_missile_cam",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_planner",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_recon_wall",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_retarget_console",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_sat_globe",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_security_monitor",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_strike_planner",
+      "required": false
+    },
+    {
+      "id": "wmd:cc_warning_board",
+      "required": false
+    },
+    {
+      "id": "wmd:cctv_camera",
+      "required": false
+    },
+    {
+      "id": "wmd:centrifuge",
+      "required": false
+    },
+    {
+      "id": "wmd:chlor_alkali_cell",
+      "required": false
+    },
+    {
+      "id": "wmd:chlorinator",
+      "required": false
+    },
+    {
+      "id": "wmd:ciws",
+      "required": false
+    },
+    {
+      "id": "wmd:claymore",
+      "required": false
+    },
+    {
+      "id": "wmd:coal_generator",
+      "required": false
+    },
+    {
+      "id": "wmd:coke_oven",
+      "required": false
+    },
+    {
+      "id": "wmd:coker",
+      "required": false
+    },
+    {
+      "id": "wmd:control_rod_drive",
+      "required": false
+    },
+    {
+      "id": "wmd:coolant_pump",
+      "required": false
+    },
+    {
+      "id": "wmd:cooling_tower",
+      "required": false
+    },
+    {
+      "id": "wmd:counter_battery_radar",
+      "required": false
+    },
+    {
+      "id": "wmd:covert_camera",
+      "required": false
+    },
+    {
+      "id": "wmd:creative_battery",
+      "required": false
+    },
+    {
+      "id": "wmd:creative_fluid_source",
+      "required": false
+    },
+    {
+      "id": "wmd:crew_capsule_hull",
+      "required": false
+    },
+    {
+      "id": "wmd:crude_oil_deposit",
+      "required": false
+    },
+    {
+      "id": "wmd:crude_tank",
+      "required": false
+    },
+    {
+      "id": "wmd:cruise_launcher",
+      "required": false
+    },
+    {
+      "id": "wmd:crusher",
+      "required": false
+    },
+    {
+      "id": "wmd:deadhand_bunker",
+      "required": false
+    },
+    {
+      "id": "wmd:decoy_launcher",
+      "required": false
+    },
+    {
+      "id": "wmd:decoy_radar",
+      "required": false
+    },
+    {
+      "id": "wmd:deepslate_lead_ore",
+      "required": false
+    },
+    {
+      "id": "wmd:deepslate_platinum_ore",
+      "required": false
+    },
+    {
+      "id": "wmd:deepslate_silver_ore",
+      "required": false
+    },
+    {
+      "id": "wmd:deepslate_tin_ore",
+      "required": false
+    },
+    {
+      "id": "wmd:deepslate_titanium_ore",
+      "required": false
+    },
+    {
+      "id": "wmd:deepslate_tungsten_ore",
+      "required": false
+    },
+    {
+      "id": "wmd:desalter",
+      "required": false
+    },
+    {
+      "id": "wmd:diesel_generator",
+      "required": false
+    },
+    {
+      "id": "wmd:drone_avionics",
+      "required": false
+    },
+    {
+      "id": "wmd:drone_catapult",
+      "required": false
+    },
+    {
+      "id": "wmd:drone_core",
+      "required": false
+    },
+    {
+      "id": "wmd:drone_frame",
+      "required": false
+    },
+    {
+      "id": "wmd:drone_hangar",
+      "required": false
+    },
+    {
+      "id": "wmd:drone_hive",
+      "required": false
+    },
+    {
+      "id": "wmd:drone_propulsion",
+      "required": false
+    },
+    {
+      "id": "wmd:drone_storage",
+      "required": false
+    },
+    {
+      "id": "wmd:drone_test",
+      "required": false
+    },
+    {
+      "id": "wmd:early_warning_array",
+      "required": false
+    },
+    {
+      "id": "wmd:electric_fence",
+      "required": false
+    },
+    {
+      "id": "wmd:electrolyser",
+      "required": false
+    },
+    {
+      "id": "wmd:fcc",
+      "required": false
+    },
+    {
+      "id": "wmd:feed_pump",
+      "required": false
+    },
+    {
+      "id": "wmd:fence_energizer",
+      "required": false
+    },
+    {
+      "id": "wmd:flare_stack",
+      "required": false
+    },
+    {
+      "id": "wmd:floodgate",
+      "required": false
+    },
+    {
+      "id": "wmd:floodlight",
+      "required": false
+    },
+    {
+      "id": "wmd:fluid_pipe",
+      "required": false
+    },
+    {
+      "id": "wmd:fluid_valve",
+      "required": false
+    },
+    {
+      "id": "wmd:forcefield_generator",
+      "required": false
+    },
+    {
+      "id": "wmd:furnace",
+      "required": false
+    },
+    {
+      "id": "wmd:fusion_reactor",
+      "required": false
+    },
+    {
+      "id": "wmd:gas_turbine",
+      "required": false
+    },
+    {
+      "id": "wmd:generator_engine",
+      "required": false
+    },
+    {
+      "id": "wmd:grid_converter",
+      "required": false
+    },
+    {
+      "id": "wmd:ground_station",
+      "required": false
+    },
+    {
+      "id": "wmd:howitzer",
+      "required": false
+    },
+    {
+      "id": "wmd:hydrogen_furnace",
+      "required": false
+    },
+    {
+      "id": "wmd:hydrotreater",
+      "required": false
+    },
+    {
+      "id": "wmd:interceptor_battery_t2",
+      "required": false
+    },
+    {
+      "id": "wmd:interceptor_launcher",
+      "required": false
+    },
+    {
+      "id": "wmd:interceptor_silo_t3",
+      "required": false
+    },
+    {
+      "id": "wmd:interceptor_silo_t4",
+      "required": false
+    },
+    {
+      "id": "wmd:item_duct",
+      "required": false
+    },
+    {
+      "id": "wmd:kroll_reactor",
+      "required": false
+    },
+    {
+      "id": "wmd:lab_core",
+      "required": false
+    },
+    {
+      "id": "wmd:lab_filler",
+      "required": false
+    },
+    {
+      "id": "wmd:lab_oven",
+      "required": false
+    },
+    {
+      "id": "wmd:lab_press",
+      "required": false
+    },
+    {
+      "id": "wmd:lab_storage",
+      "required": false
+    },
+    {
+      "id": "wmd:laser_defence",
+      "required": false
+    },
+    {
+      "id": "wmd:laser_receiver",
+      "required": false
+    },
+    {
+      "id": "wmd:laser_tripod",
+      "required": false
+    },
+    {
+      "id": "wmd:launch_plate",
+      "required": false
+    },
+    {
+      "id": "wmd:launch_terminal_1",
+      "required": false
+    },
+    {
+      "id": "wmd:launch_terminal_2",
+      "required": false
+    },
+    {
+      "id": "wmd:launch_terminal_3",
+      "required": false
+    },
+    {
+      "id": "wmd:launch_terminal_4",
+      "required": false
+    },
+    {
+      "id": "wmd:lava_generator",
+      "required": false
+    },
+    {
+      "id": "wmd:leach_tank",
+      "required": false
+    },
+    {
+      "id": "wmd:lead_block",
+      "required": false
+    },
+    {
+      "id": "wmd:lead_ore",
+      "required": false
+    },
+    {
+      "id": "wmd:machine_casing",
+      "required": false
+    },
+    {
+      "id": "wmd:machine_part",
+      "required": false
+    },
+    {
+      "id": "wmd:magnesium_block",
+      "required": false
+    },
+    {
+      "id": "wmd:magnesium_cell",
+      "required": false
+    },
+    {
+      "id": "wmd:mining_rig",
+      "required": false
+    },
+    {
+      "id": "wmd:missile_depot",
+      "required": false
+    },
+    {
+      "id": "wmd:missile_teleporter",
+      "required": false
+    },
+    {
+      "id": "wmd:mlrs",
+      "required": false
+    },
+    {
+      "id": "wmd:mortar",
+      "required": false
+    },
+    {
+      "id": "wmd:napalm_fire",
+      "required": false
+    },
+    {
+      "id": "wmd:nitrate_ore",
+      "required": false
+    },
+    {
+      "id": "wmd:nitration_reactor",
+      "required": false
+    },
+    {
+      "id": "wmd:nuclear_reactor",
+      "required": false
+    },
+    {
+      "id": "wmd:oxygen_station",
+      "required": false
+    },
+    {
+      "id": "wmd:pad_filler",
+      "required": false
+    },
+    {
+      "id": "wmd:perimeter_sensor",
+      "required": false
+    },
+    {
+      "id": "wmd:platinum_block",
+      "required": false
+    },
+    {
+      "id": "wmd:platinum_ore",
+      "required": false
+    },
+    {
+      "id": "wmd:portable_jammer",
+      "required": false
+    },
+    {
+      "id": "wmd:powder_mill",
+      "required": false
+    },
+    {
+      "id": "wmd:power_port",
+      "required": false
+    },
+    {
+      "id": "wmd:pressure_mine",
+      "required": false
+    },
+    {
+      "id": "wmd:pumpjack",
+      "required": false
+    },
+    {
+      "id": "wmd:radar_part",
+      "required": false
+    },
+    {
+      "id": "wmd:radar_station",
+      "required": false
+    },
+    {
+      "id": "wmd:railgun",
+      "required": false
+    },
+    {
+      "id": "wmd:reactor_core_shield",
+      "required": false
+    },
+    {
+      "id": "wmd:reactor_frame",
+      "required": false
+    },
+    {
+      "id": "wmd:reactor_fuel_port",
+      "required": false
+    },
+    {
+      "id": "wmd:reactor_plating",
+      "required": false
+    },
+    {
+      "id": "wmd:reactor_power_port",
+      "required": false
+    },
+    {
+      "id": "wmd:reactor_steam_port",
+      "required": false
+    },
+    {
+      "id": "wmd:reactor_water_port",
+      "required": false
+    },
+    {
+      "id": "wmd:reformer",
+      "required": false
+    },
+    {
+      "id": "wmd:reinforced_concrete",
+      "required": false
+    },
+    {
+      "id": "wmd:reprocessing_plant",
+      "required": false
+    },
+    {
+      "id": "wmd:research_station",
+      "required": false
+    },
+    {
+      "id": "wmd:roaster",
+      "required": false
+    },
+    {
+      "id": "wmd:robot_dock",
+      "required": false
+    },
+    {
+      "id": "wmd:rolling_mill",
+      "required": false
+    },
+    {
+      "id": "wmd:runner_charger",
+      "required": false
+    },
+    {
+      "id": "wmd:runway_light",
+      "required": false
+    },
+    {
+      "id": "wmd:runway_line",
+      "required": false
+    },
+    {
+      "id": "wmd:runway_tile",
+      "required": false
+    },
+    {
+      "id": "wmd:rutile_deposit",
+      "required": false
+    },
+    {
+      "id": "wmd:salvage_generator",
+      "required": false
+    },
+    {
+      "id": "wmd:salvage_turret",
+      "required": false
+    },
+    {
+      "id": "wmd:satellite_facility",
+      "required": false
+    },
+    {
+      "id": "wmd:seismic_scanner",
+      "required": false
+    },
+    {
+      "id": "wmd:sentry_turret",
+      "required": false
+    },
+    {
+      "id": "wmd:shell_press",
+      "required": false
+    },
+    {
+      "id": "wmd:silo_filler",
+      "required": false
+    },
+    {
+      "id": "wmd:silver_block",
+      "required": false
+    },
+    {
+      "id": "wmd:silver_ore",
+      "required": false
+    },
+    {
+      "id": "wmd:sinter_press",
+      "required": false
+    },
+    {
+      "id": "wmd:smoke_machine",
+      "required": false
+    },
+    {
+      "id": "wmd:solar_panel",
+      "required": false
+    },
+    {
+      "id": "wmd:sorter",
+      "required": false
+    },
+    {
+      "id": "wmd:stamp_mill",
+      "required": false
+    },
+    {
+      "id": "wmd:starter_generator",
+      "required": false
+    },
+    {
+      "id": "wmd:station_band",
+      "required": false
+    },
+    {
+      "id": "wmd:station_battery",
+      "required": false
+    },
+    {
+      "id": "wmd:station_bay_console",
+      "required": false
+    },
+    {
+      "id": "wmd:station_bunk",
+      "required": false
+    },
+    {
+      "id": "wmd:station_console",
+      "required": false
+    },
+    {
+      "id": "wmd:station_deck",
+      "required": false
+    },
+    {
+      "id": "wmd:station_hatch",
+      "required": false
+    },
+    {
+      "id": "wmd:station_hatch_frame",
+      "required": false
+    },
+    {
+      "id": "wmd:station_hull",
+      "required": false
+    },
+    {
+      "id": "wmd:station_hull_seam",
+      "required": false
+    },
+    {
+      "id": "wmd:station_ladder",
+      "required": false
+    },
+    {
+      "id": "wmd:station_light",
+      "required": false
+    },
+    {
+      "id": "wmd:station_mirror_desk",
+      "required": false
+    },
+    {
+      "id": "wmd:station_module",
+      "required": false
+    },
+    {
+      "id": "wmd:station_oxygen_rack",
+      "required": false
+    },
+    {
+      "id": "wmd:station_pole_ladder",
+      "required": false
+    },
+    {
+      "id": "wmd:station_rod_console",
+      "required": false
+    },
+    {
+      "id": "wmd:station_rod_rack",
+      "required": false
+    },
+    {
+      "id": "wmd:station_seal",
+      "required": false
+    },
+    {
+      "id": "wmd:station_solid",
+      "required": false
+    },
+    {
+      "id": "wmd:station_turret_hatch",
+      "required": false
+    },
+    {
+      "id": "wmd:station_window",
+      "required": false
+    },
+    {
+      "id": "wmd:steam_engine",
+      "required": false
+    },
+    {
+      "id": "wmd:steam_turbine",
+      "required": false
+    },
+    {
+      "id": "wmd:steel_block",
+      "required": false
+    },
+    {
+      "id": "wmd:storage_tank",
+      "required": false
+    },
+    {
+      "id": "wmd:super_gun",
+      "required": false
+    },
+    {
+      "id": "wmd:supply_interface",
+      "required": false
+    },
+    {
+      "id": "wmd:swarm_launcher",
+      "required": false
+    },
+    {
+      "id": "wmd:thermal_net",
+      "required": false
+    },
+    {
+      "id": "wmd:tin_block",
+      "required": false
+    },
+    {
+      "id": "wmd:tin_ore",
+      "required": false
+    },
+    {
+      "id": "wmd:titanium_block",
+      "required": false
+    },
+    {
+      "id": "wmd:titanium_ore",
+      "required": false
+    },
+    {
+      "id": "wmd:titanium_pipe",
+      "required": false
+    },
+    {
+      "id": "wmd:tungsten_block",
+      "required": false
+    },
+    {
+      "id": "wmd:tungsten_ore",
+      "required": false
+    },
+    {
+      "id": "wmd:uraninite_deposit",
+      "required": false
+    },
+    {
+      "id": "wmd:vacuum_column",
+      "required": false
+    },
+    {
+      "id": "wmd:warhead_reactor",
+      "required": false
+    },
+    {
+      "id": "wmd:water_intake",
+      "required": false
+    },
+    {
+      "id": "wmd:wind_turbine",
+      "required": false
+    },
+    {
+      "id": "wmd:wire_drawer",
+      "required": false
+    },
+    {
+      "id": "wmd:wolframite_deposit",
+      "required": false
+    },
+    {
+      "id": "wmd:xl_dock",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "PKP",
+    "T T"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/titanium"
+    },
+    "K": {
+      "item": "wmd:chip_space_2"
+    },
+    "T": {
+      "item": "wmd:tungsten_plate"
+    }
+  },
+  "result": {
+    "id": "wmd:eva_boots",
+    "count": 1
+  }
+}

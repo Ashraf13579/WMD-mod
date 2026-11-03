@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "APA",
+    "ACA",
+    "AWA"
+  ],
+  "key": {
+    "A": {
+      "tag": "c:plates/aluminum"
+    },
+    "P": {
+      "item": "minecraft:light_gray_wool"
+    },
+    "C": {
+      "item": "wmd:camo_net"
+    },
+    "W": {
+      "item": "minecraft:string"
+    }
+  },
+  "result": {
+    "id": "wmd:thermal_net",
+    "count": 1
+  }
+}

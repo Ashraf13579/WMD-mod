@@ -1,0 +1,17 @@
+{
+ "parent": "minecraft:block/block",
+ "loader": "wmd:duct",
+ "kind": "duct",
+ "render_type": "minecraft:translucent",
+ "textures": {
+  "particle": "wmd:block/duct_rim",
+  "frame": "wmd:block/duct_frame",
+  "glass": "wmd:block/duct_glass",
+  "rim": "wmd:block/duct_rim",
+  "in": "wmd:block/duct_in",
+  "out": "wmd:block/duct_out",
+  "off": "wmd:block/duct_off",
+  "screen": "wmd:block/duct_screen",
+  "dark": "wmd:block/duct_dark"
+ }
+}

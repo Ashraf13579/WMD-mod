@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "wmd:rutile_core_sample",
+    "wmd:wolframite_core_sample",
+    "wmd:uraninite_core_sample"
+  ]
+}

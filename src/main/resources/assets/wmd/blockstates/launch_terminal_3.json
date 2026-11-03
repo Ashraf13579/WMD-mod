@@ -1,0 +1,208 @@
+{
+  "variants": {
+    "facing=north,formed=false,mount=up": {
+      "model": "wmd:block/launch_terminal_3"
+    },
+    "facing=north,formed=false,mount=north": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 90
+    },
+    "facing=north,formed=false,mount=south": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 270
+    },
+    "facing=north,formed=false,mount=down": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 180
+    },
+    "facing=north,formed=false,mount=east": {
+      "model": "wmd:block/launch_terminal_3"
+    },
+    "facing=north,formed=false,mount=west": {
+      "model": "wmd:block/launch_terminal_3"
+    },
+    "facing=north,formed=true,mount=up": {
+      "model": "wmd:block/launch_terminal_3"
+    },
+    "facing=north,formed=true,mount=north": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 90
+    },
+    "facing=north,formed=true,mount=south": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 270
+    },
+    "facing=north,formed=true,mount=down": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 180
+    },
+    "facing=north,formed=true,mount=east": {
+      "model": "wmd:block/launch_terminal_3"
+    },
+    "facing=north,formed=true,mount=west": {
+      "model": "wmd:block/launch_terminal_3"
+    },
+    "facing=east,formed=false,mount=up": {
+      "model": "wmd:block/launch_terminal_3",
+      "y": 90
+    },
+    "facing=east,formed=false,mount=north": {
+      "model": "wmd:block/launch_terminal_3",
+      "y": 90
+    },
+    "facing=east,formed=false,mount=south": {
+      "model": "wmd:block/launch_terminal_3",
+      "y": 90
+    },
+    "facing=east,formed=false,mount=down": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 180,
+      "y": 270
+    },
+    "facing=east,formed=false,mount=east": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,formed=false,mount=west": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 270,
+      "y": 90
+    },
+    "facing=east,formed=true,mount=up": {
+      "model": "wmd:block/launch_terminal_3",
+      "y": 90
+    },
+    "facing=east,formed=true,mount=north": {
+      "model": "wmd:block/launch_terminal_3",
+      "y": 90
+    },
+    "facing=east,formed=true,mount=south": {
+      "model": "wmd:block/launch_terminal_3",
+      "y": 90
+    },
+    "facing=east,formed=true,mount=down": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 180,
+      "y": 270
+    },
+    "facing=east,formed=true,mount=east": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,formed=true,mount=west": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 270,
+      "y": 90
+    },
+    "facing=south,formed=false,mount=up": {
+      "model": "wmd:block/launch_terminal_3",
+      "y": 180
+    },
+    "facing=south,formed=false,mount=north": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 270,
+      "y": 180
+    },
+    "facing=south,formed=false,mount=south": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,formed=false,mount=down": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 180,
+      "y": 180
+    },
+    "facing=south,formed=false,mount=east": {
+      "model": "wmd:block/launch_terminal_3",
+      "y": 180
+    },
+    "facing=south,formed=false,mount=west": {
+      "model": "wmd:block/launch_terminal_3",
+      "y": 180
+    },
+    "facing=south,formed=true,mount=up": {
+      "model": "wmd:block/launch_terminal_3",
+      "y": 180
+    },
+    "facing=south,formed=true,mount=north": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 270,
+      "y": 180
+    },
+    "facing=south,formed=true,mount=south": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,formed=true,mount=down": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 180,
+      "y": 180
+    },
+    "facing=south,formed=true,mount=east": {
+      "model": "wmd:block/launch_terminal_3",
+      "y": 180
+    },
+    "facing=south,formed=true,mount=west": {
+      "model": "wmd:block/launch_terminal_3",
+      "y": 180
+    },
+    "facing=west,formed=false,mount=up": {
+      "model": "wmd:block/launch_terminal_3",
+      "y": 270
+    },
+    "facing=west,formed=false,mount=north": {
+      "model": "wmd:block/launch_terminal_3",
+      "y": 270
+    },
+    "facing=west,formed=false,mount=south": {
+      "model": "wmd:block/launch_terminal_3",
+      "y": 270
+    },
+    "facing=west,formed=false,mount=down": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 180,
+      "y": 90
+    },
+    "facing=west,formed=false,mount=east": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 270,
+      "y": 270
+    },
+    "facing=west,formed=false,mount=west": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,formed=true,mount=up": {
+      "model": "wmd:block/launch_terminal_3",
+      "y": 270
+    },
+    "facing=west,formed=true,mount=north": {
+      "model": "wmd:block/launch_terminal_3",
+      "y": 270
+    },
+    "facing=west,formed=true,mount=south": {
+      "model": "wmd:block/launch_terminal_3",
+      "y": 270
+    },
+    "facing=west,formed=true,mount=down": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 180,
+      "y": 90
+    },
+    "facing=west,formed=true,mount=east": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 270,
+      "y": 270
+    },
+    "facing=west,formed=true,mount=west": {
+      "model": "wmd:block/launch_terminal_3",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

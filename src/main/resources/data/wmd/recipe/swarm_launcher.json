@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PTP",
+    "CXC",
+    "SWS"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:aluminium_plate"
+    },
+    "T": {
+      "item": "minecraft:iron_trapdoor"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "X": {
+      "item": "wmd:advanced_circuit"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "W": {
+      "item": "wmd:power_port"
+    }
+  },
+  "result": {
+    "id": "wmd:swarm_launcher",
+    "count": 1
+  }
+}

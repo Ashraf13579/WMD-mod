@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TCT",
+    "HMH",
+    "TWT"
+  ],
+  "key": {
+    "T": {
+      "tag": "c:plates/titanium"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "H": {
+      "item": "wmd:heat_shield_tile"
+    },
+    "M": {
+      "item": "wmd:rocket_engine"
+    },
+    "W": {
+      "tag": "c:ingots/tungsten"
+    }
+  },
+  "result": {
+    "id": "wmd:motor_hypersonic",
+    "count": 1
+  }
+}

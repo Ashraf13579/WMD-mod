@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "wmd:steel_block",
+    "wmd:aluminium_block",
+    "wmd:titanium_block",
+    "wmd:tungsten_block",
+    "wmd:tin_block",
+    "wmd:lead_block",
+    "wmd:bronze_block",
+    "wmd:silver_block",
+    "wmd:platinum_block",
+    "wmd:magnesium_block"
+  ]
+}

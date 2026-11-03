@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "wmd:station_hull"
+    },
+    {
+      "item": "wmd:station_hull"
+    },
+    {
+      "item": "wmd:steel_plate"
+    }
+  ],
+  "result": {
+    "id": "wmd:station_band",
+    "count": 2
+  }
+}

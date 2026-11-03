@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PIP",
+    "CAC",
+    "XKP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "I": {
+      "item": "wmd:titanium_impeller"
+    },
+    "C": {
+      "item": "wmd:titanium_casing"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "K": {
+      "item": "minecraft:cauldron"
+    },
+    "X": {
+      "item": "wmd:chip_nuclear_1"
+    }
+  },
+  "result": {
+    "id": "wmd:leach_tank",
+    "count": 1
+  }
+}

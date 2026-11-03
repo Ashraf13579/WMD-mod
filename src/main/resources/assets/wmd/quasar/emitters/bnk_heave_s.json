@@ -1,0 +1,12 @@
+{
+  "max_lifetime": 8,
+  "loop": false,
+  "rate": 1,
+  "count": 25,
+  "emitter_settings": {
+    "shape": "wmd:bnk_heave_s",
+    "particle_settings": "wmd:bnk_heave_s",
+    "force_spawn": true
+  },
+  "particle_data": "wmd:bnk_heave_s"
+}

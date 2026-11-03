@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SES",
+    "CPC",
+    "SBS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "E": {
+      "item": "wmd:carbon_electrode"
+    },
+    "C": {
+      "item": "wmd:aluminium_casing"
+    },
+    "P": {
+      "item": "wmd:basic_circuit"
+    },
+    "B": {
+      "tag": "c:ingots/platinum"
+    }
+  },
+  "result": {
+    "id": "wmd:chlor_alkali_cell",
+    "count": 1
+  }
+}

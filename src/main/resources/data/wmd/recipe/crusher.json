@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SBS",
+    "CKC",
+    "SMS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "B": {
+      "item": "wmd:bronze_ingot"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "K": {
+      "item": "wmd:basic_circuit"
+    },
+    "M": {
+      "tag": "c:ingots/copper"
+    }
+  },
+  "result": {
+    "id": "wmd:crusher",
+    "count": 1
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SES",
+    "CAC",
+    "XRS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "E": {
+      "item": "wmd:carbon_electrode"
+    },
+    "C": {
+      "item": "wmd:aluminium_casing"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "R": {
+      "item": "wmd:refractory_brick"
+    },
+    "X": {
+      "item": "wmd:chip_metallurgy_2"
+    }
+  },
+  "result": {
+    "id": "wmd:magnesium_cell",
+    "count": 1
+  }
+}

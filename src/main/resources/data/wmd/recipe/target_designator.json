@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "GSG",
+    " A ",
+    " W "
+  ],
+  "key": {
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "S": {
+      "item": "minecraft:spyglass"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "W": {
+      "item": "wmd:gold_wire"
+    }
+  },
+  "result": {
+    "id": "wmd:target_designator",
+    "count": 1
+  }
+}

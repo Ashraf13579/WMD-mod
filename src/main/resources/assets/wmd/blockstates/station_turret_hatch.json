@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "wmd:block/station_turret_hatch",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "wmd:block/station_turret_hatch",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "wmd:block/station_turret_hatch",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "wmd:block/station_turret_hatch",
+      "y": 270
+    }
+  }
+}

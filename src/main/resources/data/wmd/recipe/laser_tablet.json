@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PGP",
+    "CNB"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:aluminium_plate"
+    },
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "N": {
+      "item": "wmd:network_card"
+    },
+    "B": {
+      "item": "wmd:battery_t1"
+    }
+  },
+  "result": {
+    "id": "wmd:laser_tablet",
+    "count": 1
+  }
+}

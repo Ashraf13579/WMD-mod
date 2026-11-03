@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "top": "wmd:block/nuclear_reactor_top",
+    "front": "wmd:block/nuclear_reactor_front",
+    "side": "wmd:block/nuclear_reactor_side"
+  }
+}

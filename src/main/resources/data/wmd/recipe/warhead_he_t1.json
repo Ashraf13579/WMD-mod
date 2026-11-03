@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "wmd:he_charge"
+    },
+    {
+      "item": "wmd:heat_shield_tile"
+    }
+  ],
+  "result": {
+    "id": "wmd:warhead_he_t1",
+    "count": 1
+  }
+}

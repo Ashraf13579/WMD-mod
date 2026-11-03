@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ACA",
+    "TXT",
+    "BSB"
+  ],
+  "key": {
+    "A": {
+      "item": "wmd:antimatter_cell"
+    },
+    "C": {
+      "item": "wmd:superconducting_coil"
+    },
+    "T": {
+      "item": "wmd:tungsten_alloy_casing"
+    },
+    "X": {
+      "item": "wmd:chip_railgun_1"
+    },
+    "B": {
+      "item": "wmd:tungsten_block"
+    },
+    "S": {
+      "item": "wmd:super_gun"
+    }
+  },
+  "result": {
+    "id": "wmd:railgun",
+    "count": 1
+  }
+}

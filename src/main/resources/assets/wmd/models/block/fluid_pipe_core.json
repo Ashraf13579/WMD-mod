@@ -1,0 +1,136 @@
+{
+ "textures": {
+  "particle": "wmd:block/fluid_pipe",
+  "0": "wmd:block/fluid_pipe"
+ },
+ "elements": [
+  {
+   "from": [
+    4,
+    4,
+    4
+   ],
+   "to": [
+    12,
+    12,
+    12
+   ],
+   "faces": {
+    "north": {
+     "texture": "#0"
+    },
+    "east": {
+     "texture": "#0"
+    },
+    "south": {
+     "texture": "#0"
+    },
+    "west": {
+     "texture": "#0"
+    },
+    "up": {
+     "texture": "#0"
+    },
+    "down": {
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "from": [
+    3.2,
+    5,
+    5
+   ],
+   "to": [
+    12.8,
+    11,
+    11
+   ],
+   "faces": {
+    "north": {
+     "texture": "#0"
+    },
+    "east": {
+     "texture": "#0"
+    },
+    "south": {
+     "texture": "#0"
+    },
+    "west": {
+     "texture": "#0"
+    },
+    "up": {
+     "texture": "#0"
+    },
+    "down": {
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "from": [
+    5,
+    3.2,
+    5
+   ],
+   "to": [
+    11,
+    12.8,
+    11
+   ],
+   "faces": {
+    "north": {
+     "texture": "#0"
+    },
+    "east": {
+     "texture": "#0"
+    },
+    "south": {
+     "texture": "#0"
+    },
+    "west": {
+     "texture": "#0"
+    },
+    "up": {
+     "texture": "#0"
+    },
+    "down": {
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "from": [
+    5,
+    5,
+    3.2
+   ],
+   "to": [
+    11,
+    11,
+    12.8
+   ],
+   "faces": {
+    "north": {
+     "texture": "#0"
+    },
+    "east": {
+     "texture": "#0"
+    },
+    "south": {
+     "texture": "#0"
+    },
+    "west": {
+     "texture": "#0"
+    },
+    "up": {
+     "texture": "#0"
+    },
+    "down": {
+     "texture": "#0"
+    }
+   }
+  }
+ ]
+}

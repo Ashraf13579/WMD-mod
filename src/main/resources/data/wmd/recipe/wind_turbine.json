@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "WCW",
+    "SSS"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:steel_plate"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "S": {
+      "item": "wmd:steel_ingot"
+    }
+  },
+  "result": {
+    "id": "wmd:wind_turbine",
+    "count": 1
+  }
+}

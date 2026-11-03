@@ -1,0 +1,12 @@
+{
+  "max_lifetime": 20,
+  "loop": false,
+  "rate": 2,
+  "count": 14,
+  "emitter_settings": {
+    "shape": "wmd:decoy_cloud",
+    "particle_settings": "wmd:decoy_glitter",
+    "force_spawn": true
+  },
+  "particle_data": "wmd:decoy_glitter"
+}

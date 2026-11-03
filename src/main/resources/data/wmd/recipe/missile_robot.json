@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "APA",
+    "CMC",
+    "TBT"
+  ],
+  "key": {
+    "A": {
+      "tag": "c:ingots/aluminum"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "M": {
+      "item": "wmd:machine_casing"
+    },
+    "T": {
+      "tag": "c:plates/steel"
+    },
+    "B": {
+      "item": "wmd:battery_t1"
+    }
+  },
+  "result": {
+    "id": "wmd:missile_robot",
+    "count": 1
+  }
+}

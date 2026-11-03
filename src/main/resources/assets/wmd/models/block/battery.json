@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "side": "minecraft:block/exposed_copper",
+    "end": "minecraft:block/iron_block"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["SIS", "CAC", "SSS"],
+  "key": {
+    "S": { "tag": "c:ingots/steel" },
+    "I": { "item": "minecraft:blue_ice" },
+    "C": { "item": "wmd:machine_casing" },
+    "A": { "item": "wmd:advanced_circuit" }
+  },
+  "result": { "id": "wmd:bay_cryo", "count": 1 }
+}

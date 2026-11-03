@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "HCH",
+    "GOG",
+    "TKT"
+  ],
+  "key": {
+    "H": {
+      "item": "wmd:heat_shield_tile"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "G": {
+      "item": "wmd:blast_glass"
+    },
+    "O": {
+      "item": "wmd:oxygen_tank"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "K": {
+      "item": "wmd:chip_space_2"
+    }
+  },
+  "result": {
+    "id": "wmd:crew_capsule",
+    "count": 1
+  }
+}

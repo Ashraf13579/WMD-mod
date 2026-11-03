@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "FKF",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:solar_cell"
+    },
+    "F": {
+      "item": "wmd:orbital_frame"
+    },
+    "K": {
+      "item": "wmd:chip_space_3"
+    }
+  },
+  "result": {
+    "id": "wmd:station_kit_wing",
+    "count": 1
+  }
+}

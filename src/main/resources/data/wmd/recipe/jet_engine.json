@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "wmd:turbine_blades"
+    },
+    {
+      "item": "wmd:titanium_casing"
+    },
+    {
+      "item": "wmd:advanced_circuit"
+    },
+    {
+      "tag": "c:plates/titanium"
+    },
+    {
+      "tag": "c:plates/titanium"
+    }
+  ],
+  "result": {
+    "id": "wmd:jet_engine",
+    "count": 1
+  }
+}

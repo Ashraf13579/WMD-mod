@@ -1,0 +1,127 @@
+{
+  "variants": {
+    "facing=north,formed=false,mount=up": {
+      "model": "wmd:block/nuclear_reactor"
+    },
+    "facing=north,formed=false,mount=north": {
+      "model": "wmd:block/nuclear_reactor",
+      "x": 90
+    },
+    "facing=north,formed=false,mount=south": {
+      "model": "wmd:block/nuclear_reactor",
+      "x": 270
+    },
+    "facing=north,formed=false,mount=down": {
+      "model": "wmd:block/nuclear_reactor",
+      "x": 180
+    },
+    "facing=north,formed=false,mount=east": {
+      "model": "wmd:block/nuclear_reactor"
+    },
+    "facing=north,formed=false,mount=west": {
+      "model": "wmd:block/nuclear_reactor"
+    },
+    "facing=east,formed=false,mount=up": {
+      "model": "wmd:block/nuclear_reactor",
+      "y": 90
+    },
+    "facing=east,formed=false,mount=north": {
+      "model": "wmd:block/nuclear_reactor",
+      "y": 90
+    },
+    "facing=east,formed=false,mount=south": {
+      "model": "wmd:block/nuclear_reactor",
+      "y": 90
+    },
+    "facing=east,formed=false,mount=down": {
+      "model": "wmd:block/nuclear_reactor",
+      "x": 180,
+      "y": 270
+    },
+    "facing=east,formed=false,mount=east": {
+      "model": "wmd:block/nuclear_reactor",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,formed=false,mount=west": {
+      "model": "wmd:block/nuclear_reactor",
+      "x": 270,
+      "y": 90
+    },
+    "facing=south,formed=false,mount=up": {
+      "model": "wmd:block/nuclear_reactor",
+      "y": 180
+    },
+    "facing=south,formed=false,mount=north": {
+      "model": "wmd:block/nuclear_reactor",
+      "x": 270,
+      "y": 180
+    },
+    "facing=south,formed=false,mount=south": {
+      "model": "wmd:block/nuclear_reactor",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,formed=false,mount=down": {
+      "model": "wmd:block/nuclear_reactor",
+      "x": 180,
+      "y": 180
+    },
+    "facing=south,formed=false,mount=east": {
+      "model": "wmd:block/nuclear_reactor",
+      "y": 180
+    },
+    "facing=south,formed=false,mount=west": {
+      "model": "wmd:block/nuclear_reactor",
+      "y": 180
+    },
+    "facing=west,formed=false,mount=up": {
+      "model": "wmd:block/nuclear_reactor",
+      "y": 270
+    },
+    "facing=west,formed=false,mount=north": {
+      "model": "wmd:block/nuclear_reactor",
+      "y": 270
+    },
+    "facing=west,formed=false,mount=south": {
+      "model": "wmd:block/nuclear_reactor",
+      "y": 270
+    },
+    "facing=west,formed=false,mount=down": {
+      "model": "wmd:block/nuclear_reactor",
+      "x": 180,
+      "y": 90
+    },
+    "facing=west,formed=false,mount=east": {
+      "model": "wmd:block/nuclear_reactor",
+      "x": 270,
+      "y": 270
+    },
+    "facing=west,formed=false,mount=west": {
+      "model": "wmd:block/nuclear_reactor",
+      "x": 90,
+      "y": 270
+    },
+    "formed=true,mount=up": {
+      "model": "wmd:block/invisible"
+    },
+    "formed=true,mount=north": {
+      "model": "wmd:block/invisible",
+      "x": 90
+    },
+    "formed=true,mount=south": {
+      "model": "wmd:block/invisible",
+      "x": 270
+    },
+    "formed=true,mount=down": {
+      "model": "wmd:block/invisible",
+      "x": 180
+    },
+    "formed=true,mount=east": {
+      "model": "wmd:block/invisible"
+    },
+    "formed=true,mount=west": {
+      "model": "wmd:block/invisible"
+    }
+  }
+}

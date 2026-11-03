@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CAC",
+    "DXR",
+    "CTC"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:gray_concrete"
+    },
+    "A": {
+      "item": "wmd:antimatter_cell"
+    },
+    "D": {
+      "item": "minecraft:iron_door"
+    },
+    "X": {
+      "item": "wmd:chip_warheads_2"
+    },
+    "R": {
+      "item": "wmd:battery_t1"
+    },
+    "T": {
+      "item": "wmd:tungsten_block"
+    }
+  },
+  "result": {
+    "id": "wmd:deadhand_bunker",
+    "count": 1
+  }
+}

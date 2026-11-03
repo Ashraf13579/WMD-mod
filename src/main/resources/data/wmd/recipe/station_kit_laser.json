@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SXS",
+    "PKP",
+    "FXF"
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:superconducting_coil"
+    },
+    "X": {
+      "item": "wmd:weapon_core"
+    },
+    "P": {
+      "item": "wmd:power_core"
+    },
+    "K": {
+      "item": "wmd:chip_space_3"
+    },
+    "F": {
+      "item": "wmd:orbital_frame"
+    }
+  },
+  "result": {
+    "id": "wmd:station_kit_laser",
+    "count": 1
+  }
+}

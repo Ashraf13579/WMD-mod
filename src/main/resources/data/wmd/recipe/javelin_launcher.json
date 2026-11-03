@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "SSS",
+    "CGC",
+    " B "
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:steel_plate"
+    },
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "B": {
+      "item": "wmd:battery_t1"
+    }
+  },
+  "result": {
+    "id": "wmd:javelin_launcher",
+    "count": 1
+  }
+}

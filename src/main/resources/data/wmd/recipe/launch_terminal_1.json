@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SBS",
+    "BCB",
+    "SNS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "B": {
+      "item": "wmd:basic_circuit"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "N": {
+      "item": "wmd:network_card"
+    }
+  },
+  "result": {
+    "id": "wmd:launch_terminal_1",
+    "count": 1
+  }
+}

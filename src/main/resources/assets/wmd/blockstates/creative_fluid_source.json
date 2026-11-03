@@ -1,0 +1,100 @@
+{
+ "variants": {
+  "fluid=0": {
+   "model": "wmd:block/creative_fluid_source_0"
+  },
+  "fluid=1": {
+   "model": "wmd:block/creative_fluid_source_1"
+  },
+  "fluid=2": {
+   "model": "wmd:block/creative_fluid_source_2"
+  },
+  "fluid=3": {
+   "model": "wmd:block/creative_fluid_source_3"
+  },
+  "fluid=4": {
+   "model": "wmd:block/creative_fluid_source_4"
+  },
+  "fluid=5": {
+   "model": "wmd:block/creative_fluid_source_5"
+  },
+  "fluid=6": {
+   "model": "wmd:block/creative_fluid_source_6"
+  },
+  "fluid=7": {
+   "model": "wmd:block/creative_fluid_source_7"
+  },
+  "fluid=8": {
+   "model": "wmd:block/creative_fluid_source_8"
+  },
+  "fluid=9": {
+   "model": "wmd:block/creative_fluid_source_9"
+  },
+  "fluid=10": {
+   "model": "wmd:block/creative_fluid_source_10"
+  },
+  "fluid=11": {
+   "model": "wmd:block/creative_fluid_source_11"
+  },
+  "fluid=12": {
+   "model": "wmd:block/creative_fluid_source_12"
+  },
+  "fluid=13": {
+   "model": "wmd:block/creative_fluid_source_13"
+  },
+  "fluid=14": {
+   "model": "wmd:block/creative_fluid_source_14"
+  },
+  "fluid=15": {
+   "model": "wmd:block/creative_fluid_source_15"
+  },
+  "fluid=16": {
+   "model": "wmd:block/creative_fluid_source_16"
+  },
+  "fluid=17": {
+   "model": "wmd:block/creative_fluid_source_17"
+  },
+  "fluid=18": {
+   "model": "wmd:block/creative_fluid_source_18"
+  },
+  "fluid=19": {
+   "model": "wmd:block/creative_fluid_source_19"
+  },
+  "fluid=20": {
+   "model": "wmd:block/creative_fluid_source_20"
+  },
+  "fluid=21": {
+   "model": "wmd:block/creative_fluid_source_21"
+  },
+  "fluid=22": {
+   "model": "wmd:block/creative_fluid_source_22"
+  },
+  "fluid=23": {
+   "model": "wmd:block/creative_fluid_source_23"
+  },
+  "fluid=24": {
+   "model": "wmd:block/creative_fluid_source_24"
+  },
+  "fluid=25": {
+   "model": "wmd:block/creative_fluid_source_24"
+  },
+  "fluid=26": {
+   "model": "wmd:block/creative_fluid_source_24"
+  },
+  "fluid=27": {
+   "model": "wmd:block/creative_fluid_source_24"
+  },
+  "fluid=28": {
+   "model": "wmd:block/creative_fluid_source_24"
+  },
+  "fluid=29": {
+   "model": "wmd:block/creative_fluid_source_24"
+  },
+  "fluid=30": {
+   "model": "wmd:block/creative_fluid_source_24"
+  },
+  "fluid=31": {
+   "model": "wmd:block/creative_fluid_source_24"
+  }
+ }
+}

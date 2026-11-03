@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WWW",
+    "WHW",
+    "WWW"
+  ],
+  "key": {
+    "W": {
+      "item": "wmd:tungsten_plate"
+    },
+    "H": {
+      "item": "wmd:heat_shield_tile"
+    }
+  },
+  "result": {
+    "id": "wmd:tungsten_tile",
+    "count": 2
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CAC",
+    "PBP"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "B": {
+      "item": "wmd:battery_t1"
+    }
+  },
+  "result": {
+    "id": "wmd:runner_upgrade_kit",
+    "count": 1
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "shape": "veil:hemisphere",
+  "dimensions": [
+    1.7,
+    1.7,
+    1.7
+  ],
+  "rotation": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "from_surface": false
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TWT",
+    " A "
+  ],
+  "key": {
+    "T": {
+      "item": "wmd:tungsten_plate"
+    },
+    "W": {
+      "item": "wmd:warhead_interceptor"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:kill_vehicle_pack",
+    "count": 1
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " T ",
+    " S ",
+    " S "
+  ],
+  "key": {
+    "T": {
+      "tag": "c:ingots/tungsten"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "result": {
+    "id": "wmd:drill_bit",
+    "count": 1
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WWW",
+    "PCP",
+    "PBP"
+  ],
+  "key": {
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "P": {
+      "item": "wmd:steel_plate"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "B": {
+      "item": "wmd:battery_t1"
+    }
+  },
+  "result": {
+    "id": "wmd:portable_jammer",
+    "count": 1
+  }
+}

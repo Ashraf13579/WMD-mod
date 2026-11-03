@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PG ",
+    "CB ",
+    "P  "
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:steel_plate"
+    },
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    },
+    "B": {
+      "item": "wmd:battery_t1"
+    }
+  },
+  "result": {
+    "id": "wmd:cctv_camera",
+    "count": 1
+  }
+}

@@ -1,0 +1,7 @@
+{
+ "parent": "minecraft:item/generated",
+ "textures": {
+  "layer0": "wmd:item/canister",
+  "layer1": "wmd:item/canister_band"
+ }
+}

@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RER",
+    "CPC",
+    "SKS"
+  ],
+  "key": {
+    "R": {
+      "item": "wmd:refractory_brick"
+    },
+    "E": {
+      "item": "wmd:carbon_electrode"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "P": {
+      "item": "wmd:advanced_circuit"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "K": {
+      "tag": "c:ingots/copper"
+    }
+  },
+  "result": {
+    "id": "wmd:arc_furnace",
+    "count": 1
+  }
+}

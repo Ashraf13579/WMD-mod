@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": [
+    "wmd:deposit_rutile",
+    "wmd:deposit_wolframite",
+    "wmd:deposit_uraninite"
+  ],
+  "step": "underground_ores"
+}

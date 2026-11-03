@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " I ",
+    "ICI",
+    "BAP"
+  ],
+  "key": {
+    "I": {
+      "tag": "c:ingots/steel"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    },
+    "B": {
+      "item": "wmd:battery_t1"
+    },
+    "A": {
+      "item": "minecraft:anvil"
+    },
+    "P": {
+      "item": "wmd:steel_plate"
+    }
+  },
+  "result": {
+    "id": "wmd:seismic_scanner",
+    "count": 1
+  }
+}
