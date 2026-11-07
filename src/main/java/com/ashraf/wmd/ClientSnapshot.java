@@ -19,6 +19,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.Mth;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.LightTexture;
@@ -419,7 +420,7 @@ public final class ClientSnapshot {
             if (vb == null) continue;
             long k = e.getKey();
             int sx = SectionPos.x(k), sy = SectionPos.y(k), sz = SectionPos.z(k);
-            if (level.getChunkSource().hasChunk(sx, sz)) continue;
+            if (vanillaDraws(level, sx, sz, cam.x, cam.z)) continue;
             double ox = (sx << 4) - cam.x, oy = (sy << 4) - cam.y, oz = (sz << 4) - cam.z;
             if (ox * ox + oz * oz > far * far) continue;
             if (off != null) { off.set((float) ox, (float) oy, (float) oz); off.upload(); }
@@ -504,12 +505,18 @@ public final class ClientSnapshot {
         fv(bb, ax, y, az, r, g, b); fv(bb, ax, y, bz, r, g, b); fv(bb, bx, y, bz, r, g, b); fv(bb, bx, y, az, r, g, b);
     }
 
+    static boolean vanillaDraws(ClientLevel level, int cx, int cz, double x, double z) {
+        if (!level.getChunkSource().hasChunk(cx, cz)) return false;
+        int reach = Minecraft.getInstance().options.getEffectiveRenderDistance() - 1;
+        return Math.max(Math.abs(cx - (Mth.floor(x) >> 4)), Math.abs(cz - (Mth.floor(z) >> 4))) <= reach;
+    }
+
     private static void buildRegion(ClientLevel level, Region g, int rx, int rz) {
         g.dirty = false;
         com.mojang.blaze3d.vertex.BufferBuilder bb = com.mojang.blaze3d.vertex.Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_LIGHTMAP);
         for (int a = 0; a < FAR_REGION; a++) for (int b = 0; b < FAR_REGION; b++) {
             Far f = snap.far.get(ChunkPos.asLong(rx * FAR_REGION + a, rz * FAR_REGION + b));
-            if (f != null && !level.getChunkSource().hasChunk(f.cx, f.cz)) buildFar(bb, f, f.cx * 16 - snap.tx, f.cz * 16 - snap.tz);
+            if (f != null && !vanillaDraws(level, f.cx, f.cz, snap.tx, snap.tz)) buildFar(bb, f, f.cx * 16 - snap.tx, f.cz * 16 - snap.tz);
         }
         MeshData md = bb.build();
         if (g.vb != null) { g.vb.close(); g.vb = null; }

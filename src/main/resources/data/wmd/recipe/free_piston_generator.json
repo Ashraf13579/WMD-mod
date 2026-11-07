@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "AWA",
+    "MDM",
+    "SWS"
+  ],
+  "key": {
+    "A": {
+      "item": "wmd:aluminium_plate"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "M": {
+      "item": "wmd:machine_casing"
+    },
+    "D": {
+      "item": "wmd:advanced_circuit"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "result": {
+    "id": "wmd:free_piston_generator",
+    "count": 1
+  }
+}

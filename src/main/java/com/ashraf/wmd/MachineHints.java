@@ -141,6 +141,11 @@ public final class MachineHints {
         String block = m instanceof BlockEntity be ? BuiltInRegistries.BLOCK.getKey(be.getBlockState().getBlock()).getPath() : "";
         if (GuiMachine.lowPower(st) && m.guiFeUse() > 0)
             return new Hint(Component.translatable("gui.wmd.hint.low_power", GuiMachine.lowPowerPct(st), String.format("%,d", m.guiFeUse() * 20)), how("power"));
+        if ((st == NO_INPUT || st == IDLE) && block.equals("magnesium_cell")) {
+            int mg = menu.tankAmount(0);
+            if (mg > 0 && mg < Balance.MGCELL_MGCL_MB)
+                return new Hint(Component.translatable("gui.wmd.hint.mgcell_either", Balance.MGCELL_MGCL_MB - mg, String.format("%,d", Balance.MGCELL_BRINE_MB)), how("mgcl2"));
+        }
         switch (st) {
             case RUNNING: return null;
             case NO_POWER:

@@ -5,7 +5,9 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 public final class BayLine {
 
@@ -91,6 +93,23 @@ public final class BayLine {
             cur = previous(cur);
         }
         return null;
+    }
+
+    static final double SCREEN_REACH = 12.0;
+
+    public static boolean nearLine(Player p, BayModuleBlockEntity core) {
+        for (BayModuleBlockEntity m : chain(core)) if (nearModule(p, m)) return true;
+        return false;
+    }
+
+    public static boolean nearModule(Player p, BayModuleBlockEntity m) {
+        BlockState st = m.getBlockState();
+        if (!(st.getBlock() instanceof BayModuleBlock)) return false;
+        Direction f = st.getValue(MachineBlock.FACING), mount = Machines.mount(st);
+        int mx = m.kind == BayKind.RACK ? 4 : m.kind == BayKind.RACK_R ? -4 : 0;
+        for (int z = 0; z < m.kind.length; z += 2)
+            if (Reach.within(p, Machines.toWorld(m.getBlockPos(), f, mount, mx, 0, z), SCREEN_REACH)) return true;
+        return false;
     }
 
     public static List<BayModuleBlockEntity> chain(BayModuleBlockEntity core) {

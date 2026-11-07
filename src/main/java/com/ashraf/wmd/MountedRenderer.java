@@ -31,7 +31,9 @@ public final class MountedRenderer<T extends BlockEntity> implements BlockEntity
         ps.popPose();
     }
 
-    @Override public boolean shouldRenderOffScreen(T be) { return inner.shouldRenderOffScreen(be); }
+    @Override public boolean shouldRenderOffScreen(T be) { return inner.shouldRenderOffScreen(be) || spansCells(getRenderBoundingBox(be)); }
+
+    static boolean spansCells(AABB b) { return b.getXsize() > 1.01 || b.getYsize() > 1.01 || b.getZsize() > 1.01; }
     @Override public int getViewDistance() { return inner.getViewDistance(); }
     @Override public boolean shouldRender(T be, Vec3 cam) { return inner.shouldRender(be, cam); }
 

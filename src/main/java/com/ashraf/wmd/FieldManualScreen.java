@@ -291,6 +291,12 @@ public class FieldManualScreen extends Screen {
 
             new Page("oil_upgrades", new String[] { "~naphtha > reformer > ~reformate + ~hydrogen", "~kerosene + ~hydrogen > hydrotreater > ~jet_fuel" },
                     () -> new Object[0]),
+
+            new Page("gasoline_engine", new String[] { "~gasoline > gasoline_engine > busbar", "~reformate > gasoline_engine > busbar" },
+                    () -> new Object[] { n(Balance.GE_FE_PER_TICK * 20), n(Balance.GE_FE_PER_MB_GASOLINE), n(Balance.GE_FE_PER_MB_REFORMATE) }),
+
+            new Page("free_piston", new String[] { "~reformate > free_piston_generator > busbar" },
+                    () -> new Object[] { n(Balance.FP_FE_PER_TICK * 20), n(Balance.FP_FE_PER_MB), n(Balance.GE_FE_PER_MB_REFORMATE) }),
             new Page("aluminium_he", new String[] { "2*raw_bauxite + carbon_electrode > electrolyser > aluminium_ingot", "2*nitrate_dust + ~naphtha > nitration_reactor > he_charge" },
                     () -> new Object[] { n(Balance.ELECTRO_CYCLES_PER_ELECTRODE), n(Balance.NITRO_NAPHTHA_MB) }),
             new Page("alkylation", new String[] { "~lpg + acid_catalyst > alkylation_unit > ~alkylate" },

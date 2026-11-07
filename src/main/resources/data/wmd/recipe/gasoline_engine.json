@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SBS",
+    "CEC",
+    "SPS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "B": {
+      "item": "wmd:basic_circuit"
+    },
+    "C": {
+      "item": "wmd:machine_casing"
+    },
+    "E": {
+      "item": "wmd:generator_engine"
+    },
+    "P": {
+      "item": "wmd:steel_plate"
+    }
+  },
+  "result": {
+    "id": "wmd:gasoline_engine",
+    "count": 1
+  }
+}

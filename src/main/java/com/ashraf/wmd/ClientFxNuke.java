@@ -144,7 +144,9 @@ public final class ClientFxNuke {
         any = false;
         for (Show s : SHOWS) {
             double age = now - s.start, dh = Math.hypot(cam.x - s.x, cam.z - s.z);
+            ClientBlastGeo.RAW = true;
             any |= sky(glow, cam, s, age, dh);
+            ClientBlastGeo.RAW = false;
             if (dh > ClientBlastGeo.FAR_VIEW) continue;
             any |= haze(glow, cam, s, age, now);
             any |= fireball(glow, cam, left, up, s, age);

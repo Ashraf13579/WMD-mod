@@ -220,13 +220,22 @@ public final class WmdRecipes {
                 List.of(item("minecraft:gunpowder", Balance.PM_GUNPOWDER)), time(Balance.PM_CYCLE_TICKS), uses(Balance.PM_FE_PER_TICK))));
         List<Proc> turbine = new ArrayList<>();
         Proc.Ing blades = item("turbine_blades", 1);
-        for (Object[] fuel : new Object[][] { { WmdFluids.LPG, Balance.TURBINE_FE_PER_MB_LPG }, { WmdFluids.NAPHTHA, Balance.TURBINE_FE_PER_MB_NAPHTHA } }) {
+        for (Object[] fuel : new Object[][] { { WmdFluids.LPG, Balance.TURBINE_FE_PER_MB_LPG }, { WmdFluids.GASOLINE, Balance.TURBINE_FE_PER_MB_GASOLINE }, { WmdFluids.NAPHTHA, Balance.TURBINE_FE_PER_MB_NAPHTHA } }) {
             int perMb = (Integer) fuel[1];
             turbine.add(p(List.of(fluid(f((WmdFluids.Entry) fuel[0]), 1000), blades), List.of(), makes(Balance.TURBINE_FE_PER_TICK),
                     note("jei.wmd.note.gen_fluid", n(perMb), n(1000L * perMb), sec(1000 * perMb / Math.max(1, Balance.TURBINE_FE_PER_TICK))),
                     note("jei.wmd.note.turbine_blades", n(Balance.TURBINE_BLADE_LIFE / 1200))));
         }
         machine("gas_turbine", turbine);
+        List<Proc> engine = new ArrayList<>();
+        for (Object[] fuel : new Object[][] { { WmdFluids.GASOLINE, Balance.GE_FE_PER_MB_GASOLINE }, { WmdFluids.REFORMATE, Balance.GE_FE_PER_MB_REFORMATE } }) {
+            int perMb = (Integer) fuel[1];
+            engine.add(p(List.of(fluid(f((WmdFluids.Entry) fuel[0]), 1000)), List.of(), makes(Balance.GE_FE_PER_TICK),
+                    note("jei.wmd.note.gen_fluid", n(perMb), n(1000L * perMb), sec(1000 * perMb / Math.max(1, Balance.GE_FE_PER_TICK)))));
+        }
+        machine("gasoline_engine", engine);
+        machine("free_piston_generator", List.of(p(List.of(fluid(f(WmdFluids.REFORMATE), 1000)), List.of(), makes(Balance.FP_FE_PER_TICK),
+                note("jei.wmd.note.gen_fluid", n(Balance.FP_FE_PER_MB), n(1000L * Balance.FP_FE_PER_MB), sec(1000 * Balance.FP_FE_PER_MB / Math.max(1, Balance.FP_FE_PER_TICK))))));
         int flareFeT = Balance.FLARE_FE_PER_MB * Balance.FLARE_MB_PER_SEC / 20;
         machine("flare_stack", List.of(p(List.of(fluid(f(WmdFluids.LPG), 1000)), List.of(), makes(flareFeT),
                 note("jei.wmd.note.gen_fluid", n(Balance.FLARE_FE_PER_MB), n(1000L * Balance.FLARE_FE_PER_MB), sec(1000 * 20 / Math.max(1, Balance.FLARE_MB_PER_SEC))),

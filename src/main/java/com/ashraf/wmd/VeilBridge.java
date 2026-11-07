@@ -93,6 +93,10 @@ public final class VeilBridge {
 
     public static boolean quasar(String emitter, double x, double y, double z) {
         if (!active() || quasarFailed) return false;
+        if (shaderPackOn()) {
+            if (QUASAR_LIGHT_ONLY.contains(emitter)) return true;
+            for (String p : QUASAR_LIT) if (emitter.startsWith(p) && !emitter.endsWith("_nl")) { emitter = emitter + "_nl"; break; }
+        }
         try {
             VeilQuasar.spawn(emitter, x, y, z);
             return true;
@@ -104,6 +108,9 @@ public final class VeilBridge {
     }
 
     private static boolean quasarFailed;
+
+    private static final java.util.List<String> QUASAR_LIT = java.util.List.of("he_firelight_", "inc_droplight_", "tbx_light_", "nuk_light_", "emp_arcs_", "frag_flash_");
+    private static final java.util.Set<String> QUASAR_LIGHT_ONLY = java.util.Set.of("decoy_flares_lit");
 
     public static void bloomNear(double x, double y, double z, double range, float strength) {
         if (!active()) return;

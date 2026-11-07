@@ -462,6 +462,10 @@
       "required": false
     },
     {
+      "id": "wmd:free_piston_generator",
+      "required": false
+    },
+    {
       "id": "wmd:furnace",
       "required": false
     },
@@ -471,6 +475,10 @@
     },
     {
       "id": "wmd:gas_turbine",
+      "required": false
+    },
+    {
+      "id": "wmd:gasoline_engine",
       "required": false
     },
     {

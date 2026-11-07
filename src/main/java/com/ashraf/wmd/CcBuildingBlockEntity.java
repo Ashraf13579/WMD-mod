@@ -427,7 +427,9 @@ public class CcBuildingBlockEntity extends ProcessUnitBlockEntity implements Own
         }
 
         Object[][] moved = { { CcModule.PLANNER, new BlockPos(0, 5, 3) }, { CcModule.LAUNCH_CONSOLE, new BlockPos(-4, 1, 14) },
-                { CcModule.ARTILLERY_CONSOLE, new BlockPos(0, 1, 14) }, { CcModule.AIR_DEFENCE, new BlockPos(4, 1, 14) }, { CcModule.ALARM_BOARD, new BlockPos(-7, 1, 8) } };
+                { CcModule.ARTILLERY_CONSOLE, new BlockPos(0, 1, 14) }, { CcModule.AIR_DEFENCE, new BlockPos(4, 1, 14) }, { CcModule.ALARM_BOARD, new BlockPos(-7, 1, 8) },
+
+                { CcModule.IRON_DOME, new BlockPos(-4, 1, 7) }, { CcModule.SECURITY_MONITOR, new BlockPos(-7, 3, 6) } };
         for (Object[] mv : moved) {
             CcModule k = (CcModule) mv[0];
             BlockPos l = (BlockPos) mv[1], old = Machines.toWorld(worldPosition, f, Machines.mount(getBlockState()), l.getX(), l.getY(), l.getZ());

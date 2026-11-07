@@ -1,0 +1,12 @@
+{
+  "max_lifetime": 1,
+  "loop": false,
+  "rate": 1,
+  "count": 5,
+  "emitter_settings": {
+    "shape": "wmd:nuk_ball_s",
+    "particle_settings": "wmd:nuk_ball_s",
+    "force_spawn": true
+  },
+  "particle_data": "wmd:nuk_light_s_nl"
+}

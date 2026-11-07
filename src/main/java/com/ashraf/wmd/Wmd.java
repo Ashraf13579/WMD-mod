@@ -536,6 +536,18 @@ public class Wmd {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SteamEngineBlockEntity>> STEAM_ENGINE_BE =
             BLOCK_ENTITY_TYPES.register("steam_engine", () -> BlockEntityType.Builder.of(SteamEngineBlockEntity::new, STEAM_ENGINE.get()).build(null));
 
+    public static final DeferredBlock<GasolineEngineBlock> GASOLINE_ENGINE = BLOCKS.registerBlock("gasoline_engine", GasolineEngineBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 12.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(5)));
+    public static final DeferredItem<BlockItem> GASOLINE_ENGINE_ITEM = ITEMS.registerSimpleBlockItem("gasoline_engine", GASOLINE_ENGINE);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GasolineEngineBlockEntity>> GASOLINE_ENGINE_BE =
+            BLOCK_ENTITY_TYPES.register("gasoline_engine", () -> BlockEntityType.Builder.of(GasolineEngineBlockEntity::new, GASOLINE_ENGINE.get()).build(null));
+
+    public static final DeferredBlock<FreePistonGeneratorBlock> FREE_PISTON_GENERATOR = BLOCKS.registerBlock("free_piston_generator", FreePistonGeneratorBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 12.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(5)));
+    public static final DeferredItem<BlockItem> FREE_PISTON_GENERATOR_ITEM = ITEMS.registerSimpleBlockItem("free_piston_generator", FREE_PISTON_GENERATOR);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FreePistonGeneratorBlockEntity>> FREE_PISTON_GENERATOR_BE =
+            BLOCK_ENTITY_TYPES.register("free_piston_generator", () -> BlockEntityType.Builder.of(FreePistonGeneratorBlockEntity::new, FREE_PISTON_GENERATOR.get()).build(null));
+
     public static final DeferredBlock<LavaGeneratorBlock> LAVA_GENERATOR = BLOCKS.registerBlock("lava_generator", LavaGeneratorBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 12.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(9)));
     public static final DeferredItem<BlockItem> LAVA_GENERATOR_ITEM = ITEMS.registerSimpleBlockItem("lava_generator", LAVA_GENERATOR);
@@ -1582,6 +1594,8 @@ public class Wmd {
                 output.accept(WIND_TURBINE_ITEM.get());
                 output.accept(STEAM_ENGINE_ITEM.get());
                 output.accept(LAVA_GENERATOR_ITEM.get());
+                output.accept(GASOLINE_ENGINE_ITEM.get());
+                output.accept(FREE_PISTON_GENERATOR_ITEM.get());
                 output.accept(STAMP_MILL_ITEM.get());
                 output.accept(POWDER_MILL_ITEM.get());
                 output.accept(CRUSHER_ITEM.get());
@@ -2007,6 +2021,10 @@ public class Wmd {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, STEAM_ENGINE_BE.get(), (be, side) -> be.fluidPort(be.getBlockPos(), side));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, LAVA_GENERATOR_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, LAVA_GENERATOR_BE.get(), (be, side) -> be.fluidPort(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, GASOLINE_ENGINE_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, GASOLINE_ENGINE_BE.get(), (be, side) -> be.fluidPort(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, FREE_PISTON_GENERATOR_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, FREE_PISTON_GENERATOR_BE.get(), (be, side) -> be.fluidPort(be.getBlockPos(), side));
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, STAMP_MILL_BE.get(), (be, side) -> ItemPorts.wmdOnly(be.itemPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, STAMP_MILL_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, POWDER_MILL_BE.get(), (be, side) -> ItemPorts.wmdOnly(be.itemPort(be.getBlockPos(), side)));

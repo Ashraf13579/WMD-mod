@@ -29,6 +29,8 @@ public class SolarPanelBlockEntity extends ProcessUnitBlockEntity {
 
     private BlockPos controller;
 
+    private BlockPos sentController;
+
     private int groupNote;
     private int groupW, groupD;
     private int fePerTickNow;
@@ -116,7 +118,8 @@ public class SolarPanelBlockEntity extends ProcessUnitBlockEntity {
             for (BlockPos p : n == 1 ? List.of(worldPosition) : group) if (level.canSeeSky(p.above(2))) sky++;
             skyTiles = sky;
         }
-        if (n != size || cn != capN || cs != capS || so != socket) {
+        if (n != size || cn != capN || cs != capS || so != socket || !controller.equals(sentController)) {
+            sentController = controller;
             size = n;
             capN = cn;
             capS = cs;
@@ -183,7 +186,7 @@ public class SolarPanelBlockEntity extends ProcessUnitBlockEntity {
         return List.of(shape,
                 Component.translatable("gui.wmd.info.solar_output", m.fePerTickNow * 20, Balance.SOLAR_ARRAY_FE[m.size] * 20, sunPct),
                 Component.translatable("gui.wmd.info.solar_sky", m.skyTiles, m.size * m.size),
-                Component.translatable(m == this ? "gui.wmd.info.gen_hint" : "gui.wmd.info.solar_socket"));
+                Component.translatable(m == this ? (m.size > 1 ? "gui.wmd.info.solar_socket_here" : "gui.wmd.info.solar_socket_alone") : "gui.wmd.info.solar_socket"));
     }
 
     @Override protected SoundEvent runSound() { return WmdSounds.BAT_HUM_LOOP.get(); }
@@ -220,6 +223,7 @@ public class SolarPanelBlockEntity extends ProcessUnitBlockEntity {
             groupW = (i >> 20) & 63;
             groupD = (i >> 26) & 63;
         }
+        if (tag.contains("solc")) controller = BlockPos.of(tag.getLong("solc"));
     }
 
     @Override
@@ -227,6 +231,7 @@ public class SolarPanelBlockEntity extends ProcessUnitBlockEntity {
         CompoundTag tag = super.getUpdateTag(registries);
         tag.putInt("sol", role());
         tag.putInt("solinfo", info());
+        if (controller != null) tag.putLong("solc", controller.asLong());
         return tag;
     }
 

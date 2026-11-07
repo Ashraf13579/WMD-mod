@@ -189,9 +189,12 @@ public final class ClientBlastGeo {
 
     static double LIM;
 
+    static boolean RAW;
+
     static void beginFrame() { LIM = Minecraft.getInstance().gameRenderer.getDepthFar() * 0.9; }
 
     static void v(BufferBuilder bb, Vec3 cam, double x, double y, double z, float r, float g, float b, float a) {
+        if (ShaderFx.on && !RAW) { ShaderFx.vert(bb, cam, x, y, z, r, g, b, a); return; }
         double dx = x - cam.x, dy = y - cam.y, dz = z - cam.z, l = Math.sqrt(dx * dx + dy * dy + dz * dz);
         double k = l > LIM ? LIM / l : 1.0;
         bb.addVertex((float) (dx * k), (float) (dy * k), (float) (dz * k)).setColor(r, g, b, a);
@@ -202,6 +205,7 @@ public final class ClientBlastGeo {
     }
 
     static void disc(BufferBuilder bb, Vec3 cam, Vector3f left, Vector3f up, double x, double y, double z, double rad, float r, float g, float b, float a, int n) {
+        if (ShaderFx.on && !RAW) { ShaderFx.disc(bb, cam, left, up, x, y, z, rad, r, g, b, a); return; }
         for (int i = 0; i < n; i++) {
             double a0 = Math.PI * 2 * i / n, a1 = Math.PI * 2 * (i + 1) / n;
             double c0 = Math.cos(a0) * rad, s0 = Math.sin(a0) * rad, c1 = Math.cos(a1) * rad, s1 = Math.sin(a1) * rad;
@@ -506,6 +510,7 @@ public final class ClientBlastGeo {
     }
 
     static void draw(RenderLevelStageEvent event, BufferBuilder bb, boolean any, boolean additive) {
+        ShaderFx.flush(event, bb, additive);
         MeshData md = bb.build();
         if (!any || md == null) { if (md != null) md.close(); return; }
         Matrix4fStack mv = RenderSystem.getModelViewStack();

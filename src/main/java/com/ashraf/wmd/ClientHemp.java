@@ -157,6 +157,8 @@ public final class ClientHemp {
         if (FIELDS.isEmpty()) return;
         boolean ground = event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES, sky = event.getStage() == RenderLevelStageEvent.Stage.AFTER_SKY;
         if (!ground && !sky) return;
+        boolean fx = ShaderFx.on;
+        if (fx && sky) return;
         ClientLevel level = Minecraft.getInstance().level;
         if (level == null) return;
         double now = level.getGameTime() + event.getPartialTick().getGameTimeDeltaPartialTick(false);
@@ -167,8 +169,9 @@ public final class ClientHemp {
             double age = now - f.start;
             if (age < 0) continue;
             if (ground) drew |= groundWaves(b, level, cam, f, age, (long) now);
-            else if (Math.hypot(cam.x - f.x, cam.z - f.z) < 8000.0) drew |= skyWeb(b, cam, f, age, (long) now);
+            if ((sky || fx) && Math.hypot(cam.x - f.x, cam.z - f.z) < 8000.0) drew |= skyWeb(b, cam, f, age, (long) now);
         }
+        ShaderFx.flush(event, b, true);
         MeshData md = b.build();
         if (!drew || md == null) { if (md != null) md.close(); return; }
         Matrix4fStack mv = RenderSystem.getModelViewStack();
@@ -195,6 +198,7 @@ public final class ClientHemp {
     }
 
     private static void v(BufferBuilder b, Vec3 cam, double x, double y, double z, float r, float g, float bl, float a) {
+        if (ShaderFx.on) { ShaderFx.vert(b, cam, x, y, z, r, g, bl, a); return; }
         b.addVertex((float) (x - cam.x), (float) (y - cam.y), (float) (z - cam.z)).setColor(r, g, bl, a);
     }
 
@@ -276,6 +280,7 @@ public final class ClientHemp {
         double dx = x - cam.x, dy = y - cam.y, dz = z - cam.z, l = Math.sqrt(dx * dx + dy * dy + dz * dz);
         if (l < 1e-3) l = 1e-3;
         double k = Math.min(SKY, Minecraft.getInstance().gameRenderer.getDepthFar() * 0.5) / l;
+        if (ShaderFx.on) { ShaderFx.vert(b, cam, cam.x + dx * k, cam.y + dy * k, cam.z + dz * k, r, g, bl, a); return; }
         b.addVertex((float) (dx * k), (float) (dy * k), (float) (dz * k)).setColor(r, g, bl, a);
     }
 

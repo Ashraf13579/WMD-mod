@@ -92,10 +92,10 @@ public final class CcBuildingSpec {
             new Slot(CcModule.GPS_CONSOLE, "gps_rack", -7, 1, 6, Direction.EAST),
             new Slot(CcModule.INT_SAT_CONSOLE, "interceptor_console", -6, 1, 10, Direction.EAST),
             new Slot(CcModule.ARTILLERY_CONSOLE, "artillery_console", 0, 1, 15, Direction.NORTH),
-            new Slot(CcModule.IRON_DOME, "iron_dome", -4, 1, 7, Direction.SOUTH),
+            new Slot(CcModule.IRON_DOME, "iron_dome", -6, 1, 13, Direction.EAST),
             new Slot(CcModule.PLANNER, "planner", -6, 5, 3, Direction.SOUTH),
 
-            new Slot(CcModule.SECURITY_MONITOR, "security_monitor", -7, 3, 6, Direction.EAST),
+            new Slot(CcModule.SECURITY_MONITOR, "security_monitor", -7, 1, 7, Direction.EAST),
 
     };
 

@@ -112,6 +112,7 @@ public final class RodOfDeath {
                 s.warned.clear();
                 s.burned = false;
                 set(orbit, m, s, ARM, now);
+                ground(server, s, RailgunEventPayload.CHARGING, now);
                 orbit.playSound(null, Station.middle(m), WmdSounds.RD_ARM.get(), SoundSource.BLOCKS, 3.0F, 1.0F);
                 StationLife.pa(orbit, slot, WmdSounds.PA_ROD_ARMED.get());
                 UUID owner = p.getUUID();
@@ -134,7 +135,8 @@ public final class RodOfDeath {
         d.rods.put(m.id(), Math.min(Balance.ROD_RACK_MAX, d.rods.getOrDefault(m.id(), 0) + 1));
         d.rodArmed.remove(slot);
         d.setDirty();
-        if (s.state == FINAL) { ground(orbit.getServer(), s, RailgunEventPayload.ABORTED, now); TargetSnapshot.stop(rodKey(slot)); }
+        if (s.state >= ARM && s.state <= FINAL) ground(orbit.getServer(), s, RailgunEventPayload.ABORTED, now);
+        if (s.state == FINAL) TargetSnapshot.stop(rodKey(slot));
         s.from = s.state; s.fromEl = now - s.t0;
         set(orbit, m, s, BACK, now);
         orbit.playSound(null, Station.middle(m), WmdSounds.RD_ABORT.get(), SoundSource.BLOCKS, 3.0F, 1.0F);
@@ -181,7 +183,8 @@ public final class RodOfDeath {
                     continue;
                 }
                 if (prep || s.state == BACK) tellOwner(server, slot, Component.translatable("message.wmd.rod.lost").withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
-                if (s.state == FINAL) { ground(server, s, RailgunEventPayload.ABORTED, now); TargetSnapshot.stop(rodKey(slot)); }
+                if (prep) ground(server, s, RailgunEventPayload.ABORTED, now);
+                if (s.state == FINAL) TargetSnapshot.stop(rodKey(slot));
                 if (prep) { Station.Data.get(server).rodArmed.remove(slot); Station.Data.get(server).setDirty(); }
                 s.state = IDLE;
                 if (m != null && orbit.getBlockEntity(Station.controller(m)) instanceof StationModuleBlockEntity be) be.setRod(IDLE, now, 0, 0L, s.coolLen);
@@ -195,6 +198,7 @@ public final class RodOfDeath {
             long el = now - s.t0;
             sounds(orbit, m, s, el);
             if ((s.state == FINAL || s.state == FALL) && el % Balance.RG_HOLD_RAMP_TICKS == 0) holdRamp(server, slot, s, s.state == FINAL ? el : Balance.ROD_FINAL_TICKS);
+            if (s.state >= ARM && s.state <= SPIN && el % 100 == 0) ground(server, s, RailgunEventPayload.CHARGING, now);
             if (s.state == FINAL && el % 100 == 0) ground(server, s, RailgunEventPayload.FINAL, now);
             if (s.state == FALL && el % 100 == 0) ground(server, s, s.burned ? RailgunEventPayload.FIRED : RailgunEventPayload.FINAL, now);
             if (s.state == FALL && el > 0 && !s.burned && !ForcefieldBlockEntity.LOADED.isEmpty()) {

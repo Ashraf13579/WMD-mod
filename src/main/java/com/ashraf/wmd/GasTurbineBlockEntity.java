@@ -21,7 +21,7 @@ public class GasTurbineBlockEntity extends ItemProcessBlockEntity {
 
     @Override protected boolean acceptsUpgrade(UpgradeItem.Type t) { return false; }
 
-    private final FluidTank fuel = new FluidTank(Balance.TURBINE_TANK_MB, fs -> fs.getFluid() == WmdFluids.LPG.source().get() || fs.getFluid() == WmdFluids.NAPHTHA.source().get());
+    private final FluidTank fuel = new FluidTank(Balance.TURBINE_TANK_MB, fs -> fs.getFluid() == WmdFluids.LPG.source().get() || fs.getFluid() == WmdFluids.GASOLINE.source().get() || fs.getFluid() == WmdFluids.NAPHTHA.source().get());
     private final IFluidHandler fuelPort = fillOnly(fuel);
     private final Slot blades = new Slot(4, false, s -> s.is(wmd("turbine_blades")));
     private final Slot[] slots = { blades };
@@ -53,9 +53,8 @@ public class GasTurbineBlockEntity extends ItemProcessBlockEntity {
         if (!out.hasRoom(Balance.TURBINE_FE_PER_TICK)) return fail(OUT_FULL);
         if (credit < Balance.TURBINE_FE_PER_TICK) {
             if (fuel.getFluidAmount() < 1) return fail(NO_INPUT);
-            boolean lpg = fuel.getFluid().getFluid() == WmdFluids.LPG.source().get();
+            credit += fePerMb(fuel.getFluid().getFluid());
             fuel.drain(1, IFluidHandler.FluidAction.EXECUTE);
-            credit += lpg ? Balance.TURBINE_FE_PER_MB_LPG : Balance.TURBINE_FE_PER_MB_NAPHTHA;
             flowAcc += 1;
         }
         credit -= Balance.TURBINE_FE_PER_TICK;
@@ -103,6 +102,13 @@ public class GasTurbineBlockEntity extends ItemProcessBlockEntity {
     @Override protected Slot[] slots() { return slots; }
     @Override protected float progress01() { return life <= 0 ? -1.0F : lifeFraction1000() / 1000.0F; }
     @Override protected List<FluidTank> tanks() { return tanks; }
+
+    static int fePerMb(Fluid f) {
+        if (f == WmdFluids.LPG.source().get()) return Balance.TURBINE_FE_PER_MB_LPG;
+        if (f == WmdFluids.GASOLINE.source().get()) return Balance.TURBINE_FE_PER_MB_GASOLINE;
+        return Balance.TURBINE_FE_PER_MB_NAPHTHA;
+    }
+
     @Override protected List<Fluid> tankFluids() { return List.of(WmdFluids.LPG.source().get(), Fluids.EMPTY); }
     @Override protected List<String> labelKeys() { return List.of("fuel", "blades"); }
     @Override protected int rateMbPerTick() { return 1; }
@@ -113,7 +119,7 @@ public class GasTurbineBlockEntity extends ItemProcessBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.turbine", Balance.TURBINE_FE_PER_TICK * 20, Balance.TURBINE_FE_PER_MB_LPG, Balance.TURBINE_FE_PER_MB_NAPHTHA),
+        return List.of(Component.translatable("gui.wmd.info.turbine", Balance.TURBINE_FE_PER_TICK * 20, Balance.TURBINE_FE_PER_MB_LPG, Balance.TURBINE_FE_PER_MB_GASOLINE, Balance.TURBINE_FE_PER_MB_NAPHTHA),
                 Component.translatable("gui.wmd.info.turbine_life", Balance.TURBINE_BLADE_LIFE / 1200),
                 Component.translatable("gui.wmd.info.turbine_danger"));
     }

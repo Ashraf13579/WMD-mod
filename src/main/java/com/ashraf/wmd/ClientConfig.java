@@ -60,6 +60,18 @@ public final class ClientConfig {
             .comment("Launch, artillery, flight, sonic boom, interface and impact sounds: true = the recorded WMD set (rocket motors per launch pad, guns, whistles, sonic boom, button clicks, HEMP / ASAT / drone / interceptor impacts), false = the older vanilla-based sounds.")
             .define("recordedLaunchSounds", true);
 
+    public static final ModConfigSpec.BooleanValue SHADER_SAFE_FX = BUILDER
+            .comment("With a shaderpack on: draw explosion smoke, clouds, glows and shock waves as soft textured puffs the pack can light (false = the old way).")
+            .define("shaderSafeEffects", true);
+
+    public static final ModConfigSpec.BooleanValue SHADER_PAUSE_CUTSCENE = BUILDER
+            .comment("With a shaderpack on: switch it off during WMD cinematics (railgun, rod, asteroid) and back on after; the pack hides the far land.")
+            .define("shaderPauseCinematics", true);
+
+    public static final ModConfigSpec.BooleanValue SHADER_PAUSE_ORBIT = BUILDER
+            .comment("With a shaderpack on: switch it off while you are in orbit (the pack draws a day sky there) and back on when you leave.")
+            .define("shaderPauseOrbit", true);
+
     public static final ModConfigSpec SPEC = BUILDER.build();
 
     public static boolean newSounds() { return !SPEC.isLoaded() || NEW_SOUNDS.get(); }

@@ -110,6 +110,8 @@ public class WmdClient {
         MountedRenderer.register(event, Wmd.SOLAR_PANEL_BE.get(), context -> new StagedUnitRenderer<SolarPanelBlockEntity>("solar_panel", 2));
         MountedRenderer.register(event, Wmd.LAVA_GENERATOR_BE.get(), context -> new StagedUnitRenderer<LavaGeneratorBlockEntity>("lava_generator", 2));
         MountedRenderer.register(event, Wmd.STEAM_ENGINE_BE.get(), context -> new StagedUnitRenderer<SteamEngineBlockEntity>("steam_engine", 3));
+        MountedRenderer.register(event, Wmd.GASOLINE_ENGINE_BE.get(), context -> new StagedUnitRenderer<GasolineEngineBlockEntity>("gasoline_engine", 3));
+        MountedRenderer.register(event, Wmd.FREE_PISTON_GENERATOR_BE.get(), context -> new StagedUnitRenderer<FreePistonGeneratorBlockEntity>("free_piston_generator", 3));
         MountedRenderer.register(event, Wmd.WIND_TURBINE_BE.get(), context -> new StagedUnitRenderer<WindTurbineBlockEntity>("wind_turbine", 19, 4));
         MountedRenderer.register(event, Wmd.STAMP_MILL_BE.get(),
                 context -> new StagedUnitRenderer<StampMillBlockEntity>("stamp_mill", 3));

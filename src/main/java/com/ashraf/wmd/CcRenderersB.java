@@ -175,8 +175,10 @@ public final class CcRenderersB {
             line(ps, buf, 0.45F, 0.5F, 0.55F, 0.5F, z - 0.02F, 0xFFFFFFFF);
             line(ps, buf, 0.5F, 0.42F, 0.5F, 0.58F, z - 0.02F, 0xFFFFFFFF);
             CompoundTag c = (CompoundTag) rows.get(rows.size() - 1);
-            text(ps, buf, "CAM #" + c.getLong("id") + "  T-" + OrbitMath.mmss(Math.max(0L, (long) ((c.getLong("end") - tt) * 50.0))), 0.5F, 0.9F, z - 0.02F,
-                    height() * 0.12F, 0xFFFFFFFF);
+
+            String label = c.contains("dr") ? "DRONE #" + c.getInt("dr") + "  BAT " + c.getInt("bat") + "%"
+                    : "CAM #" + c.getLong("id") + "  T-" + OrbitMath.mmss(Math.max(0L, (long) ((c.getLong("end") - tt) * 50.0)));
+            text(ps, buf, label, 0.5F, 0.9F, z - 0.02F, height() * 0.12F, 0xFFFFFFFF);
             if (rows.size() > 1) text(ps, buf, rows.size() + " FEEDS", 0.5F, 0.1F, z - 0.02F, height() * 0.1F, 0xFFA0D0FF);
         }
     }

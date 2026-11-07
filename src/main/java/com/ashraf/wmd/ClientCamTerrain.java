@@ -92,12 +92,17 @@ public final class ClientCamTerrain {
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();
         RenderSystem.disableCull();
+
+        double dh = DhBridge.farRadius(), dh2 = dh * dh;
+        double px = mc.player != null ? mc.player.getX() : cam.x, pz = mc.player != null ? mc.player.getZ() : cam.z;
         int n = 0;
         for (Chunk c : java.util.List.copyOf(CACHE.values())) {
 
             if (mc.level.getChunkSource().getChunk(c.cx, c.cz, net.minecraft.world.level.chunk.status.ChunkStatus.FULL, false) != null) continue;
             double mx = c.cx * 16 + 8 - cam.x, mz = c.cz * 16 + 8 - cam.z;
             if (mx * mx + mz * mz > DRAW * DRAW) continue;
+            double qx = c.cx * 16 + 8 - px, qz = c.cz * 16 + 8 - pz;
+            if (dh > 0.0 && qx * qx + qz * qz < dh2) continue;
             if (!c.built) build(c);
             if (c.vb == null) continue;
             Matrix4f mv = new Matrix4f(event.getModelViewMatrix()).translate((float) (c.cx * 16 - cam.x), (float) -cam.y, (float) (c.cz * 16 - cam.z));

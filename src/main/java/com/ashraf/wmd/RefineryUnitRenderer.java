@@ -247,6 +247,27 @@ public class RefineryUnitRenderer<T extends ProcessUnitBlockEntity> extends GeoB
                 getBone("dpulley").ifPresent(b -> b.setRotZ(-t * 4.0F));
                 getBone("gov").ifPresent(b -> b.setRotY(a * 0.6F));
             }
+
+            if (be instanceof GasolineEngineBlockEntity ge) {
+                final float k = ge.onReformate() ? 1.3F : 1.0F;
+                getBone("cpulley").ifPresent(b -> b.setRotX(a * 1.5F));
+                getBone("coupling").ifPresent(b -> b.setRotX(a * 1.5F));
+                getBone("fan").ifPresent(b -> b.setRotX(a * 2.0F));
+                getBone("engine").ifPresent(b -> { b.setPosY(run * k * 0.10F * (float) Math.sin(tt * 3.1)); b.setPosZ(run * k * 0.08F * (float) Math.sin(tt * 2.3 + 1.0)); });
+            }
+
+            if (be instanceof FreePistonGeneratorBlockEntity fp) {
+                final float ca = fp.cycle(state.getPartialTick());
+                final boolean fpOn = be.isRunning();
+                for (int k = 0; k < 2; k++) {
+                    final float t = ca + k * net.minecraft.util.Mth.PI, off = FreePistonGeneratorBlockEntity.offset(t);
+                    final String u = k == 0 ? "A" : "B";
+                    getBone("tl" + u).ifPresent(b -> b.setPosX(off));
+                    getBone("tr" + u).ifPresent(b -> b.setPosX(-off));
+                    getBone("flash" + u).ifPresent(b -> b.setHidden(!fpOn || net.minecraft.util.Mth.cos(t) < 0.85F));
+                    getBone("coil" + u).ifPresent(b -> b.setHidden(!fpOn || Math.abs(net.minecraft.util.Mth.sin(t)) < 0.6F));
+                }
+            }
             if (be instanceof WindTurbineBlockEntity wt) {
                 final float pt = state.getPartialTick();
                 getBone("yaw").ifPresent(b -> b.setRotY(wt.yawDeg() * net.minecraft.util.Mth.DEG_TO_RAD));

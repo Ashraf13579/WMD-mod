@@ -56,6 +56,11 @@ public final class DhBridge {
         }
     }
 
+    static double farRadius() {
+        if (failed || !loaded()) return 0.0;
+        try { return DhRead.farRadius(); } catch (Throwable t) { return 0.0; }
+    }
+
     static boolean hiddenByUs() {
         if (!loaded()) return false;
         try { return DhFar.hidden; } catch (Throwable t) { return false; }

@@ -234,7 +234,8 @@ public final class ClientRailgun {
                 else {
                     long left = Math.max(0, p.fireTick() - now);
                     line = Component.translatable("gui.wmd.rod.event", p.tx(), p.tz(), OrbitMath.mmss(left * 50L));
-                    col = ((now / 10) % 2 == 0) ? WmdUi.BAD : WmdUi.TEXT;
+
+                    col = p.stage() == RailgunEventPayload.CHARGING ? WmdUi.BLUE_LIGHT : ((now / 10) % 2 == 0) ? WmdUi.BAD : WmdUi.TEXT;
                 }
             }
             else if (p.stage() == RailgunEventPayload.FIRED) { line = Component.translatable("gui.wmd.railgun.event_fired", p.owner(), p.tx(), p.tz()); col = WmdUi.BAD; }

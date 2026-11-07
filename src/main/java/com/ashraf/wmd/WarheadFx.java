@@ -1425,6 +1425,8 @@ public final class WarheadFx {
     }
 
     private static final int GLASS_DEPTH = 24;
+    private static long slowColumnLogged = Long.MIN_VALUE / 2;
+    private static long now(ServerLevel level) { return level.getGameTime(); }
 
     private static void glassStep(ServerLevel level, Task k, int age) {
         double gMax = k.r * 0.6;
@@ -1438,11 +1440,20 @@ public final class WarheadFx {
         long t0 = WorkBudget.start();
         java.util.Set<LevelChunk> touched = new java.util.HashSet<>();
         try {
-            for (int i = 0; i < n && ((i & 7) != 7 || WorkBudget.more(t0)); i++) {
+
+            for (int i = 0; i < n && (i == 0 || WorkBudget.more(t0)); i++) {
                 double rr = Math.sqrt(r0 * r0 + level.random.nextDouble() * (r1 * r1 - r0 * r0)), a = level.random.nextDouble() * Math.PI * 2;
                 int bx = (int) Math.floor(k.x + Math.cos(a) * rr), bz = (int) Math.floor(k.z + Math.sin(a) * rr);
                 if (!level.hasChunk(bx >> 4, bz >> 4)) continue;
+                long c0 = System.nanoTime();
+                int before = breaks;
                 breaks = glassColumn(level, k, bx, bz, p, breaks, touched);
+                long cms = (System.nanoTime() - c0) / 1_000_000L;
+                if (cms > 50 && now(level) - slowColumnLogged > 20) {
+                    slowColumnLogged = now(level);
+                    Wmd.LOGGER.warn("[impact-slow] far glass: ONE column at {} {} took {} ms ({} blocks broken, top {})", bx, bz, cms, breaks - before,
+                            level.getBlockState(new BlockPos(bx, level.getHeight(Heightmap.Types.MOTION_BLOCKING, bx, bz) - 1, bz)));
+                }
             }
         } finally { quietFlush(level, touched); WorkBudget.done(t0); }
     }

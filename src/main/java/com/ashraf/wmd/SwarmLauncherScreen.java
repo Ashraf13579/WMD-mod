@@ -61,8 +61,7 @@ public class SwarmLauncherScreen extends MachineScreen implements WmdUi.Kit {
 
         boolean hs = in(mouseX, mouseY, x + 6, y + SET_Y, PW - 12, 13);
         WmdUi.button(g, font, x + 6, y + SET_Y, PW - 12, 13, Component.translatable("gui.wmd.railgun.set"), WmdUi.B_NORMAL, hs);
-        fit(g, s.hasTarget() ? Component.translatable("gui.wmd.railgun.target", s.targetX(), s.targetZ()) : Component.translatable("gui.wmd.railgun.no_target"),
-                cx, y + SET_Y + 17, s.hasTarget() ? WmdUi.BLUE_LIGHT : WmdUi.TEXT_MUTED);
+        targetLine(g, s, cx, y + SET_Y + 17);
 
         int gw = 7 * CELL + 6, gx = cx - gw / 2, gy = y + GRID_Y;
         WmdUi.well(g, gx - 2, gy - 2, gw + 4, gw + 4);
@@ -79,6 +78,25 @@ public class SwarmLauncherScreen extends MachineScreen implements WmdUi.Kit {
         boolean gh = in(mouseX, mouseY, gx0, gy0, bw, GO_H);
         WmdUi.button(g, font, gx0, gy0, bw, GO_H, Component.empty(), can ? WmdUi.B_DANGER : WmdUi.B_DISABLED, gh && can);
         fit(g, Component.translatable("gui.wmd.swarm.fire").withStyle(ChatFormatting.BOLD), cx, gy0 + 4, bw - 4, can ? WmdUi.TEXT : WmdUi.TEXT_DIM);
+    }
+
+    private void targetLine(GuiGraphics g, SwarmLauncherBlockEntity s, int cx, int ly) {
+        Integer tx = num(xBox), tz = num(zBox);
+        net.minecraft.world.phys.Vec3 deck = s.deck();
+        if (tx != null && tz != null && !(s.hasTarget() && tx == s.targetX() && tz == s.targetZ())) {
+            long d = Math.round(Math.hypot(tx + 0.5 - deck.x, tz + 0.5 - deck.z));
+            boolean ok = d <= Balance.SW_RANGE;
+            fit(g, Component.translatable(ok ? "gui.wmd.swarm.dist" : "gui.wmd.swarm.too_far", String.format("%,d", d), String.format("%,d", Balance.SW_RANGE)),
+                    cx, ly, ok ? WmdUi.BLUE_LIGHT : WmdUi.BAD);
+            return;
+        }
+        if (s.hasTarget()) { fit(g, Component.translatable("gui.wmd.railgun.target", s.targetX(), s.targetZ()), cx, ly, WmdUi.BLUE_LIGHT); return; }
+        fit(g, Component.translatable("gui.wmd.swarm.reach", (int) Math.floor(deck.x), (int) Math.floor(deck.z), String.format("%,d", Balance.SW_RANGE)), cx, ly, WmdUi.TEXT_MUTED);
+    }
+
+    private static Integer num(EditBox b) {
+        if (b == null) return null;
+        try { return Integer.parseInt(b.getValue().trim()); } catch (NumberFormatException e) { return null; }
     }
 
     private static boolean in(int mx, int my, int x, int y, int w, int h) { return mx >= x && mx < x + w && my >= y && my < y + h; }

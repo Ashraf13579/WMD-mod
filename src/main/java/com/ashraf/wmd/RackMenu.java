@@ -117,6 +117,6 @@ public class RackMenu extends AbstractContainerMenu {
     @Override
     public boolean stillValid(Player player) {
         return access.evaluate((level, p) -> level.getBlockState(p).getBlock() instanceof BayModuleBlock.Rack
-                && player.distanceToSqr(p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5) <= 64.0, true);
+                && level.getBlockEntity(p) instanceof BayModuleBlockEntity rack && BayLine.nearModule(player, rack), true);
     }
 }
