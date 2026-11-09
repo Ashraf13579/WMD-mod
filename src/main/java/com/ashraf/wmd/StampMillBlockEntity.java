@@ -90,7 +90,7 @@ public class StampMillBlockEntity extends ItemProcessBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.SM_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 0, 0); }
-    @Override protected float soundVolume() { return 0.3F; }
+    @Override protected float soundVolume() { return Balance.SND_MACHINE; }
 
     public static final int CAM_LOOP = 24;
 

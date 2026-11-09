@@ -106,9 +106,9 @@ public class LaserTripodBlockEntity extends BlockEntity implements Owned, Machin
         aimedAt = sl.getGameTime();
         if (on && !lasing) {
             if (store.getEnergyStored() < Balance.TRIPOD_FE_PER_TICK * 20) { player.displayClientMessage(Component.translatable("message.wmd.tripod.flat"), true); on = false; }
-            else sl.playSound(null, worldPosition, WmdSounds.LASER_ON.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+            else sl.playSound(null, worldPosition, WmdSounds.LASER_ON.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
         }
-        if (!on && lasing) sl.playSound(null, worldPosition, WmdSounds.LASER_OFF.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+        if (!on && lasing) sl.playSound(null, worldPosition, WmdSounds.LASER_OFF.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
         boolean was = lasing;
         lasing = on;
 

@@ -174,7 +174,15 @@ public class BayModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
 
     public void cycleMode() { if (kind != BayKind.CORE || stage != Stage.IDLE) return; mode = (mode + 1) % MODES; setChanged(); sync(); }
 
-    public static final int MODES = 5, MODE_CRUISE = MissileBuild.KIND_CRUISE;
+    public static final int MODES = 6, MODE_CRUISE = MissileBuild.KIND_CRUISE;
+
+    public static final int MODE_SLBM = 5;
+
+    public static int kindOf(int mode) { return mode == MODE_SLBM ? MissileBuild.KIND_SLBM : mode; }
+
+    static boolean groundWarhead(String w) {
+        return !w.equals("interceptor") && !w.startsWith(Satellites.PREFIX) && !w.equals(Asat.ID) && !w.equals(Cubesat.ID) && !w.equals(Crew.ID) && !w.startsWith(StationKit.PREFIX) && !w.equals(Cargo.ID);
+    }
 
     public boolean jetIn() { return parts.getStackInSlot(1).getItem() instanceof MissilePartItem p && p.isJet(); }
 
@@ -185,6 +193,11 @@ public class BayModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
         if (mode == MODE_CRUISE) {
             String w = parts.getStackInSlot(3).getItem() instanceof MissilePartItem p ? p.variant() : "he";
             return a >= 2 && a <= 3 && jetIn() && !w.equals("interceptor") && !w.startsWith(Satellites.PREFIX) && !w.equals(Asat.ID) && !w.equals(Cubesat.ID);
+        }
+        if (mode == MODE_SLBM) {
+            String w = parts.getStackInSlot(3).getItem() instanceof MissilePartItem p ? p.variant() : "he";
+            String mv = parts.getStackInSlot(1).getItem() instanceof MissilePartItem m ? m.variant() : "";
+            return a == 3 && partTier(1) == 3 && !jetIn() && !mv.equals("divert") && !mv.equals("hypersonic") && !(parts.getStackInSlot(3).getItem() instanceof MirvBusItem) && groundWarhead(w);
         }
         if (jetIn()) return false;
         return switch (mode) { case 1, 2 -> a >= 4 && partTier(1) >= 4; case 3 -> a >= 2 && a <= 3; default -> a <= 3; };
@@ -328,7 +341,7 @@ public class BayModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
         boolean uplink = mode != MODE_CRUISE && !uplinkSlot.getStackInSlot(0).isEmpty() && (requiredMask(mode) & 4) != 0 && !type.equals("interceptor") && !type.startsWith(Satellites.PREFIX);
         boolean cam = (!camSlot.getStackInSlot(0).isEmpty() || isCamPod(seekerSlot.getStackInSlot(0))) && (requiredMask(mode) & 4) != 0 && !type.equals("interceptor") && !type.startsWith(Satellites.PREFIX);
         String seeker = (requiredMask(mode) & 4) != 0 && !type.equals("interceptor") && !type.startsWith(Satellites.PREFIX) ? SeekerModuleItem.kindOf(seekerSlot.getStackInSlot(0)) : "";
-        return new MissileBuild(partTier(0), partTier(1), partTier(2), partTier(3), type, uplink, divert, refined, false, 0, mode, cam, seeker, hyper);
+        return new MissileBuild(partTier(0), partTier(1), partTier(2), partTier(3), type, uplink, divert, refined, false, 0, kindOf(mode), cam, seeker, hyper);
     }
 
     public int neededStations() { return maxTier() - 1; }
@@ -465,6 +478,11 @@ public class BayModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
             cm.set(WmdComponents.MISSILE_BUILD.get(), build);
             return cm;
         }
+        if (runMode == MODE_SLBM) {
+            ItemStack sb = new ItemStack(Wmd.SLBM.get());
+            sb.set(WmdComponents.MISSILE_BUILD.get(), build);
+            return sb;
+        }
         if (runMode != 0) {
             ItemStack st = new ItemStack(runMode == 1 ? Wmd.STAGE_CORE.get() : runMode == 2 ? Wmd.STAGE_UPPER.get() : Wmd.STAGE_BOOSTER.get());
             st.set(WmdComponents.MISSILE_BUILD.get(), build);
@@ -550,11 +568,11 @@ public class BayModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
         if (be.kind == BayKind.CORE) {
 
             if (core.stage != be.seenStage) {
-                if (be.seenStage == Stage.IDLE && core.stage == Stage.FETCH) level.playLocalSound(c[0], c[1], c[2], WmdSounds.BAY_START.get(), SoundSource.BLOCKS, 0.9F, 1.0F, false);
+                if (be.seenStage == Stage.IDLE && core.stage == Stage.FETCH) level.playLocalSound(c[0], c[1], c[2], WmdSounds.BAY_START.get(), SoundSource.BLOCKS, Balance.SND_MECH, 1.0F, false);
                 be.seenStage = core.stage;
             }
             if (p.held != be.seenHeld) {
-                if (p.held >= 0) level.playLocalSound(c[0], c[1], c[2], WmdSounds.BAY_GRAB.get(), SoundSource.BLOCKS, 0.6F, 1.0F, false);
+                if (p.held >= 0) level.playLocalSound(c[0], c[1], c[2], WmdSounds.BAY_GRAB.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F, false);
                 else if (be.seenHeld >= 0) { if (!BayAudio.seat(level, c[0], c[1], c[2])) level.playLocalSound(c[0], c[1], c[2], SoundEvents.ANVIL_PLACE, SoundSource.BLOCKS, 0.4F, 1.7F, false); be.seatedAt = now; }
                 be.seenHeld = p.held;
             }
@@ -594,8 +612,8 @@ public class BayModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
             if (!BayAudio.rail(be, level, now, h[0], h[1], h[2])) level.playLocalSound(h[0], h[1], h[2], SoundEvents.MINECART_INSIDE, SoundSource.BLOCKS, 0.25F, 0.5F, false);
         }
         if (be.kind == BayKind.CLEAN && core.stage == Stage.CLEAN) {
-            if (p.hood > 0.02 && p.hood < 0.98 && now % 40 == 0) level.playLocalSound(c[0], c[1] + 3, c[2] + 7, WmdSounds.BAY_HOOD.get(), SoundSource.BLOCKS, 0.6F, 1.0F, false);
-            if (p.hatch > 0.02 && p.hatch < 0.98 && now % 30 == 0) level.playLocalSound(c[0] + 3, c[1] + 2, c[2] + 6, WmdSounds.BAY_HATCH.get(), SoundSource.BLOCKS, 0.5F, 1.0F, false);
+            if (p.hood > 0.02 && p.hood < 0.98 && now % 40 == 0) level.playLocalSound(c[0], c[1] + 3, c[2] + 7, WmdSounds.BAY_HOOD.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F, false);
+            if (p.hatch > 0.02 && p.hatch < 0.98 && now % 30 == 0) level.playLocalSound(c[0] + 3, c[1] + 2, c[2] + 6, WmdSounds.BAY_HATCH.get(), SoundSource.BLOCKS, Balance.SND_MECH, 1.0F, false);
             if (p.scan >= 0) {
 
                 double zz = -40 / 16.0 + 80 / 16.0 * p.scan + 60 / 16.0 ;
@@ -626,7 +644,7 @@ public class BayModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
                 VeilBridge.machineGlow(0x7E1D_0000_0000_2000L ^ be.worldPosition.asLong(), g[0], g[1], g[2], 1.0F, 0.35F, 0.12F, 9.0F, 1.4F, 0.5F, now);
                 if (!BayAudio.oven(be, () -> !be.isRemoved() && be.pose(0.0F).ir) && now % 10 == 0) level.playLocalSound(g[0], g[1], g[2], SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 0.3F, 0.8F, false);
             }
-            if (p.arch > 0.02 && p.arch < 0.98 && now % 40 == 0) level.playLocalSound(c[0], c[1] + 3, c[2] + 5, WmdSounds.BAY_ARCH.get(), SoundSource.BLOCKS, 0.4F, 1.0F, false);
+            if (p.arch > 0.02 && p.arch < 0.98 && now % 40 == 0) level.playLocalSound(c[0], c[1] + 3, c[2] + 5, WmdSounds.BAY_ARCH.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F, false);
         }
         if (be.kind == BayKind.CRYO && p.cryo > 0.02) {
 
@@ -644,14 +662,14 @@ public class BayModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
                 }
             }
             if (!BayAudio.cryo(be, level, now, c[0], c[1] + 2, c[2] + 4)) {
-                if (now % 40 == 0) level.playLocalSound(c[0], c[1] + 3, c[2] + 4, WmdSounds.BAY_FROST.get(), SoundSource.BLOCKS, 0.5F, 1.0F, false);
+                if (now % 40 == 0) level.playLocalSound(c[0], c[1] + 3, c[2] + 4, WmdSounds.BAY_FROST.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F, false);
 
             }
 
         }
         if (be.kind == BayKind.WARHEAD) {
             double[] d = be.worldPoint(2.8, 2.0, 3.9);
-            if (p.clamp > 0.02 && p.clamp < 0.98 && now % 16 == 0) level.playLocalSound(d[0], d[1], d[2], WmdSounds.BAY_CLAMP.get(), SoundSource.BLOCKS, 0.4F, 1.0F, false);
+            if (p.clamp > 0.02 && p.clamp < 0.98 && now % 16 == 0) level.playLocalSound(d[0], d[1], d[2], WmdSounds.BAY_CLAMP.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F, false);
         }
         if (be.kind.isRack()) {
 
@@ -659,14 +677,14 @@ public class BayModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
             double[] g = be.worldPoint(sx * p.rtx / 16.0, (BayAnim.HOLD_Y + p.rdy) / 16.0, p.rbz / 16.0);
             int held = p.rcarry ? 5 : -1;
             if (held != be.seenHeld) {
-                if (held >= 0) level.playLocalSound(g[0], g[1], g[2], WmdSounds.BAY_GRAB.get(), SoundSource.BLOCKS, 0.7F, 0.9F, false);
+                if (held >= 0) level.playLocalSound(g[0], g[1], g[2], WmdSounds.BAY_GRAB.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 0.9F, false);
                 else if (be.seenHeld >= 0) { if (!BayAudio.seat(level, g[0], g[1], g[2])) level.playLocalSound(g[0], g[1], g[2], SoundEvents.ANVIL_PLACE, SoundSource.BLOCKS, 0.5F, 1.4F, false); be.seatedAt = now; }
                 be.seenHeld = held;
             }
             if (p.wmoving && now % 7 == 0) { double[] h = be.worldPoint(sx * 3.5, 4.9, 12.0); if (!BayAudio.rail(be, level, now, h[0], h[1], h[2])) level.playLocalSound(h[0], h[1], h[2], SoundEvents.MINECART_INSIDE, SoundSource.BLOCKS, 0.2F, 0.5F, false); }
             if (p.rjaw > 0.03 && p.rjaw < 0.97) {
                 VeilBridge.machineGlow(0x7E1D_0000_0000_7000L ^ be.worldPosition.asLong(), g[0], g[1], g[2], 0.45F, 0.75F, 1.0F, 6.0F, 1.2F, 0.5F, now);
-                if (now % 15 == 0) level.playLocalSound(g[0], g[1], g[2], WmdSounds.BAY_CLAMP.get(), SoundSource.BLOCKS, 0.35F, 1.15F, false);
+                if (now % 15 == 0) level.playLocalSound(g[0], g[1], g[2], WmdSounds.BAY_CLAMP.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.15F, false);
             }
             long age = now - be.seatedAt;
             if (age >= 0 && age < 14) {
@@ -678,14 +696,14 @@ public class BayModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
         if (be.kind == BayKind.CORE || be.kind == BayKind.CRANE || be.kind == BayKind.WARHEAD) {
             double[] g = gripPoint(be, p);
             if (be.kind != BayKind.CORE && p.held != be.seenHeld) {
-                if (p.held >= 0) level.playLocalSound(g[0], g[1], g[2], WmdSounds.BAY_GRAB.get(), SoundSource.BLOCKS, 0.5F, 1.05F, false);
+                if (p.held >= 0) level.playLocalSound(g[0], g[1], g[2], WmdSounds.BAY_GRAB.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.05F, false);
                 else if (be.seenHeld >= 0) { if (!BayAudio.seat(level, g[0], g[1], g[2])) level.playLocalSound(g[0], g[1], g[2], SoundEvents.ANVIL_PLACE, SoundSource.BLOCKS, 0.45F, 1.6F, false); be.seatedAt = now; }
                 be.seenHeld = p.held;
             }
             if (p.jaw > 0.03 && p.jaw < 0.97) {
                 VeilBridge.machineGlow(0x7E1D_0000_0000_4000L ^ be.worldPosition.asLong(), g[0], g[1], g[2], 0.45F, 0.75F, 1.0F, 6.0F, 1.2F, 0.5F, now);
                 if (rnd.nextFloat() < 0.5F) level.addParticle(ParticleTypes.ELECTRIC_SPARK, g[0] + (rnd.nextDouble() - 0.5) * 0.8, g[1] + (rnd.nextDouble() - 0.5) * 0.8, g[2], 0, 0.03, 0);
-                if (now % 15 == 0) level.playLocalSound(g[0], g[1], g[2], WmdSounds.BAY_CLAMP.get(), SoundSource.BLOCKS, 0.35F, 1.15F, false);
+                if (now % 15 == 0) level.playLocalSound(g[0], g[1], g[2], WmdSounds.BAY_CLAMP.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.15F, false);
             }
             long age = now - be.seatedAt;
             if (age >= 0 && age < 14) {

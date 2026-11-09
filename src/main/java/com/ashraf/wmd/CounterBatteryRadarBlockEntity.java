@@ -44,7 +44,9 @@ public class CounterBatteryRadarBlockEntity extends ProcessUnitBlockEntity imple
 
     private final Set<Long> traced = new HashSet<>();
 
-    private float yaw, prevYaw, tilt = Float.NaN, prevTilt;
+    private float yaw, prevYaw, tilt = Float.NaN, prevTilt, deploy, search = Float.NaN, fan, fanAng, prevFanAng;
+    private long lastUntil = -1L, beatAt = Long.MIN_VALUE / 2;
+    private int headAge;
 
     private static final Map<UUID, Map<Long, Long>> LAST = new HashMap<>();
 
@@ -131,6 +133,7 @@ public class CounterBatteryRadarBlockEntity extends ProcessUnitBlockEntity imple
         double bx = ex + 0.5 - me.x, bz = ez + 0.5 - me.z;
         trackAz = (float) Mth.wrapDegrees(Math.toDegrees(Math.atan2(bx, -bz)));
         trackUntil = now + TRACK_TICKS;
+        playOnce(sl, WmdSounds.CC_PING.get(), Balance.SND_CLICK, 1.3F);
 
         Map<Long, Long> mine = LAST.computeIfAbsent(owner, k -> new HashMap<>());
         Long last = mine.get(gun.asLong());
@@ -199,26 +202,64 @@ public class CounterBatteryRadarBlockEntity extends ProcessUnitBlockEntity imple
     }
 
     private void tickHead(long now) {
+        boolean on = isRunning();
+        boolean first = Float.isNaN(tilt);
+        headAge++;
         prevYaw = yaw;
         prevTilt = tilt;
+        prevFanAng = fanAng;
         float facingYaw = (getBlockState().getValue(MachineBlock.FACING).toYRot() + 180.0F) % 360.0F;
-        float tYaw, tTilt;
-        if (!isRunning()) { tYaw = yaw; tTilt = 0.0F; }
-        else if (now < trackUntil) {
+        boolean tracking = on && now < trackUntil;
+
+        if (trackUntil != lastUntil) {
+            if (lastUntil >= 0L && headAge > 40 && trackUntil > now) beatAt = now;
+            lastUntil = trackUntil;
+        }
+
+        float tYaw = 0.0F;
+        if (tracking && deploy >= 1.0F) {
             float ta = trackAz;
             double[] s = ShipFrame.compassAim(level, worldPosition, trackAz, 0.0, Float.NaN);
             if (s != null) ta = (float) s[0];
-            tYaw = Mth.wrapDegrees(ta - facingYaw); tTilt = CcSpecS52.CBR_TRACK_TILT_DEG;
+            tYaw = Mth.wrapDegrees(ta - facingYaw);
         }
-        else {
-            tYaw = yaw + 360.0F / CcSpecS52.CBR_SCAN_TICKS;
-            double ph = (now % 200L) / 200.0 * Math.PI * 2.0;
-            tTilt = CcSpecS52.CBR_SCAN_TILT_MIN + (CcSpecS52.CBR_SCAN_TILT_MAX - CcSpecS52.CBR_SCAN_TILT_MIN) * (float) (0.5 + 0.5 * Math.sin(ph));
+
+        double ph = (now % 200L) / 200.0 * Math.PI * 2.0;
+        float tSearch = tracking ? CcSpecS52.CBR_TRACK_TILT_DEG
+                : CcSpecS52.CBR_SCAN_TILT_MIN + (CcSpecS52.CBR_SCAN_TILT_MAX - CcSpecS52.CBR_SCAN_TILT_MIN) * (float) (0.5 + 0.5 * Math.sin(ph));
+        if (first) {
+            deploy = on ? 1.0F : 0.0F;
+            yaw = on ? tYaw : 0.0F;
+            search = tSearch;
+            prevYaw = yaw;
         }
-        if (Float.isNaN(tilt)) { tilt = tTilt; prevTilt = tilt; }
-        yaw += Mth.clamp(Mth.wrapDegrees(tYaw - yaw), -CcSpecS52.CBR_SLEW_DEG, CcSpecS52.CBR_SLEW_DEG);
-        tilt += Mth.clamp(tTilt - tilt, -0.6F, 0.6F);
-        tilt = Mth.clamp(tilt, 0.0F, CcSpecS52.CBR_TILT_MAX_DEG);
+        search += Mth.clamp(tSearch - search, -0.6F, 0.6F);
+
+        float d = Mth.wrapDegrees(yaw);
+        boolean home = Math.abs(d) < 0.5F;
+        if (on && deploy < 1.0F) {
+            if (deploy <= 0.0F && headAge > 40) playOnce(level, WmdSounds.SEIS_HOIST.get(), Balance.SND_MECH, 1.0F);
+            deploy = Math.min(1.0F, deploy + 1.0F / CbrAnim.DEPLOY_TICKS);
+            if (deploy >= 1.0F && headAge > 40) playOnce(level, WmdSounds.ST_DOCK_CLAMP.get(), Balance.SND_MECH, 1.1F);
+        } else if (!on && deploy > 0.0F && home) {
+            if (deploy >= 1.0F && headAge > 40) playOnce(level, WmdSounds.SEIS_HOIST.get(), Balance.SND_MECH, 0.8F);
+            deploy = Math.max(0.0F, deploy - 1.0F / CbrAnim.STOW_TICKS);
+            if (deploy <= 0.0F && headAge > 40) playOnce(level, WmdSounds.ST_DOCK_CLAMP.get(), Balance.SND_MECH, 0.9F);
+        }
+
+        if (deploy >= 1.0F || !on) {
+            float delta = Mth.wrapDegrees(tYaw - yaw);
+            float step = Mth.clamp(delta * CbrAnim.SLEW_EASE, -CbrAnim.SLEW_MAX, CbrAnim.SLEW_MAX);
+            if (Math.abs(step) < CbrAnim.SLEW_MIN) step = Math.abs(delta) < CbrAnim.SLEW_MIN ? delta : Math.copySign(CbrAnim.SLEW_MIN, delta);
+            yaw += step;
+        }
+        tilt = CbrAnim.STOW + (search - CbrAnim.STOW) * CbrAnim.ease(deploy);
+        if (first) prevTilt = tilt;
+
+        fan += ((on ? 1.0F : 0.0F) - fan) * (on ? CbrAnim.FAN_UP : CbrAnim.FAN_DOWN);
+        if (!on && fan < 0.01F) fan = 0.0F;
+        fanAng += fan * CbrAnim.FAN_RAD;
+        if (fanAng > Mth.TWO_PI * 100) { fanAng -= Mth.TWO_PI * 100; prevFanAng -= Mth.TWO_PI * 100; }
         if (yaw >= 360.0F) { yaw -= 360.0F; prevYaw -= 360.0F; }
         if (yaw < 0.0F) { yaw += 360.0F; prevYaw += 360.0F; }
     }
@@ -231,6 +272,35 @@ public class CounterBatteryRadarBlockEntity extends ProcessUnitBlockEntity imple
         final float rx = CcSpecS52.CBR_TILT_SIGN * (float) Math.toRadians(t);
         model.getBone("yaw").ifPresent(b -> b.setRotY(ry));
         model.getBone("array").ifPresent(b -> b.setRotX(rx));
+
+        final float[] j = CbrAnim.jack(t);
+        for (int k = 0; k < 2; k++) {
+            model.getBone("jack" + k).ifPresent(b -> b.setRotX(CcSpecS52.CBR_TILT_SIGN * j[0]));
+            model.getBone("rod" + k).ifPresent(b -> b.setPosY(j[1]));
+        }
+
+        final float fa = prevFanAng + (fanAng - prevFanAng) * pt;
+        model.getBone("hvacfan").ifPresent(b -> b.setRotX(fa));
+        model.getBone("genfan").ifPresent(b -> b.setRotX(fa * 1.4F));
+        for (int k = 0; k < 2; k++) { final float ph = k * 0.9F; model.getBone("cfan" + k).ifPresent(b -> b.setRotZ(fa * 1.7F + ph)); }
+        final float flap = fan * (0.35F + 0.22F * (float) Math.sin(tt * 1.9) + 0.08F * (float) Math.sin(tt * 5.3));
+        model.getBone("genflap").ifPresent(b -> b.setRotX(CcSpecS52.CBR_TILT_SIGN * flap));
+
+        long now = (long) tt;
+        boolean on = isRunning();
+        boolean dark = ClientHemp.darkAt(worldPosition.getX() + 0.5, worldPosition.getZ() + 0.5);
+        boolean up = deploy >= 1.0F, moving = deploy > 0.0F && deploy < 1.0F;
+        boolean tracking = on && up && now < trackUntil;
+        long beat = now - beatAt;
+        boolean inBeat = beat >= 0 && beat < CbrAnim.BEAT_TICKS;
+        final boolean showB = !dark && !up && (!moving || now % 10 < 5);
+        final boolean showG = !dark && on && up && !tracking;
+        final boolean showR = !dark && tracking && (!inBeat || now % 4 < 2);
+        final boolean showGlow = !dark && on && up && !(inBeat && CbrAnim.beatDark(beat));
+        model.getBone("st_b").ifPresent(b -> b.setHidden(!showB));
+        model.getBone("st_g").ifPresent(b -> b.setHidden(!showG));
+        model.getBone("st_r").ifPresent(b -> b.setHidden(!showR));
+        model.getBone("glow").ifPresent(b -> b.setHidden(!showGlow));
     }
 
     @Override protected List<FluidTank> tanks() { return List.of(); }
@@ -252,7 +322,7 @@ public class CounterBatteryRadarBlockEntity extends ProcessUnitBlockEntity imple
 
     @Override protected SoundEvent runSound() { return WmdSounds.CBR_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 0, 1); }
-    @Override protected float soundVolume() { return 0.2F; }
+    @Override protected float soundVolume() { return Balance.SND_SMALL; }
 
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {

@@ -164,4 +164,26 @@ public class CcMapTableBlockEntity extends CcModuleBlockEntity {
         if (tag.contains("assets")) { int[] a = tag.getIntArray("assets"); assets = a.length % 3 == 0 ? a : new int[0]; }
         if (tag.contains("warnings")) warnings = List.copyOf(CommandCenter.loadList(tag.getList("warnings", Tag.TAG_COMPOUND)));
     }
+
+    private static final int[] EMIT_ORDER = { 0, 1, 3, 2 };
+
+    private double bootAt = -1.0;
+
+    @Override
+    public void ccAnimate(CcBones model, double tt, float partialTick) {
+        boolean on = isRunning() && !ClientHemp.darkAt(worldPosition.getX() + 0.5, worldPosition.getZ() + 0.5);
+        if (!on) bootAt = -1.0;
+        else if (bootAt < 0.0 || tt < bootAt) bootAt = tt;
+        double since = on ? tt - bootAt : -1.0, cyc = tt % 48.0;
+        for (int i = 0; i < EMIT_ORDER.length; i++) {
+            final boolean lit = on && since >= 4.0 + 5.0 * i && !(cyc >= 6.0 * i && cyc < 6.0 * i + 3.0);
+            model.getBone("emit" + EMIT_ORDER[i]).ifPresent(b -> b.setHidden(!lit));
+        }
+    }
+
+    public float holoShown(double tt) {
+        if (bootAt < 0.0) return 1.0F;
+        float k = (float) Math.max(0.0, Math.min(1.0, (tt - bootAt - 4.0) / 20.0));
+        return k * k * (3.0F - 2.0F * k);
+    }
 }

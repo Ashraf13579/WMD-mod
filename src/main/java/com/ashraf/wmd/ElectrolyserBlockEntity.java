@@ -80,7 +80,7 @@ public class ElectrolyserBlockEntity extends ItemProcessBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.EL_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 1, 1); }
-    @Override protected float soundVolume() { return 0.6F; }
+    @Override protected float soundVolume() { return Balance.SND_MACHINE; }
 
     @Override
     protected String detail() { return "bauxite " + bauxite.count() + ", electrodes " + electrode.count() + ", aluminium " + aluminium.count() + ", cycle " + progress * 100 / Balance.ELECTRO_CYCLE_TICKS + "%"; }

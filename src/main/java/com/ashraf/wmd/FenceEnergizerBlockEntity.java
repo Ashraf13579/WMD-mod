@@ -71,7 +71,7 @@ public class FenceEnergizerBlockEntity extends ProcessUnitBlockEntity implements
     protected void clientEffects(Level level) {
         if (level.getGameTime() % Balance.EF_PULSE_TICKS != 0) return;
         var r = level.random;
-        level.playLocalSound(worldPosition.getX() + 0.5, worldPosition.getY() + 0.6, worldPosition.getZ() + 0.5, WmdSounds.EF_PULSE.get(), SoundSource.BLOCKS, 0.5F, 1.0F, false);
+        level.playLocalSound(worldPosition.getX() + 0.5, worldPosition.getY() + 0.6, worldPosition.getZ() + 0.5, WmdSounds.EF_PULSE.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F, false);
         if (clientPieces <= 0) return;
         List<BlockPos> fence = ElectricFenceBlock.walk(level, starts(), Math.min(clientPieces, Balance.EF_MAX_PIECES));
         for (int i = 0; i < Math.min(3, fence.size()); i++) {
@@ -87,7 +87,7 @@ public class FenceEnergizerBlockEntity extends ProcessUnitBlockEntity implements
     @Override protected int rateMbPerTick() { return 1; }
     @Override protected SoundEvent runSound() { return WmdSounds.FE_PULSE_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return BlockPos.ZERO; }
-    @Override protected float soundVolume() { return 0.06F; }
+    @Override protected float soundVolume() { return Balance.SND_AMBIENT; }
     @Override protected float soundPitch() { return 1.7F; }
 
     @Override

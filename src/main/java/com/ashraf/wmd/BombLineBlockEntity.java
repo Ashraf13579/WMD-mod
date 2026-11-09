@@ -187,7 +187,7 @@ public class BombLineBlockEntity extends BlockEntity implements Owned, GeoBlockE
         int nap = BombLineRecipes.naphtha(t);
         if (nap > 0 && filling() != null) { filling().naphtha.drain(nap, IFluidHandler.FluidAction.EXECUTE); filling().setChanged(); }
         store.use(BombLineRecipes.runFe(t));
-        level.playSound(null, worldPosition, WmdSounds.CC_PING.get(), SoundSource.BLOCKS, 0.8F, 1.0F);
+        level.playSound(null, worldPosition, WmdSounds.CC_PING.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
         enter(Stage.LOAD);
         if (player != null) player.displayClientMessage(Component.translatable("message.wmd.bomb_line.started", Component.translatable("item.wmd." + t.id)), true);
     }
@@ -232,7 +232,7 @@ public class BombLineBlockEntity extends BlockEntity implements Owned, GeoBlockE
                         dest.racked.insertItem(s, made, false);
                     }
                 }
-                level.playSound(null, worldPosition, WmdSounds.LAB_REACTOR_DONE.get(), SoundSource.BLOCKS, 0.8F, 1.0F);
+                level.playSound(null, worldPosition, WmdSounds.LAB_REACTOR_DONE.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
                 tell(Component.translatable("message.wmd.bomb_line.done", Component.translatable("item.wmd." + t.id)));
                 enter(Stage.TO_HOME);
             }

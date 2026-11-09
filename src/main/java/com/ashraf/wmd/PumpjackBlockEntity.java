@@ -129,7 +129,7 @@ public class PumpjackBlockEntity extends BlockEntity implements GeoBlockEntity, 
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, PumpjackBlockEntity be) {
-        if (be.running) MachineLoop.ensure(be, WmdSounds.PUMPJACK_RUN.get(), be::isRunning, 1.0, 0.9F, false);
+        if (be.running) MachineLoop.ensure(be, WmdSounds.PUMPJACK_RUN.get(), be::isRunning, 1.0, Balance.SND_HEAVY, false);
         be.crank += be.crankSpeed;
         float target = be.running ? 0.0785F : 0.0F;
         be.crankSpeed += (target - be.crankSpeed) * 0.04F;

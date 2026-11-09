@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PAP",
+    "HNH",
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "A": {
+      "item": "minecraft:lightning_rod"
+    },
+    "H": {
+      "item": "minecraft:chain"
+    },
+    "N": {
+      "item": "wmd:network_card"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:comms_buoy",
+    "count": 1
+  }
+}

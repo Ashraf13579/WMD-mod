@@ -534,7 +534,7 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
     private static ItemStack upgradeStack(int code) {
         UpgradeItem.Type t = UpgradeItem.Type.byIndex((code >> 4) - 1);
         if (t == null) return ItemStack.EMPTY;
-        return new ItemStack(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "upgrade_" + t.id)), code & 15);
+        return new ItemStack(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(Wmd.MODID, t.item)), code & 15);
     }
 
     private int[] upgradesSize() { return new int[] { INFO_W, 24 + 24 + font.split(Component.translatable("gui.wmd.upgrade.how"), INFO_W - 16).size() * 10 + 6 }; }

@@ -89,7 +89,7 @@ public class ArcFurnaceBlockEntity extends ItemProcessBlockEntity {
     @Override protected float soundPitch() { return 0.93F + 0.14F * Math.max(0.0F, Math.min(1.0F, progress01())); }
     @Override protected void runStarted(net.minecraft.world.level.Level level) { playOnce(level, WmdSounds.ARC_STRIKE.get(), 1.1F, 0.95F + level.random.nextFloat() * 0.1F); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 1, 1); }
-    @Override protected float soundVolume() { return 0.9F; }
+    @Override protected float soundVolume() { return Balance.SND_HEAVY; }
 
     @Override
     protected String detail() { return "concentrate " + conc.count() + ", coke " + coke.count() + ", electrodes " + electrode.count() + ", ingots " + ingot.count() + ", cycle " + (cycleTicks == 0 ? 0 : progress * 100 / cycleTicks) + "%"; }

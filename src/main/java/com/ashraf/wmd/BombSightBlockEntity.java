@@ -176,7 +176,7 @@ public class BombSightBlockEntity extends ProcessUnitBlockEntity implements Owne
                     along = dx * ux + dz * uz;
                     cross = Math.abs(dx * uz - dz * ux);
                     locked = along > 0.0 && cross <= Balance.SIGHT_CROSS;
-                    if (locked && !wasLocked) sl.playSound(null, w.x, w.y, w.z, WmdSounds.SIGHT_LOCK.get(), SoundSource.BLOCKS, 1.5F, 1.0F);
+                    if (locked && !wasLocked) sl.playSound(null, w.x, w.y, w.z, WmdSounds.SIGHT_LOCK.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
                     if (!Double.isNaN(prev) && prev > 0.0 && along <= 0.0 && cross <= Balance.SIGHT_CROSS && pulse == 0) release(sl);
                 }
             }
@@ -188,7 +188,7 @@ public class BombSightBlockEntity extends ProcessUnitBlockEntity implements Owne
         pulse = Balance.SIGHT_PULSE;
         emit(sl);
         Vec3 c = worldCentre();
-        sl.playSound(null, c.x, c.y, c.z, WmdSounds.SIGHT_RELEASE.get(), SoundSource.BLOCKS, 1.5F, 1.0F);
+        sl.playSound(null, c.x, c.y, c.z, WmdSounds.SIGHT_RELEASE.get(), SoundSource.BLOCKS, Balance.SND_RELEASE, 1.0F);
         Wmd.LOGGER.info("Bomb sight: release pulse at {} (cross {} blocks)", worldPosition.toShortString(), String.format("%.1f", cross));
         if (getOwner() != null && sl.getServer().getPlayerList().getPlayer(getOwner()) instanceof net.minecraft.server.level.ServerPlayer p && p.distanceToSqr(c) < 64.0 * 64.0)
             p.displayClientMessage(Component.translatable("message.wmd.sight.release"), true);
@@ -305,7 +305,7 @@ public class BombSightBlockEntity extends ProcessUnitBlockEntity implements Owne
 
     @Override protected SoundEvent runSound() { return SoundEvents.BEACON_AMBIENT; }
     @Override protected BlockPos soundLocal() { return BlockPos.ZERO; }
-    @Override protected float soundVolume() { return 0.08F; }
+    @Override protected float soundVolume() { return Balance.SND_AMBIENT; }
     @Override protected float soundPitch() { return 1.8F; }
 
     @Override

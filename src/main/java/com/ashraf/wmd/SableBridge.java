@@ -66,6 +66,11 @@ public final class SableBridge {
         } catch (Throwable t) { fail(t); return List.of(); }
     }
 
+    public static ProjectilePath.PathHit exactHit(ServerLevel level, Vec3 from, Vec3 to, List<ShipInfo> ships) {
+        if (level == null || from == null || to == null || ships == null || ships.isEmpty() || !active()) return null;
+        try { return SableImpact.exact(level, from, to, ships); } catch (Throwable t) { fail(t); return null; }
+    }
+
     public static ShipInfo shipInfo(ServerLevel level, UUID id) {
         if (level == null || id == null || !active()) return null;
         try { return SableShips.info(level, id); } catch (Throwable t) { fail(t); return null; }
@@ -95,7 +100,7 @@ public final class SableBridge {
         List<ShipInfo> all = shipsIntersecting(level, box);
         if (all.isEmpty()) return all;
         java.util.ArrayList<ShipInfo> out = new java.util.ArrayList<>(all.size());
-        for (ShipInfo s : all) if (s.isLarge()) out.add(s);
+        for (ShipInfo s : all) if (s.isLarge() && NavalLayer.visibleAboveWater(level, s)) out.add(s);
         return out;
     }
 
@@ -116,6 +121,21 @@ public final class SableBridge {
     public static List<BlockPos> blockEntitiesOn(ServerLevel level, UUID shipId) {
         if (level == null || shipId == null || !active()) return List.of();
         try { return SableShips.blockEntitiesOn(level, shipId); } catch (Throwable t) { fail(t); return List.of(); }
+    }
+
+    public static int[] plotBox(ServerLevel level, UUID shipId) {
+        if (level == null || shipId == null || !active()) return null;
+        try { return SableShips.plotBox(level, shipId); } catch (Throwable t) { fail(t); return null; }
+    }
+
+    public static java.util.Map<Long, net.minecraft.world.level.chunk.LevelChunk> plotChunks(ServerLevel level, UUID shipId) {
+        if (level == null || shipId == null || !active()) return java.util.Map.of();
+        try { return SableShips.plotChunks(level, shipId); } catch (Throwable t) { fail(t); return java.util.Map.of(); }
+    }
+
+    public static int countBlocks(ServerLevel level, UUID shipId, java.util.function.Predicate<net.minecraft.world.level.block.state.BlockState> match) {
+        if (level == null || shipId == null || !active()) return 0;
+        try { return SableShips.countBlocks(level, shipId, match); } catch (Throwable t) { fail(t); return 0; }
     }
 
     public static boolean isOnShip(Level level, BlockPos pos) {
@@ -179,6 +199,11 @@ public final class SableBridge {
         try { return SableDebris.spawn(level, anchor, blocks, until); } catch (Throwable t) { debrisFail(t); return null; }
     }
 
+    public static UUID assembleShip(ServerLevel level, BlockPos anchor, List<BlockPos> blocks, String name) {
+        if (level == null || blocks == null || blocks.isEmpty() || !active()) return null;
+        try { return SableDebris.assembleShip(level, anchor, blocks, name); } catch (Throwable t) { fail(t); return null; }
+    }
+
     public static boolean debrisPush(ServerLevel level, UUID id, Vec3 vel, Vec3 offset) {
         if (level == null || id == null || !debrisActive()) return false;
         try { return SableDebris.push(level, id, vel, offset); } catch (Throwable t) { debrisFail(t); return false; }
@@ -207,6 +232,11 @@ public final class SableBridge {
     public static boolean debrisRemove(ServerLevel level, UUID id) {
         if (level == null || id == null || !debrisActive()) return false;
         try { return SableDebris.remove(level, id); } catch (Throwable t) { debrisFail(t); return false; }
+    }
+
+    public static boolean debrisRemnant(ServerLevel level, UUID id) {
+        if (level == null || id == null || !debrisActive()) return false;
+        try { return SableDebris.naturalRemnant(level, id, Balance.DEBRIS_TREE_MAX); } catch (Throwable t) { debrisFail(t); return false; }
     }
 
     public static List<DebrisScan> debrisScan(ServerLevel level) {

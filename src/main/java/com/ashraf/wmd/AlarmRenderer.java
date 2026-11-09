@@ -59,6 +59,14 @@ public class AlarmRenderer extends GeoBlockRenderer<AlarmBlockEntity> {
     }
 
     @Override
+    protected void rotateBlock(net.minecraft.core.Direction facing, com.mojang.blaze3d.vertex.PoseStack poseStack) {
+        super.rotateBlock(facing, poseStack);
+        poseStack.translate(-MODEL_ORIGIN, 0.0, -MODEL_ORIGIN);
+    }
+
+    static final double MODEL_ORIGIN = 0.5;
+
+    @Override
     public void render(AlarmBlockEntity be, float partialTick, com.mojang.blaze3d.vertex.PoseStack poseStack,
                        net.minecraft.client.renderer.MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         poseStack.pushPose();

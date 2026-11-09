@@ -102,14 +102,18 @@ public class ChlorAlkaliBlockEntity extends ItemProcessBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.CA_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 0, 0); }
-    @Override protected float soundVolume() { return 0.5F; }
+    @Override protected float soundVolume() { return Balance.SND_MACHINE; }
+
+    static final double CA_FIZZ_BASE = 0.15, CA_FIZZ_LOAD = 0.45;
 
     @Override
     protected void clientEffects(Level level) {
-        if (level.getGameTime() % 5 != 0) return;
         var r = level.random;
-        double[] w = worldPoint((r.nextDouble() - 0.5) * 2.2, 1.6, 0.0);
-        level.addParticle(ParticleTypes.BUBBLE_POP, w[0], w[1], w[2], 0, 0.02, 0);
+        if (r.nextDouble() >= CA_FIZZ_BASE + CA_FIZZ_LOAD * flowFraction()) return;
+        int k = r.nextInt(7);
+        double xPx = -17.6 + 4.0 * k + 0.6 + r.nextDouble() * 2.0, yPx = 7.0 + r.nextDouble() * 13.0;
+        double[] w = worldPoint(xPx / 16.0, yPx / 16.0, -2.5 / 16.0);
+        level.addParticle(ParticleTypes.BUBBLE_POP, w[0], w[1], w[2], 0, 0.04, 0);
     }
 
     @Override

@@ -142,7 +142,7 @@ public class WarheadReactorBlockEntity extends BlockEntity implements GeoBlockEn
             net.minecraft.world.item.ItemStack in = hand.copyWithCount(take);
             if (!player.getAbilities().instabuild) hand.shrink(take);
             held.addItem(in);
-            level.playSound(null, worldPosition, WmdSounds.WR_INSERT.get(), SoundSource.BLOCKS, 0.8F, 1.0F);
+            level.playSound(null, worldPosition, WmdSounds.WR_INSERT.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
             sync();
             player.displayClientMessage(Component.translatable("message.wmd.reactor.loaded", needsLine()), true);
             return;
@@ -186,7 +186,7 @@ public class WarheadReactorBlockEntity extends BlockEntity implements GeoBlockEn
         RandomSource r = level.random;
         running = true; tick = 0; greenTicks = 0; redTicks = 0; lastResult = R_NONE;
         for (int i = 0; i < 4; i++) { g[i] = 0.5F + (i < gaugeCount() ? (r.nextFloat() - 0.5F) * 0.16F : 0); vel[i] = 0; }
-        level.playSound(null, worldPosition, WmdSounds.WR_STAGE.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+        level.playSound(null, worldPosition, WmdSounds.WR_STAGE.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
         player.displayClientMessage(Component.translatable("message.wmd.reactor.start", Balance.LAB_RUN_TICKS / 20), true);
         sync();
     }
@@ -195,7 +195,7 @@ public class WarheadReactorBlockEntity extends BlockEntity implements GeoBlockEn
         if (running || level == null) return;
         running = true; autoRun = true; tick = 0; greenTicks = 0; redTicks = 0; lastResult = R_NONE;
         for (int i = 0; i < 4; i++) { g[i] = 0.5F; vel[i] = 0; }
-        level.playSound(null, worldPosition, WmdSounds.WR_STAGE.get(), SoundSource.BLOCKS, 0.8F, 1.15F);
+        level.playSound(null, worldPosition, WmdSounds.WR_STAGE.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.15F);
         sync();
     }
 
@@ -206,7 +206,7 @@ public class WarheadReactorBlockEntity extends BlockEntity implements GeoBlockEn
         RandomSource r = level.random;
         running = true; autoRun = false; tick = 0; greenTicks = 0; redTicks = 0; lastResult = R_NONE;
         for (int i = 0; i < 4; i++) { g[i] = 0.5F + (i < gaugeCount() ? (r.nextFloat() - 0.5F) * 0.2F : 0); vel[i] = 0; }
-        level.playSound(null, worldPosition, WmdSounds.WR_STAGE.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+        level.playSound(null, worldPosition, WmdSounds.WR_STAGE.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
         tell(Component.translatable("message.wmd.reactor.start", Balance.LAB_RUN_TICKS / 20));
         sync();
     }
@@ -217,7 +217,7 @@ public class WarheadReactorBlockEntity extends BlockEntity implements GeoBlockEn
         if (autoRun) { player.displayClientMessage(Component.translatable("message.wmd.reactor.auto_run"), true); return; }
         g[i] = Mth.clamp(g[i] + (float) (lower ? -Balance.LAB_VALVE_STEP : Balance.LAB_VALVE_STEP), 0.0F, 1.0F);
         turns[i] += lower ? -1 : 1;
-        level.playSound(null, worldPosition, WmdSounds.WR_DOOR.get(), SoundSource.BLOCKS, 0.6F, lower ? 0.85F : 1.0F);
+        level.playSound(null, worldPosition, WmdSounds.WR_DOOR.get(), SoundSource.BLOCKS, Balance.SND_CLICK, lower ? 0.85F : 1.0F);
         sync();
     }
 
@@ -261,7 +261,7 @@ public class WarheadReactorBlockEntity extends BlockEntity implements GeoBlockEn
 
         Vec3 m = be.centre();
         if (anyRed && level.getGameTime() % 8 == 0) {
-            if (level.getGameTime() % 32 == 0) level.playSound(null, pos, WmdSounds.WR_ALARM.get(), SoundSource.BLOCKS, 1.2F, 1.0F);
+            if (level.getGameTime() % 32 == 0) level.playSound(null, pos, WmdSounds.WR_ALARM.get(), SoundSource.BLOCKS, Balance.SND_ALARM, 1.0F);
             sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, m.x, m.y + 0.6, m.z, 6, 0.5, 0.5, 0.5, 0.1);
             if (be.redTicks > Balance.LAB_HAZARD_TICKS / 2) sl.sendParticles(ParticleTypes.CLOUD, m.x, m.y + 1.2, m.z, 4, 0.4, 0.3, 0.4, 0.05);
         }
@@ -274,7 +274,7 @@ public class WarheadReactorBlockEntity extends BlockEntity implements GeoBlockEn
         Vec3 m = centre();
         sl.sendParticles(ParticleTypes.EXPLOSION, m.x, m.y + 0.5, m.z, 3, 0.6, 0.4, 0.6, 0.0);
         sl.sendParticles(ParticleTypes.LAVA, m.x, m.y + 0.5, m.z, 12, 0.6, 0.4, 0.6, 0.0);
-        sl.playSound(null, worldPosition, WmdSounds.WR_FAIL.get(), SoundSource.BLOCKS, 1.2F, 1.0F);
+        sl.playSound(null, worldPosition, WmdSounds.WR_FAIL.get(), SoundSource.BLOCKS, Balance.SND_MECH, 1.0F);
         WarheadType t = type();
         for (Player p : sl.getEntitiesOfClass(Player.class, new AABB(m, m).inflate(Balance.LAB_HAZARD_RADIUS))) {
             double shield = Hardened.shield(Hardened.layers(sl, m, p.position().add(0.0, p.getBbHeight() * 0.5, 0.0)));
@@ -309,7 +309,7 @@ public class WarheadReactorBlockEntity extends BlockEntity implements GeoBlockEn
                 ItemEntity e = new ItemEntity(sl, f.x, f.y, f.z, stack, 0, 0.15, 0);
                 sl.addFreshEntity(e);
             }
-            sl.playSound(null, worldPosition, WmdSounds.LAB_REACTOR_DONE.get(), SoundSource.BLOCKS, 0.9F, res == R_EXCELLENT ? 1.08F : 0.96F);
+            sl.playSound(null, worldPosition, WmdSounds.LAB_REACTOR_DONE.get(), SoundSource.BLOCKS, Balance.SND_CLICK, res == R_EXCELLENT ? 1.08F : 0.96F);
             sl.sendParticles(ParticleTypes.HAPPY_VILLAGER, m.x, m.y + 0.5, m.z, res == R_EXCELLENT ? 25 : 8, 0.5, 0.5, 0.5, 0.0);
             tell(Component.translatable(res == R_EXCELLENT ? "message.wmd.reactor.excellent" : "message.wmd.reactor.normal", Component.translatable("warhead.wmd." + type().id)));
         }

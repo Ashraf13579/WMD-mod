@@ -137,6 +137,8 @@ public class RefineryUnitRenderer<T extends ProcessUnitBlockEntity> extends GeoB
                 getBone("fan").ifPresent(b -> b.setRotX(blow ? a * 3.0F : 0.0F));
             }
 
+            if (be instanceof ReprocessingPlantBlockEntity rp) HotCellAnim.apply(this::getBone, rp, a, state.getPartialTick());
+
             final boolean on = be.isRunning();
             if (be instanceof CokeOvenBlockEntity) {
 
@@ -181,9 +183,17 @@ public class RefineryUnitRenderer<T extends ProcessUnitBlockEntity> extends GeoB
             if (be instanceof BatteryTierBlockEntity bt) {
                 final int segs = bt.segments(), lit = bt.shownFill() <= 0.001F ? 0 : Math.max(1, Math.round(bt.shownFill() * segs));
                 final boolean darkHere = ClientHemp.darkAt(be.getBlockPos().getX() + 0.5, be.getBlockPos().getZ() + 0.5);
-                for (int k = 0; k < segs; k++) { final int kk = k; getBone("chg" + k).ifPresent(b -> b.setHidden(kk >= lit || darkHere)); }
-                getBone("fan0").ifPresent(b -> b.setRotY(a * 0.8F));
-                getBone("fan1").ifPresent(b -> b.setRotY(-a * 0.7F));
+
+                final int cd = bt.chargeDir();
+                final boolean upOn = ((long) tt) % 20 < 10, downOn = ((long) tt) % 20 < 14;
+                for (int k = 0; k < segs; k++) {
+                    final boolean ledOn = cd > 0 && k == lit ? upOn : cd < 0 && k == lit - 1 ? downOn : k < lit;
+                    getBone("chg" + k).ifPresent(b -> b.setHidden(!ledOn || darkHere));
+                }
+                final float fa = bt.fanAngle(state.getPartialTick());
+                getBone("fan").ifPresent(b -> b.setRotX(fa * 0.6F));
+                getBone("fan0").ifPresent(b -> b.setRotY(fa * 0.8F));
+                getBone("fan1").ifPresent(b -> b.setRotY(-fa * 0.7F));
             }
 
             if (be instanceof SentryTurretBlockEntity st) {
@@ -195,6 +205,12 @@ public class RefineryUnitRenderer<T extends ProcessUnitBlockEntity> extends GeoB
 
             if (be instanceof CctvCameraBlockEntity cc) {
                 final float pt = state.getPartialTick();
+                if (ClientCctv.viewing(cc.getBlockPos())) {
+                    for (String bn : new String[] { "base", "pan", "lamp" }) getBone(bn).ifPresent(b -> b.setHidden(true));
+                    return;
+                }
+                getBone("base").ifPresent(b -> b.setHidden(false));
+                getBone("pan").ifPresent(b -> b.setHidden(false));
                 getBone("pan").ifPresent(b -> b.setRotY(cc.shownPan(pt) * net.minecraft.util.Mth.DEG_TO_RAD));
                 getBone("lamp").ifPresent(b -> b.setHidden(!cc.isRunning() || (!cc.viewedShown() && ((long) tt) % 40 > 20)));
             }
@@ -223,6 +239,53 @@ public class RefineryUnitRenderer<T extends ProcessUnitBlockEntity> extends GeoB
                 getBone("lamp").ifPresent(b -> b.setHidden(!sz.sweeping(be.getLevel()) || ((long) tt) % 10 > 5));
             }
 
+            if (be instanceof TorpedoTubeBlockEntity tb && be.getLevel() != null) {
+                final boolean open = tb.doorOpen();
+                final double since = tt - tb.lastFire();
+                getBone("door").ifPresent(b -> b.setRotY(open ? -1.6F : 0.0F));
+                getBone("wheel").ifPresent(b -> b.setRotZ(open ? (float) (tt * 0.3) : 0.0F));
+                getBone("muzzle").ifPresent(b -> b.setHidden(since >= 0 && since < 20));
+                getBone("lamp").ifPresent(b -> b.setHidden(!tb.ready()));
+            }
+            if (be instanceof TorpedoLauncherDeckBlockEntity td && be.getLevel() != null) DeckLauncherAnim.apply(td, tt, state.getPartialTick(), n -> getBone(n).orElse(null));
+            if (be instanceof TorpedoRackBlockEntity rk && be.getLevel() != null) {
+                final double p = (tt - rk.lastFeed()) / TorpedoRackBlockEntity.FEED_TICKS;
+                final float hoist = p >= 0 && p <= 1 ? (float) Math.sin(Math.PI * p) : 0.0F;
+                getBone("trolley").ifPresent(b -> b.setPosZ(-20.0F * hoist));
+                getBone("hook").ifPresent(b -> b.setPosY(-6.0F * hoist));
+                getBone("lamp").ifPresent(b -> b.setHidden(!rk.isRunning() && !rk.hasTorpedoShown()));
+            }
+            if (be instanceof SonarDomeBlockEntity sd && be.getLevel() != null) {
+                getBone("ping").ifPresent(b -> b.setHidden(!SonarDomeRenderer.pingLit(sd, tt)));
+            }
+            if (be instanceof HydrophoneArrayBlockEntity ha) getBone("glow").ifPresent(b -> b.setHidden(!ha.hearing() || ((long) tt) % 30 > 20));
+            if (be instanceof SonarConsoleBlockEntity sc) for (int k = 0; k < 2; k++) getBone("screen" + k).ifPresent(b -> b.setHidden(!sc.isRunning()));
+
+            if (be instanceof LaunchCellBlockEntity lc) LaunchCellAnim.apply(lc, tt, n -> getBone(n).orElse(null));
+            if (be instanceof DepthChargeThrowerBlockEntity kg) KGunAnim.apply(kg, tt, n -> getBone(n).orElse(null));
+            if (be instanceof KrollReactorBlockEntity kr) KrollAnim.apply(kr, tt, n -> getBone(n).orElse(null));
+            if (be instanceof MagnesiumCellBlockEntity mgc) MgCellAnim.apply(mgc, tt, n -> getBone(n).orElse(null));
+            if (be instanceof CokerBlockEntity ck) CokerAnim.apply(ck, tt, state.getPartialTick(), n -> getBone(n).orElse(null));
+            if (be instanceof DepthChargeRackBlockEntity dc) DcRackAnim.apply(dc, tt, n -> getBone(n).orElse(null));
+            if (be instanceof FireControlConsoleBlockEntity fc) {
+                final net.minecraft.nbt.CompoundTag sel = fc.selectedRow(), tgt = fc.targetRow();
+                final java.util.List<net.minecraft.nbt.CompoundTag> fr = fc.launcherRows();
+                final float course = sel == null ? 0.0F : sel.getInt("yaw") / 10.0F, gyroDeg = sel == null ? 0.0F : sel.getInt("g");
+                final float brg = tgt == null ? 0.0F : (float) Math.toDegrees(Math.atan2(tgt.getInt("x") - fc.mapX(), -(tgt.getInt("z") - fc.mapZ())));
+                final float[] dials = { course, brg, gyroDeg };
+                for (int k = 0; k < 3; k++) { final float dv = dials[k]; getBone("dial" + k).ifPresent(b -> b.setRotZ(-dv * net.minecraft.util.Mth.DEG_TO_RAD)); }
+                final boolean blink = ((long) tt) % 12 < 6;
+                for (int k = 0; k < 6; k++) {
+                    final int st = k < fr.size() ? fr.get(k).getInt("st") : -1;
+                    final boolean lit = fc.isRunning() && st >= 0 && (st == TorpedoLauncherBlockEntity.S_READY
+                            || (st != TorpedoLauncherBlockEntity.S_EMPTY && st != TorpedoLauncherBlockEntity.S_NO_POWER && st != TorpedoLauncherBlockEntity.S_BLOCKED && blink));
+                    getBone("tube" + k).ifPresent(b -> b.setHidden(!lit));
+                }
+                final double since = tt - fc.lastShot();
+                final float lift = since >= 0 && since < 30 ? (float) Math.sin(Math.PI * Math.min(1.0, since / 30.0)) : 0.0F;
+                getBone("guard").ifPresent(b -> b.setRotX(-1.0F * lift));
+                getBone("lamp").ifPresent(b -> b.setHidden(!fc.isRunning()));
+            }
             if (be instanceof SolarPanelBlockEntity sp && be.getLevel() != null) {
                 final float tiltR = SolarPanelBlockEntity.tiltDeg(be.getLevel(), state.getPartialTick()) * net.minecraft.util.Mth.DEG_TO_RAD;
                 getBone("tilt").ifPresent(b -> b.setRotZ(tiltR));
@@ -311,8 +374,21 @@ public class RefineryUnitRenderer<T extends ProcessUnitBlockEntity> extends GeoB
     private final Map<String, Matrix3f> meshNormals = new HashMap<>();
     private MeshModel mesh;
 
+    protected java.util.Set<String> attachBones() { return java.util.Set.of(); }
+
+    protected void drawAttached(T be, Map<String, Matrix4f> poses, Map<String, Matrix3f> normals, MultiBufferSource buffers, int light, int overlay) {}
+
+    protected boolean drawsItself(String bone) { return false; }
+
+    private final Map<String, Matrix4f> attachPoses = new HashMap<>();
+    private final Map<String, Matrix3f> attachNormals = new HashMap<>();
+
     @Override
     public void renderCubesOfBone(PoseStack poseStack, GeoBone bone, VertexConsumer buffer, int packedLight, int packedOverlay, int colour) {
+        if (!bone.isHidden() && attachBones().contains(bone.getName())) {
+            attachPoses.put(bone.getName(), new Matrix4f(poseStack.last().pose()));
+            attachNormals.put(bone.getName(), new Matrix3f(poseStack.last().normal()));
+        }
         if (mesh != null && mesh.has(bone.getName())) {
             if (!bone.isHidden()) {
                 meshPoses.put(bone.getName(), new Matrix4f(poseStack.last().pose()));
@@ -328,15 +404,21 @@ public class RefineryUnitRenderer<T extends ProcessUnitBlockEntity> extends GeoB
         mesh = MeshModel.named(name);
         meshPoses.clear();
         meshNormals.clear();
+        attachPoses.clear();
+        attachNormals.clear();
         super.render(be, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
         for (Map.Entry<String, Matrix4f> e : meshPoses.entrySet()) {
+            if (drawsItself(e.getKey())) continue;
             PoseStack ps = new PoseStack();
             ps.last().pose().set(e.getValue());
             ps.last().normal().set(meshNormals.get(e.getKey()));
             mesh.draw(e.getKey(), ps.last(), bufferSource, packedLight, packedOverlay);
         }
+        if (!attachPoses.isEmpty()) drawAttached(be, attachPoses, attachNormals, bufferSource, packedLight, packedOverlay);
         meshPoses.clear();
         meshNormals.clear();
+        attachPoses.clear();
+        attachNormals.clear();
     }
 
     public RefineryUnitRenderer(String name, int up) {
@@ -352,5 +434,5 @@ public class RefineryUnitRenderer<T extends ProcessUnitBlockEntity> extends GeoB
     }
 
     @Override
-    public int getViewDistance() { return 128; }
+    public int getViewDistance() { return name.equals("flare_stack") ? 256 : 128; }
 }

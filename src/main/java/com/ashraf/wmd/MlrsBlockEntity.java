@@ -57,7 +57,7 @@ public class MlrsBlockEntity extends ArtilleryGunBlockEntity {
     @Override protected Slot[] slots() { return slots; }
     @Override protected List<FluidTank> tanks() { return tanks; }
     @Override public PortMap guiPortMap() { return PORT_MAP; }
-    @Override protected float soundVolume() { return 0.3F; }
+    @Override protected float soundVolume() { return Balance.SND_SMALL; }
 
     @Override
     public IItemHandler itemPort(BlockPos part, Direction side) { return at(part, side, 2, 0, 4, Direction.EAST) ? hatch : null; }

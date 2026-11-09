@@ -243,7 +243,7 @@ public class GroundStationBlockEntity extends ProcessUnitBlockEntity implements 
 
     @Override protected SoundEvent runSound() { return WmdSounds.GS_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 0, 1); }
-    @Override protected float soundVolume() { return 0.25F; }
+    @Override protected float soundVolume() { return Balance.SND_SMALL; }
 
     @Override
     protected void clientEffects(Level level) {

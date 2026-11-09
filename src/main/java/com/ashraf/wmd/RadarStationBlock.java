@@ -85,7 +85,7 @@ public class RadarStationBlock extends BaseEntityBlock {
                 if (level.getBlockEntity(ctrl) instanceof RadarBlockEntity rbe && rbe.getOwner() == null) rbe.claim(player);
                 player.displayClientMessage(Component.translatable("block.wmd.radar_station.formed"), true);
             }
-            level.playSound(null, ctrl, WmdSounds.MB_FORMED.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.playSound(null, ctrl, WmdSounds.MB_FORMED.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
         } else {
             BlockPos p = check.first() != null ? check.first() : ctrl;
             if (placer instanceof Player player) {
@@ -98,7 +98,7 @@ public class RadarStationBlock extends BaseEntityBlock {
                 }
             }
             level.removeBlock(pos, false);
-            level.playSound(null, pos, WmdSounds.MB_FAIL.get(), SoundSource.BLOCKS, 0.8F, 1.0F);
+            level.playSound(null, pos, WmdSounds.MB_FAIL.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
         }
     }
 
@@ -124,12 +124,12 @@ public class RadarStationBlock extends BaseEntityBlock {
                     RadarStructure.form(level, pos);
                     if (level.getBlockEntity(pos) instanceof RadarBlockEntity rbe && rbe.getOwner() == null) rbe.claim(player);
                     player.displayClientMessage(Component.translatable("block.wmd.radar_station.formed"), true);
-                    level.playSound(null, pos, WmdSounds.MB_FORMED.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                    level.playSound(null, pos, WmdSounds.MB_FORMED.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
                 } else {
                     BlockPos p = check.first();
                     player.displayClientMessage(Component.translatable("block.wmd.radar_station.incomplete",
                             check.wrong(), p.getX(), p.getY(), p.getZ()), true);
-                    level.playSound(null, pos, WmdSounds.MB_FAIL.get(), SoundSource.BLOCKS, 0.8F, 1.0F);
+                    level.playSound(null, pos, WmdSounds.MB_FAIL.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
                 }
             }
         }

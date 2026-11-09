@@ -25,7 +25,7 @@ public class GasTurbineBlock extends ItemUnitBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return level.isClientSide
-                ? createTickerHelper(type, Wmd.GAS_TURBINE_BE.get(), ProcessUnitBlockEntity::clientTick)
+                ? createTickerHelper(type, Wmd.GAS_TURBINE_BE.get(), GasTurbineBlockEntity::clientTickTurbine)
                 : createTickerHelper(type, Wmd.GAS_TURBINE_BE.get(), ProcessUnitBlockEntity::serverTick);
     }
 }

@@ -127,6 +127,9 @@ public record MissileBuild(int airframe, int motor, int guidance, int warhead, S
     public static final int KIND_RV = 5;
     public boolean isRv() { return kind == KIND_RV; }
 
+    public static final int KIND_SLBM = 6;
+    public boolean isSlbm() { return kind == KIND_SLBM; }
+
     public boolean isStage() { return kind >= 1 && kind <= 3; }
 
     public int calibre() { return Mth.clamp(airframe, 1, 4); }
@@ -146,6 +149,6 @@ public record MissileBuild(int airframe, int motor, int guidance, int warhead, S
         if (!t.contains("airframe")) return preset(fallbackTier);
         return new MissileBuild(t.getInt("airframe"), t.getInt("motor"), t.getInt("guidance"), t.getInt("warhead"),
                 t.contains("warheadType") ? t.getString("warheadType") : "he", t.getBoolean("uplink"), t.getBoolean("divert"), t.getBoolean("refined"),
-                t.getBoolean("staged"), Mth.clamp(t.getInt("boosters"), 0, 4), Mth.clamp(t.getInt("kind"), 0, KIND_RV), t.getBoolean("camPod"), t.getString("seeker"), t.getBoolean("hypersonic"));
+                t.getBoolean("staged"), Mth.clamp(t.getInt("boosters"), 0, 4), Mth.clamp(t.getInt("kind"), 0, KIND_SLBM), t.getBoolean("camPod"), t.getString("seeker"), t.getBoolean("hypersonic"));
     }
 }

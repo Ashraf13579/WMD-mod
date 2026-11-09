@@ -208,7 +208,7 @@ public class BlastFurnaceBlockEntity extends ItemProcessBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.BF_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 1, 0); }
-    @Override protected float soundVolume() { return 0.55F; }
+    @Override protected float soundVolume() { return Balance.SND_HEAVY; }
     @Override protected void runStarted(Level level) { playOnce(level, SoundEvents.FIRECHARGE_USE, 0.6F, 0.7F); }
 
     @Override

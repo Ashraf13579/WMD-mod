@@ -191,6 +191,29 @@ public class Config {
                 .comment("Sable / Aeronautics ships: WMD missiles, shells, rockets and blasts also hit a ship that carries only your own or trusted machines and players (blast damage in reach and projectiles striking it in flight). false = such a ship is spared; a ship with no machines and no players aboard is always hit.")
                 .define("shipFriendlyFire", true);
 
+        public static final ModConfigSpec.BooleanValue ENABLE_DEEP_SEAS_BRIDGE = B
+                .comment("Create: Deep Seas submarines (only when it is installed): WMD reads a submarine's depth, sealing and breaches, and a big hit can implode it. false = WMD ignores Deep Seas (submarines are plain Sable ships).")
+                .define("enableDeepSeasBridge", true);
+        public static final ModConfigSpec.BooleanValue NAVAL_SUB_HOLES = B
+                .comment("WMD blasts that reach a SUBMERGED submarine (or any submerged Sable ship) blow holes in its hull (its own flooding then reacts). false = blasts only shake a submerged ship, no blocks break.")
+                .define("navalSubHoles", true);
+        public static final ModConfigSpec.BooleanValue NAVAL_SUB_IMPLOSION = B
+                .comment("A heavy WMD blast close to a SUBMERGED Deep Seas submarine can IMPLODE it (Deep Seas' own crush sequence). The deeper the sub, the smaller the blast that does it. false = no implosions from WMD hits (holes only).")
+                .define("navalSubImplosion", true);
+        public static final ModConfigSpec.BooleanValue NAVAL_RADAR_SEES_SUBMERGED = B
+                .comment("Radar, recon and the command center also see SUBMERGED ships / submarines. false (default, the v1.1 rule) = only sonar finds them; a surfaced sub is a normal ship contact.")
+                .define("navalRadarSeesSubmerged", false);
+
+        public static final ModConfigSpec.BooleanValue NAVAL_DEEP_LINK_LOSS = B
+                .comment("A submarine deeper than periscope depth (hull top more than 10 blocks under the surface) loses the radio link of its fire control / sonar consoles to everything outside its own hull until its communications buoy floats. false = the nets link at any depth.")
+                .define("navalDeepLinkLoss", true);
+        public static final ModConfigSpec.BooleanValue DEEP_HULL_RATINGS = B
+                .comment("Create: Deep Seas: WMD sets the crush depth ratings of its deep-rated hull blocks (manganese steel 200, superalloy 400, deep viewport 200) and of its hull fittings (torpedo tube, launch cell, periscope, escape pod, comms buoy, towed array winch, sonar dome, hydrophone array, machine parts: 400) in Deep Seas' hull table at every server start. false = Deep Seas' own config/submarine_hull.json decides for these blocks.")
+                .define("deepHullRatings", true);
+        public static final ModConfigSpec.BooleanValue NODULE_RETROGEN = B
+                .comment("Worlds generated before 1.1 have no manganese nodule fields (they are placed when a chunk is first generated). true = every older deep-ocean chunk gets the same nodule roll the first time it loads after the update (once per chunk, never forcing chunks to load). false = only new chunks get nodules.")
+                .define("noduleRetrogen", true);
+
         public static final ModConfigSpec.BooleanValue ENABLE_BLUEMAP = B
                 .comment("BlueMap web map (only when the BlueMap mod is installed; without it WMD does nothing here). Master switch for the three WMD layers below. NOTE: a BlueMap marker is visible to EVERYONE who can open the map page; layers B and C are off by default for that reason.")
                 .define("enableBlueMap", true);
@@ -231,6 +254,14 @@ public class Config {
 
         public static boolean blockDamage() { return !on() || EXPLOSION_BLOCK_DAMAGE.get(); }
         public static boolean damageRings() { return on() && DAMAGE_RINGS.get(); }
+
+        public static boolean deepSeasBridge() { return !on() || ENABLE_DEEP_SEAS_BRIDGE.get(); }
+        public static boolean navalSubHoles() { return !on() || NAVAL_SUB_HOLES.get(); }
+        public static boolean navalSubImplosion() { return !on() || NAVAL_SUB_IMPLOSION.get(); }
+        public static boolean navalRadarSeesSubmerged() { return on() && NAVAL_RADAR_SEES_SUBMERGED.get(); }
+        public static boolean navalDeepLinkLoss() { return !on() || NAVAL_DEEP_LINK_LOSS.get(); }
+        public static boolean deepHullRatings() { return !on() || DEEP_HULL_RATINGS.get(); }
+        public static boolean noduleRetrogen() { return !on() || NODULE_RETROGEN.get(); }
         public static boolean shipBreakup() { return on() && SHIP_BREAKUP.get(); }
         public static boolean collapse() { return on() && COLLAPSE.get(); }
         public static boolean shockwave() { return on() && SHOCKWAVE.get(); }

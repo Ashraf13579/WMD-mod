@@ -237,7 +237,7 @@ public class BayScreen extends AbstractContainerScreen<BayMenu> {
 
         if (menu.partsIn() >= 4) {
             fitted(g, Component.translatable("gui.wmd.bay.stats1", String.format("%.1f", menu.statWeight()), String.format("%,d", menu.statRange())), 12, 110 + BayMenu.ROW2, TEXT);
-            fitted(g, Component.translatable(menu.mode() == BayModuleBlockEntity.MODE_CRUISE ? "gui.wmd.bay.stats2_cruise" : "gui.wmd.bay.stats2",
+            fitted(g, Component.translatable(menu.mode() == BayModuleBlockEntity.MODE_CRUISE ? "gui.wmd.bay.stats2_cruise" : menu.mode() == BayModuleBlockEntity.MODE_SLBM ? "gui.wmd.bay.stats2_slbm" : "gui.wmd.bay.stats2",
                     String.format("%.1f", menu.statSpeed()), menu.statHealth(), String.format("%,d", menu.statFuel())), 12, 120 + BayMenu.ROW2, TEXT);
         } else {
             fitted(g, Component.translatable("gui.wmd.bay.stats_none"), 12, 110 + BayMenu.ROW2, WmdUi.TEXT_MUTED);

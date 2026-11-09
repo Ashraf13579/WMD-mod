@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RCR",
+    "WSW",
+    "PBP"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:prismarine_shard"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "S": {
+      "item": "wmd:steel_block"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "B": {
+      "item": "wmd:network_card"
+    }
+  },
+  "result": {
+    "id": "wmd:towed_array_winch",
+    "count": 1
+  }
+}

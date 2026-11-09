@@ -73,7 +73,7 @@ public class ChlorinatorBlockEntity extends ItemProcessBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.CHL_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 1, 1); }
-    @Override protected float soundVolume() { return 0.6F; }
+    @Override protected float soundVolume() { return Balance.SND_MACHINE; }
 
     @Override
     protected void clientEffects(Level level) {

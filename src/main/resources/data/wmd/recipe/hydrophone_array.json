@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RPR",
+    "RXR",
+    "SBS"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "R": {
+      "item": "minecraft:prismarine_shard"
+    },
+    "X": {
+      "item": "wmd:advanced_circuit"
+    },
+    "S": {
+      "item": "wmd:steel_block"
+    },
+    "B": {
+      "item": "wmd:network_card"
+    }
+  },
+  "result": {
+    "id": "wmd:hydrophone_array",
+    "count": 1
+  }
+}

@@ -27,41 +27,76 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class AlarmBlock extends BaseEntityBlock {
+public class AlarmBlock extends BaseEntityBlock implements net.minecraft.world.level.block.SimpleWaterloggedBlock {
 
     public static final MapCodec<AlarmBlock> CODEC = simpleCodec(AlarmBlock::new);
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    private static final VoxelShape NS = Block.box(0, 0, 0, 16, 16, 16);
-    private static final VoxelShape EW = NS;
-    private static final VoxelShape COL_NS = Block.box(0, 0, 0, 16, 16, 16);
-    private static final VoxelShape COL_EW = COL_NS;
+    private static final java.util.Map<Direction, VoxelShape> OUTLINE = new java.util.EnumMap<>(Direction.class);
+    private static final java.util.Map<Direction, VoxelShape> COLLIDE = new java.util.EnumMap<>(Direction.class);
+
+    private static VoxelShape meshShape(Direction facing, boolean collide) {
+        java.util.Map<Direction, VoxelShape> cache = collide ? COLLIDE : OUTLINE;
+        VoxelShape got = cache.get(facing);
+        if (got != null) return got;
+        VoxelShape out = net.minecraft.world.phys.shapes.Shapes.empty();
+        for (int cx = -1; cx <= 1; cx++) for (int cy = 0; cy <= 1; cy++) for (int cz = -1; cz <= 1; cz++) {
+            VoxelShape c = MachineShapes.get("alarm", new BlockPos(cx, cy, cz), facing);
+            if (c == null) { out = null; break; }
+            if (c.isEmpty()) continue;
+            int ox, oz;
+            switch (facing) {
+                case EAST -> { ox = -cz; oz = cx; }
+                case SOUTH -> { ox = -cx; oz = -cz; }
+                case WEST -> { ox = cz; oz = -cx; }
+                default -> { ox = cx; oz = cz; }
+            }
+            out = net.minecraft.world.phys.shapes.Shapes.or(out, c.move(ox, cy, oz));
+        }
+        if (out == null || out.isEmpty()) out = Block.box(0, 0, 0, 16, 16, 16);
+        if (collide) out = net.minecraft.world.phys.shapes.Shapes.join(out, Block.box(0, 0, 0, 16, 24, 16), net.minecraft.world.phys.shapes.BooleanOp.AND);
+        out = out.optimize();
+        cache.put(facing, out);
+        return out;
+    }
 
     public AlarmBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(MachineBlock.MOUNT, Direction.UP));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(MachineBlock.MOUNT, Direction.UP).setValue(Waterlog.W, false));
     }
 
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) { builder.add(FACING, MachineBlock.MOUNT); }
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) { builder.add(FACING, MachineBlock.MOUNT, Waterlog.W); }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction[] mf = ShipPlace.place(context, false);
-        return mf == null ? null : defaultBlockState().setValue(FACING, mf[1]).setValue(MachineBlock.MOUNT, mf[0]);
+        return mf == null ? null : Waterlog.placed(defaultBlockState(), context.getLevel(), context.getClickedPos()).setValue(FACING, mf[1]).setValue(MachineBlock.MOUNT, mf[0]);
+    }
+
+    @Override
+    protected net.minecraft.world.level.material.FluidState getFluidState(BlockState state) {
+        net.minecraft.world.level.material.FluidState f = Waterlog.fluid(state);
+        return f != null ? f : super.getFluidState(state);
+    }
+
+    @Override
+    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, net.minecraft.world.level.LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        Waterlog.tick(state, level, pos);
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return Machines.mountShape(state.getValue(FACING).getAxis() == Direction.Axis.Z ? NS : EW, Machines.mount(state));
+        return Machines.mountShape(meshShape(state.getValue(FACING), false), Machines.mount(state));
     }
 
     @Override
     protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return Machines.mountShape(state.getValue(FACING).getAxis() == Direction.Axis.Z ? COL_NS : COL_EW, Machines.mount(state));
+        return Machines.mountShape(meshShape(state.getValue(FACING), true), Machines.mount(state));
     }
 
     @Override

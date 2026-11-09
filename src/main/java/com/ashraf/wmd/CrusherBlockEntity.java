@@ -115,7 +115,7 @@ public class CrusherBlockEntity extends ItemProcessBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.CRUSHER_RUN.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 1, 1); }
-    @Override protected float soundVolume() { return 0.8F; }
+    @Override protected float soundVolume() { return Balance.SND_HEAVY; }
 
     @Override
     protected String detail() { return "ore " + ore.count() + ", concentrate " + conc.count() + ", cycle " + progress * 100 / Balance.CRUSH_CYCLE_TICKS + "%"; }

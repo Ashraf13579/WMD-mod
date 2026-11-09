@@ -13,6 +13,7 @@ final class UnitClient {
     static void ensureSound(ProcessUnitBlockEntity be) {
         if (be.soundHandle instanceof Loop l && !l.isStopped()) return;
         if (be.mufflerFactor() <= 0) return;
+        if (be.soundVolume() <= 0.0F) return;
         Loop loop = new Loop(be);
         be.soundHandle = loop;
         Minecraft.getInstance().getSoundManager().play(loop);
@@ -41,7 +42,7 @@ final class UnitClient {
 
         @Override
         public void tick() {
-            if (be.isRemoved() || !be.isRunning() || be.mufflerFactor() <= 0) { stop(); return; }
+            if (be.isRemoved() || !be.soundAlive() || be.mufflerFactor() <= 0) { stop(); return; }
             this.volume = be.soundVolume() * be.mufflerFactor();
             updatePos();
             this.pitch = be.soundPitch();

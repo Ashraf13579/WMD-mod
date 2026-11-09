@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " T ",
+    "PCP",
+    " M "
+  ],
+  "key": {
+    "T": {
+      "item": "wmd:torpedo_t2"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    },
+    "M": {
+      "item": "wmd:motor_t1"
+    }
+  },
+  "result": {
+    "id": "wmd:asroc",
+    "count": 1
+  }
+}

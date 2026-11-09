@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SDS",
+    "SCS",
+    "SPS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "D": {
+      "item": "minecraft:iron_trapdoor"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    }
+  },
+  "result": {
+    "id": "wmd:launch_cell",
+    "count": 1
+  }
+}

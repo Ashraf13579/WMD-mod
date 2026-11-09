@@ -65,13 +65,37 @@ public final class ClientColliderFx {
             if (g[0] == 0)
                 for (double u : new double[] { 32.0, 240.0 }) MAGNETS[k++] = new double[] { (g[1] + g[3] * u) / 16.0, BY, (g[2] + g[4] * u) / 16.0, 0 };
     }
+    private static final double[] MAG_ANG = new double[MAGNETS.length];
+    static {
+        for (int m = 0; m < MAGNETS.length; m++) MAG_ANG[m] = (Math.toDegrees(Math.atan2(MAGNETS[m][2] - CZ, MAGNETS[m][0])) + 360.0) % 360.0;
+    }
+
+    private static final double[][] VENTS = new double[4][];
+    static {
+        double[][] corners = { { 136, 120, -90 }, { 136, 392, 0 }, { -136, 392, 90 }, { -136, 120, 180 } };
+        for (int k = 0; k < 4; k++) {
+            double t = Math.toRadians(corners[k][2] + 45.0);
+            VENTS[k] = new double[] { (corners[k][0] + (RC + 21.0) * Math.cos(t)) / 16.0, 72.0 / 16.0, (corners[k][1] + (RC + 21.0) * Math.sin(t)) / 16.0 };
+        }
+    }
     private static final double[][] RF = { { -14.5, BY, 14.75 }, { -14.5, BY, 17.25 } }, CAPS = { { -4.375, 5.85, 30.5 }, { 4.375, 5.85, 30.5 } };
     private static final double[] COOLER = { 0.0, BY, 30.5 }, TARGET = { 0.0, 5.6, 3.75 }, HALL = { 0.0, 4.0, 3.75 };
     private static final double[][] WINDOWS = { { -4.6, 5.6, 5.5, -1 }, { 4.6, 5.6, 5.5, 1 } }, ROOF = { { -2.5, 9.1, 2.0 }, { 2.5, 9.1, 5.5 } };
 
     static final int SHOT_AT = 25, SHOT_LEN = 6;
 
-    private static double bunchAngle(double tt) { return (22.5 + 45.0 * ((tt * 0.2) % 8.0) + 20.0) % 360.0; }
+    static double bunchAngle(double tt) { return (22.5 + 45.0 * ((tt * 0.2) % 8.0) + 20.0) % 360.0; }
+
+    static final int NSEG = 32, COMET = 3, LAP = 40, RAMP_EVERY = 8 * LAP, RAMP_LEN = 20;
+    static final double MAG_WINDOW = 18.0;
+
+    static int segAt(double ang) { return Math.floorMod((int) Math.floor(ang / (360.0 / NSEG)), NSEG); }
+
+    static boolean inRamp(double tt) { return tt % RAMP_EVERY >= RAMP_EVERY - RAMP_LEN; }
+
+    static boolean rampBlink(double tt) { return ((int) ((tt % RAMP_EVERY - (RAMP_EVERY - RAMP_LEN)) / 3.4)) % 2 == 0; }
+
+    static boolean magnetLit(int m, double ang) { return Math.abs(Mth.wrapDegrees(MAG_ANG[m] - ang)) < MAG_WINDOW; }
 
     private static int indexAt(double ang) {
         int best = 0;
@@ -90,6 +114,12 @@ public final class ClientColliderFx {
         level.playLocalSound(p[0], p[1], p[2], e, SoundSource.BLOCKS, vol, pitch, false);
     }
 
+    private static void vapour(Level level, double[] q, RandomSource rnd, int n, double push) {
+        for (int s = 0; s < n; s++)
+            level.addParticle(s % 3 == 2 ? ParticleTypes.SNOWFLAKE : ParticleTypes.CLOUD, q[0] + (rnd.nextDouble() - 0.5) * 0.3, q[1] + 0.05, q[2] + (rnd.nextDouble() - 0.5) * 0.3,
+                    (rnd.nextDouble() - 0.5) * push, -0.01 - rnd.nextDouble() * 0.03, (rnd.nextDouble() - 0.5) * push);
+    }
+
     static void tick(AntimatterColliderBlockEntity be, Level level) {
         if (ClientHemp.darkAt(be.getBlockPos().getX() + 0.5, be.getBlockPos().getZ() + 0.5)) return;
         long t = level.getGameTime();
@@ -102,11 +132,13 @@ public final class ClientColliderFx {
         double[] b = be.worldPoint(PX[i], BY, PZ[i]);
         VeilBridge.glow(key, b[0], b[1], b[2], 0.75F, 0.45F, 1.0F, 7.0F, 2.2F, 0.4F, t);
 
+        boolean ramp = inRamp(t), rampOn = ramp && rampBlink(t);
         for (int m = 0; m < MAGNETS.length; m++) {
             double[] mg = MAGNETS[m];
-            double ma = (Math.toDegrees(Math.atan2(mg[2] - CZ, mg[0])) + 360.0) % 360.0, d = Math.abs(Mth.wrapDegrees(ma - ang));
-            if (d > 18.0) continue;
-            float k = (float) (1.0 - d / 18.0);
+            double d = Math.abs(Mth.wrapDegrees(MAG_ANG[m] - ang));
+            if (ramp) d = rampOn ? 0.0 : 999.0;
+            if (d > MAG_WINDOW) continue;
+            float k = (float) (1.0 - d / MAG_WINDOW);
             double[] q = be.worldPoint(mg[0], mg[1] + 0.6, mg[2]);
             if (mg[3] == 1) VeilBridge.glow(key + 1 + m, q[0], q[1], q[2], 0.35F, 0.55F, 1.0F, 6.0F, 2.4F * k, 0.3F, t);
             else VeilBridge.glow(key + 1 + m, q[0], q[1], q[2], 0.3F, 0.6F, 1.0F, 4.5F, 1.8F * k, 0.3F, t);
@@ -132,6 +164,35 @@ public final class ClientColliderFx {
                 double[] q = be.worldPoint(cp[0] + (rnd.nextDouble() - 0.5) * 0.4, cp[1], cp[2] + (rnd.nextDouble() - 0.5) * 0.4);
                 level.addParticle(ParticleTypes.CLOUD, q[0], q[1], q[2], (rnd.nextDouble() - 0.5) * 0.02, 0.08 + rnd.nextDouble() * 0.05, (rnd.nextDouble() - 0.5) * 0.02);
             }
+
+        if (t % 6 == 0) {
+            double[] v = VENTS[(int) ((t / 6) % 4)];
+            vapour(level, be.worldPoint(v[0], v[1], v[2]), rnd, 2, 0.04);
+        }
+        if (ramp) {
+            double[] near = null;
+            double nd = Double.MAX_VALUE;
+            Vec3 cam = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+            for (double[] v : VENTS) {
+                double[] q = be.worldPoint(v[0], v[1], v[2]);
+                vapour(level, q, rnd, 3, 0.12);
+                double d = cam.distanceToSqr(q[0], q[1], q[2]);
+                if (d < nd) { nd = d; near = q; }
+            }
+            if (t % RAMP_EVERY == RAMP_EVERY - RAMP_LEN && near != null && be.mufflerFactor() > 0)
+                level.playLocalSound(near[0], near[1], near[2], WmdSounds.NR_STEAM.get(), SoundSource.BLOCKS, Balance.SND_RELEASE * 0.5F * be.mufflerFactor(), 1.35F + rnd.nextFloat() * 0.1F, false);
+        }
+
+        int fifth = Math.min(5, (int) (be.batch01(t) * 5.0F));
+        if (fifth > be.shownFifth) {
+            if (be.shownFifth >= 0) {
+                double[] q = be.worldPoint((24.0 - 12.0 * Math.max(0, fifth - 1)) / 16.0, 101.0 / 16.0, -0.25);
+                VeilBridge.flash(q[0], q[1], q[2], 0.35F, 0.6F, 1.0F, 8.0F, 3.0F, 0.4F, 10);
+                for (int s = 0; s < 10; s++)
+                    level.addParticle(ParticleTypes.ELECTRIC_SPARK, q[0], q[1], q[2], (rnd.nextDouble() - 0.5) * 0.2, rnd.nextDouble() * 0.15, -0.05 - rnd.nextDouble() * 0.15);
+            }
+            be.shownFifth = fifth;
+        } else if (fifth < be.shownFifth) be.shownFifth = fifth;
 
         if (Math.floorMod(t - SHOT_AT, 40L) == 0) {
             double[] q = be.worldPoint(TARGET[0], TARGET[1], TARGET[2]);

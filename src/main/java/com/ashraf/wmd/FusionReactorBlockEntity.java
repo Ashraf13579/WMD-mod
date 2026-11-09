@@ -318,6 +318,7 @@ public class FusionReactorBlockEntity extends ProcessUnitBlockEntity implements 
     }
 
     public static void blastAt(ServerLevel sl, net.minecraft.world.phys.Vec3 pos, double r) {
+        NavalReactorBlockEntity.blastAt(sl, pos, r);
         for (FusionReactorBlockEntity be : new java.util.ArrayList<>(LOADED)) {
             if (be.level != sl || be.isRemoved() || !be.hot()) continue;
             double[] c = be.worldPoint(0.0, 6.0, 8.0);
@@ -427,7 +428,7 @@ public class FusionReactorBlockEntity extends ProcessUnitBlockEntity implements 
 
     @Override protected SoundEvent runSound() { return WmdSounds.FUSION_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 6, 8); }
-    @Override protected float soundVolume() { return 1.2F; }
+    @Override protected float soundVolume() { return Balance.SND_GIANT; }
     @Override protected float soundPitch() { return 0.8F + 0.3F * plasmaPct() / 100.0F; }
 
     @Override protected List<FluidTank> tanks() { return tanks; }

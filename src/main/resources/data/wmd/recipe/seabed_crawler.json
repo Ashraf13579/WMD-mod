@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "MAM",
+    "MPM",
+    "S S"
+  ],
+  "key": {
+    "M": {
+      "tag": "c:ingots/manganese"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "P": {
+      "item": "wmd:feed_pump"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "result": {
+    "id": "wmd:seabed_crawler",
+    "count": 1
+  }
+}

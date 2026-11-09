@@ -91,7 +91,7 @@ public class WmdClient {
         MountedRenderer.register(event, Wmd.GRID_CONVERTER_BE.get(),
                 context -> new RefineryUnitRenderer<GridConverterBlockEntity>("grid_converter", 2));
         MountedRenderer.register(event, Wmd.MAGNESIUM_CELL_BE.get(),
-                context -> new RefineryUnitRenderer<MagnesiumCellBlockEntity>("magnesium_cell", 2));
+                context -> new MagnesiumCellRenderer());
 
         MountedRenderer.register(event, Wmd.RESEARCH_STATION_BE.get(),
                 context -> new ResearchStationRenderer());
@@ -195,6 +195,16 @@ public class WmdClient {
         event.registerEntityRenderer(Wmd.CREW_SEAT.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
         event.registerEntityRenderer(Wmd.HAND_MISSILE.get(), HandMissileRenderer::new);
         event.registerEntityRenderer(Wmd.BOMB.get(), BombRenderer::new);
+        event.registerEntityRenderer(Wmd.TORPEDO.get(), TorpedoRenderer::new);
+        event.registerEntityRenderer(Wmd.DEPTH_CHARGE_ENTITY.get(), DepthChargeRenderer::new);
+        event.registerEntityRenderer(Wmd.KGUN_ARBOR_ENTITY.get(), KGunArborRenderer::new);
+        event.registerEntityRenderer(Wmd.RISING_MINE.get(), RisingMineRenderer::new);
+        event.registerEntityRenderer(Wmd.LAID_MINE.get(), LaidMineRenderer::new);
+        event.registerEntityRenderer(Wmd.SONOBUOY_ENTITY.get(), SonobuoyRenderer::new);
+        event.registerEntityRenderer(Wmd.COMMS_BUOY.get(), CommsBuoyRenderer::new);
+        event.registerEntityRenderer(Wmd.ESCAPE_POD_ENTITY.get(), EscapePodRenderer::new);
+        event.registerEntityRenderer(Wmd.ASROC_ENTITY.get(), AsrocRenderer::new);
+        event.registerEntityRenderer(Wmd.NOISEMAKER_ENTITY.get(), NoisemakerRenderer::new);
         event.registerEntityRenderer(Wmd.XL_TRANSPORTER.get(), XlTransporterRenderer::new);
         event.registerEntityRenderer(Wmd.PARTS_RUNNER.get(), PartsRunnerRenderer::new);
         event.registerEntityRenderer(Wmd.SENTRY_DOG.get(), SentryDogRenderer::new);
@@ -202,6 +212,8 @@ public class WmdClient {
 
         MountedRenderer.register(event, Wmd.SATELLITE_FACILITY_BE.get(),
                 context -> new SatelliteFacilityRenderer());
+        event.registerEntityRenderer(Wmd.DREDGE_BUCKET_ENTITY.get(), DredgeBucketRenderer::new);
+        event.registerEntityRenderer(Wmd.SEABED_CRAWLER_ENTITY.get(), SeabedCrawlerRenderer::new);
 
         MountedRenderer.register(event, Wmd.MORTAR_BE.get(), context -> new StagedUnitRenderer<MortarBlockEntity>("mortar", 3, 2));
         MountedRenderer.register(event, Wmd.HOWITZER_BE.get(), context -> new StagedUnitRenderer<HowitzerBlockEntity>("howitzer", 6, 6));
@@ -224,6 +236,37 @@ public class WmdClient {
         MountedRenderer.register(event, Wmd.CC_INTERCEPTOR_CONSOLE_BE.get(), context -> new CcRenderersS5.InterceptorConsole());
 
         MountedRenderer.register(event, Wmd.COUNTER_BATTERY_RADAR_BE.get(), context -> new StagedUnitRenderer<CounterBatteryRadarBlockEntity>("counter_battery_radar", 7, 3));
+
+        MountedRenderer.register(event, Wmd.SONAR_DOME_BE.get(), context -> new SonarDomeRenderer());
+        MountedRenderer.register(event, Wmd.HYDROPHONE_ARRAY_BE.get(), context -> new StagedUnitRenderer<HydrophoneArrayBlockEntity>("hydrophone_array", 3, 2));
+
+        MountedRenderer.register(event, Wmd.TOWED_ARRAY_WINCH_BE.get(), context -> new TowedArrayRenderer());
+        MountedRenderer.register(event, Wmd.LISTENING_NODE_BE.get(), context -> new StagedUnitRenderer<ListeningNodeBlockEntity>("listening_node", 3, 2));
+        MountedRenderer.register(event, Wmd.COASTAL_BATTERY_BE.get(), context -> new StagedUnitRenderer<CoastalBatteryBlockEntity>("coastal_battery", 3, 3));
+        MountedRenderer.register(event, Wmd.DOCK_CRANE_BE.get(), context -> new DockCraneRenderer());
+        MountedRenderer.register(event, Wmd.SONAR_CONSOLE_BE.get(), context -> new SonarPicture.Renderer());
+
+        MountedRenderer.register(event, Wmd.LAUNCH_CELL_BE.get(), context -> new StagedUnitRenderer<LaunchCellBlockEntity>("launch_cell", 7, 2));
+
+        MountedRenderer.register(event, Wmd.NAVAL_REACTOR_BE.get(), context -> new NavalReactorRenderer());
+        MountedRenderer.register(event, Wmd.PERISCOPE_BE.get(), context -> new StagedUnitRenderer<PeriscopeBlockEntity>("periscope", 7));
+        MountedRenderer.register(event, Wmd.COMMS_BUOY_BE.get(), context -> new StagedUnitRenderer<CommsBuoyBlockEntity>("comms_buoy", 2, 1));
+        MountedRenderer.register(event, Wmd.ESCAPE_POD_BE.get(), context -> new StagedUnitRenderer<EscapePodBlockEntity>("escape_pod", 3, 1));
+
+        MountedRenderer.register(event, Wmd.DEPTH_CHARGE_RACK_BE.get(), context -> new DepthChargeRackRenderer());
+
+        MountedRenderer.register(event, Wmd.DEPTH_CHARGE_THROWER_BE.get(), context -> new DepthChargeThrowerRenderer());
+        MountedRenderer.register(event, Wmd.NOISEMAKER_LAUNCHER_BE.get(), context -> new StagedUnitRenderer<NoisemakerLauncherBlockEntity>("noisemaker_launcher", 1));
+        MountedRenderer.register(event, Wmd.SEA_MINE_BE.get(), context -> new SeaMineRenderer());
+
+        MountedRenderer.register(event, Wmd.FIRE_CONTROL_CONSOLE_BE.get(), context -> new FireControlPicture.Renderer());
+
+        MountedRenderer.register(event, Wmd.TORPEDO_TUBE_BE.get(), context -> new StagedUnitRenderer<TorpedoTubeBlockEntity>("torpedo_tube", 1, 4));
+
+        MountedRenderer.register(event, Wmd.DREDGE_WINCH_BE.get(), context -> new StagedUnitRenderer<DredgeWinchBlockEntity>("dredge_winch", 3));
+        MountedRenderer.register(event, Wmd.COLLECTOR_RIG_BE.get(), context -> new StagedUnitRenderer<CollectorRigBlockEntity>("collector_rig", 5, 3));
+        MountedRenderer.register(event, Wmd.TORPEDO_LAUNCHER_DECK_BE.get(), context -> new StagedUnitRenderer<TorpedoLauncherDeckBlockEntity>("torpedo_launcher_deck", 2, 3));
+        MountedRenderer.register(event, Wmd.TORPEDO_RACK_BE.get(), context -> new TorpedoRackRenderer());
         MountedRenderer.register(event, Wmd.CC_ARTILLERY_CONSOLE_BE.get(), context -> new CcRenderersS52.ArtilleryConsole());
         MountedRenderer.register(event, Wmd.CC_IRON_DOME_BE.get(), context -> new CcRenderersS52.IronDomeDesk());
         MountedRenderer.register(event, Wmd.CC_PLANNER_BE.get(), context -> new CcRenderersS52.PlannerDesk());
@@ -239,12 +282,14 @@ public class WmdClient {
         MountedRenderer.register(event, Wmd.DECOY_LAUNCHER_BE.get(), context -> new StagedUnitRenderer<DecoyBlockEntity.Launcher>("decoy_launcher", 2, 4));
         MountedRenderer.register(event, Wmd.DECOY_RADAR_BE.get(), context -> new StagedUnitRenderer<DecoyBlockEntity.Radar>("decoy_radar", 4, 3));
         MountedRenderer.register(event, Wmd.CAMO_NET_BE.get(), context -> new CamoNetRenderer());
+        MountedRenderer.register(event, Wmd.TORPEDO_NET_BE.get(), context -> new TorpedoNetRenderer());
         MountedRenderer.register(event, Wmd.THERMAL_NET_BE.get(), context -> new CamoNetRenderer());
         MountedRenderer.register(event, Wmd.SMOKE_MACHINE_BE.get(), context -> new StagedUnitRenderer<SmokeMachineBlockEntity>("smoke_machine", 2));
         MountedRenderer.register(event, Wmd.BOMB_RACK_BE.get(), context -> new BombRackRenderer("bomb_rack", 1, 4));
         MountedRenderer.register(event, Wmd.BOMB_BAY_BE.get(), context -> new BombRackRenderer("bomb_bay", 4, 9));
         MountedRenderer.register(event, Wmd.BOMB_SIGHT_BE.get(), context -> new StagedUnitRenderer<BombSightBlockEntity>("bomb_sight", 1));
         MountedRenderer.register(event, Wmd.DRONE_BE.get(), context -> new DroneModuleRenderer());
+        MountedRenderer.register(event, Wmd.TORPEDO_LINE_BE.get(), context -> new TorpedoLineRenderer());
         MountedRenderer.register(event, Wmd.BOMB_LINE_BE.get(), context -> new BombLineRenderer());
         MountedRenderer.register(event, Wmd.DRONE_HIVE_BE.get(), context -> new DroneHiveRenderer());
         MountedRenderer.register(event, Wmd.DRONE_CATAPULT_BE.get(), context -> new DroneCatapultRenderer());
@@ -262,7 +307,7 @@ public class WmdClient {
         MountedRenderer.register(event, Wmd.CHLORINATOR_BE.get(),
                 context -> new RefineryUnitRenderer<ChlorinatorBlockEntity>("chlorinator", 3));
         MountedRenderer.register(event, Wmd.KROLL_REACTOR_BE.get(),
-                context -> new RefineryUnitRenderer<KrollReactorBlockEntity>("kroll_reactor", 3));
+                context -> new KrollReactorRenderer());
         MountedRenderer.register(event, Wmd.MINING_RIG_BE.get(),
                 context -> new RefineryUnitRenderer<MiningRigBlockEntity>("mining_rig", 7));
         MountedRenderer.register(event, Wmd.DESALTER_BE.get(),
@@ -272,7 +317,7 @@ public class WmdClient {
         MountedRenderer.register(event, Wmd.COAL_GENERATOR_BE.get(),
                 context -> new RefineryUnitRenderer<CoalGeneratorBlockEntity>("coal_generator", 8));
         MountedRenderer.register(event, Wmd.FLARE_STACK_BE.get(),
-                context -> new RefineryUnitRenderer<FlareStackBlockEntity>("flare_stack", 11));
+                context -> new RefineryUnitRenderer<FlareStackBlockEntity>("flare_stack", 16));
         MountedRenderer.register(event, Wmd.ELECTROLYSER_BE.get(),
                 context -> new RefineryUnitRenderer<ElectrolyserBlockEntity>("electrolyser", 3));
         MountedRenderer.register(event, Wmd.CRUSHER_BE.get(),
@@ -310,6 +355,8 @@ public class WmdClient {
         event.registerSpriteSet(WmdParticles.COLLAPSE_DUST.get(), sprites -> new WmdSmokeParticle.Provider(sprites, WmdSmokeParticle.Kind.DUST));
         event.registerSpriteSet(WmdParticles.VACUUM_SPARK.get(), sprites -> new WmdSmokeParticle.Provider(sprites, WmdSmokeParticle.Kind.SPARK));
         event.registerSpriteSet(WmdParticles.WATER_SPRAY.get(), sprites -> new WmdSmokeParticle.Provider(sprites, WmdSmokeParticle.Kind.SPRAY));
+        event.registerSpriteSet(WmdParticles.TORPEDO_WAKE.get(), sprites -> new WmdSmokeParticle.Provider(sprites, WmdSmokeParticle.Kind.WAKE));
+        event.registerSpriteSet(WmdParticles.UW_GAS.get(), sprites -> new WmdSmokeParticle.Provider(sprites, WmdSmokeParticle.Kind.CAVITY));
     }
 
     @SubscribeEvent
@@ -371,6 +418,7 @@ public class WmdClient {
         event.<MachineMenu, MachineScreen>register(Wmd.MACHINE_MENU.get(), (menu, inv, title) -> menu.machine() instanceof ResearchStationBlockEntity
                 ? new ResearchStationScreen(menu, inv, title)
                 : menu.machine() instanceof SinterPressBlockEntity ? new SinterPressScreen(menu, inv, title)
+                : menu.machine() instanceof NavalPanel ? new NavalPanelScreen(menu, inv, title)
                 : menu.machine() instanceof NuclearReactorBlockEntity ? new NuclearReactorScreen(menu, inv, title)
                 : menu.machine() instanceof RailgunBlockEntity ? new RailgunScreen(menu, inv, title)
                 : menu.machine() instanceof FusionReactorBlockEntity ? new FusionReactorScreen(menu, inv, title)
@@ -391,6 +439,17 @@ public class WmdClient {
                 : CcScreenC.handles(menu.machine()) ? new CcScreenC(menu, inv, title)
                 : menu.machine() instanceof CcInterceptorConsoleBlockEntity ? new CcScreenS5(menu, inv, title)
                 : menu.machine() instanceof CounterBatteryRadarBlockEntity ? new CounterBatteryScreen(menu, inv, title)
+                : menu.machine() instanceof FireControlConsoleBlockEntity ? new FireControlScreen(menu, inv, title)
+                : menu.machine() instanceof DepthChargeRackBlockEntity ? new DepthChargeScreen(menu, inv, title)
+                : menu.machine() instanceof DredgeWinchBlockEntity ? new DredgeScreen(menu, inv, title)
+                : menu.machine() instanceof CollectorRigBlockEntity ? new CollectorRigScreen(menu, inv, title)
+                : menu.machine() instanceof DepthChargeThrowerBlockEntity ? new DepthChargeThrowerScreen(menu, inv, title)
+                : menu.machine() instanceof NoisemakerLauncherBlockEntity ? new NoisemakerLauncherScreen(menu, inv, title)
+                : menu.machine() instanceof LaunchCellBlockEntity ? new LaunchCellScreen(menu, inv, title)
+                : menu.machine() instanceof CoastalBatteryBlockEntity ? new CoastalBatteryScreen(menu, inv, title)
+                : menu.machine() instanceof DockCraneBlockEntity ? new DockCraneScreen(menu, inv, title)
+                : menu.machine() instanceof SonarSensorBlockEntity || menu.machine() instanceof SonarConsoleBlockEntity ? new SonarScreen(menu, inv, title)
+                : menu.machine() instanceof TorpedoLauncherBlockEntity ? new TorpedoScreen(menu, inv, title)
                 : menu.machine() instanceof CcArtilleryConsoleBlockEntity ? new CcScreenArtillery(menu, inv, title)
                 : menu.machine() instanceof CcIronDomeBlockEntity ? new CcScreenDome(menu, inv, title)
                 : menu.machine() instanceof CcPlannerBlockEntity ? new CcScreenPlanner(menu, inv, title)
@@ -400,6 +459,7 @@ public class WmdClient {
         event.register(Wmd.BAY_MENU.get(), BayScreen::new);
         event.register(Wmd.LAB_MENU.get(), LabScreen::new);
         event.register(Wmd.DRONE_MENU.get(), DroneScreen::new);
+        event.register(Wmd.TORPEDO_LINE_MENU.get(), TorpedoLineScreen::new);
         event.register(Wmd.BOMB_LINE_MENU.get(), BombLineScreen::new);
         event.register(Wmd.DRONE_HIVE_MENU.get(), DroneHiveScreen::new);
         event.register(Wmd.BIG_DRONE_MENU.get(), BigDroneScreen::new);

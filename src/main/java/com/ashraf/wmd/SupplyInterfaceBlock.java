@@ -22,7 +22,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class SupplyInterfaceBlock extends BaseEntityBlock {
+public class SupplyInterfaceBlock extends BaseEntityBlock implements net.minecraft.world.level.block.SimpleWaterloggedBlock {
 
     public static final MapCodec<SupplyInterfaceBlock> CODEC = simpleCodec(SupplyInterfaceBlock::new);
     public static final net.minecraft.world.level.block.state.properties.DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
@@ -30,16 +30,28 @@ public class SupplyInterfaceBlock extends BaseEntityBlock {
 
     public SupplyInterfaceBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(Waterlog.W, false));
     }
 
     @Override protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) { builder.add(FACING); }
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) { builder.add(FACING, Waterlog.W); }
 
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) { return (ShipPlace.facing(context) == null ? null : defaultBlockState().setValue(FACING, ShipPlace.facing(context))); }
+    public BlockState getStateForPlacement(BlockPlaceContext context) { return (ShipPlace.facing(context) == null ? null : Waterlog.placed(defaultBlockState(), context.getLevel(), context.getClickedPos()).setValue(FACING, ShipPlace.facing(context))); }
+
+    @Override
+    protected net.minecraft.world.level.material.FluidState getFluidState(BlockState state) {
+        net.minecraft.world.level.material.FluidState f = Waterlog.fluid(state);
+        return f != null ? f : super.getFluidState(state);
+    }
+
+    @Override
+    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, net.minecraft.world.level.LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        Waterlog.tick(state, level, pos);
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+    }
 
     @Override protected RenderShape getRenderShape(BlockState state) { return RenderShape.MODEL; }
 

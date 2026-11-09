@@ -120,7 +120,7 @@ public class WindTurbineBlockEntity extends ProcessUnitBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.WI_WIND_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 12, 0); }
-    @Override protected float soundVolume() { return 0.3F; }
+    @Override protected float soundVolume() { return Balance.SND_MACHINE; }
 
     @Override
     protected String detail() { return String.format("%d FE/t (%d at this height), clear air %d%%, stored %,d FE", fePerTickNow, heightFe(), Math.round(clear * 100.0F), stored); }

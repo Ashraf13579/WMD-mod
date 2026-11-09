@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SN ",
+    "SPS",
+    "SLS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "N": {
+      "item": "minecraft:chain"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "L": {
+      "item": "minecraft:lever"
+    }
+  },
+  "result": {
+    "id": "wmd:depth_charge_thrower",
+    "count": 1
+  }
+}

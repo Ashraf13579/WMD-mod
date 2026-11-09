@@ -53,11 +53,20 @@ public final class ClientShipFire {
             int n = 1 + Math.round(3 * p.heat());
             for (int i = 0; i < n && budget > 0; i++, budget--) {
                 double px = x + (r.nextDouble() - 0.5) * 2.0 * p.hx(), py = y + r.nextDouble() * p.hy(), pz = z + (r.nextDouble() - 0.5) * 2.0 * p.hz();
+
+                if (wet(level, px, py, pz)) {
+                    level.addParticle(r.nextInt(3) == 0 ? ParticleTypes.BUBBLE_COLUMN_UP : ParticleTypes.BUBBLE, px, py, pz, (r.nextDouble() - 0.5) * 0.05, 0.12 + r.nextDouble() * 0.15, (r.nextDouble() - 0.5) * 0.05);
+                    continue;
+                }
                 level.addAlwaysVisibleParticle(WmdParticles.TRAIL_SMOKE.get(), true, px, py, pz, (r.nextDouble() - 0.5) * 0.02, 0.03 + 0.03 * p.heat(), (r.nextDouble() - 0.5) * 0.02);
                 if (r.nextFloat() < p.heat()) level.addParticle(r.nextInt(3) == 0 ? ParticleTypes.LAVA : ParticleTypes.FLAME, px, py, pz, p.vx() * 0.5, 0.02, p.vz() * 0.5);
             }
-            if (now % 30 == 0 && cam.distanceToSqr(x, y, z) < CRACKLE_R * CRACKLE_R)
+            if (now % 30 == 0 && cam.distanceToSqr(x, y, z) < CRACKLE_R * CRACKLE_R && !wet(level, x, y + p.hy(), z))
                 level.playLocalSound(x, y, z, SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 2.0F, 0.6F, false);
         }
+    }
+
+    private static boolean wet(ClientLevel level, double x, double y, double z) {
+        return level.getFluidState(net.minecraft.core.BlockPos.containing(x, y, z)).is(net.minecraft.tags.FluidTags.WATER);
     }
 }

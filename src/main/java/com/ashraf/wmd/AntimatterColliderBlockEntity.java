@@ -53,7 +53,10 @@ public class AntimatterColliderBlockEntity extends ItemProcessBlockEntity implem
             cell.add(Wmd.ANTIMATTER_CELL.get(), 1);
             Wmd.LOGGER.info("[antimatter] collider at {} made an antimatter cell", getBlockPos().toShortString());
         }
-        if (progress % 200 == 0) setChanged();
+        if (progress % 200 == 0) {
+            setChanged();
+            if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        }
         return true;
     }
 
@@ -110,15 +113,36 @@ public class AntimatterColliderBlockEntity extends ItemProcessBlockEntity implem
     @Override
     protected boolean acceptsUpgrade(UpgradeItem.Type t) { return t == UpgradeItem.Type.MUFFLER || t == UpgradeItem.Type.AUTO_EJECT; }
 
+    static final String[] SEG_BONES = new String[ClientColliderFx.NSEG], MAG_BONES = new String[16], PROG_BONES = new String[5];
+    static {
+        for (int k = 0; k < SEG_BONES.length; k++) SEG_BONES[k] = String.format("seg%02d", k);
+        for (int k = 0; k < MAG_BONES.length; k++) MAG_BONES[k] = String.format("mag%02d", k);
+        for (int k = 0; k < PROG_BONES.length; k++) PROG_BONES[k] = "prog" + k;
+    }
+
     @Override
     public void ccAnimate(CcBones model, double tt, float partialTick) {
         boolean dark = ClientHemp.darkAt(worldPosition.getX() + 0.5, worldPosition.getZ() + 0.5);
         boolean on = running && !dark;
 
-        int head = (int) ((tt * 0.2) % 8);
-        for (int k = 0; k < 8; k++) {
-            final boolean lit = on && Math.floorMod(head - k, 8) < 3;
-            model.getBone("beam" + k).ifPresent(b -> b.setHidden(!lit));
+        double ang = ClientColliderFx.bunchAngle(tt);
+        int head = ClientColliderFx.segAt(ang);
+        for (int k = 0; k < SEG_BONES.length; k++) {
+            final boolean lit = on && Math.floorMod(head - k, ClientColliderFx.NSEG) < ClientColliderFx.COMET;
+            model.getBone(SEG_BONES[k]).ifPresent(b -> b.setHidden(!lit));
+        }
+
+        boolean ramp = on && ClientColliderFx.inRamp(tt), rampLit = ramp && ClientColliderFx.rampBlink(tt);
+        for (int m = 0; m < MAG_BONES.length; m++) {
+            final boolean lit = ramp ? rampLit : on && ClientColliderFx.magnetLit(m, ang);
+            model.getBone(MAG_BONES[m]).ifPresent(b -> b.setHidden(!lit));
+        }
+
+        float batch = batch01((long) tt);
+        boolean blink = ((long) tt / 10L) % 2L == 0L;
+        for (int k = 0; k < PROG_BONES.length; k++) {
+            final boolean lit = !dark && (clientCell || batch >= (k + 1) / 5.0F || (running && blink && batch >= k / 5.0F));
+            model.getBone(PROG_BONES[k]).ifPresent(b -> b.setHidden(!lit));
         }
         model.getBone("cooler").ifPresent(b -> b.setHidden(!on));
         final boolean rf = on && ((long) tt) % 10 < 7;
@@ -152,7 +176,7 @@ public class AntimatterColliderBlockEntity extends ItemProcessBlockEntity implem
 
     @Override protected SoundEvent runSound() { return WmdSounds.AM_COLLIDER_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 3, 4); }
-    @Override protected float soundVolume() { return 1.2F; }
+    @Override protected float soundVolume() { return Balance.SND_GIANT; }
 
     @Override
     protected String detail() {
@@ -177,6 +201,15 @@ public class AntimatterColliderBlockEntity extends ItemProcessBlockEntity implem
 
     private int clientProgress;
     private boolean clientCell;
+    private long clientSyncTick = Long.MIN_VALUE;
+    int shownFifth = -1;
+
+    float batch01(long now) {
+        if (clientCell) return 1.0F;
+        if (clientSyncTick == Long.MIN_VALUE) clientSyncTick = now;
+        long p = clientProgress + (running ? Math.max(0L, now - clientSyncTick) : 0L);
+        return Math.min(Balance.AM_CYCLE_TICKS - 1, p) / (float) Balance.AM_CYCLE_TICKS;
+    }
 
     @Override protected void clientEffects(Level level) { ClientColliderFx.tick(this, level); }
     @Override protected void runStarted(Level level) { ClientColliderFx.started(this, level); }
@@ -196,6 +229,7 @@ public class AntimatterColliderBlockEntity extends ItemProcessBlockEntity implem
         }
         clientProgress = tag.getInt("am_shown");
         clientCell = tag.getBoolean("am_cell");
+        clientSyncTick = Long.MIN_VALUE;
     }
 
     @Override

@@ -146,7 +146,7 @@ public class CoalGeneratorBlockEntity extends ProcessUnitBlockEntity implements 
 
     @Override protected SoundEvent runSound() { return WmdSounds.CG_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(-2, 1, 0); }
-    @Override protected float soundVolume() { return 0.5F; }
+    @Override protected float soundVolume() { return Balance.SND_MACHINE; }
     @Override protected float levelFraction() { return fuel.getCount() / (float) Balance.COAL_GEN_FUEL_MAX; }
 
     @Override

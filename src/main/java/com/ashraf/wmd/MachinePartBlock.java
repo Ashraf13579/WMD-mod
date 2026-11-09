@@ -16,12 +16,27 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class MachinePartBlock extends BaseEntityBlock {
+public class MachinePartBlock extends BaseEntityBlock implements net.minecraft.world.level.block.SimpleWaterloggedBlock {
 
     public static final MapCodec<MachinePartBlock> CODEC = simpleCodec(MachinePartBlock::new);
     private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 9, 16);
 
-    public MachinePartBlock(Properties properties) { super(properties); }
+    public MachinePartBlock(Properties properties) { super(properties); registerDefaultState(stateDefinition.any().setValue(Waterlog.W, false)); }
+
+    @Override
+    protected void createBlockStateDefinition(net.minecraft.world.level.block.state.StateDefinition.Builder<Block, BlockState> builder) { builder.add(Waterlog.W); }
+
+    @Override
+    protected net.minecraft.world.level.material.FluidState getFluidState(BlockState state) {
+        net.minecraft.world.level.material.FluidState f = Waterlog.fluid(state);
+        return f != null ? f : super.getFluidState(state);
+    }
+
+    @Override
+    protected BlockState updateShape(BlockState state, net.minecraft.core.Direction direction, BlockState neighborState, net.minecraft.world.level.LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        Waterlog.tick(state, level, pos);
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+    }
 
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }

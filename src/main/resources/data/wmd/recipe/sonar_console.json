@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GCG",
+    "PXP",
+    "PBP"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glass_pane"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "X": {
+      "item": "wmd:aluminium_casing"
+    },
+    "B": {
+      "item": "wmd:network_card"
+    }
+  },
+  "result": {
+    "id": "wmd:sonar_console",
+    "count": 1
+  }
+}

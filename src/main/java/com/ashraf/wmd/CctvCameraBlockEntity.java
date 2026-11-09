@@ -43,7 +43,7 @@ public class CctvCameraBlockEntity extends CctvDeviceEntity implements RadarLink
         float np = Mth.clamp(p, -Balance.CCTV_PAN, Balance.CCTV_PAN);
         if (Math.abs(np - pan) > 3.0F && now - servoAt >= 12 && level != null) {
             servoAt = now;
-            level.playSound(null, worldPosition, WmdSounds.CAM_SERVO.get(), net.minecraft.sounds.SoundSource.BLOCKS, 0.5F, 1.0F);
+            level.playSound(null, worldPosition, WmdSounds.CAM_SERVO.get(), net.minecraft.sounds.SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
         }
         pan = np;
         viewedUntil = now + 40;

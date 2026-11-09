@@ -326,7 +326,7 @@ public class ShellPressBlockEntity extends ItemProcessBlockEntity implements Own
 
     @Override protected SoundEvent runSound() { return WmdSounds.SP_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 0, 2); }
-    @Override protected float soundVolume() { return 0.4F; }
+    @Override protected float soundVolume() { return Balance.SND_MACHINE; }
 
     @Override
     protected void saveExtra(CompoundTag tag) {

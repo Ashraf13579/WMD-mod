@@ -142,7 +142,6 @@ public final class Balance {
     public static final double DESALTER_YIELD = 0.95;
 
     public static final int RADAR_FE_PER_TICK = RadarBlockEntity.FE_PER_TICK;
-    public static final int ALARM_FE_PER_TICK = AlarmBlockEntity.FE_PER_TICK;
 
     public static final int DESALTER_MB_PER_TICK = 5, DESALTER_FE_PER_TICK = 200;
     public static final int FURNACE_MB_PER_TICK = 5, FURNACE_FE_PER_TICK = 800;
@@ -568,6 +567,11 @@ public final class Balance {
 
     public static final double SHIP_BLAST_PER_RADIUS = 0.6, SHIP_BLAST_MIN = 3.0, SHIP_BLAST_MAX = 16.0, SHIP_BLAST_MORTAR = 3.0, SHIP_BLAST_HOWITZER = 4.0,
             SHIP_BLAST_ROCKET = 4.5, SHIP_BLAST_BOMBLET = 2.0, SHIP_BLAST_REACH_PER_POWER = 1.75, SHIP_BLAST_PUSH = 4.0, SHIP_PATH_ARM_BLOCKS = 8.0;
+
+    public static final double SHIP_UW_HOLE_PER_POWER = 0.25;
+
+    public static final double SHIP_UW_TOUGH_CAP = 24.0, SHIP_UW_TOUGH_PER_RATING = 2.0;
+    public static final int SHIP_UW_HOLE_MAX = 400;
     public static final int SHIP_BLAST_MAX_SHIPS = 3, SHIP_BLAST_MAX_PER_TICK = 4, SHIP_BLAST_QUEUE = 32, SHIP_BLAST_QUEUE_TICKS = 20,
             SHIP_PATH_MAX_SEGMENTS = 256, SHIP_PATH_MAX_EXACT = 32, SHIP_PATH_ARM_TICKS = 20;
 
@@ -831,4 +835,162 @@ public final class Balance {
 
     public static final int CRYO_R = 40, CRYO_TICKS = 1_200, CRYO_SPREAD = 60, CRYO_THAW_HEAT = 400, CRYO_SLOW = 1;
     public static final double FF_SOUND_SPEED = 17.0;
+
+    public static final double SUBMERGED_MARGIN = 0.5, UNDERWATER_MARGIN = 1.0, SUB_IMPLODE_REACH = 6.0, SUB_IMPLODE_POWER = 12.0, SUB_IMPLODE_MIN_POWER = 6.0,
+            SUB_IMPLODE_PER_DEPTH = 0.1, NOISE_FLOOR_DB = 20.0, WATER_DRAG = 0.92, SINK_SPEED = 0.4,
+            WATER_TOUCH = 0.25;
+    public static final int NOISE_TTL = 40, NOISE_MAX = 512;
+
+    public static final int[] DEEP_HULL_RATING = { 200, 400 };
+    public static final float[] DEEP_HULL_CRACK = { 0.05F, 0.03F };
+    public static final double[] DEEP_HULL_IMPLODE_BONUS = { 10.0, 20.0 };
+    public static final int DEEP_VIEWPORT_RATING = 200, DEEP_FITTING_RATING = 400, DEEP_HULL_RECHECK_TICKS = 200;
+
+    public static final double TORP_NET_TEAR = 2.5, TORP_NET_SHIP_SAFE = 4.0, TORP_NET_T4_HOLE = 1.2;
+    public static final int NET_AREA_PER_ITEM = 4, NET_MAX_LEN = 32, NET_MAX_DEPTH = 16, NET_LAYER_GAP = 3;
+    public static final double NET_AIM_RANGE = 48.0, NET_FAR = 28.0;
+    public static final float DEEP_VIEWPORT_CRACK = 0.05F, DEEP_FITTING_CRACK = 0.05F;
+
+    public static final double ANECHOIC_MAX_DB = 15.0, ANECHOIC_PING_CUT = 0.40, SONAR_DOME_RANGE_UP = 3_000.0, SONAR_ARRAY_RANGE_UP = 6_000.0, SONAR_FIX_ERR_UP = 0.015;
+    public static final int ANECHOIC_RATING = 150, ANECHOIC_RECHECK_TICKS = 600, ANECHOIC_SCAN_MAX = 400_000;
+    public static final float ANECHOIC_CRACK = 0.05F;
+
+    public static final int SONAR_DOME_FE = 400, SONAR_ARRAY_FE = 600, SONAR_CONSOLE_FE = 100, SONAR_SCAN_TICKS = 20, SONAR_PING_FE = 100_000, SONAR_PING_COOLDOWN = 200,
+            SONAR_PING_SHOW = 600, SONAR_PING_TICKS = 40, SHIP_NOISE_TICKS = 20, SONAR_WATERFALL_ROWS = 40, SONAR_KEEP = 24;
+
+    public static final int SONAR_HULL_TICKS = 40, SONAR_HULL_LEAKS = 4;
+
+    public static final int HULL_SCAN_MAX = 250_000, HULL_SCAN_CELLS = 20_000, HULL_HOLE_JOIN = 3;
+    public static final double SONAR_HULL_WARN = 0.9;
+    public static final double SONAR_DOME_RANGE = 2_000.0, SONAR_ARRAY_RANGE = 4_000.0, SONAR_PING_RANGE = 1_500.0, SONAR_PING_DB = 140.0, SONAR_FIX_MIN_DEG = 15.0,
+            SONAR_FIX_ERR = 0.03, SONAR_LAYER_DEPTH = 60.0, SONAR_LAYER_DB = 15.0, SHIP_NOISE_BASE = 75.0, SHIP_NOISE_PER_SPEED = 6.0, SHIP_NOISE_SPEED_MAX = 30.0,
+            SHIP_NOISE_SILENT = 55.0, SHIP_NOISE_REF_BLOCKS = 200.0, SILENT_SPEED = 2.0,
+            STOPPED_SPEED = 0.2, DEPTH_HOLD_SPEED = 0.5, SONAR_WRECK_MERGE = 12.0;
+
+    public static final double[] TORP_SPEED = { 1.0, 0.9, 0.8, 4.0, 0.4, 1.6 }, TORP_RANGE = { 400.0, 500.0, 600.0, 1_000.0, 1_500.0, 160.0 };
+
+    public static final float[] TORP_POWER = { 8.0F, 9.0F, 10.0F, 12.0F, 0.0F, 0.0F };
+
+    public static final double TORP_T4_DB = 130.0, UUV_DB = 70.0, UUV_RANGE = 1_500.0;
+
+    public static final double T4_SEARCH_DIST = 80.0, T4_SEARCH_AT = 0.8, T4_SEARCH_SPEED = 1.0, T4_SEEK_RANGE = 100.0, T4_SEEK_CONE = 60.0,
+            T4_TURN_RATE = 8.0, T4_SPRINT_TURN = 3.0, T4_PING_DB = 120.0;
+    public static final int T4_SEARCH_TICKS = 40;
+
+    public static final double UW_HURT_PER_POWER = 1.0, UW_SHALLOW = 10.0, UW_MID = 40.0;
+
+    public static final double UW_CRATER_PER_POWER = 0.5, UW_CRATER_DEPTH = 0.8;
+    public static final float UW_DMG_PER_POWER = 3.0F;
+    public static final int UW_FX_RANGE = 512;
+    public static final int UUV_LIFE = 12_000;
+    public static final double TORP_ARM = 15.0, TORP_KEEL_DEPTH = 6.0, TORP_KEEL_SIDE = 1.0, TORP_MIN_DEPTH = 2.0, TORP_MAX_VY = 0.15, TORP_DB = 105.0,
+            TORP_REACH = 10.0, DECK_TRAIN_SPEED = 3.0, DECK_TRAIN_MAX = 150.0, DECK_DROP_SPEED = 0.5, DECK_DEPTH = 4.0, TORP_MAX_DEPTH = 120.0;
+    public static final float TORP_ENTITY_POWER = 4.0F;
+    public static final int TUBE_FE = 40, TUBE_CHARGE_TICKS = 100, TUBE_RELOAD_TICKS = 200, DECK_FE = 40, DECK_CHARGE_TICKS = 60, TORP_RACK_FE = 20, TORP_NOISE_TICKS = 20;
+
+    public static final int[] TLINE_RUN_TICKS = { 1200, 1600, 2000, 2400, 1800, 900 };
+    public static final int TLINE_FE_PER_TICK = 100, TLINE_BUFFER_FE = 250_000, TLINE_RECEIVE_FE = 10_000, TLINE_RACK = 4,
+            TLINE_LOAD_TICKS = 40, TLINE_TRAVEL_TICKS = 80, TLINE_MATE_TICKS = 60, TLINE_HOME_TICKS = 80;
+    public static final double[] TLINE_STATION_SHARE = { 0.31, 0.34, 0.23, 0.12 };
+
+    public static final double GYRO_STRAIGHT = 10.0, GYRO_RATE = 6.0, GYRO_MAX = 90.0, TORP_KEEL_RUN = 4.0, TORP_SUB_EXTRA = 2.0, FCC_TORP_RANGE = 800.0;
+    public static final int FCC_FE = 100, FCC_TICKS = 10, SALVO_FAN = 3, FCC_ROWS = 6;
+
+    public static final double TORP_SEEK_RANGE = 200.0, TORP_SEEK_CONE = 50.0, TORP_ACTIVE_RANGE = 48.0, TORP_TURN_RATE = 5.0, TORP_PING_DB = 95.0,
+            TORP_WIRE_LEN = 450.0, TORP_DECOY_DB = 120.0;
+    public static final int TORP_SEEK_TICKS = 5, TORP_LOST_TICKS = 60, TORP_DECOY_TICKS = 600;
+
+    public static final int DECOY_MAG = 4, DECOY_FE = 20, DECOY_CHARGE_TICKS = 40, DECOY_SCAN_TICKS = 10;
+    public static final double DECOY_AUTO_RANGE = 48.0;
+
+    public static final double DC_SINK = 0.4, DC_DEPTH_MIN = 4.0, DC_DEPTH_MAX = 120.0, DC_DEPTH_DEFAULT = 15.0, DC_REACH = 8.0;
+    public static final float DC_POWER = 6.0F, DC_ENTITY_POWER = 3.0F;
+
+    public static final int DC_SOURCE_PASS_TICKS = 20;
+    public static final int DC_ARM_TICKS = 10, DC_RACK_FE = 40, DC_RELEASE_TICKS = 10, DC_PATTERN_TICKS = 20;
+
+    public static final int SEAMINE_ARM_TICKS = 400, MINE_SCAN_TICKS = 4, MINE_SYMPATHY_TICKS = 6;
+    public static final double SEAMINE_DEPTH_MIN = 2.0, SEAMINE_DEPTH_MAX = 120.0, SEAMINE_DEPTH_DEFAULT = 6.0, SEAMINE_DEPTH_CAPTOR = 30.0, SEAMINE_CABLE_MIN = 1.5,
+            SEAMINE_CABLE_MAX = 120.0, MINE_INF_TRIGGER = 8.0, MINE_INF_REACH = 16.0, MINE_BOT_SIDE = 6.0, MINE_BOT_LISTEN = 24.0, MINE_BOT_SPEED = 0.8,
+            MINE_BOT_PROX = 2.0, MINE_CAP_RANGE = 48.0, MINE_SYMPATHY_PER_POWER = 0.75;
+    public static final float MINE_INF_POWER = 9.0F;
+
+    public static final double MINE_LAY_REACH = 1.6, MINE_LAY_THROW = 0.25, MINE_LAY_SINK = 0.25, MINE_LAY_HULL_CHECK = 24.0, MINE_LAY_RETURN_RANGE = 64.0,
+            MINE_LAY_PAYOUT = 0.3;
+    public static final int MINE_LAY_MIN_WATER = 8, MINE_LAY_MAX_TICKS = 2400, MINE_LAY_COOLDOWN = 20, MINE_LAY_PAYOUT_DELAY = 10;
+    public static final int[] MINE_LAY_DEPTHS = { 3, 6, 10, 15, 20, 30, 45, 60, 90 };
+
+    public static final double KG_SPEED = 1.05;
+    public static final int KG_FE = 40, KG_FIRE_TICKS = 10, KG_RELOAD_TICKS = 60;
+
+    public static final double SONOBUOY_RANGE = 1_000.0;
+    public static final int SONOBUOY_TICKS = 12_000, SONOBUOY_EAR_DEPTH = 30;
+
+    public static final double TOWED_RANGE = 3_000.0, TOWED_LENGTH = 48.0, TOWED_ARRAY_LEN = 16.0, TOWED_STREAM_SPEED = 0.2, TOWED_SINK = 6.0, TOWED_MIN_OUT = 0.75,
+            TOWED_DEAF_SPEED = 6.0, TOWED_DEAF_TURN = 3.0, NODE_RANGE = 1_500.0, NODE_LOW = 0.10, NODE_WAKE = 0.25,
+            COASTAL_PICK = 48.0, COASTAL_SKIM_ALT = 4.0, COASTAL_LAUNCH_DB = 90.0, CRANE_DROP = 16.0, CRANE_SLEW_SPEED = 1.5, CRANE_LUFF_SPEED = 0.6, CRANE_HOOK_SPEED = 0.12;
+    public static final float COASTAL_TRAIN_SPEED = 1.5F;
+    public static final int TOWED_FE = 300, TOWED_SETTLE_TICKS = 200, NODE_FE = 16, NODE_TURBINE_STILL = 8, NODE_TURBINE_FLOW = 24, COASTAL_FE = 300,
+            COASTAL_RAISE_TICKS = 40, COASTAL_SALVO_GAP = 30, COASTAL_HOLD_TICKS = 100, CRANE_FE = 120, CRANE_LATCH_TICKS = 20, CRANE_SCAN_TICKS = 40;
+    public static final long NODE_BATTERY = 1_152_000L;
+
+    public static final double LC_MAX_DEPTH = 40.0, ASROC_MIN_RANGE = 60.0, ASROC_RANGE = 1_200.0, ASROC_RISE = 0.8, ASROC_SPEED = 3.0;
+
+    public static final double ASROC_CHUTE_SPEED = 0.35, ASROC_CHUTE_DRIFT = 0.1, ASROC_SEP_ALT = 18.0;
+
+    public static final double ASROC_STANDOFF = 80.0;
+    public static final int ASROC_HANG_TICKS = 12;
+    public static final int LC_FE = 60, LC_OPEN_TICKS = 30;
+
+    public static final double SLBM_RANGE_K = 0.8, SLBM_MIN_RANGE = 500.0, SLBM_RISE = 0.7;
+    public static final int SLBM_HANG_TICKS = 14, SLBM_POP_AT = 3, SLBM_SPIKE_TICKS = 6, SLBM_CLIMB_TICKS = 50;
+
+    public static final double CAPSULE_RISE = 0.6, CAPSULE_POP = 1.5, CAPSULE_SINK = 0.08;
+    public static final int CAPSULE_HANG_TICKS = 8, CAPSULE_SINK_TICKS = 200, LC_CAPSULES = 4;
+
+    public static final int NODULE_MIN_WATER = 24, NODULE_R_MIN = 4, NODULE_R_MAX = 8;
+
+    public static final int NODULE_RETRO_PER_TICK = 2, NODULE_RETRO_RARITY = 4;
+    public static final double NODULE_DENSITY = 0.55;
+    public static final int DREDGE_FE = 30, DREDGE_TILT_TICKS = 40, DREDGE_GRAB_TICKS = 30, DREDGE_PAUSE_TICKS = 40, DREDGE_REACH = 3, DREDGE_CABLE = 128,
+            DREDGE_YIELD_MIN = 2, DREDGE_YIELD_MAX = 3, DREDGE_SLOT = 64;
+    public static final double DREDGE_LOWER = 0.25, DREDGE_HAUL = 0.15;
+    public static final int RIG_FE = 120, RIG_SEP_TICKS = 100, RIG_SEP_IN = 4, RIG_MN_OUT = 3, RIG_NICO_OUT = 1, RIG_HOPPER = 64, RIG_RISER = 160;
+    public static final int CRAWLER_RADIUS = 24, CRAWLER_COLLECT_TICKS = 20, CRAWLER_YIELD_MIN = 3, CRAWLER_YIELD_MAX = 4, CRAWLER_PATH_NODES = 1500,
+            CRAWLER_SCAN_ROWS = 4;
+    public static final double CRAWLER_SPEED = 0.12, CRAWLER_SINK = 0.3;
+
+    public static final int SURVEY_FE = 100_000, SURVEY_RANGE = 256, SURVEY_KEEP_TICKS = 72_000, SURVEY_MAX_MARKS = 64, SURVEY_JOIN = 12, SURVEY_HINT_TICKS = 100;
+
+    public static final int NR_FE_PER_TICK = 2_500, NR_FUEL_SLOTS = 2, NR_SPENT_SLOTS = 2, NR_FUEL_TICKS = 288_000, NR_BUFFER_FE = 1_000_000, NR_OUT_PER_TICK = 10_000,
+            NR_WATER_TANK_MB = 4_000, NR_QUIET_PCT = 30, NR_DECAY_TICKS = 1_200, NR_MELTDOWN_TIER = 1;
+    public static final int[] NR_LEVELS = { 0, 30, 50, 75, 100 };
+
+    public static final int NR_SEA_FILL_MB = 40, NR_LEAK_MB = 10, NR_TANK_COOL_PCT = 25;
+
+    public static final int DC_MAX_FE_PER_TICK = 2_500, DC_BUFFER_FE = 10_000, DC_WINDOW_TICKS = 20, DC_MIN_FE_PER_TICK = 50, DC_RPM_DEFAULT = 64;
+    public static final int[] DC_RPMS = { 16, 32, 64, 128 };
+    public static final float DC_SU_PER_FE = 32_768.0F / 2_500.0F;
+    public static final double NR_CRACK_REACH = 2.5;
+    public static final double NR_WATER_MB = 4.0, NR_HEAT_MAX = 1_000.0, NR_HEAT_SCRAM = 900.0, NR_HEAT_ALARM = 600.0, NR_HEAT_STEAM = 800.0, NR_HEAT_OPERATING = 300.0,
+            NR_HEAT_RISE = 0.6, NR_HEAT_FALL = 1.0, NR_DECAY_RISE = 0.2, NR_PUMP_DB = 80.0, NR_PUMP_DB_FULL = 88.0;
+
+    public static final int PERI_FE = 20, PERI_RAISE_TICKS = 40, MAST_BEAT = 20, MAST_TTL = 60;
+    public static final float PERI_STAGE_PX = 28.0F;
+    public static final double PERI_HEAD_UP = 3.6, PERI_ZOOM_LOW = 1.5, PERI_ZOOM_HIGH = 6.0, PERI_REACH = 3.0, PERI_WAKE_SPEED = 0.08;
+
+    public static final double PERI_EYE_AHEAD = 0.3;
+
+    public static final int BUOY_FE = 15;
+    public static final double COMMS_DEPTH = 10.0, BUOY_CABLE = 64.0, BUOY_RISE = 0.3, BUOY_MAX_SPEED = 8.0, BUOY_DB = 70.0;
+
+    public static final int ATT_SCAN_TICKS = 4, ATT_CLAIM_TICKS = 160;
+    public static final double ATT_DETECT = 120.0, ATT_CPA = 24.0, ATT_TURN = 15.0, ATT_SEEK = 80.0, ATT_ARM = 4.0, ATT_FUSE = 3.0, ATT_DB = 95.0;
+    public static final float ATT_BLAST = 2.5F;
+
+    public static final int POD_SEATS = 4, POD_FE = 5, POD_CHECK_TICKS = 10, POD_FLOAT_TICKS = 6_000;
+    public static final double POD_REACH = 3.0, POD_RISE = 0.35, POD_FALL = 0.12, POD_DRAFT = 1.6, POD_HEIGHT = 2.8;
+
+    public static final float SND_AMBIENT = 0.12F, SND_SMALL = 0.35F, SND_MACHINE = 0.6F, SND_HEAVY = 0.9F, SND_GIANT = 1.5F, SND_SHOWPIECE = 2.5F;
+    public static final float SND_CLICK = 0.6F, SND_MECH = 1.0F, SND_RELEASE = 2.0F, SND_ALARM = 4.0F;
 }

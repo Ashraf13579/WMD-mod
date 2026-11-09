@@ -55,6 +55,8 @@ public class CcBuildingBlockEntity extends ProcessUnitBlockEntity implements Own
     private float anim, prevAnim;
     private boolean animInit;
 
+    private final CcBuildingAnim roofAnim = new CcBuildingAnim();
+
     private final ItemStackHandler modules = new ItemStackHandler(N) {
         @Override public int getSlotLimit(int slot) { return 1; }
         @Override public boolean isItemValid(int slot, ItemStack stack) { return accepts(slot, stack); }
@@ -189,11 +191,11 @@ public class CcBuildingBlockEntity extends ProcessUnitBlockEntity implements Own
             override = false;
             autoClosed = doorOpen;
             if (doorOpen) setDoor(false);
-            level.playSound(null, d, WmdSounds.DEFCON_1.get(), SoundSource.BLOCKS, 2.5F, 1.0F);
+            level.playSound(null, d, WmdSounds.DEFCON_1.get(), SoundSource.BLOCKS, Balance.SND_ALARM, 1.0F);
         } else {
             if (autoClosed && !override && !doorOpen) setDoor(true);
             autoClosed = override = false;
-            level.playSound(null, d, WmdSounds.CC_PING.get(), SoundSource.BLOCKS, 0.9F, 1.0F);
+            level.playSound(null, d, WmdSounds.CC_PING.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
         }
         setChanged();
         sync();
@@ -343,7 +345,7 @@ public class CcBuildingBlockEntity extends ProcessUnitBlockEntity implements Own
         setChanged();
         sync();
         BlockPos d = Machines.toWorld(worldPosition, facing(), Machines.mount(getBlockState()), 0, 2, 1);
-        level.playSound(null, d, v ? WmdSounds.CC_DOOR_OPEN.get() : WmdSounds.CC_DOOR_CLOSE.get(), SoundSource.BLOCKS, 1.2F, 1.0F);
+        level.playSound(null, d, v ? WmdSounds.CC_DOOR_OPEN.get() : WmdSounds.CC_DOOR_CLOSE.get(), SoundSource.BLOCKS, Balance.SND_MECH, 1.0F);
 
     }
 
@@ -405,7 +407,7 @@ public class CcBuildingBlockEntity extends ProcessUnitBlockEntity implements Own
         for (BlockPos l : CcBuildingSpec.footprint()) {
             BlockPos p = Machines.toWorld(worldPosition, f, Machines.mount(getBlockState()), l.getX(), l.getY(), l.getZ());
             if (p.equals(worldPosition) || !level.getBlockState(p).isAir()) continue;
-            level.setBlock(p, Wmd.MACHINE_PART.get().defaultBlockState(), 3);
+            level.setBlock(p, Waterlog.part(level, p), 3);
             if (level.getBlockEntity(p) instanceof MachinePartBlockEntity part) part.setController(worldPosition);
             added++;
         }
@@ -447,6 +449,7 @@ public class CcBuildingBlockEntity extends ProcessUnitBlockEntity implements Own
         if (!be.animInit) { be.animInit = true; be.anim = be.doorOpen ? 1.0F : 0.0F; }
         be.prevAnim = be.anim;
         be.anim = Mth.clamp(be.anim + (be.doorOpen ? 1.0F : -1.0F) / Math.max(1, CcBuildingSpec.DOOR_TICKS), 0.0F, 1.0F);
+        be.roofAnim.tick(be.running, ClientHemp.darkAt(pos.getX() + 0.5, pos.getZ() + 0.5), be.defcon(), Integer.bitCount(be.onlineMask), be.satsControlled);
     }
 
     private boolean unloading;
@@ -479,6 +482,7 @@ public class CcBuildingBlockEntity extends ProcessUnitBlockEntity implements Own
         model.getBone("door_lamp_g").ifPresent(b -> b.setHidden(dark || !doorOpen || red));
         model.getBone("lights").ifPresent(b -> b.setHidden(dark || !running || (red && !strobe)));
         model.getBone("base").ifPresent(b -> { b.setPosX(0.0F); b.setPosZ(0.0F); b.setRotX(0.0F); b.setRotZ(0.0F); });
+        roofAnim.apply(model, pt, tt, running, dark, defcon(), sealed);
     }
 
     @Override protected boolean work() { return false; }
@@ -513,7 +517,7 @@ public class CcBuildingBlockEntity extends ProcessUnitBlockEntity implements Own
 
     @Override protected SoundEvent runSound() { return WmdSounds.CC_SERVER_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(CcBuildingSpec.CENTRE_X, CcBuildingSpec.CENTRE_Y + 1, CcBuildingSpec.CENTRE_Z); }
-    @Override protected float soundVolume() { return 0.05F; }
+    @Override protected float soundVolume() { return Balance.SND_AMBIENT; }
 
     private void writeState(CompoundTag tag) { writeState(tag, true); }
 

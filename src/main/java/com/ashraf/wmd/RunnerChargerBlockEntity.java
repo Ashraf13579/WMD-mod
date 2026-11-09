@@ -12,4 +12,6 @@ public class RunnerChargerBlockEntity extends RobotDockBlockEntity {
 
     @Override protected BlockPos socketCell() { return BlockPos.ZERO; }
     @Override protected Direction socketFace() { return Direction.SOUTH; }
+
+    @Override protected int contactTicks() { return 0; }
 }

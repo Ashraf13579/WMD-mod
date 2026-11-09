@@ -68,14 +68,47 @@ public class CokerBlockEntity extends ItemProcessBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.CK_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 1, 1); }
-    @Override protected float soundVolume() { return 0.7F; }
+    @Override protected float soundVolume() { return Balance.SND_HEAVY; }
 
     @Override protected float levelFraction() { return progress / (float) Balance.COKER_CYCLE_TICKS; }
 
+    static final double CYCLE_RAD = Math.PI * 200.0;
+
+    public double cycle(float pt) {
+        double c = spinAngle(pt) % CYCLE_RAD;
+        if (c < 0) c += CYCLE_RAD;
+        return c / CYCLE_RAD * 2.0;
+    }
+
+    public float run01(float pt) { return net.minecraft.util.Mth.clamp((spinAngle(1.0F) - spinAngle(0.0F)) / 0.9F, 0.0F, 1.0F); }
+
+    private int shownHalf = -1;
+
     @Override
     protected void clientEffects(Level level) {
-        if (level.getGameTime() % 3 != 0) return;
         var r = level.random;
+        final double cyc = cycle(0.0F);
+        final int half = cyc < 1.0 ? 0 : 1;
+        final double p = cyc - half;
+        if (shownHalf >= 0 && half != shownHalf) {
+            double[] v = worldPoint(-0.375, 1.625, -0.1875);
+            level.playLocalSound(v[0], v[1], v[2], WmdSounds.ST_DOCK_CLAMP.get(), net.minecraft.sounds.SoundSource.BLOCKS, Balance.SND_MECH, 1.15F, false);
+        }
+        shownHalf = half;
+        final double dx = half == 0 ? -9.0 / 16.0 : 9.0 / 16.0;
+        if (p >= CokerAnim.SWITCH_END && p < CokerAnim.STEM_DOWN && level.getGameTime() % 3 == 0) {
+            double[] w = worldPoint(dx, 8.1, 1.125);
+            level.addParticle(ParticleTypes.CLOUD, w[0] + (r.nextDouble() - 0.5) * 0.15, w[1], w[2] + (r.nextDouble() - 0.5) * 0.15, 0.0, 0.06 + r.nextDouble() * 0.03, 0.0);
+        }
+        if (CokerAnim.cutting(p) && level.getGameTime() % 2 == 0) {
+            double[] w = worldPoint(dx + (r.nextDouble() - 0.5) * 0.3, 0.85, 1.125 + (r.nextDouble() - 0.5) * 0.3);
+            level.addParticle(ParticleTypes.SMOKE, w[0], w[1], w[2], 0.0, -0.01, 0.0);
+            if (r.nextInt(3) == 0) {
+                double[] o = worldPoint(1.45, 0.6, 1.0);
+                level.addParticle(ParticleTypes.SMOKE, o[0], o[1], o[2], 0.0, 0.01, 0.0);
+            }
+        }
+        if (level.getGameTime() % 3 != 0) return;
         double[] w = worldPoint(-1.0, 3.3, -0.125);
         level.addAlwaysVisibleParticle(ParticleTypes.LARGE_SMOKE, true, w[0] + (r.nextDouble() - 0.5) * 0.2, w[1], w[2] + (r.nextDouble() - 0.5) * 0.2,
                 (r.nextDouble() - 0.5) * 0.01, 0.05 + r.nextDouble() * 0.03, (r.nextDouble() - 0.5) * 0.01);

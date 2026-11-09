@@ -504,7 +504,7 @@ public class RailgunBlockEntity extends ItemProcessBlockEntity implements Owned,
 
     @Override protected SoundEvent runSound() { return WmdSounds.RG_CHARGE_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 6, 7); }
-    @Override protected float soundVolume() { return 2.5F; }
+    @Override protected float soundVolume() { return Balance.SND_SHOWPIECE; }
     @Override protected float soundPitch() { return 0.75F + 0.6F * charge01(); }
 
     @Override protected Slot[] slots() { return slots; }

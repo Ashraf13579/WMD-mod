@@ -87,7 +87,7 @@ public class CcSecurityMonitorBlockEntity extends CcModuleBlockEntity implements
         boolean fresh = now >= alertUntil || alert != best;
         alert = best;
         alertUntil = now + 200;
-        if (fresh && level != null) level.playSound(null, worldPosition, WmdSounds.CC_ALERT.get(), SoundSource.BLOCKS, 0.7F, 1.2F);
+        if (fresh && level != null) level.playSound(null, worldPosition, WmdSounds.CC_ALERT.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.2F);
     }
 
     @Override

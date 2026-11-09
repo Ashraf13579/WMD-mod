@@ -59,7 +59,17 @@ public final class WmdHelp {
             Map.entry("mortar", "mortar"), Map.entry("howitzer", "howitzer"), Map.entry("shell_press", "shell_press"), Map.entry("counter_battery_radar", "counter_battery"),
             Map.entry("cc_artillery_console", "art_console"), Map.entry("cc_iron_dome", "iron_dome"), Map.entry("mlrs", "mlrs"), Map.entry("super_gun", "super_gun"),
             Map.entry("camo_net", "camo"), Map.entry("decoy_launcher", "decoys"), Map.entry("decoy_radar", "decoys"),
-            Map.entry("alkylation_unit", "alkylation"), Map.entry("cruise_launcher", "cruise_launcher"));
+            Map.entry("alkylation_unit", "alkylation"), Map.entry("cruise_launcher", "cruise_launcher"),
+
+            Map.entry("sonar_dome", "sonar_dome"), Map.entry("hydrophone_array", "hydrophone_array"), Map.entry("sonar_console", "sonar_console"),
+            Map.entry("dredge_winch", "dredge_winch"), Map.entry("collector_rig", "collector_rig"), Map.entry("nodule_field", "dredge_winch"),
+            Map.entry("manganese_hull_plate", "deep_hull"), Map.entry("superalloy_hull", "deep_hull"), Map.entry("deep_viewport", "deep_hull"),
+            Map.entry("hull_penetrator", "hull_penetrator"), Map.entry("torpedo_net", "torpedo_net"),
+            Map.entry("anechoic_tile", "anechoic"), Map.entry("deep_sonar_upgrade", "deep_sonar"),
+            Map.entry("towed_array_winch", "towed_array_winch"), Map.entry("listening_node", "listening_node"), Map.entry("coastal_battery", "coastal_battery"), Map.entry("dock_crane", "dock_crane"),
+            Map.entry("torpedo_tube", "torpedo_tube"), Map.entry("torpedo_line_shop", "torpedo_line"), Map.entry("torpedo_line_fitout", "torpedo_line"), Map.entry("torpedo_line_test", "torpedo_line"), Map.entry("torpedo_launcher_deck", "torpedo_launcher_deck"), Map.entry("torpedo_rack", "torpedo_rack"), Map.entry("fire_control_console", "fire_control_console"), Map.entry("depth_charge_rack", "depth_charge"), Map.entry("launch_cell", "launch_cell"),
+            Map.entry("naval_reactor", "naval_reactor"), Map.entry("periscope", "periscope"), Map.entry("comms_buoy", "comms_buoy"), Map.entry("escape_pod", "escape_pod"), Map.entry("noisemaker_launcher", "noisemaker_launcher"),
+            Map.entry("depth_charge_thrower", "kgun"), Map.entry("mine_influence", "mine_influence"), Map.entry("mine_bottom", "mine_bottom"), Map.entry("mine_captor", "mine_captor"));
 
     static String pageForBlock(Block b) {
         ResourceLocation id = BuiltInRegistries.BLOCK.getKey(b);
@@ -82,12 +92,14 @@ public final class WmdHelp {
         String page = null;
         if (s instanceof MachineScreen ms) {
             if (ms.getMenu().machine() instanceof BlockEntity be) page = pageForBlock(be.getBlockState().getBlock());
+            if (s instanceof SonarScreen && SonarScreen.hullView()) page = "sub_hull";
         } else if (s instanceof LauncherScreen ls) page = pageAt(ls.getMenu().getPos());
         else if (s instanceof TerminalScreen ts) page = ts.getMenu().getTier() >= 4 ? "t4_rocket" : "launch";
         else if (s instanceof BayScreen) page = "bay";
         else if (s instanceof LabScreen) page = "lab";
         else if (s instanceof DroneScreen) page = "drone_line";
         else if (s instanceof BombLineScreen) page = "bomb_line";
+        else if (s instanceof TorpedoLineScreen) page = "torpedo_line";
         else if (s instanceof DroneHiveScreen) page = "drone_hive";
         else if (s instanceof BigDroneScreen) page = "big_drone";
         else if (s instanceof RouteChartScreen) page = "cc_drones";
@@ -110,6 +122,7 @@ public final class WmdHelp {
         else if (s instanceof LaserTabletScreen) page = "laser";
         else if (s instanceof AreaViewScreen) page = "designator";
         else if (s instanceof SecurityMonitorScreen) page = "cctv";
+        else if (s instanceof SeaMineScreen sm) page = sm.page();
         else return null;
         return page != null ? page : "contents";
     }

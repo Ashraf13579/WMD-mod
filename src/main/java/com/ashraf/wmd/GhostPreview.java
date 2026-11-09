@@ -78,6 +78,7 @@ public final class GhostPreview {
         Direction[] mf = ShipPlace.place(ctx, mb instanceof MachineBlock m && m.anyFace());
         Direction mount = mf == null ? Direction.UP : mf[0], facing = mf == null ? null : mf[1];
         if (facing == null) facing = ctx.getHorizontalDirection().getOpposite();
+        if (mb instanceof MachineBlock fm && fm.faceAway() && mount == Direction.UP && facing.getAxis() != Direction.Axis.Y) facing = facing.getOpposite();
         long now = level.getGameTime();
         Plan p = plan;
         if (p == null || p.block != mb || !p.origin.equals(origin) || p.facing != facing || p.mount != mount || now - p.checkedAt >= RECHECK || now < p.checkedAt) {

@@ -184,6 +184,7 @@ public class MissileRobotEntity extends Entity {
         Logistics.noteRobot(this);
         if (EmpField.jammed(sl, blockPosition())) return;
         stateTicks++;
+        if (heavy() && state() == TO_SOURCE && stateTicks <= XlDockAnim.RELEASE_HOLD && onOwnSpot(sl)) return;
         if (job != null && stateTicks % 20 == 0 && (state() == TO_SOURCE || state() == TO_TARGET || state() == RETURN_LOAD)) recheck(sl);
         switch (state()) {
             case TO_SOURCE, RETURN_LOAD -> { if (job == null) { setState(HOME); break; } if (drive(sl, job.sourceBlock())) setState(state() == TO_SOURCE ? LOADING : UNLOADING); }
@@ -246,6 +247,11 @@ public class MissileRobotEntity extends Entity {
             }
             default -> {}
         }
+    }
+
+    private boolean onOwnSpot(ServerLevel sl) {
+        Vec3 p = home == null ? null : RobotDockBlockEntity.parkSpot(sl, home);
+        return p != null && position().distanceToSqr(p) < 1.0;
     }
 
     private boolean onDock(ServerLevel sl, Vec3 park) {

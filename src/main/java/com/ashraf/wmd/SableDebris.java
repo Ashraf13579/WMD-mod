@@ -62,6 +62,19 @@ final class SableDebris {
         return s.getUniqueId();
     }
 
+    static UUID assembleShip(ServerLevel level, BlockPos anchor, List<BlockPos> blocks, String name) {
+        int x0 = Integer.MAX_VALUE, y0 = Integer.MAX_VALUE, z0 = Integer.MAX_VALUE, x1 = Integer.MIN_VALUE, y1 = Integer.MIN_VALUE, z1 = Integer.MIN_VALUE;
+        for (BlockPos p : blocks) {
+            x0 = Math.min(x0, p.getX()); y0 = Math.min(y0, p.getY()); z0 = Math.min(z0, p.getZ());
+            x1 = Math.max(x1, p.getX()); y1 = Math.max(y1, p.getY()); z1 = Math.max(z1, p.getZ());
+        }
+        ServerSubLevel s = SubLevelAssemblyHelper.assembleBlocks(level, anchor, blocks, new BoundingBox3i(x0, y0, z0, x1, y1, z1));
+        if (s == null || s.isRemoved()) return null;
+        s.setName(name);
+        wake(level, s);
+        return s.getUniqueId();
+    }
+
     private static void mark(ServerSubLevel s, long until) {
         s.setName(NAME);
         CompoundTag old = s.getUserDataTag();
@@ -157,6 +170,32 @@ final class SableDebris {
         if (!(s instanceof ServerSubLevel ss) || ss.isRemoved()) return false;
         c.removeSubLevel(ss, SubLevelRemovalReason.REMOVED);
         return true;
+    }
+
+    static boolean naturalRemnant(ServerLevel level, UUID id, int maxBlocks) {
+        ServerSubLevel s = get(level, id);
+        if (s == null || s.getPlot() == null || isDebris(s)) return false;
+        dev.ryanhcode.sable.companion.math.BoundingBox3ic b = s.getPlot().getBoundingBox();
+        if (b == null) return false;
+        long vol = (long) (b.maxX() - b.minX() + 1) * (b.maxY() - b.minY() + 1) * (b.maxZ() - b.minZ() + 1);
+        if (vol > 8L * maxBlocks) return false;
+        BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
+        int n = 0;
+        for (int x = b.minX(); x <= b.maxX(); x++) for (int y = b.minY(); y <= b.maxY(); y++) for (int z = b.minZ(); z <= b.maxZ(); z++) {
+            p.set(x, y, z);
+            net.minecraft.world.level.block.state.BlockState st = level.getBlockState(p);
+            if (st.isAir() || !st.getFluidState().isEmpty() && st.getBlock() instanceof net.minecraft.world.level.block.LiquidBlock) continue;
+            if (st.hasBlockEntity() || !natural(st)) return false;
+            if (++n > maxBlocks) return false;
+        }
+        return n > 0;
+    }
+
+    private static boolean natural(net.minecraft.world.level.block.state.BlockState s) {
+        return s.is(net.minecraft.tags.BlockTags.DIRT) || s.is(net.minecraft.tags.BlockTags.SAND) || s.is(net.minecraft.tags.BlockTags.BASE_STONE_OVERWORLD)
+                || s.is(net.minecraft.tags.BlockTags.LOGS) || s.is(net.minecraft.tags.BlockTags.LEAVES) || s.is(Blocks.GRAVEL) || s.is(Blocks.CLAY)
+                || s.is(Blocks.MUD) || s.is(Blocks.SNOW_BLOCK) || s.is(Blocks.ICE) || s.is(Blocks.PACKED_ICE) || s.is(Wmd.NODULE_FIELD.get())
+                || s.is(net.minecraft.tags.BlockTags.TERRACOTTA) || s.is(Blocks.SANDSTONE) || s.is(Blocks.RED_SANDSTONE) || s.is(Blocks.SEAGRASS) || s.is(Blocks.KELP_PLANT);
     }
 
     static List<SableBridge.DebrisScan> scan(ServerLevel level) {

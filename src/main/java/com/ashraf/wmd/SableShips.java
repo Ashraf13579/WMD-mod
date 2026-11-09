@@ -45,8 +45,8 @@ final class SableShips {
         SubLevelContainer c = SubLevelContainer.getContainer((Level) level);
         if (c == null) return List.of();
         List<SableBridge.ShipInfo> out = null;
-        for (SubLevel s : c.queryIntersecting(new BoundingBox3d(box))) {
-            if (!(s instanceof ServerSubLevel ss) || ss.isRemoved() || SableDebris.isDebris(ss)) continue;
+        for (SubLevel s : c.getAllSubLevels()) {
+            if (!(s instanceof ServerSubLevel ss) || ss.isRemoved() || SableDebris.isDebris(ss) || !worldBox(ss).intersects(box)) continue;
             if (out == null) out = new ArrayList<>(4);
             out.add(info(level, ss));
         }
@@ -94,9 +94,28 @@ final class SableShips {
         return removed;
     }
 
-    private static SableBridge.ShipInfo info(ServerLevel level, ServerSubLevel s) {
+    static AABB worldBox(SubLevel s) {
+        try {
+            var pb = s.getPlot() == null ? null : s.getPlot().getBoundingBox();
+            if (pb != null) {
+                double x0 = Double.MAX_VALUE, y0 = Double.MAX_VALUE, z0 = Double.MAX_VALUE, x1 = -Double.MAX_VALUE, y1 = -Double.MAX_VALUE, z1 = -Double.MAX_VALUE;
+                for (int i = 0; i < 8; i++) {
+                    Vec3 c = new Vec3((i & 1) == 0 ? pb.minX() : pb.maxX() + 1.0, (i & 2) == 0 ? pb.minY() : pb.maxY() + 1.0, (i & 4) == 0 ? pb.minZ() : pb.maxZ() + 1.0);
+                    Vec3 w = s.logicalPose().transformPosition(c);
+                    x0 = Math.min(x0, w.x); y0 = Math.min(y0, w.y); z0 = Math.min(z0, w.z);
+                    x1 = Math.max(x1, w.x); y1 = Math.max(y1, w.y); z1 = Math.max(z1, w.z);
+                }
+                return new AABB(x0, y0, z0, x1, y1, z1);
+            }
+        } catch (RuntimeException ignored) {
+
+        }
         BoundingBox3dc b = s.boundingBox();
-        AABB bounds = new AABB(b.minX(), b.minY(), b.minZ(), b.maxX(), b.maxY(), b.maxZ());
+        return new AABB(b.minX(), b.minY(), b.minZ(), b.maxX(), b.maxY(), b.maxZ());
+    }
+
+    private static SableBridge.ShipInfo info(ServerLevel level, ServerSubLevel s) {
+        AABB bounds = worldBox(s);
         Vector3dc v = s.latestLinearVelocity;
         Vec3 vel = v == null ? Vec3.ZERO : new Vec3(v.x(), v.y(), v.z());
         MassData m = s.getMassTracker();
@@ -146,6 +165,39 @@ final class SableShips {
             if (ch != null) out.addAll(ch.getBlockEntities().keySet());
         }
         return out;
+    }
+
+    static int[] plotBox(ServerLevel level, UUID id) {
+        SubLevelContainer c = SubLevelContainer.getContainer((Level) level);
+        SubLevel s = c == null ? null : c.getSubLevel(id);
+        LevelPlot plot = s == null || s.isRemoved() ? null : s.getPlot();
+        var pb = plot == null ? null : plot.getBoundingBox();
+        if (pb == null) return null;
+        return new int[] { (int) Math.floor(pb.minX()), (int) Math.floor(pb.minY()), (int) Math.floor(pb.minZ()),
+                (int) Math.floor(pb.maxX()), (int) Math.floor(pb.maxY()), (int) Math.floor(pb.maxZ()) };
+    }
+
+    static Map<Long, LevelChunk> plotChunks(ServerLevel level, UUID id) {
+        SubLevelContainer c = SubLevelContainer.getContainer((Level) level);
+        SubLevel s = c == null ? null : c.getSubLevel(id);
+        LevelPlot plot = s == null || s.isRemoved() ? null : s.getPlot();
+        Map<Long, LevelChunk> out = new java.util.HashMap<>();
+        if (plot == null) return out;
+        for (PlotChunkHolder h : plot.getLoadedChunks()) {
+            LevelChunk ch = h == null ? null : h.getChunk();
+            if (ch != null) out.put(ch.getPos().toLong(), ch);
+        }
+        return out;
+    }
+
+    static int countBlocks(ServerLevel level, UUID id, java.util.function.Predicate<net.minecraft.world.level.block.state.BlockState> match) {
+        int[] n = { 0 };
+        for (LevelChunk ch : plotChunks(level, id).values())
+            for (LevelChunkSection sec : ch.getSections()) {
+                if (sec == null || sec.hasOnlyAir() || !sec.maybeHas(match)) continue;
+                sec.getStates().count((state, k) -> { if (match.test(state)) n[0] += k; });
+            }
+        return n[0];
     }
 
     private static SubLevelAccess containing(Level level, BlockPos pos) {

@@ -25,6 +25,9 @@ public abstract class CctvDeviceEntity extends ProcessUnitBlockEntity implements
         super(type, pos, state, fePerTick);
     }
 
+    @Override
+    public net.neoforged.neoforge.energy.IEnergyStorage guiEnergy() { return guiFeUse() <= 0 ? null : super.guiEnergy(); }
+
     @Override public UUID getOwner() { return ownerData.id(); }
     @Override public String getOwnerName() { return ownerData.name(); }
     @Override public SecurityData security() { return ownerData.security(); }

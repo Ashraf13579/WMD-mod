@@ -47,7 +47,7 @@ public abstract class StationFixtureBlock extends UnitBlock {
             sp.setRespawnPosition(level.dimension(), front, sp.getYRot(), true, false);
             sp.getPersistentData().putLong(StationLife.BUNK, controller.asLong());
             sp.displayClientMessage(Component.translatable("message.wmd.station.bunk").withStyle(ChatFormatting.AQUA), true);
-            level.playSound(null, controller, WmdSounds.OR_CAPSULE_HATCH.get(), SoundSource.BLOCKS, 0.6F, 1.3F);
+            level.playSound(null, controller, WmdSounds.OR_CAPSULE_HATCH.get(), SoundSource.BLOCKS, Balance.SND_MECH, 1.3F);
         }
     }
 
@@ -69,7 +69,7 @@ public abstract class StationFixtureBlock extends UnitBlock {
             if (got <= 0) { sp.displayClientMessage(Component.translatable("message.wmd.station.rack_no_power").withStyle(ChatFormatting.RED), true); return; }
             EvaSuitItem.setOxygen(target, have + got);
             sp.displayClientMessage(Component.translatable("message.wmd.oxygen.refilled", EvaSuitItem.clock(have + got)).withStyle(ChatFormatting.AQUA), true);
-            level.playSound(null, controller, WmdSounds.OR_O2_POUR.get(), SoundSource.BLOCKS, 0.8F, 1.0F);
+            level.playSound(null, controller, WmdSounds.OR_O2_POUR.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
         }
     }
 
@@ -90,7 +90,7 @@ public abstract class StationFixtureBlock extends UnitBlock {
                 if (Station.takeBattery(sl, slot, controller)) {
                     sp.getInventory().placeItemBackInInventory(new ItemStack(Wmd.STATION_BATTERY_ITEM.get()));
                     sp.displayClientMessage(Component.translatable("message.wmd.station.battery_out", Station.capacity(sl.getServer(), slot) / 1_000_000L).withStyle(ChatFormatting.YELLOW), true);
-                    level.playSound(null, controller, WmdSounds.ST_DOCK_CLAMP.get(), SoundSource.BLOCKS, 0.6F, 1.4F);
+                    level.playSound(null, controller, WmdSounds.ST_DOCK_CLAMP.get(), SoundSource.BLOCKS, Balance.SND_MECH, 1.4F);
                 }
                 return;
             }
@@ -124,7 +124,7 @@ public abstract class StationFixtureBlock extends UnitBlock {
             d.setDirty();
             if (sl.getBlockEntity(Station.controller(m)) instanceof StationModuleBlockEntity be) be.setRods(n + 1);
             sp.displayClientMessage(Component.translatable("message.wmd.rod.loaded", n + 1, Balance.ROD_RACK_MAX).withStyle(ChatFormatting.AQUA), true);
-            level.playSound(null, controller, WmdSounds.ST_DOCK_CLAMP.get(), SoundSource.BLOCKS, 0.8F, 1.3F);
+            level.playSound(null, controller, WmdSounds.ST_DOCK_CLAMP.get(), SoundSource.BLOCKS, Balance.SND_MECH, 1.3F);
         }
     }
 

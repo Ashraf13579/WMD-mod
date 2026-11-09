@@ -104,7 +104,7 @@ public class CoolingTowerBlockEntity extends ProcessUnitBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.CT_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 0, 9); }
-    @Override protected float soundVolume() { return 0.6F; }
+    @Override protected float soundVolume() { return Balance.SND_HEAVY; }
     @Override protected float levelFraction() { return water.getFluidAmount() / (float) Balance.TOWER_TANK_MB; }
 
     @Override

@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "wmd:block/torpedo_net_cell" }
+  }
+}

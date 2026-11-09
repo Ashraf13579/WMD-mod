@@ -30,7 +30,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-public class BatteryBlock extends BaseEntityBlock {
+public class BatteryBlock extends BaseEntityBlock implements net.minecraft.world.level.block.SimpleWaterloggedBlock {
 
     public enum Part implements StringRepresentable {
         FRONT_BOTTOM("front_bottom"), BACK_BOTTOM("back_bottom"), FRONT_TOP("front_top"), BACK_TOP("back_top");
@@ -51,7 +51,7 @@ public class BatteryBlock extends BaseEntityBlock {
     public BatteryBlock(Properties properties) {
         super(properties);
         registerDefaultState(stateDefinition.any()
-                .setValue(FACING, Direction.NORTH).setValue(PART, Part.FRONT_BOTTOM).setValue(CHARGE, 0).setValue(MachineBlock.MOUNT, Direction.UP));
+                .setValue(FACING, Direction.NORTH).setValue(PART, Part.FRONT_BOTTOM).setValue(CHARGE, 0).setValue(MachineBlock.MOUNT, Direction.UP).setValue(Waterlog.W, false));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class BatteryBlock extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, PART, CHARGE, MachineBlock.MOUNT);
+        builder.add(FACING, PART, CHARGE, MachineBlock.MOUNT, Waterlog.W);
     }
 
     @Override
@@ -149,7 +149,8 @@ public class BatteryBlock extends BaseEntityBlock {
         Direction facing = state.getValue(FACING), mount = Machines.mount(state);
         for (Part part : Part.values()) {
             if (part == Part.FRONT_BOTTOM) continue;
-            level.setBlock(cell(pos, facing, mount, part), state.setValue(PART, part), 3);
+            BlockPos c = cell(pos, facing, mount, part);
+            level.setBlock(c, Waterlog.placed(state.setValue(PART, part), level, c), 3);
         }
     }
 

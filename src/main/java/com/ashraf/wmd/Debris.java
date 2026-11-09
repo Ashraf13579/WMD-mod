@@ -516,11 +516,22 @@ public final class Debris {
         }
     }
 
+    private static final Set<UUID> NOT_REMNANT = Statics.server(new HashSet<>());
+
     private static void sweep(ServerLevel level, State st, long now) {
         Set<UUID> mine = new HashSet<>();
         for (Piece p : st.live) mine.add(p.id);
         for (SableBridge.DebrisScan s : SableBridge.debrisScan(level)) {
-            if (s.until() < 0 || mine.contains(s.id())) continue;
+            if (mine.contains(s.id())) continue;
+            if (s.until() < 0) {
+
+                if (!NOT_REMNANT.contains(s.id()) && SableBridge.debrisRemnant(level, s.id())) {
+                    Wmd.LOGGER.info("[debris] a lost remnant {} went (untagged natural lump)", s.id());
+                    vanish(level, Blocks.DIRT.defaultBlockState(), 4, s.bounds());
+                    SableBridge.debrisRemove(level, s.id());
+                } else NOT_REMNANT.add(s.id());
+                continue;
+            }
             boolean child = s.splitFrom() != null && mine.contains(s.splitFrom());
             if (child && s.until() > now) { st.live.add(new Piece(s.id(), s.until(), Blocks.DIRT.defaultBlockState(), 4, Vec3.ZERO, Vec3.ZERO, 0)); continue; }
             vanish(level, Blocks.DIRT.defaultBlockState(), 4, s.bounds());

@@ -149,7 +149,7 @@ public class BombRackBlockEntity extends ProcessUnitBlockEntity implements Owned
                 doorsOpenAt = now;
                 doorsCloseAt = -1L;
                 Vec3 c = centre();
-                sl.playSound(null, c.x, c.y, c.z, WmdSounds.CC_DOOR_OPEN.get(), SoundSource.BLOCKS, 2.0F, 0.8F);
+                sl.playSound(null, c.x, c.y, c.z, WmdSounds.CC_DOOR_OPEN.get(), SoundSource.BLOCKS, Balance.SND_MECH, 0.8F);
                 sl.playSound(null, c.x, c.y, c.z, SoundEvents.PISTON_EXTEND, SoundSource.BLOCKS, 1.5F, 0.55F);
                 nextDropAt = now + Balance.BAY_DOOR_TICKS;
                 sync();
@@ -203,7 +203,7 @@ public class BombRackBlockEntity extends ProcessUnitBlockEntity implements Owned
         }
         if (heavy && doorsCloseAt >= 0L && now == doorsCloseAt) {
             Vec3 c = centre();
-            sl.playSound(null, c.x, c.y, c.z, WmdSounds.CC_DOOR_CLOSE.get(), SoundSource.BLOCKS, 2.0F, 0.8F);
+            sl.playSound(null, c.x, c.y, c.z, WmdSounds.CC_DOOR_CLOSE.get(), SoundSource.BLOCKS, Balance.SND_MECH, 0.8F);
         }
         if (heavy && doorsCloseAt >= 0L && now > doorsCloseAt + Balance.BAY_DOOR_TICKS) { doorsOpenAt = -1L; doorsCloseAt = -1L; sync(); }
         if (now % 10 == 0) syncCounts();

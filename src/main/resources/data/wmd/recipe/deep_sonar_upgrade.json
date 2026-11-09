@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PNP",
+    "RCR",
+    "PNP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "N": {
+      "item": "wmd:nickel_cobalt_ingot"
+    },
+    "R": {
+      "item": "minecraft:prismarine_shard"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:deep_sonar_upgrade",
+    "count": 1
+  }
+}

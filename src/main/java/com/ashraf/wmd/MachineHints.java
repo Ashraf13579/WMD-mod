@@ -79,7 +79,9 @@ public final class MachineHints {
         how("yellowcake", "item:wmd:yellowcake");
         how("fuel_rod", "item:wmd:fuel_rod");
         how("steam", "fluid:wmd:steam"); how("spent_steam", "fluid:wmd:spent_steam"); how("spent_fuel", "item:wmd:spent_fuel_rod");
+        how("torpedo", "item:wmd:torpedo_t1");
         SHORT_NEED.add("u_conc");
+        SHORT_NEED.add("torpedo");
         SHORT_NEED.addAll(List.of("ticl4", "mgcl2", "ti_conc", "w_conc", "arc_feed", "raw_ore", "fuel", "water", "converter", "power", "metal_block", "wire_feed"));
 
         NEED.put("coker|fluid:wmd:bitumen", Balance.COKER_BITUMEN_MB);

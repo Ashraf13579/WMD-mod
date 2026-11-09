@@ -15,8 +15,6 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.energy.EnergyStorage;
-import net.neoforged.neoforge.energy.IEnergyStorage;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -26,21 +24,11 @@ public class AlarmBlockEntity extends BlockEntity implements Owned, GeoBlockEnti
     private final SecurityData security = new SecurityData();
     @Override public SecurityData security() { return security; }
 
-    public static final int CAPACITY = 200_000;
-    public static final int FE_PER_TICK = 100;
     public static final int TEST_TICKS = 200;
     public static final int DATA_COUNT = 4;
 
-    private static class Buffer extends EnergyStorage {
-        Buffer() { super(CAPACITY, 20_000, 0); }
-        int use(int n) { int u = Math.min(n, energy); energy -= u; return u; }
-        void set(int e) { energy = Mth.clamp(e, 0, CAPACITY); }
-    }
-
-    private final Buffer store = new Buffer();
-
     @Override
-    public void empDrain() { store.set(0); setChanged(); }
+    public void empDrain() {}
     private int frequency = 1;
     private UUID owner;
     private String ownerName = "";
@@ -56,7 +44,6 @@ public class AlarmBlockEntity extends BlockEntity implements Owned, GeoBlockEnti
         super(Wmd.ALARM_BE.get(), pos, state);
     }
 
-    public IEnergyStorage getEnergy() { return store; }
     public int getFrequency() { return frequency; }
     public UUID getOwner() { return owner; }
     public String getOwnerName() { return ownerName; }
@@ -81,8 +68,7 @@ public class AlarmBlockEntity extends BlockEntity implements Owned, GeoBlockEnti
         if (level instanceof net.minecraft.server.level.ServerLevel empSl && EmpField.jammed(empSl, pos)) return;
         boolean want = be.testTicks > 0 || (be.owner != null && AlarmNet.isActive((ServerLevel) level, be.owner, be.frequency));
         if (be.testTicks > 0) be.testTicks--;
-        boolean now = want && be.store.getEnergyStored() >= FE_PER_TICK;
-        if (now) be.store.use(FE_PER_TICK);
+        boolean now = want;
         if (now != be.sounding) {
             be.sounding = now;
             be.setChanged();
@@ -107,8 +93,6 @@ public class AlarmBlockEntity extends BlockEntity implements Owned, GeoBlockEnti
                 return switch (i) {
                     case 0 -> frequency;
                     case 1 -> sounding ? 1 : 0;
-                    case 2 -> store.getEnergyStored() & 0xFFFF;
-                    case 3 -> (store.getEnergyStored() >>> 16) & 0xFFFF;
                     default -> 0;
                 };
             }
@@ -133,7 +117,6 @@ public class AlarmBlockEntity extends BlockEntity implements Owned, GeoBlockEnti
         super.saveAdditional(tag, registries);
         security.write(tag);
         saveState(tag);
-        tag.putInt("energy", store.getEnergyStored());
     }
 
     @Override
@@ -144,7 +127,6 @@ public class AlarmBlockEntity extends BlockEntity implements Owned, GeoBlockEnti
         sounding = tag.getBoolean("sounding");
         owner = tag.hasUUID("owner") ? tag.getUUID("owner") : null;
         ownerName = tag.getString("ownerName");
-        if (tag.contains("energy")) store.set(tag.getInt("energy"));
     }
 
     @Override

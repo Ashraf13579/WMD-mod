@@ -27,7 +27,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities;
 
-public class FluidPipeBlock extends BaseEntityBlock {
+public class FluidPipeBlock extends BaseEntityBlock implements net.minecraft.world.level.block.SimpleWaterloggedBlock {
 
     public static final MapCodec<FluidPipeBlock> CODEC = simpleCodec(FluidPipeBlock::new);
 
@@ -66,7 +66,7 @@ public class FluidPipeBlock extends BaseEntityBlock {
     public FluidPipeBlock(Properties properties, int tier) {
         super(properties);
         this.tier = tier;
-        registerDefaultState(stateDefinition.any().setValue(NORTH, Conn.NONE).setValue(EAST, Conn.NONE).setValue(SOUTH, Conn.NONE)
+        registerDefaultState(stateDefinition.any().setValue(Waterlog.W, false).setValue(NORTH, Conn.NONE).setValue(EAST, Conn.NONE).setValue(SOUTH, Conn.NONE)
                 .setValue(WEST, Conn.NONE).setValue(UP, Conn.NONE).setValue(DOWN, Conn.NONE).setValue(FORM, Form.HUB));
     }
 
@@ -86,7 +86,7 @@ public class FluidPipeBlock extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN, FORM);
+        builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN, FORM, Waterlog.W);
     }
 
     @Override
@@ -163,12 +163,13 @@ public class FluidPipeBlock extends BaseEntityBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return withConnections(context.getLevel(), context.getClickedPos(), defaultBlockState());
+        return withConnections(context.getLevel(), context.getClickedPos(), Waterlog.placed(defaultBlockState(), context.getLevel(), context.getClickedPos()));
     }
 
     @Override
     protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level,
                                      BlockPos pos, BlockPos neighborPos) {
+        Waterlog.tick(state, level, pos);
         if (level instanceof Level l) return withConnections(l, pos, state);
         return state;
     }
@@ -177,6 +178,12 @@ public class FluidPipeBlock extends BaseEntityBlock {
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean movedByPiston) {
         BlockState next = withConnections(level, pos, state);
         if (next != state) level.setBlock(pos, next, 2);
+    }
+
+    @Override
+    protected net.minecraft.world.level.material.FluidState getFluidState(BlockState state) {
+        net.minecraft.world.level.material.FluidState f = Waterlog.fluid(state);
+        return f != null ? f : super.getFluidState(state);
     }
 
     private static final VoxelShape[] SHAPES = new VoxelShape[64];

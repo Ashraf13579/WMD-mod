@@ -100,7 +100,7 @@ public class CrewCapsuleBlock extends UnitBlock {
             if (orbit.getBlockEntity(at) instanceof CrewCapsuleBlockEntity be) be.setUp(owner, padDim, pad);
             if (k < 0 && orbit.getBlockEntity(Station.controller(core)) instanceof StationModuleBlockEntity sb) {
                 sb.setDock(orbit.getGameTime());
-                orbit.playSound(null, at, WmdSounds.ST_DOCK_CLAMP.get(), net.minecraft.sounds.SoundSource.BLOCKS, 3.0F, 1.1F);
+                orbit.playSound(null, at, WmdSounds.ST_DOCK_CLAMP.get(), net.minecraft.sounds.SoundSource.BLOCKS, Balance.SND_MECH, 1.1F);
             }
             if (!Orbit.hasGround(orbit.getServer(), n)) Orbit.setGround(orbit.getServer(), n, padDim, pad.getX(), pad.getZ());
             Wmd.LOGGER.info("[crew] capsule parked in orbit at {} (slot {})", at.toShortString(), n);

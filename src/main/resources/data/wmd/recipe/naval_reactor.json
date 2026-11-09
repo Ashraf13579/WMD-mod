@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TXT",
+    "PAP",
+    "TXT"
+  ],
+  "key": {
+    "T": {
+      "tag": "c:plates/titanium"
+    },
+    "X": {
+      "item": "wmd:chip_nuclear_1"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:naval_reactor",
+    "count": 1
+  }
+}

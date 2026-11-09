@@ -141,7 +141,7 @@ public class GeneratorEngineBlockEntity extends BlockEntity implements GeoBlockE
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, GeneratorEngineBlockEntity be) {
         if (!be.isRunning()) return;
-        MachineLoop.ensure(be, WmdSounds.DIESEL_RUN.get(), be::isRunning, 1.0, 0.9F, true);
+        MachineLoop.ensure(be, WmdSounds.DIESEL_RUN.get(), be::isRunning, 1.0, Balance.SND_HEAVY, true);
         RandomSource random = level.random;
         for (int k = 0; k < 2; k++) {
             if (random.nextInt(3) != 0) continue;

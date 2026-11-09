@@ -128,6 +128,10 @@ public final class WmdInfo {
         info(reg, "railgun_slug");
         info(reg, "tungsten_tile");
         info(reg, "leaflet", Balance.LEAFLET_DROPS);
+        info(reg, "mine_influence", (int) Balance.MINE_INF_TRIGGER, (int) Balance.MINE_INF_REACH, Balance.SEAMINE_ARM_TICKS / 20);
+        info(reg, "mine_bottom", (int) Balance.MINE_BOT_SIDE, (int) Balance.MINE_BOT_LISTEN);
+        info(reg, "mine_captor", (int) Balance.MINE_CAP_RANGE);
+        info(reg, "depth_charge_thrower", Balance.KG_RELOAD_TICKS / 20);
 
         for (com.ashraf.wmd.WmdFluids.Entry e : com.ashraf.wmd.WmdFluids.ALL)
             reg.addIngredientInfo(new net.neoforged.neoforge.fluids.FluidStack(e.source().get(), 1000), mezz.jei.api.neoforge.NeoForgeTypes.FLUID_STACK,

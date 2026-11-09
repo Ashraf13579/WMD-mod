@@ -23,6 +23,10 @@ public class BatteryTierBlockEntity extends ProcessUnitBlockEntity {
     private int stored;
     private int movedTicks;
 
+    private int inTick, outTick, dir, dirHold, shownDir;
+    private float fanSpin, fanSpeed;
+    static final int DIR_HOLD = 20, FLOW_SCALE = 100;
+
     public BatteryTierBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int tier) {
         super(type, pos, state, 0);
         this.tier = tier;
@@ -40,13 +44,13 @@ public class BatteryTierBlockEntity extends ProcessUnitBlockEntity {
         @Override
         public int receiveEnergy(int n, boolean sim) {
             int t = Math.min(Math.min(n, Balance.BAT_IO[tier]), cap() - stored);
-            if (t > 0 && !sim) { stored += t; movedTicks = 20; setChanged(); }
+            if (t > 0 && !sim) { stored += t; inTick += t; movedTicks = 20; setChanged(); }
             return Math.max(0, t);
         }
         @Override
         public int extractEnergy(int n, boolean sim) {
             int t = Math.min(Math.min(n, Balance.BAT_IO[tier]), stored);
-            if (t > 0 && !sim) { stored -= t; movedTicks = 20; setChanged(); }
+            if (t > 0 && !sim) { stored -= t; outTick += t; movedTicks = 20; setChanged(); }
             return Math.max(0, t);
         }
         @Override public int getEnergyStored() { return stored; }
@@ -87,12 +91,23 @@ public class BatteryTierBlockEntity extends ProcessUnitBlockEntity {
         };
     }
 
-    @Override protected boolean work() { if (movedTicks > 0) { movedTicks--; return true; } return false; }
+    @Override
+    protected boolean work() {
+
+        int moved = Math.max(inTick, outTick), net = inTick - outTick;
+        flowAcc += Math.round(FLOW_SCALE * Math.min(1.0F, moved / (float) Math.max(1, Balance.BAT_IO[tier])));
+        inTick = outTick = 0;
+        int nd = net > 0 ? 1 : net < 0 ? -1 : dirHold > 0 ? dir : 0;
+        if (net != 0) dirHold = DIR_HOLD; else if (dirHold > 0) dirHold--;
+        if (nd != dir) { dir = nd; if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3); }
+        if (movedTicks > 0) { movedTicks--; return true; }
+        return false;
+    }
     @Override protected float levelFraction() { return cap() <= 0 ? 0.0F : stored / (float) cap(); }
     @Override protected List<FluidTank> tanks() { return List.of(); }
     @Override protected List<Fluid> tankFluids() { return List.of(); }
     @Override protected List<String> labelKeys() { return List.of(); }
-    @Override protected int rateMbPerTick() { return 1; }
+    @Override protected int rateMbPerTick() { return FLOW_SCALE; }
     @Override public IEnergyStorage guiEnergy() { return bank(); }
     @Override public int guiFeUse() { return 0; }
     @Override protected boolean acceptsUpgrade(UpgradeItem.Type t) { return false; }
@@ -105,7 +120,7 @@ public class BatteryTierBlockEntity extends ProcessUnitBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.BAT_HUM_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return BlockPos.ZERO; }
-    @Override protected float soundVolume() { return 0.12F + 0.04F * tier; }
+    @Override protected float soundVolume() { return Balance.SND_AMBIENT; }
 
     @Override
     protected String detail() { return String.format("T%d %,d / %,d FE", tier, stored, cap()); }
@@ -138,7 +153,27 @@ public class BatteryTierBlockEntity extends ProcessUnitBlockEntity {
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         if (tag.contains("stored")) stored = Mth.clamp(tag.getInt("stored"), 0, cap());
+        if (tag.contains("bdir")) shownDir = Mth.clamp(tag.getInt("bdir"), -1, 1);
     }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag tag = super.getUpdateTag(registries);
+        tag.putInt("bdir", dir);
+        return tag;
+    }
+
+    public int chargeDir() { return shownDir; }
+
+    void clientFan() {
+        float target = isRunning() ? 0.2F + 0.9F * flowFraction() : 0.0F;
+        fanSpeed += (target - fanSpeed) * 0.05F;
+        if (!isRunning() && fanSpeed < 0.002F) fanSpeed = 0.0F;
+        fanSpin += fanSpeed;
+        if (fanSpin > Mth.TWO_PI * 100) fanSpin -= Mth.TWO_PI * 100;
+    }
+
+    public float fanAngle(float partialTick) { return fanSpin + fanSpeed * partialTick; }
 
     public float shownFill() { return levelShown(); }
 

@@ -94,7 +94,7 @@ public class RollingMillBlockEntity extends ItemProcessBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.ROLLING_MILL_RUN.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(1, 0, 0); }
-    @Override protected float soundVolume() { return 0.7F; }
+    @Override protected float soundVolume() { return Balance.SND_HEAVY; }
 
     @Override
     protected void clientEffects(Level level) {

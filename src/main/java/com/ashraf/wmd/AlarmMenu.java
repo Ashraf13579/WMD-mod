@@ -35,7 +35,6 @@ public class AlarmMenu extends AbstractContainerMenu {
     public BlockPos getPos() { return pos; }
     public int getFrequency() { return data.get(0); }
     public boolean isSounding() { return data.get(1) == 1; }
-    public int getEnergy() { return (data.get(2) & 0xFFFF) | ((data.get(3) & 0xFFFF) << 16); }
 
     @Override
     public ItemStack quickMoveStack(Player player, int index) { return ItemStack.EMPTY; }

@@ -191,7 +191,7 @@ public class SolarPanelBlockEntity extends ProcessUnitBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.BAT_HUM_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return BlockPos.ZERO; }
-    @Override protected float soundVolume() { return 0.05F; }
+    @Override protected float soundVolume() { return Balance.SND_AMBIENT; }
 
     @Override
     protected String detail() { return String.format("%d x %d, %d FE/t, stored %,d FE", size, size, fePerTickNow, stored); }

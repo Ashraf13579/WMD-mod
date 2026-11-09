@@ -68,7 +68,7 @@ public class PortableJammerBlockEntity extends CctvDeviceEntity {
             placedAt = now;
             setChanged();
             sync();
-            sl.playSound(null, worldPosition, WmdSounds.JAM_DEPLOY.get(), SoundSource.BLOCKS, 0.9F, 1.0F);
+            sl.playSound(null, worldPosition, WmdSounds.JAM_DEPLOY.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
         }
     }
 
@@ -89,7 +89,7 @@ public class PortableJammerBlockEntity extends CctvDeviceEntity {
 
     @Override protected String detail() { return jamming() ? "JAMMING" : charge <= 0 ? "BATTERY EMPTY" : "UNFOLDING"; }
     @Override protected net.minecraft.sounds.SoundEvent runSound() { return WmdSounds.JAM_LOOP.get(); }
-    @Override protected float soundVolume() { return 0.35F; }
+    @Override protected float soundVolume() { return Balance.SND_SMALL; }
     @Override protected float soundPitch() { return 1.0F; }
 
     @Override

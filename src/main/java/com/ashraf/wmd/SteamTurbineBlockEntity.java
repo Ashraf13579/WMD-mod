@@ -18,7 +18,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
-public class SteamTurbineBlockEntity extends ProcessUnitBlockEntity {
+public class SteamTurbineBlockEntity extends ProcessUnitBlockEntity implements CcAnimated {
 
     public static final int X0 = -4, X1 = 4, Y0 = 0, Y1 = 3, Z0 = 0, Z1 = 3;
 
@@ -51,18 +51,74 @@ public class SteamTurbineBlockEntity extends ProcessUnitBlockEntity {
         return true;
     }
 
-    private float shaft, shaftSpeed;
+    static final float SPD_FULL = 1.15F, SPD_TURN = Mth.TWO_PI / 160.0F;
+
+    static final float SPD_EASE = 0.04F, SPD_UP = 0.009F, SPD_DOWN = 0.0048F;
+
+    static final double G_PA = 0.9, G_LA = 5.0, G_LK = 5.0, G_PS = 1.85, G_PIV = 48.0, TH0 = 20.0, TH_RUN = 55.0;
+    static final float STEM_LIFT = 4.0F;
+    static final float TG_RATIO = 2.5F;
+
+    static final float GOV_SIGN = 1.0F;
+
+    private float shaft, shaftSpeed, gov, tgear, valve;
+    private int runTicks;
+
+    static double[] govPose(double th) {
+        double t = Math.toRadians(th);
+        double ax = G_PA + G_LA * Math.sin(t), ay = G_PIV - G_LA * Math.cos(t);
+        double dx = ax - G_PS;
+        double ys = ay - Math.sqrt(G_LK * G_LK - dx * dx);
+        return new double[] { ys, Math.toDegrees(Math.atan2(dx, ay - ys)) };
+    }
+    private static final double[] GOV_REST = govPose(TH0);
+
+    boolean hasSteamShown() { return levelShown() > 0.01F; }
+
+    boolean readyShown() { return !isRunning() && hasSteamShown(); }
 
     public static void clientTickTurbine(Level level, BlockPos pos, BlockState state, SteamTurbineBlockEntity be) {
         ProcessUnitBlockEntity.clientTick(level, pos, state, be);
-        float target = be.isRunning() ? 0.25F + 0.9F * be.flowFraction() : 0.0F;
-        be.shaftSpeed += Mth.clamp(target - be.shaftSpeed, -0.006F, 0.012F);
-        if (be.shaftSpeed < 0.0005F && target == 0.0F) be.shaftSpeed = 0.0F;
+        boolean run = be.isRunning(), ready = be.readyShown();
+        be.runTicks = run ? be.runTicks + 1 : 0;
+        float target = run ? 0.25F + 0.9F * be.flowFraction() : ready ? SPD_TURN : 0.0F;
+        be.shaftSpeed += Mth.clamp((target - be.shaftSpeed) * SPD_EASE, -SPD_DOWN, SPD_UP);
+        if (Math.abs(target - be.shaftSpeed) < 0.0005F) be.shaftSpeed = target;
         be.shaft = (be.shaft + be.shaftSpeed) % (Mth.TWO_PI * 64);
+        be.gov = (be.gov + be.shaftSpeed * 0.3F) % (Mth.TWO_PI * 64);
+        if (ready && be.shaftSpeed <= SPD_TURN * 1.5F) be.tgear = (be.tgear - be.shaftSpeed * TG_RATIO) % (Mth.TWO_PI * 64);
+
+        float vt = run ? (be.runTicks < 12 ? 1.0F : 0.35F + 0.65F * be.flowFraction()) : ready ? 0.08F : 0.0F;
+        be.valve += (vt - be.valve) * (vt < be.valve && !run ? 0.35F : 0.12F);
     }
 
     @Override
     public float spinAngle(float partialTick) { return shaft + shaftSpeed * partialTick; }
+
+    float rotor01() { return Mth.clamp(shaftSpeed / SPD_FULL, 0.0F, 1.0F); }
+
+    @Override
+    public void ccAnimate(CcBones model, double tt, float partialTick) {
+        float g = rotor01();
+        float th = (float) (TH0 + (TH_RUN - TH0) * g * g * (3.0F - 2.0F * g));
+        double[] gp = govPose(th);
+        float arm = GOV_SIGN * (float) Math.toRadians(th - TH0), link = GOV_SIGN * (float) Math.toRadians(gp[1] - GOV_REST[1]);
+        model.getBone("gov").ifPresent(b -> b.setRotY(gov + shaftSpeed * 0.3F * partialTick));
+        model.getBone("govarm0").ifPresent(b -> b.setRotZ(arm));
+        model.getBone("govarm1").ifPresent(b -> b.setRotZ(-arm));
+        model.getBone("govsl").ifPresent(b -> b.setPosY((float) (gp[0] - GOV_REST[0])));
+        model.getBone("govlk0").ifPresent(b -> b.setRotZ(-link));
+        model.getBone("govlk1").ifPresent(b -> b.setRotZ(link));
+        float lift = valve * STEM_LIFT;
+        model.getBone("stem0").ifPresent(b -> b.setPosY(lift));
+        model.getBone("stem1").ifPresent(b -> b.setPosY(lift));
+        model.getBone("tgear").ifPresent(b -> b.setRotX(tgear));
+        boolean dark = ClientHemp.darkAt(getBlockPos().getX() + 0.5, getBlockPos().getZ() + 0.5);
+        boolean run = isRunning(), ready = readyShown(), blink = ((long) tt / 20) % 2 == 0;
+        model.getBone("lamp_run").ifPresent(b -> b.setHidden(dark || !run));
+        model.getBone("lamp_ready").ifPresent(b -> b.setHidden(dark || !ready));
+        model.getBone("lamp_fault").ifPresent(b -> b.setHidden(dark || run || ready || !blink));
+    }
 
     @Override protected List<FluidTank> tanks() { return tanks; }
     @Override protected List<Fluid> tankFluids() { return List.of(WmdFluids.STEAM.source().get(), WmdFluids.SPENT_STEAM.source().get()); }
@@ -88,16 +144,43 @@ public class SteamTurbineBlockEntity extends ProcessUnitBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.STT_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 1, 2); }
-    @Override protected float soundVolume() { return 0.6F; }
-    @Override protected float levelFraction() { return steam.getFluidAmount() / (float) Balance.STEAM_TURBINE_TANK_MB; }
+    @Override protected float soundVolume() { return Balance.SND_HEAVY * (isRunning() ? 1.0F : Math.max(0.05F, rotor01())); }
+    @Override protected float soundPitch() { return 0.7F + 0.3F * rotor01(); }
+    @Override protected boolean soundAlive() { return isRunning() || rotor01() > 0.12F; }
 
-    @Override protected List<double[]> vents() { return List.of(new double[] { -3.6, 1.6, 1.5 }, new double[] { 1.6, 1.6, 1.5 }); }
+    @Override protected float levelFraction() {
+        int mb = steam.getFluidAmount();
+        return mb <= 0 ? 0.0F : Math.max(1.0F / 32.0F, mb / (float) Balance.STEAM_TURBINE_TANK_MB);
+    }
+
+    @Override protected List<double[]> vents() { return List.of(new double[] { -2.22, 1.5, 1.5 }, new double[] { 1.9, 1.5, 1.5 }); }
+
+    @Override
+    protected void runStarted(Level level) {
+        playOnce(level, WmdSounds.BAY_CLAMP.get(), Balance.SND_MECH, 0.75F);
+        for (double z : new double[] { 1.0, 2.0 }) puff(level, -3.625, 2.3, z, 6);
+    }
+
+    @Override
+    protected void runStopped(Level level) {
+        playOnce(level, WmdSounds.NR_STEAM.get(), Balance.SND_RELEASE, 1.1F);
+        puff(level, -2.22, 1.5, 1.5, 5);
+        puff(level, -3.3, 1.5, 1.5, 5);
+    }
+
+    private void puff(Level level, double lx, double ly, double lz, int n) {
+        var r = level.random;
+        double[] w = worldPoint(lx, ly, lz);
+        for (int i = 0; i < n; i++)
+            level.addParticle(ParticleTypes.CLOUD, w[0] + (r.nextDouble() - 0.5) * 0.25, w[1], w[2] + (r.nextDouble() - 0.5) * 0.25,
+                    (r.nextDouble() - 0.5) * 0.04, 0.06 + r.nextDouble() * 0.05, (r.nextDouble() - 0.5) * 0.04);
+    }
 
     @Override
     protected void clientEffects(Level level) {
         long t = level.getGameTime();
         long key = getBlockPos().asLong() ^ 0x5354_0000_0000_0000L;
-        double[] lamp = worldPoint(0.21, 0.75, -0.55), pit = worldPoint(-0.25, 1.4, 1.0);
+        double[] lamp = worldPoint(0.22, 0.68, -0.52), pit = worldPoint(-0.25, 1.4, 1.0);
         VeilBridge.machineGlow(key, lamp[0], lamp[1], lamp[2], 0.3F, 1.0F, 0.45F, 0.8F, 0.5F, t);
         VeilBridge.machineGlow(key + 1, pit[0], pit[1], pit[2], 1.0F, 0.75F, 0.45F, 2.5F, 0.7F, t);
         if (t % 40 == 0) {

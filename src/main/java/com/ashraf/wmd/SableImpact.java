@@ -68,11 +68,13 @@ final class SableImpact {
         cands.sort(Comparator.comparingDouble(Cand::d));
         if (cands.size() > Math.max(1, Balance.SHIP_BLAST_MAX_SHIPS)) cands = new ArrayList<>(cands.subList(0, Math.max(1, Balance.SHIP_BLAST_MAX_SHIPS)));
         Set<UUID> allowed = new HashSet<>();
-        for (Cand c : cands) allowed.add(c.s().id());
+        for (Cand c : cands) if (SubHits.mayHole(level, c.s())) allowed.add(c.s().id());
         for (Cand c : cands) ShipBreakup.hit(level, c.s(), c.d() <= near ? pos : closest(c.s().worldBounds(), pos), power);
+        for (Cand c : cands) SubHits.hit(level, c.s(), c.d() <= near ? pos : closest(c.s().worldBounds(), pos), power, c.d());
         int n = 0;
         if (cands.get(0).d() <= near) {
             explode(level, pos, power, allowed);
+            for (Cand c : cands) if (c.d() <= near && allowed.contains(c.s().id())) underwater(level, c.s(), pos, power);
             n++;
             for (Cand c : cands) if (c.d() <= near) push(level, c.s(), pos, power);
         }
@@ -80,16 +82,71 @@ final class SableImpact {
             if (c.d() <= near) continue;
             float p = (float) Math.max(1.0, power * (1.0 - (c.d() - near) / Math.max(1.0, reach - near)));
             Vec3 at = closest(c.s().worldBounds(), pos);
-            explode(level, at, p, Set.of(c.s().id()));
+            if (allowed.contains(c.s().id())) { explode(level, at, p, Set.of(c.s().id())); underwater(level, c.s(), at, p); }
             push(level, c.s(), at, p);
             n++;
         }
         return n;
     }
 
+    static void underwater(ServerLevel level, SableBridge.ShipInfo ship, Vec3 world, float power) {
+        if (ship == null || level.getFluidState(BlockPos.containing(world)).isEmpty()) return;
+        Vec3 p = SableBridge.toShip(level, ship.id(), world);
+        if (p == null) { Wmd.LOGGER.info("[ship-blast] underwater: no plot point for ship {} at {}", ship.id(), world); return; }
+
+        int n = carve(level, ship.id(), p, power);
+        if (n > 0) level.playSound(null, world.x, world.y, world.z, WmdSounds.HULL_BREACH.get(), net.minecraft.sounds.SoundSource.BLOCKS, 3.0F, 1.0F);
+        Wmd.LOGGER.info("[ship-blast] underwater: ship {} power {} at {} (plot {}) -> {} block(s) broken", ship.id(), power, BlockPos.containing(world).toShortString(),
+                BlockPos.containing(p).toShortString(), n);
+    }
+
+    static int carve(ServerLevel level, UUID shipId, Vec3 p, float power) {
+        if (!Config.Server.blockDamage()) return 0;
+        double r = Balance.SHIP_UW_HOLE_PER_POWER * power + 1.0;
+        int ri = (int) Math.ceil(r), n = 0;
+        BlockPos c = BlockPos.containing(p);
+        Map<Long, Boolean> mine = new HashMap<>();
+        for (BlockPos q : BlockPos.betweenClosed(c.offset(-ri, -ri, -ri), c.offset(ri, ri, ri))) {
+            double d = Math.sqrt(q.distToCenterSqr(p));
+            if (d > r || level.isOutsideBuildHeight(q.getY())) continue;
+            LevelChunk ch = level.getChunkSource().getChunkNow(q.getX() >> 4, q.getZ() >> 4);
+            if (ch == null) continue;
+            BlockState st = ch.getBlockState(q);
+            if (st.isAir() || st.getBlock() instanceof net.minecraft.world.level.block.LiquidBlock) continue;
+            long key = net.minecraft.world.level.ChunkPos.asLong(q.getX() >> 4, q.getZ() >> 4);
+            final BlockPos qq = q.immutable();
+            if (!mine.computeIfAbsent(key, k -> shipId.equals(SableBridge.shipIdAt(level, qq)))) continue;
+            if (st.getDestroySpeed(level, q) < 0.0F) continue;
+            float res = hullToughness(level, q, st);
+            if (power * (0.7F + 0.6F * level.random.nextFloat()) - 0.75 * d - 0.3 * (res + 0.3) <= 0.0) continue;
+            Vec3 w = SableBridge.toWorld(level, Vec3.atCenterOf(q));
+            if (!Config.Server.canBreakShip(level, BlockPos.containing(w))) continue;
+            if (ch.getBlockEntity(q) instanceof net.minecraft.world.Container box) {
+                for (int i = 0; i < box.getContainerSize(); i++) {
+                    net.minecraft.world.item.ItemStack s = box.getItem(i);
+                    if (!s.isEmpty()) net.minecraft.world.Containers.dropItemStack(level, w.x, w.y, w.z, s);
+                }
+                box.clearContent();
+            }
+            level.setBlock(qq, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), net.minecraft.world.level.block.Block.UPDATE_ALL);
+            if (n++ % 4 == 0) level.sendParticles(new net.minecraft.core.particles.BlockParticleOption(net.minecraft.core.particles.ParticleTypes.BLOCK, st), w.x, w.y, w.z, 6, 0.4, 0.4, 0.4, 0.05);
+            if (n >= Balance.SHIP_UW_HOLE_MAX) break;
+        }
+        return n;
+    }
+
+    static float hullToughness(ServerLevel level, BlockPos q, BlockState st) {
+        float res = st.getBlock().getExplosionResistance();
+        int rating = Hardened.rating(level, q, st);
+        if (rating > 0) return (float) (Balance.SHIP_UW_TOUGH_CAP + Balance.SHIP_UW_TOUGH_PER_RATING * rating);
+        return (float) Math.min(res, Balance.SHIP_UW_TOUGH_CAP);
+    }
+
     static void explode(ServerLevel level, Vec3 at, float power, Set<UUID> allowed) {
         Level.ExplosionInteraction mode = Config.Server.blockDamage() ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE;
-        level.explode(null, null, new ShipOnly(level, allowed), at.x, at.y, at.z, power, false, mode);
+
+        level.explode(null, null, new ShipOnly(level, allowed), at.x, at.y, at.z, power, false, mode, false, net.minecraft.core.particles.ParticleTypes.BUBBLE,
+                net.minecraft.core.particles.ParticleTypes.BUBBLE, net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.wrapAsHolder(net.minecraft.sounds.SoundEvents.EMPTY));
     }
 
     private static final class ShipOnly extends ExplosionDamageCalculator {
@@ -111,6 +168,14 @@ final class SableImpact {
             if (!allowedBlock(pos)) return false;
             if (!Config.Server.canBreakShip(level, BlockPos.containing(SableBridge.worldPos(level, pos)))) return false;
             return super.shouldBlockExplode(explosion, reader, pos, state, power);
+        }
+
+        @Override
+        public java.util.Optional<Float> getBlockExplosionResistance(Explosion explosion, BlockGetter reader, BlockPos pos, BlockState state,
+                                                                    net.minecraft.world.level.material.FluidState fluid) {
+            if (fluid.isEmpty()) return super.getBlockExplosionResistance(explosion, reader, pos, state, fluid);
+            return state.isAir() || state.getBlock() instanceof net.minecraft.world.level.block.LiquidBlock ? java.util.Optional.empty()
+                    : java.util.Optional.of(state.getExplosionResistance(reader, pos, explosion));
         }
 
         private boolean onShip(Entity e) {

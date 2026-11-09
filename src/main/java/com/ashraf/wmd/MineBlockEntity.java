@@ -64,7 +64,7 @@ public class MineBlockEntity extends BlockEntity implements Owned {
         if (!(level instanceof ServerLevel sl) || be.fired) return;
         long now = sl.getGameTime();
         if (be.placedAt < 0) { be.placedAt = now; be.setChanged(); be.sync(); return; }
-        if (now == be.placedAt + Balance.MINE_ARM_TICKS) sl.playSound(null, pos, WmdSounds.MINE_ARM.get(), SoundSource.BLOCKS, 0.7F, 1.0F);
+        if (now == be.placedAt + Balance.MINE_ARM_TICKS) sl.playSound(null, pos, WmdSounds.MINE_ARM.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
         if (EmpField.jammed(sl, pos)) { be.fuseAt = -1; return; }
         if (be.fuseAt >= 0) { if (now >= be.fuseAt) be.detonate(sl); return; }
         if (!be.claymore() || !be.armed() || (now + pos.asLong()) % 4 != 0) return;
@@ -73,7 +73,7 @@ public class MineBlockEntity extends BlockEntity implements Owned {
             Vec3 to = e.position().add(0.0, e.getBbHeight() * 0.5, 0.0);
             if (inCone(c, f, to, Balance.CLAY_TRIP, Balance.CLAY_TRIP_DEG) && sees(sl, c, to)) {
                 be.fuseAt = now + Balance.CLAY_DELAY;
-                sl.playSound(null, c.x, c.y, c.z, WmdSounds.CLAY_CLICK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                sl.playSound(null, c.x, c.y, c.z, WmdSounds.CLAY_CLICK.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
                 return;
             }
         }

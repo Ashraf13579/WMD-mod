@@ -230,7 +230,7 @@ public class SatelliteFacilityBlockEntity extends ItemProcessBlockEntity impleme
 
     @Override protected SoundEvent runSound() { return WmdSounds.SF_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 0, 2); }
-    @Override protected float soundVolume() { return 0.35F; }
+    @Override protected float soundVolume() { return Balance.SND_MACHINE; }
 
     @Override
     protected void clientEffects(Level level) {

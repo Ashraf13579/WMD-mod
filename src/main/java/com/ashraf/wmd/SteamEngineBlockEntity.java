@@ -155,7 +155,7 @@ public class SteamEngineBlockEntity extends ProcessUnitBlockEntity implements Gu
 
     @Override protected SoundEvent runSound() { return WmdSounds.SG_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(1, 1, 0); }
-    @Override protected float soundVolume() { return 0.55F; }
+    @Override protected float soundVolume() { return Balance.SND_MACHINE; }
     @Override protected float soundPitch() { return 0.72F; }
 
     public float crankAngle(float pt) { return spinAngle(pt) * CRANK; }

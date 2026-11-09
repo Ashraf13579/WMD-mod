@@ -45,7 +45,7 @@ public final class DamageRings {
     static void queue(ServerLevel level, Crater crater, WarheadType t) {
         Profile p = profile(t);
         Collapse.queue(level, crater, p);
-        Aftermath.start(level, crater, t);
+        if (!crater.wet()) Aftermath.start(level, crater, t);
         if (!Config.Server.damageRings()) return;
         double outer = Math.max(p.rubble, Math.max(p.burn, p.strip)) * crater.radius;
         if (outer <= crater.radius || crater.radius < 1.5) return;

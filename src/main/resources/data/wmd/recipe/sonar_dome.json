@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "RXR",
+    "SBS"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "R": {
+      "item": "minecraft:prismarine_shard"
+    },
+    "X": {
+      "item": "wmd:aluminium_casing"
+    },
+    "S": {
+      "item": "wmd:steel_block"
+    },
+    "B": {
+      "item": "wmd:network_card"
+    }
+  },
+  "result": {
+    "id": "wmd:sonar_dome",
+    "count": 1
+  }
+}

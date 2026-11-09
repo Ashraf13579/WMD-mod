@@ -80,7 +80,7 @@ public class GasolineEngineBlockEntity extends ProcessUnitBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.GT_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 1, 0); }
-    @Override protected float soundVolume() { return 0.5F; }
+    @Override protected float soundVolume() { return Balance.SND_MACHINE; }
     @Override protected float soundPitch() { return 0.6F; }
 
     @Override

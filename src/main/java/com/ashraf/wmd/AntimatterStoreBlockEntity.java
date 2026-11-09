@@ -61,7 +61,7 @@ public class AntimatterStoreBlockEntity extends ItemProcessBlockEntity implement
         Component msg = Component.translatable("msg.wmd.antimatter_alarm", cells(), Math.max(0, backup / 20));
         for (net.minecraft.server.level.ServerPlayer p : sl.players())
             if (p.blockPosition().distSqr(worldPosition) < 48 * 48) p.displayClientMessage(msg, true);
-        sl.playSound(null, worldPosition, WmdSounds.AM_ALARM.get(), net.minecraft.sounds.SoundSource.BLOCKS, 3.0F, 1.0F);
+        sl.playSound(null, worldPosition, WmdSounds.AM_ALARM.get(), net.minecraft.sounds.SoundSource.BLOCKS, Balance.SND_ALARM, 1.0F);
     }
 
     private void containmentLost(String why) {
@@ -181,7 +181,7 @@ public class AntimatterStoreBlockEntity extends ItemProcessBlockEntity implement
 
     @Override protected SoundEvent runSound() { return WmdSounds.AM_STORE_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 1, 2); }
-    @Override protected float soundVolume() { return 0.6F; }
+    @Override protected float soundVolume() { return Balance.SND_SMALL; }
 
     @Override
     protected String detail() { return cells() + " / " + Balance.AM_STORE_CELLS + " cells, backup " + backup / 20 + " s"; }

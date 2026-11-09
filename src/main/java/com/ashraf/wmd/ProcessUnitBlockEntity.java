@@ -59,9 +59,13 @@ public abstract class ProcessUnitBlockEntity extends BlockEntity implements GeoB
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     protected ProcessUnitBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int fePerTick) {
+        this(type, pos, state, fePerTick, fePerTick * 400, fePerTick * 10);
+    }
+
+    protected ProcessUnitBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int fePerTick, int bufferFe, int receivePerTick) {
         super(type, pos, state);
         this.fePerTick = fePerTick;
-        this.store = new Buffer(fePerTick * 400, fePerTick * 10);
+        this.store = new Buffer(bufferFe, receivePerTick);
     }
 
     protected abstract boolean work();
@@ -72,9 +76,11 @@ public abstract class ProcessUnitBlockEntity extends BlockEntity implements GeoB
 
     protected abstract SoundEvent runSound();
     protected abstract BlockPos soundLocal();
-    protected float soundVolume() { return 0.7F; }
+    protected float soundVolume() { return Balance.SND_MACHINE; }
 
     protected float soundPitch() { return 1.0F; }
+
+    protected boolean soundAlive() { return running; }
 
     protected void runStarted(Level level) {}
     protected void runStopped(Level level) {}
@@ -94,6 +100,12 @@ public abstract class ProcessUnitBlockEntity extends BlockEntity implements GeoB
     protected List<double[]> vents() { return List.of(); }
 
     protected double[] worldPoint(double lx, double ly, double lz) {
+        net.minecraft.world.phys.Vec3 p = plotPoint(lx, ly, lz);
+        p = level != null && level.isClientSide ? ShipFrame.drawnWorld(level, worldPosition, p, Float.NaN) : SableBridge.toWorld(level, p);
+        return new double[] { p.x, p.y, p.z };
+    }
+
+    protected net.minecraft.world.phys.Vec3 plotPoint(double lx, double ly, double lz) {
         double dx, dz;
         switch (facing()) {
             case EAST -> { dx = -lz; dz = lx; }
@@ -102,10 +114,8 @@ public abstract class ProcessUnitBlockEntity extends BlockEntity implements GeoB
             default -> { dx = lx; dz = lz; }
         }
         Direction m = Machines.mount(getBlockState());
-        net.minecraft.world.phys.Vec3 p = m == Direction.UP ? new net.minecraft.world.phys.Vec3(worldPosition.getX() + 0.5 + dx, worldPosition.getY() + ly, worldPosition.getZ() + 0.5 + dz)
+        return m == Direction.UP ? new net.minecraft.world.phys.Vec3(worldPosition.getX() + 0.5 + dx, worldPosition.getY() + ly, worldPosition.getZ() + 0.5 + dz)
                 : Machines.mountPoint(worldPosition, m, dx, ly, dz);
-        p = level != null && level.isClientSide ? ShipFrame.drawnWorld(level, worldPosition, p, Float.NaN) : SableBridge.toWorld(level, p);
-        return new double[] { p.x, p.y, p.z };
     }
 
     private void ventEffects(Level level) {

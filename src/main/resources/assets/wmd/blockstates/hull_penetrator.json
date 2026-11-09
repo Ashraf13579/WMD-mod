@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "wmd:block/hull_penetrator"
+    },
+    "lit=true": {
+      "model": "wmd:block/hull_penetrator_lit"
+    }
+  }
+}

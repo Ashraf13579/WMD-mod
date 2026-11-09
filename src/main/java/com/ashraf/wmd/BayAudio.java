@@ -49,7 +49,7 @@ final class BayAudio {
 
     static boolean oven(BlockEntity be, java.util.function.BooleanSupplier drying) {
         if (!LaunchSounds.on()) return false;
-        MachineLoop.ensure(be, WmdSounds.CURING_OVEN_RUN.get(), drying, 3.0, 0.9F, false);
+        MachineLoop.ensure(be, WmdSounds.CURING_OVEN_RUN.get(), drying, 3.0, Balance.SND_MACHINE, false);
         return true;
     }
 }

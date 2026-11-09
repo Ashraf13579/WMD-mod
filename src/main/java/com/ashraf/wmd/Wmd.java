@@ -80,6 +80,9 @@ public class Wmd {
 
     public static final DeferredHolder<Feature<?>, OreDepositFeature> ORE_DEPOSIT_FEATURE = FEATURES.register("ore_deposit",
             () -> new OreDepositFeature(OreDepositFeature.Config.CODEC));
+
+    public static final DeferredHolder<Feature<?>, NoduleFieldFeature> NODULE_FIELD_FEATURE = FEATURES.register("nodule_field",
+            () -> new NoduleFieldFeature(NoneFeatureConfiguration.CODEC));
     public static final DeferredItem<GroundScannerItem> GROUND_SCANNER = ITEMS.registerItem("ground_scanner", GroundScannerItem::new, new Item.Properties().stacksTo(1));
 
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
@@ -274,8 +277,12 @@ public class Wmd {
     public static final DeferredBlock<BusbarBlock> BUSBAR = BLOCKS.registerBlock("busbar", BusbarBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(1.5F, 6.0F).sound(SoundType.METAL).noOcclusion());
     public static final DeferredItem<BlockItem> BUSBAR_ITEM = ITEMS.registerSimpleBlockItem("busbar", BUSBAR);
+
+    public static final DeferredBlock<HullPenetratorBlock> HULL_PENETRATOR = BLOCKS.registerBlock("hull_penetrator", HullPenetratorBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 9.0F).sound(SoundType.METAL).requiresCorrectToolForDrops());
+    public static final DeferredItem<BlockItem> HULL_PENETRATOR_ITEM = ITEMS.registerSimpleBlockItem("hull_penetrator", HULL_PENETRATOR);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BusbarBlockEntity>> BUSBAR_BE =
-            BLOCK_ENTITY_TYPES.register("busbar", () -> BlockEntityType.Builder.of(BusbarBlockEntity::new, BUSBAR.get()).build(null));
+            BLOCK_ENTITY_TYPES.register("busbar", () -> BlockEntityType.Builder.of(BusbarBlockEntity::new, BUSBAR.get(), HULL_PENETRATOR.get()).build(null));
 
     public static final DeferredBlock<AlarmBlock> ALARM = BLOCKS.registerBlock("alarm", AlarmBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 12.0F).sound(SoundType.METAL).noOcclusion());
@@ -997,6 +1004,17 @@ public class Wmd {
     public static final DeferredHolder<MenuType<?>, MenuType<BombLineMenu>> BOMB_LINE_MENU = MENU_TYPES.register("bomb_line",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new BombLineMenu(id, inventory, buf)));
 
+    public static final DeferredBlock<TorpedoLineBlock.Shop> TORPEDO_LINE_SHOP = BLOCKS.registerBlock("torpedo_line_shop", TorpedoLineBlock.Shop::new, labProps());
+    public static final DeferredBlock<TorpedoLineBlock.Fitout> TORPEDO_LINE_FITOUT = BLOCKS.registerBlock("torpedo_line_fitout", TorpedoLineBlock.Fitout::new, labProps());
+    public static final DeferredBlock<TorpedoLineBlock.Test> TORPEDO_LINE_TEST = BLOCKS.registerBlock("torpedo_line_test", TorpedoLineBlock.Test::new, labProps());
+    public static final DeferredItem<TorpedoLineItem> TORPEDO_LINE_SHOP_ITEM = ITEMS.registerItem("torpedo_line_shop", p -> new TorpedoLineItem(TORPEDO_LINE_SHOP.get(), p), new Item.Properties());
+    public static final DeferredItem<TorpedoLineItem> TORPEDO_LINE_FITOUT_ITEM = ITEMS.registerItem("torpedo_line_fitout", p -> new TorpedoLineItem(TORPEDO_LINE_FITOUT.get(), p), new Item.Properties());
+    public static final DeferredItem<TorpedoLineItem> TORPEDO_LINE_TEST_ITEM = ITEMS.registerItem("torpedo_line_test", p -> new TorpedoLineItem(TORPEDO_LINE_TEST.get(), p), new Item.Properties());
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TorpedoLineBlockEntity>> TORPEDO_LINE_BE =
+            BLOCK_ENTITY_TYPES.register("torpedo_line_module", () -> BlockEntityType.Builder.of(TorpedoLineBlockEntity::new, TORPEDO_LINE_SHOP.get(), TORPEDO_LINE_FITOUT.get(), TORPEDO_LINE_TEST.get()).build(null));
+    public static final DeferredHolder<MenuType<?>, MenuType<TorpedoLineMenu>> TORPEDO_LINE_MENU = MENU_TYPES.register("torpedo_line",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new TorpedoLineMenu(id, inventory, buf)));
+
     public static final DeferredBlock<DroneHiveBlock> DRONE_HIVE = BLOCKS.registerBlock("drone_hive", DroneHiveBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 12.0F).sound(SoundType.METAL).noOcclusion());
     public static final DeferredItem<BlockItem> DRONE_HIVE_ITEM = ITEMS.registerSimpleBlockItem("drone_hive", DRONE_HIVE);
@@ -1042,6 +1060,177 @@ public class Wmd {
     public static final DeferredItem<BlockItem> COUNTER_BATTERY_RADAR_ITEM = ITEMS.registerSimpleBlockItem("counter_battery_radar", COUNTER_BATTERY_RADAR);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CounterBatteryRadarBlockEntity>> COUNTER_BATTERY_RADAR_BE =
             BLOCK_ENTITY_TYPES.register("counter_battery_radar", () -> BlockEntityType.Builder.of(CounterBatteryRadarBlockEntity::new, COUNTER_BATTERY_RADAR.get()).build(null));
+
+    public static final DeferredBlock<SonarDomeBlock> SONAR_DOME = BLOCKS.registerBlock("sonar_dome", SonarDomeBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(4)));
+    public static final DeferredItem<BlockItem> SONAR_DOME_ITEM = ITEMS.registerSimpleBlockItem("sonar_dome", SONAR_DOME);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SonarDomeBlockEntity>> SONAR_DOME_BE =
+            BLOCK_ENTITY_TYPES.register("sonar_dome", () -> BlockEntityType.Builder.of(SonarDomeBlockEntity::new, SONAR_DOME.get()).build(null));
+    public static final DeferredBlock<HydrophoneArrayBlock> HYDROPHONE_ARRAY = BLOCKS.registerBlock("hydrophone_array", HydrophoneArrayBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(4)));
+    public static final DeferredItem<BlockItem> HYDROPHONE_ARRAY_ITEM = ITEMS.registerSimpleBlockItem("hydrophone_array", HYDROPHONE_ARRAY);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HydrophoneArrayBlockEntity>> HYDROPHONE_ARRAY_BE =
+            BLOCK_ENTITY_TYPES.register("hydrophone_array", () -> BlockEntityType.Builder.of(HydrophoneArrayBlockEntity::new, HYDROPHONE_ARRAY.get()).build(null));
+
+    public static final DeferredBlock<TowedArrayWinchBlock> TOWED_ARRAY_WINCH = BLOCKS.registerBlock("towed_array_winch", TowedArrayWinchBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(4)));
+    public static final DeferredItem<BlockItem> TOWED_ARRAY_WINCH_ITEM = ITEMS.registerSimpleBlockItem("towed_array_winch", TOWED_ARRAY_WINCH);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TowedArrayWinchBlockEntity>> TOWED_ARRAY_WINCH_BE =
+            BLOCK_ENTITY_TYPES.register("towed_array_winch", () -> BlockEntityType.Builder.of(TowedArrayWinchBlockEntity::new, TOWED_ARRAY_WINCH.get()).build(null));
+    public static final DeferredBlock<ListeningNodeBlock> LISTENING_NODE = BLOCKS.registerBlock("listening_node", ListeningNodeBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(4)));
+    public static final DeferredItem<BlockItem> LISTENING_NODE_ITEM = ITEMS.registerSimpleBlockItem("listening_node", LISTENING_NODE);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ListeningNodeBlockEntity>> LISTENING_NODE_BE =
+            BLOCK_ENTITY_TYPES.register("listening_node", () -> BlockEntityType.Builder.of(ListeningNodeBlockEntity::new, LISTENING_NODE.get()).build(null));
+    public static final DeferredBlock<CoastalBatteryBlock> COASTAL_BATTERY = BLOCKS.registerBlock("coastal_battery", CoastalBatteryBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(4)));
+    public static final DeferredItem<BlockItem> COASTAL_BATTERY_ITEM = ITEMS.registerSimpleBlockItem("coastal_battery", COASTAL_BATTERY);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CoastalBatteryBlockEntity>> COASTAL_BATTERY_BE =
+            BLOCK_ENTITY_TYPES.register("coastal_battery", () -> BlockEntityType.Builder.of(CoastalBatteryBlockEntity::new, COASTAL_BATTERY.get()).build(null));
+    public static final DeferredBlock<DockCraneBlock> DOCK_CRANE = BLOCKS.registerBlock("dock_crane", DockCraneBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(4)));
+    public static final DeferredItem<BlockItem> DOCK_CRANE_ITEM = ITEMS.registerSimpleBlockItem("dock_crane", DOCK_CRANE);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DockCraneBlockEntity>> DOCK_CRANE_BE =
+            BLOCK_ENTITY_TYPES.register("dock_crane", () -> BlockEntityType.Builder.of(DockCraneBlockEntity::new, DOCK_CRANE.get()).build(null));
+    public static final DeferredBlock<SonarConsoleBlock> SONAR_CONSOLE = BLOCKS.registerBlock("sonar_console", SonarConsoleBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(4)));
+    public static final DeferredItem<BlockItem> SONAR_CONSOLE_ITEM = ITEMS.registerSimpleBlockItem("sonar_console", SONAR_CONSOLE);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SonarConsoleBlockEntity>> SONAR_CONSOLE_BE =
+            BLOCK_ENTITY_TYPES.register("sonar_console", () -> BlockEntityType.Builder.of(SonarConsoleBlockEntity::new, SONAR_CONSOLE.get()).build(null));
+
+    public static final DeferredBlock<TorpedoTubeBlock> TORPEDO_TUBE = BLOCKS.registerBlock("torpedo_tube", TorpedoTubeBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(4)));
+    public static final DeferredItem<BlockItem> TORPEDO_TUBE_ITEM = ITEMS.registerSimpleBlockItem("torpedo_tube", TORPEDO_TUBE);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TorpedoTubeBlockEntity>> TORPEDO_TUBE_BE =
+            BLOCK_ENTITY_TYPES.register("torpedo_tube", () -> BlockEntityType.Builder.of(TorpedoTubeBlockEntity::new, TORPEDO_TUBE.get()).build(null));
+    public static final DeferredBlock<TorpedoLauncherDeckBlock> TORPEDO_LAUNCHER_DECK = BLOCKS.registerBlock("torpedo_launcher_deck", TorpedoLauncherDeckBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(4)));
+    public static final DeferredItem<BlockItem> TORPEDO_LAUNCHER_DECK_ITEM = ITEMS.registerSimpleBlockItem("torpedo_launcher_deck", TORPEDO_LAUNCHER_DECK);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TorpedoLauncherDeckBlockEntity>> TORPEDO_LAUNCHER_DECK_BE =
+            BLOCK_ENTITY_TYPES.register("torpedo_launcher_deck", () -> BlockEntityType.Builder.of(TorpedoLauncherDeckBlockEntity::new, TORPEDO_LAUNCHER_DECK.get()).build(null));
+    public static final DeferredBlock<TorpedoRackBlock> TORPEDO_RACK = BLOCKS.registerBlock("torpedo_rack", TorpedoRackBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(4)));
+    public static final DeferredItem<BlockItem> TORPEDO_RACK_ITEM = ITEMS.registerSimpleBlockItem("torpedo_rack", TORPEDO_RACK);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TorpedoRackBlockEntity>> TORPEDO_RACK_BE =
+            BLOCK_ENTITY_TYPES.register("torpedo_rack", () -> BlockEntityType.Builder.of(TorpedoRackBlockEntity::new, TORPEDO_RACK.get()).build(null));
+
+    public static final DeferredBlock<FireControlConsoleBlock> FIRE_CONTROL_CONSOLE = BLOCKS.registerBlock("fire_control_console", FireControlConsoleBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(4)));
+    public static final DeferredItem<BlockItem> FIRE_CONTROL_CONSOLE_ITEM = ITEMS.registerSimpleBlockItem("fire_control_console", FIRE_CONTROL_CONSOLE);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FireControlConsoleBlockEntity>> FIRE_CONTROL_CONSOLE_BE =
+            BLOCK_ENTITY_TYPES.register("fire_control_console", () -> BlockEntityType.Builder.of(FireControlConsoleBlockEntity::new, FIRE_CONTROL_CONSOLE.get()).build(null));
+    public static final DeferredItem<TorpedoItem> TORPEDO_T1 = ITEMS.register("torpedo_t1", () -> new TorpedoItem(TorpedoKind.T1, new Item.Properties().stacksTo(4)));
+    public static final DeferredItem<TorpedoItem> TORPEDO_T2 = ITEMS.register("torpedo_t2", () -> new TorpedoItem(TorpedoKind.T2, new Item.Properties().stacksTo(4)));
+    public static final DeferredItem<TorpedoItem> TORPEDO_T3 = ITEMS.register("torpedo_t3", () -> new TorpedoItem(TorpedoKind.T3, new Item.Properties().stacksTo(4)));
+    public static final DeferredItem<TorpedoItem> TORPEDO_T4 = ITEMS.register("torpedo_t4", () -> new TorpedoItem(TorpedoKind.T4, new Item.Properties().stacksTo(4)));
+    public static final DeferredItem<TorpedoItem> UUV = ITEMS.register("uuv", () -> new TorpedoItem(TorpedoKind.UUV, new Item.Properties().stacksTo(4)));
+
+    public static final DeferredBlock<NavalReactorBlock> NAVAL_REACTOR = BLOCKS.registerBlock("naval_reactor", NavalReactorBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(4)));
+    public static final DeferredItem<BlockItem> NAVAL_REACTOR_ITEM = ITEMS.registerSimpleBlockItem("naval_reactor", NAVAL_REACTOR);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<NavalReactorBlockEntity>> NAVAL_REACTOR_BE =
+            BLOCK_ENTITY_TYPES.register("naval_reactor", () -> BlockEntityType.Builder.of(NavalReactorBlockEntity::new, NAVAL_REACTOR.get()).build(null));
+    public static final DeferredBlock<PeriscopeBlock> PERISCOPE = BLOCKS.registerBlock("periscope", PeriscopeBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(4)));
+    public static final DeferredItem<BlockItem> PERISCOPE_ITEM = ITEMS.registerSimpleBlockItem("periscope", PERISCOPE);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PeriscopeBlockEntity>> PERISCOPE_BE =
+            BLOCK_ENTITY_TYPES.register("periscope", () -> BlockEntityType.Builder.of(PeriscopeBlockEntity::new, PERISCOPE.get()).build(null));
+    public static final DeferredBlock<CommsBuoyBlock> COMMS_BUOY_WINCH = BLOCKS.registerBlock("comms_buoy", CommsBuoyBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(4)));
+    public static final DeferredItem<BlockItem> COMMS_BUOY_WINCH_ITEM = ITEMS.registerSimpleBlockItem("comms_buoy", COMMS_BUOY_WINCH);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CommsBuoyBlockEntity>> COMMS_BUOY_BE =
+            BLOCK_ENTITY_TYPES.register("comms_buoy", () -> BlockEntityType.Builder.of(CommsBuoyBlockEntity::new, COMMS_BUOY_WINCH.get()).build(null));
+    public static final DeferredBlock<EscapePodBlock> ESCAPE_POD = BLOCKS.registerBlock("escape_pod", EscapePodBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(4)));
+    public static final DeferredItem<BlockItem> ESCAPE_POD_ITEM = ITEMS.registerSimpleBlockItem("escape_pod", ESCAPE_POD);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EscapePodBlockEntity>> ESCAPE_POD_BE =
+            BLOCK_ENTITY_TYPES.register("escape_pod", () -> BlockEntityType.Builder.of(EscapePodBlockEntity::new, ESCAPE_POD.get()).build(null));
+    public static final DeferredItem<TorpedoItem> TORPEDO_ATT = ITEMS.register("torpedo_att", () -> new TorpedoItem(TorpedoKind.ATT, new Item.Properties().stacksTo(4)));
+    public static final DeferredItem<Item> ESCAPE_CAPSULE = ITEMS.register("escape_capsule", () -> new Item(new Item.Properties().stacksTo(4)));
+
+    public static final DeferredItem<DepthChargeItem> DEPTH_CHARGE = ITEMS.register("depth_charge", () -> new DepthChargeItem(new Item.Properties().stacksTo(8)));
+    public static final DeferredBlock<DepthChargeRackBlock> DEPTH_CHARGE_RACK = BLOCKS.registerBlock("depth_charge_rack", DepthChargeRackBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(2)));
+    public static final DeferredItem<BlockItem> DEPTH_CHARGE_RACK_ITEM = ITEMS.registerSimpleBlockItem("depth_charge_rack", DEPTH_CHARGE_RACK);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DepthChargeRackBlockEntity>> DEPTH_CHARGE_RACK_BE =
+            BLOCK_ENTITY_TYPES.register("depth_charge_rack", () -> BlockEntityType.Builder.of(DepthChargeRackBlockEntity::new, DEPTH_CHARGE_RACK.get()).build(null));
+
+    public static final DeferredBlock<NoduleFieldBlock> NODULE_FIELD = BLOCKS.registerBlock("nodule_field", NoduleFieldBlock::new, NoduleFieldBlock.props());
+    public static final DeferredItem<BlockItem> NODULE_FIELD_ITEM = ITEMS.register("nodule_field", () -> new NoduleFieldBlock.BlockItemTip(NODULE_FIELD.get(), new Item.Properties()));
+    public static final DeferredItem<NoduleItem> MANGANESE_NODULE = ITEMS.register("manganese_nodule", () -> new NoduleItem(new Item.Properties(), "manganese_nodule"));
+    public static final DeferredItem<NoduleItem> MANGANESE_CONCENTRATE = ITEMS.register("manganese_concentrate", () -> new NoduleItem(new Item.Properties(), "manganese_concentrate"));
+    public static final DeferredItem<NoduleItem> NICKEL_COBALT_CONCENTRATE = ITEMS.register("nickel_cobalt_concentrate", () -> new NoduleItem(new Item.Properties(), "nickel_cobalt_concentrate"));
+    public static final DeferredItem<NoduleItem> MANGANESE_INGOT = ITEMS.register("manganese_ingot", () -> new NoduleItem(new Item.Properties(), "manganese_ingot"));
+    public static final DeferredItem<NoduleItem> NICKEL_COBALT_INGOT = ITEMS.register("nickel_cobalt_ingot", () -> new NoduleItem(new Item.Properties(), "nickel_cobalt_ingot"));
+
+    public static final DeferredBlock<DeepHull.Plate> MANGANESE_HULL_PLATE = BLOCKS.registerBlock("manganese_hull_plate", p -> new DeepHull.Plate(p, 0),
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(8.0F, 9.0F).sound(SoundType.METAL).requiresCorrectToolForDrops());
+    public static final DeferredBlock<DeepHull.Plate> SUPERALLOY_HULL = BLOCKS.registerBlock("superalloy_hull", p -> new DeepHull.Plate(p, 1),
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(10.0F, 15.0F).sound(SoundType.METAL).requiresCorrectToolForDrops());
+    public static final DeferredBlock<DeepHull.Viewport> DEEP_VIEWPORT = BLOCKS.registerBlock("deep_viewport", DeepHull.Viewport::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 9.0F).sound(SoundType.GLASS).noOcclusion().requiresCorrectToolForDrops()
+                    .isValidSpawn((s, l, p, t) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p) -> false));
+    public static final DeferredItem<BlockItem> MANGANESE_HULL_PLATE_ITEM = ITEMS.registerSimpleBlockItem("manganese_hull_plate", MANGANESE_HULL_PLATE);
+    public static final DeferredItem<BlockItem> SUPERALLOY_HULL_ITEM = ITEMS.registerSimpleBlockItem("superalloy_hull", SUPERALLOY_HULL);
+    public static final DeferredItem<BlockItem> DEEP_VIEWPORT_ITEM = ITEMS.registerSimpleBlockItem("deep_viewport", DEEP_VIEWPORT);
+
+    public static final DeferredBlock<Anechoic.Tile> ANECHOIC_TILE = BLOCKS.registerBlock("anechoic_tile", Anechoic.Tile::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).strength(3.0F, 4.0F).sound(SoundType.WOOL).requiresCorrectToolForDrops());
+    public static final DeferredItem<BlockItem> ANECHOIC_TILE_ITEM = ITEMS.registerSimpleBlockItem("anechoic_tile", ANECHOIC_TILE);
+
+    public static final DeferredItem<UpgradeItem> DEEP_SONAR_UPGRADE = ITEMS.registerItem("deep_sonar_upgrade", p -> new UpgradeItem(UpgradeItem.Type.DEEP_SONAR, p), new Item.Properties());
+
+    public static final DeferredBlock<TorpedoNetBlock> TORPEDO_NET = BLOCKS.registerBlock("torpedo_net", TorpedoNetBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(2.0F, 6.0F).sound(SoundType.CHAIN).noOcclusion().pushReaction(PushReaction.BLOCK));
+    public static final DeferredItem<TorpedoNetItem> TORPEDO_NET_ITEM = ITEMS.registerItem("torpedo_net", TorpedoNetItem::new, new Item.Properties());
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TorpedoNetBlockEntity>> TORPEDO_NET_BE =
+            BLOCK_ENTITY_TYPES.register("torpedo_net", () -> BlockEntityType.Builder.of(TorpedoNetBlockEntity::new, TORPEDO_NET.get()).build(null));
+    public static final DeferredItem<NoduleItem> SEABED_CRAWLER = ITEMS.register("seabed_crawler", () -> new NoduleItem(new Item.Properties().stacksTo(1), "seabed_crawler"));
+    public static final DeferredBlock<DredgeWinchBlock> DREDGE_WINCH = BLOCKS.registerBlock("dredge_winch", DredgeWinchBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(2)));
+    public static final DeferredItem<BlockItem> DREDGE_WINCH_ITEM = ITEMS.registerSimpleBlockItem("dredge_winch", DREDGE_WINCH);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DredgeWinchBlockEntity>> DREDGE_WINCH_BE =
+            BLOCK_ENTITY_TYPES.register("dredge_winch", () -> BlockEntityType.Builder.of(DredgeWinchBlockEntity::new, DREDGE_WINCH.get()).build(null));
+    public static final DeferredBlock<CollectorRigBlock> COLLECTOR_RIG = BLOCKS.registerBlock("collector_rig", CollectorRigBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(3)));
+    public static final DeferredItem<BlockItem> COLLECTOR_RIG_ITEM = ITEMS.registerSimpleBlockItem("collector_rig", COLLECTOR_RIG);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CollectorRigBlockEntity>> COLLECTOR_RIG_BE =
+            BLOCK_ENTITY_TYPES.register("collector_rig", () -> BlockEntityType.Builder.of(CollectorRigBlockEntity::new, COLLECTOR_RIG.get()).build(null));
+
+    public static final DeferredBlock<DepthChargeThrowerBlock> DEPTH_CHARGE_THROWER = BLOCKS.registerBlock("depth_charge_thrower", DepthChargeThrowerBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(2)));
+    public static final DeferredItem<BlockItem> DEPTH_CHARGE_THROWER_ITEM = ITEMS.registerSimpleBlockItem("depth_charge_thrower", DEPTH_CHARGE_THROWER);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DepthChargeThrowerBlockEntity>> DEPTH_CHARGE_THROWER_BE =
+            BLOCK_ENTITY_TYPES.register("depth_charge_thrower", () -> BlockEntityType.Builder.of(DepthChargeThrowerBlockEntity::new, DEPTH_CHARGE_THROWER.get()).build(null));
+
+    public static final DeferredBlock<NoisemakerLauncherBlock> NOISEMAKER_LAUNCHER = BLOCKS.registerBlock("noisemaker_launcher", NoisemakerLauncherBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(2)));
+    public static final DeferredItem<BlockItem> NOISEMAKER_LAUNCHER_ITEM = ITEMS.registerSimpleBlockItem("noisemaker_launcher", NOISEMAKER_LAUNCHER);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<NoisemakerLauncherBlockEntity>> NOISEMAKER_LAUNCHER_BE =
+            BLOCK_ENTITY_TYPES.register("noisemaker_launcher", () -> BlockEntityType.Builder.of(NoisemakerLauncherBlockEntity::new, NOISEMAKER_LAUNCHER.get()).build(null));
+    public static final DeferredBlock<SeaMineBlock.Influence> MINE_INFLUENCE = BLOCKS.registerBlock("mine_influence", SeaMineBlock.Influence::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(4.0F, 6.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion());
+    public static final DeferredItem<BlockItem> MINE_INFLUENCE_ITEM = ITEMS.register("mine_influence", () -> new SeaMineItem(MINE_INFLUENCE.get(), new Item.Properties()));
+    public static final DeferredBlock<SeaMineBlock.Bottom> MINE_BOTTOM = BLOCKS.registerBlock("mine_bottom", SeaMineBlock.Bottom::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(4.0F, 6.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion());
+    public static final DeferredItem<BlockItem> MINE_BOTTOM_ITEM = ITEMS.register("mine_bottom", () -> new SeaMineItem(MINE_BOTTOM.get(), new Item.Properties()));
+    public static final DeferredBlock<SeaMineBlock.Captor> MINE_CAPTOR = BLOCKS.registerBlock("mine_captor", SeaMineBlock.Captor::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(4.0F, 6.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion());
+    public static final DeferredItem<BlockItem> MINE_CAPTOR_ITEM = ITEMS.register("mine_captor", () -> new SeaMineItem(MINE_CAPTOR.get(), new Item.Properties()));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SeaMineBlockEntity>> SEA_MINE_BE = BLOCK_ENTITY_TYPES.register("sea_mine",
+            () -> BlockEntityType.Builder.of(SeaMineBlockEntity::new, MINE_INFLUENCE.get(), MINE_BOTTOM.get(), MINE_CAPTOR.get()).build(null));
+
+    public static final DeferredItem<AsrocItem> ASROC = ITEMS.register("asroc", () -> new AsrocItem(new Item.Properties().stacksTo(1)));
+
+    public static final DeferredItem<SlbmItem> SLBM = ITEMS.register("slbm", () -> new SlbmItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<CruiseCapsuleItem> CRUISE_CAPSULE = ITEMS.register("cruise_capsule", () -> new CruiseCapsuleItem(new Item.Properties().stacksTo(4)));
+    public static final DeferredBlock<LaunchCellBlock> LAUNCH_CELL = BLOCKS.registerBlock("launch_cell", LaunchCellBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(2)));
+    public static final DeferredItem<BlockItem> LAUNCH_CELL_ITEM = ITEMS.registerSimpleBlockItem("launch_cell", LAUNCH_CELL);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LaunchCellBlockEntity>> LAUNCH_CELL_BE =
+            BLOCK_ENTITY_TYPES.register("launch_cell", () -> BlockEntityType.Builder.of(LaunchCellBlockEntity::new, LAUNCH_CELL.get()).build(null));
+    public static final DeferredItem<SonobuoyItem> SONOBUOY = ITEMS.register("sonobuoy", () -> new SonobuoyItem(new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<NoisemakerItem> NOISEMAKER = ITEMS.register("noisemaker", () -> new NoisemakerItem(new Item.Properties().stacksTo(16)));
 
     public static final DeferredBlock<MlrsBlock> MLRS = BLOCKS.registerBlock("mlrs", MlrsBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(3)));
@@ -1476,6 +1665,99 @@ public class Wmd {
                     .updateInterval(1)
                     .build("hand_missile"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<NoisemakerEntity>> NOISEMAKER_ENTITY = ENTITY_TYPES.register("noisemaker",
+            () -> EntityType.Builder.<NoisemakerEntity>of(NoisemakerEntity::new, MobCategory.MISC)
+                    .sized(0.4F, 0.4F)
+                    .clientTrackingRange(8)
+                    .updateInterval(10)
+                    .build("noisemaker"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<DepthChargeEntity>> DEPTH_CHARGE_ENTITY = ENTITY_TYPES.register("depth_charge",
+            () -> EntityType.Builder.<DepthChargeEntity>of(DepthChargeEntity::new, MobCategory.MISC)
+                    .sized(0.7F, 0.7F)
+                    .clientTrackingRange(10)
+                    .updateInterval(1)
+                    .build("depth_charge"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<KGunArborEntity>> KGUN_ARBOR_ENTITY = ENTITY_TYPES.register("kgun_arbor",
+            () -> EntityType.Builder.<KGunArborEntity>of(KGunArborEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(8)
+                    .updateInterval(1)
+                    .build("kgun_arbor"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<DredgeBucketEntity>> DREDGE_BUCKET_ENTITY = ENTITY_TYPES.register("dredge_bucket",
+            () -> EntityType.Builder.<DredgeBucketEntity>of(DredgeBucketEntity::new, MobCategory.MISC)
+                    .sized(0.8F, 1.0F)
+                    .clientTrackingRange(10)
+                    .updateInterval(1)
+                    .build("dredge_bucket"));
+    public static final DeferredHolder<EntityType<?>, EntityType<SeabedCrawlerEntity>> SEABED_CRAWLER_ENTITY = ENTITY_TYPES.register("seabed_crawler",
+            () -> EntityType.Builder.<SeabedCrawlerEntity>of(SeabedCrawlerEntity::new, MobCategory.MISC)
+                    .sized(3.6F, 1.8F)
+                    .clientTrackingRange(12)
+                    .updateInterval(1)
+                    .build("seabed_crawler"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<RisingMineEntity>> RISING_MINE = ENTITY_TYPES.register("rising_mine",
+            () -> EntityType.Builder.<RisingMineEntity>of(RisingMineEntity::new, MobCategory.MISC)
+                    .sized(0.7F, 0.7F)
+                    .clientTrackingRange(10)
+                    .updateInterval(1)
+                    .build("rising_mine"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<LaidMineEntity>> LAID_MINE = ENTITY_TYPES.register("laid_mine",
+            () -> EntityType.Builder.<LaidMineEntity>of(LaidMineEntity::new, MobCategory.MISC)
+                    .sized(1.0F, 1.0F)
+                    .clientTrackingRange(10)
+                    .updateInterval(1)
+                    .build("laid_mine"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<SonobuoyEntity>> SONOBUOY_ENTITY = ENTITY_TYPES.register("sonobuoy",
+            () -> EntityType.Builder.<SonobuoyEntity>of(SonobuoyEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 1.3F)
+                    .clientTrackingRange(10)
+                    .updateInterval(2)
+                    .build("sonobuoy"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<AsrocEntity>> ASROC_ENTITY = ENTITY_TYPES.register("asroc",
+            () -> EntityType.Builder.<AsrocEntity>of(AsrocEntity::new, MobCategory.MISC)
+                    .sized(0.7F, 0.7F)
+                    .clientTrackingRange(24)
+                    .updateInterval(1)
+                    .build("asroc"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<SlbmEntity>> SLBM_ENTITY = ENTITY_TYPES.register("slbm",
+            () -> EntityType.Builder.<SlbmEntity>of(SlbmEntity::new, MobCategory.MISC)
+                    .sized(0.9F, 6.0F)
+                    .clientTrackingRange(32)
+                    .updateInterval(1)
+                    .build("slbm"));
+    public static final DeferredHolder<EntityType<?>, EntityType<CapsuleEntity>> CAPSULE_ENTITY = ENTITY_TYPES.register("cruise_capsule",
+            () -> EntityType.Builder.<CapsuleEntity>of(CapsuleEntity::new, MobCategory.MISC)
+                    .sized(0.8F, 6.25F)
+                    .clientTrackingRange(24)
+                    .updateInterval(1)
+                    .build("cruise_capsule"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<CommsBuoyEntity>> COMMS_BUOY = ENTITY_TYPES.register("comms_buoy",
+            () -> EntityType.Builder.<CommsBuoyEntity>of(CommsBuoyEntity::new, MobCategory.MISC)
+                    .sized(1.2F, 0.6F)
+                    .clientTrackingRange(10)
+                    .updateInterval(2)
+                    .build("comms_buoy"));
+    public static final DeferredHolder<EntityType<?>, EntityType<EscapePodEntity>> ESCAPE_POD_ENTITY = ENTITY_TYPES.register("escape_pod",
+            () -> EntityType.Builder.<EscapePodEntity>of(EscapePodEntity::new, MobCategory.MISC)
+                    .sized(1.5F, 2.8F)
+                    .clientTrackingRange(10)
+                    .updateInterval(2)
+                    .build("escape_pod"));
+    public static final DeferredHolder<EntityType<?>, EntityType<TorpedoEntity>> TORPEDO = ENTITY_TYPES.register("torpedo",
+            () -> EntityType.Builder.<TorpedoEntity>of(TorpedoEntity::new, MobCategory.MISC)
+                    .sized(0.75F, 0.75F)
+                    .clientTrackingRange(16)
+                    .updateInterval(1)
+                    .build("torpedo"));
     public static final DeferredHolder<EntityType<?>, EntityType<BombEntity>> BOMB = ENTITY_TYPES.register("bomb",
             () -> EntityType.Builder.<BombEntity>of(BombEntity::new, MobCategory.MISC)
                     .sized(0.4F, 0.4F)
@@ -1547,6 +1829,7 @@ public class Wmd {
                 output.accept(BATTERY_T3_ITEM.get());
                 output.accept(BATTERY_T4_ITEM.get());
                 output.accept(BUSBAR_ITEM.get());
+                output.accept(HULL_PENETRATOR_ITEM.get());
                 output.accept(FLUID_PIPE_ITEM.get());
                 output.accept(ALUMINIUM_PIPE_ITEM.get());
                 output.accept(TITANIUM_PIPE_ITEM.get());
@@ -1705,6 +1988,46 @@ public class Wmd {
                 output.accept(SHELL_PRESS_ITEM.get());
                 output.accept(SUPER_GUN_ITEM.get());
                 output.accept(COUNTER_BATTERY_RADAR_ITEM.get());
+                output.accept(SONAR_DOME_ITEM.get());
+                output.accept(HYDROPHONE_ARRAY_ITEM.get());
+                output.accept(SONAR_CONSOLE_ITEM.get());
+                output.accept(TOWED_ARRAY_WINCH_ITEM.get());
+                output.accept(LISTENING_NODE_ITEM.get());
+                output.accept(COASTAL_BATTERY_ITEM.get());
+                output.accept(DOCK_CRANE_ITEM.get());
+                output.accept(TORPEDO_TUBE_ITEM.get());
+                output.accept(TORPEDO_LAUNCHER_DECK_ITEM.get());
+                output.accept(TORPEDO_RACK_ITEM.get());
+                output.accept(FIRE_CONTROL_CONSOLE_ITEM.get());
+                output.accept(TORPEDO_T1.get());
+                output.accept(TORPEDO_T2.get());
+                output.accept(TORPEDO_T3.get());
+                output.accept(TORPEDO_T4.get());
+                output.accept(UUV.get());
+                output.accept(TORPEDO_ATT.get());
+                output.accept(NAVAL_REACTOR_ITEM.get());
+                output.accept(PERISCOPE_ITEM.get());
+                output.accept(COMMS_BUOY_WINCH_ITEM.get());
+                output.accept(ESCAPE_POD_ITEM.get());
+                output.accept(ESCAPE_CAPSULE.get());
+                output.accept(NOISEMAKER.get());
+                output.accept(NOISEMAKER_LAUNCHER_ITEM.get());
+                output.accept(DEPTH_CHARGE.get());
+                output.accept(SONOBUOY.get());
+                output.accept(LAUNCH_CELL_ITEM.get());
+                output.accept(ASROC.get());
+                output.accept(SLBM.get());
+                output.accept(CRUISE_CAPSULE.get());
+                output.accept(DEPTH_CHARGE_RACK_ITEM.get());
+                output.accept(DREDGE_WINCH_ITEM.get()); output.accept(COLLECTOR_RIG_ITEM.get()); output.accept(SEABED_CRAWLER.get());
+                output.accept(MANGANESE_NODULE.get()); output.accept(MANGANESE_CONCENTRATE.get()); output.accept(NICKEL_COBALT_CONCENTRATE.get());
+                output.accept(MANGANESE_INGOT.get()); output.accept(NICKEL_COBALT_INGOT.get()); output.accept(NODULE_FIELD_ITEM.get());
+                output.accept(MANGANESE_HULL_PLATE_ITEM.get()); output.accept(SUPERALLOY_HULL_ITEM.get()); output.accept(DEEP_VIEWPORT_ITEM.get());
+                output.accept(ANECHOIC_TILE_ITEM.get()); output.accept(DEEP_SONAR_UPGRADE.get());
+                output.accept(TORPEDO_NET_ITEM.get());
+                output.accept(DEPTH_CHARGE_THROWER_ITEM.get());
+                output.accept(MINE_INFLUENCE_ITEM.get()); output.accept(MINE_BOTTOM_ITEM.get()); output.accept(MINE_CAPTOR_ITEM.get());
+                output.accept(TORPEDO_LINE_SHOP_ITEM.get()); output.accept(TORPEDO_LINE_FITOUT_ITEM.get()); output.accept(TORPEDO_LINE_TEST_ITEM.get());
                 output.accept(MLRS_ITEM.get());
                 output.accept(TARGET_DESIGNATOR.get());
                 output.accept(RECON_DRONE.get());
@@ -1868,6 +2191,17 @@ public class Wmd {
         modEventBus.addListener(this::commonSetup);
 
         BLOCKS.register(modEventBus);
+        NoduleRetrogen.register(modEventBus);
+
+        if (net.neoforged.fml.ModList.get().isLoaded("create")) {
+            try {
+                Class.forName("com.ashraf.wmd.CreateCompat").getMethod("init", IEventBus.class).invoke(null, modEventBus);
+            } catch (ClassNotFoundException e) {
+                LOGGER.info("[create] this WMD build has no Create drive coupling");
+            } catch (ReflectiveOperationException | LinkageError e) {
+                LOGGER.error("[create] the Create drive coupling failed to start (another Create version?)", e);
+            }
+        }
 
         ITEMS.register(modEventBus);
         GasMaskItem.MATERIALS.register(modEventBus);
@@ -1964,6 +2298,8 @@ public class Wmd {
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DRONE_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DRONE_BE.get(), (be, side) -> ItemPorts.wmdOnly(be.itemPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BOMB_LINE_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, TORPEDO_LINE_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, TORPEDO_LINE_BE.get(), (be, side) -> ItemPorts.wmdOnly(be.itemPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BOMB_LINE_BE.get(), (be, side) -> ItemPorts.wmdOnly(be.itemPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BOMB_LINE_BE.get(), (be, side) -> be.fluidPort(be.getBlockPos(), side));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DRONE_HIVE_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
@@ -2095,10 +2431,36 @@ public class Wmd {
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CRUISE_LAUNCHER_BE.get(), (be, side) -> ItemPorts.wmdOnly(be.itemPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CRUISE_LAUNCHER_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, COUNTER_BATTERY_RADAR_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, SONAR_DOME_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, HYDROPHONE_ARRAY_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, TOWED_ARRAY_WINCH_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, COASTAL_BATTERY_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DOCK_CRANE_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, SONAR_CONSOLE_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, TORPEDO_TUBE_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, TORPEDO_LAUNCHER_DECK_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, TORPEDO_RACK_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, LAUNCH_CELL_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, NAVAL_REACTOR_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, NAVAL_REACTOR_BE.get(), (be, side) -> ItemPorts.wmdOnly(be.itemPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, NAVAL_REACTOR_BE.get(), (be, side) -> be.fluidPort(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, PERISCOPE_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, COMMS_BUOY_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ESCAPE_POD_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DEPTH_CHARGE_RACK_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DEPTH_CHARGE_THROWER_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, NOISEMAKER_LAUNCHER_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, FIRE_CONTROL_CONSOLE_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, MLRS_BE.get(), (be, side) -> ItemPorts.wmdOnly(be.itemPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, MLRS_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CC_MAP_PRINTER_BE.get(), (be, side) -> ItemPorts.wmdOnly(be.itemPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, RESEARCH_STATION_BE.get(), (be, side) -> be.fluidPort(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DREDGE_WINCH_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DREDGE_WINCH_BE.get(), (be, side) -> ItemPorts.wmdOnly(be.itemPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, COLLECTOR_RIG_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, COLLECTOR_RIG_BE.get(), (be, side) -> ItemPorts.wmdOnly(be.itemPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, RESEARCH_STATION_BE.get(), (be, side) -> ItemPorts.wmdOnly(be.itemPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, RESEARCH_STATION_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, WATER_INTAKE_BE.get(), (be, side) -> be.fluidPort(be.getBlockPos(), side));
@@ -2123,8 +2485,6 @@ public class Wmd {
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, VACUUM_COLUMN_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, ATMOSPHERIC_COLUMN_BE.get(), (be, side) -> be.fluidPort(be.getBlockPos(), side));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ATMOSPHERIC_COLUMN_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
-
-        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ALARM_BE.get(), (be, side) -> Grid.gridOnly(side == net.minecraft.core.Direction.DOWN ? be.getEnergy() : null));
 
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, LAUNCH_TERMINAL_BE.get(), (be, side) -> Grid.gridOnly(be.getEnergy()));
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, LAUNCH_TERMINAL_BE.get(), (be, side) -> ItemPorts.wmdOnly(be.automationPort()));
@@ -2151,6 +2511,8 @@ public class Wmd {
         registrar.playToServer(SetResearchPayload.TYPE, SetResearchPayload.STREAM_CODEC, SetResearchPayload::handle);
         registrar.playToServer(ArtGunPayload.TYPE, ArtGunPayload.STREAM_CODEC, ArtGunPayload::handle);
         registrar.playToServer(CruisePayload.TYPE, CruisePayload.STREAM_CODEC, CruisePayload::handle);
+        registrar.playToClient(UnderwaterBlastPayload.TYPE, UnderwaterBlastPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> UnderwaterBlastView.onReceive(p)));
+        registrar.playToClient(PeriscopePayload.TYPE, PeriscopePayload.STREAM_CODEC, PeriscopePayload::handle);
         registrar.playToClient(SmokePayload.TYPE, SmokePayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> SmokePayload.onReceive(p)));
         registrar.playToClient(DomeMarkersPayload.TYPE, DomeMarkersPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> DomeMarkersPayload.onReceive(p)));
         registrar.playToClient(ArtShellsPayload.TYPE, ArtShellsPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ArtilleryView.onShells(p)));
@@ -2226,7 +2588,18 @@ public class Wmd {
         registrar.playToClient(BdaPayload.TYPE, BdaPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> BdaView.set(p)));
         registrar.playToServer(CcDesignatePayload.TYPE, CcDesignatePayload.STREAM_CODEC, CcDesignatePayload::handle);
         registrar.playToServer(S5Payload.TYPE, S5Payload.STREAM_CODEC, S5Payload::handle);
+        registrar.playToServer(SonarPayload.TYPE, SonarPayload.STREAM_CODEC, SonarPayload::handle);
+        registrar.playToServer(ShorePayload.TYPE, ShorePayload.STREAM_CODEC, ShorePayload::handle);
+        registrar.playToServer(LaunchCellPayload.TYPE, LaunchCellPayload.STREAM_CODEC, LaunchCellPayload::handle);
+        registrar.playToServer(DepthChargePayload.TYPE, DepthChargePayload.STREAM_CODEC, DepthChargePayload::handle);
+        registrar.playToServer(ThrowerPayload.TYPE, ThrowerPayload.STREAM_CODEC, ThrowerPayload::handle);
+        registrar.playToServer(NoisemakerLauncherPayload.TYPE, NoisemakerLauncherPayload.STREAM_CODEC, NoisemakerLauncherPayload::handle);
+        registrar.playToServer(SeaMinePayloads.Act.TYPE, SeaMinePayloads.Act.STREAM_CODEC, SeaMinePayloads.Act::handle);
+        registrar.playToClient(SeaMinePayloads.Open.TYPE, SeaMinePayloads.Open.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> SeaMineScreen.open(p.pos())));
+        registrar.playToServer(FireControlPayload.TYPE, FireControlPayload.STREAM_CODEC, FireControlPayload::handle);
+        registrar.playToServer(TorpedoPayload.TYPE, TorpedoPayload.STREAM_CODEC, TorpedoPayload::handle);
         registrar.playToClient(DronesPayload.TYPE, DronesPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> DroneView.set(p)));
+        registrar.playToServer(NodulePayload.TYPE, NodulePayload.STREAM_CODEC, NodulePayload::handle);
         registrar.playToClient(BombsPayload.TYPE, BombsPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> BombView.set(p)));
         registrar.playToClient(AsatFxPayload.TYPE, AsatFxPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> { AsatFxView.add(p); if (p.hit()) LaunchSounds.asat(); }));
     }

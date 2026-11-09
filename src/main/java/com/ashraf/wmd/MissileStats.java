@@ -28,12 +28,13 @@ public final class MissileStats {
         if (b.isCruise()) return (int) Balance.CRUISE_RANGE[Mth.clamp(b.airframe(), 1, Balance.CRUISE_RANGE.length) - 1];
         int m = b.divert() ? 3 : t(b.motor());
         double ratio = Mth.clamp(Math.pow(standardWeight(m, b.staged()) / Math.max(0.01, weight(b)), MissileConfig.exponent()), MissileConfig.rangeMin(), MissileConfig.rangeMax());
-        double r = MissileConfig.baseRange(m) * ratio * (b.divert() ? MissileConfig.divertRange() : 1.0) * (b.hypersonic() ? Balance.HYPER_RANGE : 1.0) * (b.staged() ? 1.0 - Balance.BOOSTER_RANGE_LOSS * Math.max(0, Balance.BOOSTER_STD - b.boosters()) : 1.0);
+        double r = (b.isSlbm() ? Balance.SLBM_RANGE_K : 1.0) * MissileConfig.baseRange(m) * ratio * (b.divert() ? MissileConfig.divertRange() : 1.0) * (b.hypersonic() ? Balance.HYPER_RANGE : 1.0) * (b.staged() ? 1.0 - Balance.BOOSTER_RANGE_LOSS * Math.max(0, Balance.BOOSTER_STD - b.boosters()) : 1.0);
         return (int) (Math.round(r / 10.0) * 10);
     }
 
     public static int fuel(MissileBuild b) {
         if (b.isCruise()) return Balance.CRUISE_FUEL_CANISTERS * Balance.ALKYLATE_CANISTER_MB;
+        if (b.isSlbm()) return 0;
         double mb = MissileConfig.fuelBase() + MissileConfig.fuelPerBlock() * range(b) + Balance.BOOSTER_FUEL_MB * b.boosters();
         return (int) (Math.round(mb / 10.0) * 10);
     }

@@ -82,7 +82,7 @@ public class GridConverterBlockEntity extends ProcessUnitBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.GC_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 0, 0); }
-    @Override protected float soundVolume() { return 0.4F; }
+    @Override protected float soundVolume() { return Balance.SND_SMALL; }
 
     @Override protected String detail() { return "in " + inStored + " FE, out " + out.stored + " FE"; }
 

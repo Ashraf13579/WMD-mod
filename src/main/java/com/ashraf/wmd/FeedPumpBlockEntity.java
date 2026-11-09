@@ -65,7 +65,7 @@ public class FeedPumpBlockEntity extends ProcessUnitBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.PUMP_RUN.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 0, 0); }
-    @Override protected float soundVolume() { return 0.6F; }
+    @Override protected float soundVolume() { return Balance.SND_MACHINE; }
 
     @Override
     protected List<double[]> vents() { return List.of(new double[] { -1.55, 1.5, 0.0 }, new double[] { -1.0, 1.5, 0.55 }); }

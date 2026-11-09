@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "HKH",
+    "PNP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    },
+    "H": {
+      "item": "wmd:he_charge"
+    },
+    "K": {
+      "item": "minecraft:compass"
+    },
+    "N": {
+      "item": "minecraft:chain"
+    }
+  },
+  "result": {
+    "id": "wmd:mine_influence",
+    "count": 1
+  }
+}

@@ -127,7 +127,7 @@ public class DeadHandBlockEntity extends ProcessUnitBlockEntity implements Owned
         doorOpen = !doorOpen;
         doorAt = level.getGameTime();
         double[] w = worldPoint(0.0, 26.0 / 16.0, 36.0 / 16.0);
-        level.playSound(null, w[0], w[1], w[2], WmdSounds.DH_DOOR.get(), SoundSource.BLOCKS, 1.5F, 1.0F);
+        level.playSound(null, w[0], w[1], w[2], WmdSounds.DH_DOOR.get(), SoundSource.BLOCKS, Balance.SND_MECH, 1.0F);
         setChanged();
         sync();
     }

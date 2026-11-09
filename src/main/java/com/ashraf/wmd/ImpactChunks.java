@@ -67,6 +67,6 @@ public final class ImpactChunks {
         private Reg() {}
 
         @SubscribeEvent
-        static void register(RegisterTicketControllersEvent event) { event.register(CONTROLLER); event.register(LAUNCH); event.register(AsyncChunks.CONTROLLER); event.register(StationChunks.CONTROLLER); }
+        static void register(RegisterTicketControllersEvent event) { event.register(CONTROLLER); event.register(LAUNCH); event.register(AsyncChunks.CONTROLLER); event.register(StationChunks.CONTROLLER); event.register(RunnerChunks.CONTROLLER); }
     }
 }

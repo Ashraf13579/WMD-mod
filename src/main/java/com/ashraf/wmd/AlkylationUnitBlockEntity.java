@@ -103,7 +103,7 @@ public class AlkylationUnitBlockEntity extends ItemProcessBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.HDT_RUN.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(-1, 0, 2); }
-    @Override protected float soundVolume() { return 0.75F; }
+    @Override protected float soundVolume() { return Balance.SND_HEAVY; }
 
     @Override
     protected float levelFraction() {

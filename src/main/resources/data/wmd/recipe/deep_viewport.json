@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "PGP",
+    "GNG",
+    "PGP"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:manganese_hull_plate"
+    },
+    "G": {
+      "item": "wmd:blast_glass"
+    },
+    "N": {
+      "item": "wmd:nickel_cobalt_ingot"
+    }
+  },
+  "result": {
+    "id": "wmd:deep_viewport",
+    "count": 4
+  }
+}

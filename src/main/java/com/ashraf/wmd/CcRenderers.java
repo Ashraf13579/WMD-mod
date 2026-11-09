@@ -158,7 +158,7 @@ public final class CcRenderers {
             Matrix4f m = ps.last().pose();
             PoseStack.Pose p = ps.last();
             double tt = be.getLevel().getGameTime() + pt;
-            float flicker = 0.96F + 0.04F * (float) Math.sin(tt * 0.7);
+            float flicker = (0.96F + 0.04F * (float) Math.sin(tt * 0.7)) * be.holoShown(tt);
             CcHolo.queue(hm, m, 0.84F * flicker);
             CcHolo.queue(hm, back, 0.84F * flicker);
             float top = area.top() + 0.5F, half = area.half(), fl = area.floor();

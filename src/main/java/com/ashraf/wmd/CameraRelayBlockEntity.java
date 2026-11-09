@@ -32,7 +32,7 @@ public class CameraRelayBlockEntity extends CctvDeviceEntity implements RadarLin
     }
 
     @Override protected String detail() { return (isRunning() ? "UP" : "DOWN") + ", frequency " + frequency; }
-    @Override protected float soundVolume() { return 0.05F; }
+    @Override protected float soundVolume() { return Balance.SND_AMBIENT; }
 
     @Override
     public IEnergyStorage energyPort(BlockPos part, Direction side) { return at(part, side, 0, 0, 0, Direction.SOUTH) ? energy() : null; }

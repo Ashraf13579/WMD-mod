@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "ingredient": {
+    "item": "wmd:manganese_concentrate"
+  },
+  "result": {
+    "id": "wmd:manganese_ingot",
+    "count": 2
+  },
+  "experience": 0.7,
+  "cookingtime": 100
+}

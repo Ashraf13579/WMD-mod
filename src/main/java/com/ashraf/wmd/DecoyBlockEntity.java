@@ -81,13 +81,13 @@ public abstract class DecoyBlockEntity extends ProcessUnitBlockEntity implements
         Vec3 c = centre();
         if (level instanceof ServerLevel sl) {
             if (hit) {
-                sl.playSound(null, c.x, c.y, c.z, WmdSounds.DECOY_POP.get(), SoundSource.BLOCKS, 4.0F, 0.6F);
-                sl.playSound(null, c.x, c.y, c.z, WmdSounds.CHAFF_HISS.get(), SoundSource.BLOCKS, 2.0F, 0.7F);
+                sl.playSound(null, c.x, c.y, c.z, WmdSounds.DECOY_POP.get(), SoundSource.BLOCKS, Balance.SND_RELEASE, 0.6F);
+                sl.playSound(null, c.x, c.y, c.z, WmdSounds.CHAFF_HISS.get(), SoundSource.BLOCKS, Balance.SND_RELEASE, 0.7F);
                 sl.sendParticles(ParticleTypes.POOF, c.x, c.y, c.z, 30, 1.2, 0.8, 1.2, 0.05);
                 if (getOwner() != null)
                     CcBattleLog.add(sl.getServer(), getOwner(), CcBattleLog.HIT, "log.wmd.decoy_hit", "#block.wmd." + id(),
                             Integer.toString(worldPosition.getX()), Integer.toString(worldPosition.getZ()));
-            } else sl.playSound(null, c.x, c.y, c.z, WmdSounds.CHAFF_HISS.get(), SoundSource.BLOCKS, 1.0F, 0.5F);
+            } else sl.playSound(null, c.x, c.y, c.z, WmdSounds.CHAFF_HISS.get(), SoundSource.BLOCKS, Balance.SND_RELEASE, 0.5F);
         }
         setChanged();
         sync();
@@ -148,7 +148,7 @@ public abstract class DecoyBlockEntity extends ProcessUnitBlockEntity implements
     @Override public IEnergyStorage guiEnergy() { return null; }
     @Override protected SoundEvent runSound() { return WmdSounds.DC_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return BlockPos.ZERO; }
-    @Override protected float soundVolume() { return 0.05F; }
+    @Override protected float soundVolume() { return Balance.SND_AMBIENT; }
 
     @Override
     public List<Component> guiInfo() {

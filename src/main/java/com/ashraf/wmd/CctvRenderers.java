@@ -108,9 +108,10 @@ public final class CctvRenderers {
             Direction f = be.getBlockState().getValue(MachineBlock.FACING);
             CcRenderers.modelFrame(ps, f);
             double tt = be.getLevel().getGameTime() + pt;
-            VertexConsumer q = buf.getBuffer(RenderType.debugQuads());
             Matrix4f m = ps.last().pose();
             for (int k = 0; k < 4; k++) {
+
+                VertexConsumer q = buf.getBuffer(RenderType.debugQuads());
                 float[] s = SCREENS[k];
                 int st = be.screenState(k);
                 float x0 = s[0] + 0.3F, x1 = s[1] - 0.3F, y0 = s[2] + 0.3F, y1 = s[3] - 0.3F, h = y1 - y0;
@@ -135,6 +136,7 @@ public final class CctvRenderers {
                     CcRenderers.text(ps, buf, st == CcSecurityMonitorBlockEntity.STATIC ? "STATIC" : "NO SIGNAL", (x0 + x1) / 2.0F, (y0 + y1) / 2.0F, SCR_Z - 0.06F, h * 0.18F, 0xFF8090A0);
                 }
                 if (be.screenAlert() == k && ((long) (tt / 6.0)) % 2 == 0) {
+                    q = buf.getBuffer(RenderType.debugQuads());
                     int red = 0xFFFF3030;
                     CcRenderers.rect(q, m, x0 - 0.3F, y0 - 0.3F, x1 + 0.3F, y0, SCR_Z - 0.07F, red);
                     CcRenderers.rect(q, m, x0 - 0.3F, y1, x1 + 0.3F, y1 + 0.3F, SCR_Z - 0.07F, red);

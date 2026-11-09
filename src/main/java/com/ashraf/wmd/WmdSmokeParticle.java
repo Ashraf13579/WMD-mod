@@ -11,7 +11,7 @@ import net.minecraft.util.Mth;
 
 public class WmdSmokeParticle extends TextureSheetParticle {
 
-    public enum Kind { BANK, TRAIL, FLAME, VAPOUR, GAS, SPARK, SPRAY, DUST }
+    public enum Kind { BANK, TRAIL, FLAME, VAPOUR, GAS, SPARK, SPRAY, DUST, WAKE, CAVITY }
 
     private final Kind kind;
     private float startSize, endSize;
@@ -100,6 +100,26 @@ public class WmdSmokeParticle extends TextureSheetParticle {
                 hasPhysics = false;
                 shade = 0.92F + random.nextFloat() * 0.08F;
             }
+            case WAKE -> {
+                lifetime = 80 + random.nextInt(40);
+                startSize = 0.22F + random.nextFloat() * 0.12F;
+                endSize = 1.1F + random.nextFloat() * 0.6F;
+                maxAlpha = 0.32F;
+                friction = 0.9F;
+                gravity = -0.012F;
+                hasPhysics = false;
+                shade = 0.9F + random.nextFloat() * 0.1F;
+            }
+            case CAVITY -> {
+                lifetime = 3 + random.nextInt(3);
+                startSize = 0.7F + random.nextFloat() * 0.3F;
+                endSize = 1.0F + random.nextFloat() * 0.3F;
+                maxAlpha = 0.5F;
+                friction = 0.7F;
+                gravity = 0.0F;
+                hasPhysics = false;
+                shade = 0.85F + random.nextFloat() * 0.15F;
+            }
             default -> {
                 lifetime = 40 + random.nextInt(30);
                 startSize = 0.35F + random.nextFloat() * 0.3F;
@@ -132,6 +152,8 @@ public class WmdSmokeParticle extends TextureSheetParticle {
             if (kind == Kind.GAS) { setColor(0.52F * s, 0.78F * s, 0.20F * s); return; }
             if (kind == Kind.DUST) { setColor(0.80F * s, 0.75F * s, 0.66F * s); return; }
             if (kind == Kind.SPRAY) { setColor(0.93F * s, 0.97F * s, 1.0F * s); return; }
+            if (kind == Kind.WAKE) { setColor(0.86F * s, 0.95F * s, 1.0F * s); return; }
+            if (kind == Kind.CAVITY) { setColor(0.76F * s, 0.84F * s, 0.90F * s); return; }
             if (kind == Kind.BANK) s = Mth.lerp(Math.min(1.0F, age * 2.0F), shade * 0.82F, shade);
             setColor(s, s, s * 1.02F);
         }

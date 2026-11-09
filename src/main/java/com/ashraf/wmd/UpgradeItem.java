@@ -14,13 +14,18 @@ public class UpgradeItem extends Item {
         HEAVY_WATER("heavy_water", Balance.UPGRADE_MAX_LEVEL),
 
         SPEED("speed", Balance.UPGRADE_MAX_LEVEL), EFFICIENCY("efficiency", Balance.UPGRADE_MAX_LEVEL), THROUGHPUT("throughput", Balance.UPGRADE_MAX_LEVEL),
-        BUFFER("buffer", Balance.UPGRADE_MAX_LEVEL), MUFFLER("muffler", Balance.UPGRADE_MAX_LEVEL), AUTO_EJECT("auto_eject", 1), CIWS_DRUM("ciws_drum", 1);
+        BUFFER("buffer", Balance.UPGRADE_MAX_LEVEL), MUFFLER("muffler", Balance.UPGRADE_MAX_LEVEL), AUTO_EJECT("auto_eject", 1), CIWS_DRUM("ciws_drum", 1),
+
+        DEEP_SONAR("deep_sonar", 1, "deep_sonar_upgrade");
 
         public final String id;
 
         public final int maxLevel;
 
-        Type(String id, int maxLevel) { this.id = id; this.maxLevel = maxLevel; }
+        public final String item;
+
+        Type(String id, int maxLevel) { this(id, maxLevel, "upgrade_" + id); }
+        Type(String id, int maxLevel, String item) { this.id = id; this.maxLevel = maxLevel; this.item = item; }
 
         static Type byIndex(int i) { Type[] v = values(); return i >= 0 && i < v.length ? v[i] : null; }
     }

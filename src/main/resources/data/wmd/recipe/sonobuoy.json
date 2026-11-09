@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " A ",
+    "PCP",
+    " G "
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:lightning_rod"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    },
+    "G": {
+      "item": "minecraft:prismarine_shard"
+    }
+  },
+  "result": {
+    "id": "wmd:sonobuoy",
+    "count": 2
+  }
+}

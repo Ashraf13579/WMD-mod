@@ -122,7 +122,7 @@ public class LabModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
         heavyWater.drain(Balance.LAB_AUTO_HEAVY_WATER, net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
         grade = 0;
         autoRun = true;
-        level.playSound(null, worldPosition, WmdSounds.WR_STAGE.get(), SoundSource.BLOCKS, 0.7F, 1.2F);
+        level.playSound(null, worldPosition, WmdSounds.WR_STAGE.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.2F);
         enter(Stage.LOAD, Stage.LOAD.ticks);
     }
 
@@ -190,7 +190,7 @@ public class LabModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
         store.use(Balance.LAB_RUN_FE);
         grade = 0;
         autoRun = false;
-        level.playSound(null, worldPosition, WmdSounds.WR_STAGE.get(), SoundSource.BLOCKS, 0.8F, 1.15F);
+        level.playSound(null, worldPosition, WmdSounds.WR_STAGE.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.15F);
         enter(Stage.LOAD, Stage.LOAD.ticks);
         player.displayClientMessage(Component.translatable("message.wmd.lab.started", Component.translatable("warhead.wmd." + type().id)), true);
     }
@@ -261,7 +261,7 @@ public class LabModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
                     st.refTime = level.getGameTime();
                     st.sync();
                 }
-                level.playSound(null, worldPosition, WmdSounds.LAB_DONE.get(), SoundSource.BLOCKS, 0.9F, grade > 0 ? 1.15F : 1.0F);
+                level.playSound(null, worldPosition, WmdSounds.LAB_DONE.get(), SoundSource.BLOCKS, Balance.SND_CLICK, grade > 0 ? 1.15F : 1.0F);
                 tell(Component.translatable(grade > 0 ? "message.wmd.lab.done_refined" : "message.wmd.lab.done", Component.translatable("warhead.wmd." + type().id)));
                 enter(Stage.TO_HOME, Stage.TO_HOME.ticks);
             }

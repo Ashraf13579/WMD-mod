@@ -68,7 +68,7 @@ public class OxygenStationBlockEntity extends ItemProcessBlockEntity implements 
 
     @Override protected SoundEvent runSound() { return WmdSounds.OR_O2_STATION_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return BlockPos.ZERO; }
-    @Override protected float soundVolume() { return 0.35F; }
+    @Override protected float soundVolume() { return Balance.SND_SMALL; }
 
     @Override
     protected void clientEffects(Level level) {

@@ -128,7 +128,7 @@ public class ElectricFenceBlock extends CrossCollisionBlock {
         le.hurtMarked = true;
         sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, le.getX(), le.getY() + le.getBbHeight() * 0.5, le.getZ(), 14, 0.25, 0.4, 0.25, 0.25);
         sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, c.x, c.y + 0.5, c.z, 8, 0.15, 0.3, 0.15, 0.1);
-        sl.playSound(null, c.x, c.y + 0.5, c.z, WmdSounds.EF_ZAP.get(), SoundSource.BLOCKS, 0.9F, 0.9F + sl.random.nextFloat() * 0.2F);
+        sl.playSound(null, c.x, c.y + 0.5, c.z, WmdSounds.EF_ZAP.get(), SoundSource.BLOCKS, Balance.SND_MECH, 0.9F + sl.random.nextFloat() * 0.2F);
     }
 
     static java.util.List<BlockPos> walk(LevelReader level, java.util.Collection<BlockPos> start, int max) {

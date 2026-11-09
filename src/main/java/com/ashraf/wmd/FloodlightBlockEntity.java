@@ -42,7 +42,7 @@ public class FloodlightBlockEntity extends CctvDeviceEntity {
         BlockPos up = worldPosition.above();
         boolean dark = !sl.isDay() || sl.getRawBrightness(up, sl.getSkyDarken()) < 8;
         boolean want = isRunning() && (target >= 0 || dark);
-        if (want != on) { on = want; sync(); if (on) sl.playSound(null, worldPosition, WmdSounds.FLOOD_ON.get(), net.minecraft.sounds.SoundSource.BLOCKS, 0.9F, 1.0F); }
+        if (want != on) { on = want; sync(); if (on) sl.playSound(null, worldPosition, WmdSounds.FLOOD_ON.get(), net.minecraft.sounds.SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F); }
     }
 
     private float shownYaw, shownPitch, prevYaw, prevPitch;

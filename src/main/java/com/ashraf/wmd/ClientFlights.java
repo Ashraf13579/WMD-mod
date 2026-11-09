@@ -117,6 +117,7 @@ public final class ClientFlights {
             Vec3 p = f.position(t);
             if (p.distanceTo(cam) > nearLimit() * 1.1) continue;
             if (f.isCruise()) { ClientCruise.render(f, t, p, cam, ps, buffers, level); drew = true; continue; }
+            if (f.build().isSlbm()) { ClientSlbm.renderFlight(f, t, p, cam, ps, buffers, level); drew = true; continue; }
             Vec3 ahead = f.position(t + 1.0).subtract(p);
             if (ahead.lengthSqr() < 1.0E-6) continue;
             if (f.diverts()) ahead = tilted(f, t, ahead);
@@ -440,6 +441,7 @@ public final class ClientFlights {
         ClientFxVacuum.tick();
         ClientClock.tick();
         ClientFxSplash.tick();
+        ClientUnderwaterBlast.tick();
         DhBridge.tick(level, mc.gameRenderer.getMainCamera().getPosition());
         stageEvents(level, level.getGameTime());
         tickDebris(level, level.getGameTime());

@@ -354,7 +354,7 @@ public class ForcefieldBlockEntity extends ProcessUnitBlockEntity implements Mod
 
     @Override protected SoundEvent runSound() { return WmdSounds.FF_HUM_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 6, 0); }
-    @Override protected float soundVolume() { return 0.9F; }
+    @Override protected float soundVolume() { return Balance.SND_HEAVY; }
     @Override protected float soundPitch() { return 1.0F; }
 
     @Override protected List<FluidTank> tanks() { return List.of(); }

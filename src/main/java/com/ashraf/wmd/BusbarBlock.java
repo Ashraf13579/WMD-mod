@@ -24,7 +24,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities;
 
-public class BusbarBlock extends BaseEntityBlock {
+public class BusbarBlock extends BaseEntityBlock implements net.minecraft.world.level.block.SimpleWaterloggedBlock {
 
     public static final MapCodec<BusbarBlock> CODEC = simpleCodec(BusbarBlock::new);
     public static final BooleanProperty NORTH = BlockStateProperties.NORTH, EAST = BlockStateProperties.EAST, SOUTH = BlockStateProperties.SOUTH,
@@ -34,6 +34,8 @@ public class BusbarBlock extends BaseEntityBlock {
             PLUG_W = BooleanProperty.create("plug_west"), PLUG_U = BooleanProperty.create("plug_up"), PLUG_D = BooleanProperty.create("plug_down");
 
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
+
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     private static final VoxelShape CORE = Block.box(4.3, 0, 4.3, 11.7, 5.4, 11.7);
     private static final VoxelShape[] ARMS = new VoxelShape[6];
@@ -51,7 +53,8 @@ public class BusbarBlock extends BaseEntityBlock {
         super(properties);
         registerDefaultState(stateDefinition.any().setValue(LIT, false).setValue(NORTH, false).setValue(EAST, false).setValue(SOUTH, false)
                 .setValue(WEST, false).setValue(UP, false).setValue(DOWN, false)
-                .setValue(PLUG_N, false).setValue(PLUG_E, false).setValue(PLUG_S, false).setValue(PLUG_W, false).setValue(PLUG_U, false).setValue(PLUG_D, false));
+                .setValue(PLUG_N, false).setValue(PLUG_E, false).setValue(PLUG_S, false).setValue(PLUG_W, false).setValue(PLUG_U, false).setValue(PLUG_D, false)
+                .setValue(WATERLOGGED, false));
     }
 
     public static BooleanProperty plugProp(Direction d) {
@@ -81,7 +84,7 @@ public class BusbarBlock extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(LIT, NORTH, EAST, SOUTH, WEST, UP, DOWN, PLUG_N, PLUG_E, PLUG_S, PLUG_W, PLUG_U, PLUG_D);
+        builder.add(LIT, NORTH, EAST, SOUTH, WEST, UP, DOWN, PLUG_N, PLUG_E, PLUG_S, PLUG_W, PLUG_U, PLUG_D, WATERLOGGED);
     }
 
     @Override
@@ -123,12 +126,19 @@ public class BusbarBlock extends BaseEntityBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return withConnections(context.getLevel(), context.getClickedPos(), defaultBlockState());
+        boolean wet = context.getLevel().getFluidState(context.getClickedPos()).getType() == net.minecraft.world.level.material.Fluids.WATER;
+        return withConnections(context.getLevel(), context.getClickedPos(), defaultBlockState().setValue(WATERLOGGED, wet));
+    }
+
+    @Override
+    protected net.minecraft.world.level.material.FluidState getFluidState(BlockState state) {
+        return state.getValue(WATERLOGGED) ? net.minecraft.world.level.material.Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
     protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level,
                                      BlockPos pos, BlockPos neighborPos) {
+        if (state.getValue(WATERLOGGED)) level.scheduleTick(pos, net.minecraft.world.level.material.Fluids.WATER, net.minecraft.world.level.material.Fluids.WATER.getTickDelay(level));
         if (level instanceof Level) return link(level, pos, state, direction);
         return state;
     }

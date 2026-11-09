@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "PBP",
+    " R "
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:steel_plate"
+    },
+    "B": {
+      "item": "wmd:busbar"
+    },
+    "R": {
+      "item": "wmd:reinforced_concrete"
+    }
+  },
+  "result": {
+    "id": "wmd:hull_penetrator",
+    "count": 1
+  }
+}

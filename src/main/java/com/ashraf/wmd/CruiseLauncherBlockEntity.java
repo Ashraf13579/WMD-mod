@@ -430,7 +430,7 @@ public class CruiseLauncherBlockEntity extends ItemProcessBlockEntity implements
 
     @Override protected SoundEvent runSound() { return WmdSounds.CL_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 0, 5); }
-    @Override protected float soundVolume() { return 0.3F; }
+    @Override protected float soundVolume() { return Balance.SND_SMALL; }
 
     @Override
     public List<ItemStack> takeAll() { salvoLeft = 0; return super.takeAll(); }

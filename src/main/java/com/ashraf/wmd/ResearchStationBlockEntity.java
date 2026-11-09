@@ -191,7 +191,7 @@ public class ResearchStationBlockEntity extends ItemProcessBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.RESEARCH_RUN.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 0, 0); }
-    @Override protected float soundVolume() { return 0.3F; }
+    @Override protected float soundVolume() { return Balance.SND_SMALL; }
 
     @Override
     protected void clientEffects(Level level) {

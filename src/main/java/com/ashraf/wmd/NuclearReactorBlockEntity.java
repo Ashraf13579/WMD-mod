@@ -361,11 +361,11 @@ public class NuclearReactorBlockEntity extends ItemProcessBlockEntity implements
 
         double[] b = worldPoint(CX, TOP, CZ);
         if (st >= ALARM && st < IMMINENT && now % 30 == 0)
-            sl.playSound(null, b[0], b[1], b[2], WmdSounds.NR_ALARM.get(), SoundSource.BLOCKS, 3.0F, st >= STEAM ? 1.15F : 1.0F);
+            sl.playSound(null, b[0], b[1], b[2], WmdSounds.NR_ALARM.get(), SoundSource.BLOCKS, Balance.SND_ALARM, st >= STEAM ? 1.15F : 1.0F);
         if (st >= STEAM && now % 40 == 0)
-            sl.playSound(null, b[0], b[1], b[2], WmdSounds.NR_STEAM.get(), SoundSource.BLOCKS, 2.5F, 0.9F + sl.random.nextFloat() * 0.2F);
+            sl.playSound(null, b[0], b[1], b[2], WmdSounds.NR_STEAM.get(), SoundSource.BLOCKS, Balance.SND_RELEASE, 0.9F + sl.random.nextFloat() * 0.2F);
         if (st >= IMMINENT && now % 60 == 0)
-            sl.playSound(null, b[0], b[1], b[2], WmdSounds.SIREN.get(), SoundSource.BLOCKS, 6.0F, 1.0F);
+            sl.playSound(null, b[0], b[1], b[2], WmdSounds.SIREN.get(), SoundSource.BLOCKS, Balance.SND_ALARM, 1.0F);
     }
 
     private void overheat(ServerLevel sl) {
@@ -378,7 +378,7 @@ public class NuclearReactorBlockEntity extends ItemProcessBlockEntity implements
         scram = true;
         setChanged();
         BlockPos c = corePos();
-        sl.playSound(null, c, WmdSounds.NR_DAMAGE.get(), SoundSource.BLOCKS, 3.0F, 1.0F);
+        sl.playSound(null, c, WmdSounds.NR_DAMAGE.get(), SoundSource.BLOCKS, Balance.SND_ALARM, 1.0F);
         tell(sl, Balance.REACTOR_WARN_RADIUS, Component.translatable("message.wmd.nuclear.damaged", c.getX(), c.getY(), c.getZ()).withStyle(ChatFormatting.RED));
         sync(-1);
     }
@@ -450,7 +450,7 @@ public class NuclearReactorBlockEntity extends ItemProcessBlockEntity implements
         rods = 0;
         scram = true;
         setChanged();
-        if (level instanceof ServerLevel sl && was) sl.playSound(null, corePos(), WmdSounds.NR_RODS.get(), SoundSource.BLOCKS, 3.0F, 0.9F);
+        if (level instanceof ServerLevel sl && was) sl.playSound(null, corePos(), WmdSounds.NR_RODS.get(), SoundSource.BLOCKS, Balance.SND_MECH, 0.9F);
         sync(-1);
     }
 
@@ -465,7 +465,7 @@ public class NuclearReactorBlockEntity extends ItemProcessBlockEntity implements
         damaged = false;
         scram = true;
         rods = 0;
-        level.playSound(null, worldPosition, WmdSounds.NR_RODS.get(), SoundSource.BLOCKS, 1.2F, 1.1F);
+        level.playSound(null, worldPosition, WmdSounds.NR_RODS.get(), SoundSource.BLOCKS, Balance.SND_MECH, 1.1F);
         player.displayClientMessage(Component.translatable("message.wmd.nuclear.repaired"), true);
         setChanged();
         sync(-1);
@@ -549,7 +549,7 @@ public class NuclearReactorBlockEntity extends ItemProcessBlockEntity implements
 
     @Override protected SoundEvent runSound() { return WmdSounds.NUC_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return BlockPos.containing(CORE[0], CORE[1], CORE[2]); }
-    @Override protected float soundVolume() { return 0.8F; }
+    @Override protected float soundVolume() { return Balance.SND_HEAVY; }
     @Override protected float levelFraction() { return water.getFluidAmount() / (float) Balance.REACTOR_TANK_MB; }
 
     @Override

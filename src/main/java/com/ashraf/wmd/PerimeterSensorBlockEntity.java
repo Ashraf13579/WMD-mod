@@ -83,7 +83,7 @@ public class PerimeterSensorBlockEntity extends CctvDeviceEntity {
     private void trip(ServerLevel sl, LivingEntity e, long now) {
         boolean fresh = now >= trippedUntil;
         trippedUntil = now + 60;
-        if (fresh) sl.playSound(null, worldPosition, WmdSounds.SENSOR_TRIP.get(), SoundSource.BLOCKS, 0.8F, 1.0F);
+        if (fresh) sl.playSound(null, worldPosition, WmdSounds.SENSOR_TRIP.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
         Vec3 at = mid(e);
         for (FloodlightBlockEntity f : CctvNet.near(sl, FloodlightBlockEntity.class, at, Balance.CCTV_CUE))
             if (f.getOwner() != null && f.getOwner().equals(getOwner())) f.cue(e, now);

@@ -91,7 +91,7 @@ public class FccBlockEntity extends ProcessUnitBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.FCC_RUN.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(-2, 0, 0); }
-    @Override protected float soundVolume() { return 0.9F; }
+    @Override protected float soundVolume() { return Balance.SND_HEAVY; }
 
     @Override
     protected float levelFraction() {

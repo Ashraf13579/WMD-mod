@@ -26,7 +26,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class SorterBlock extends BaseEntityBlock {
+public class SorterBlock extends BaseEntityBlock implements net.minecraft.world.level.block.SimpleWaterloggedBlock {
 
     public static final MapCodec<SorterBlock> CODEC = simpleCodec(SorterBlock::new);
 
@@ -43,7 +43,7 @@ public class SorterBlock extends BaseEntityBlock {
 
     public SorterBlock(Properties properties) {
         super(properties);
-        BlockState s = stateDefinition.any();
+        BlockState s = stateDefinition.any().setValue(Waterlog.W, false);
         for (Direction d : Direction.values()) s = s.setValue(prop(d), Face.OFF);
         registerDefaultState(s);
     }
@@ -62,7 +62,22 @@ public class SorterBlock extends BaseEntityBlock {
     @Override protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) { builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN); }
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) { builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN, Waterlog.W); }
+
+    @Override
+    public BlockState getStateForPlacement(net.minecraft.world.item.context.BlockPlaceContext context) { return Waterlog.placed(defaultBlockState(), context.getLevel(), context.getClickedPos()); }
+
+    @Override
+    protected net.minecraft.world.level.material.FluidState getFluidState(BlockState state) {
+        net.minecraft.world.level.material.FluidState f = Waterlog.fluid(state);
+        return f != null ? f : super.getFluidState(state);
+    }
+
+    @Override
+    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, net.minecraft.world.level.LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        Waterlog.tick(state, level, pos);
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+    }
 
     @Override protected RenderShape getRenderShape(BlockState state) { return RenderShape.MODEL; }
 

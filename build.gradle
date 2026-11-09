@@ -95,6 +95,15 @@ runs {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+def wmdCreateJar = file('libs/create-1.21.1-6.0.10.jar'), wmdCreateLibs = file('libs/create_compile')
+if (wmdCreateJar.exists() && wmdCreateLibs.exists()) {
+    sourceSets.main.java.srcDir 'src/create/java'
+    dependencies {
+        compileOnly files(wmdCreateJar)
+        compileOnly fileTree(dir: wmdCreateLibs, include: '*.jar')
+    }
+}
+
 configurations {
     runtimeClasspath.extendsFrom localRuntime
 }
@@ -134,6 +143,7 @@ dependencies {
     if (project.findProperty('dev_sable') != 'false') {
         localRuntime("dev.ryanhcode.sable:sable-neoforge-1.21.1:2.0.6") { transitive = false }
     }
+
 
 
 

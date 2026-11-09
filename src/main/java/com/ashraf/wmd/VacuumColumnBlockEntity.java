@@ -80,7 +80,7 @@ public class VacuumColumnBlockEntity extends ProcessUnitBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.VDU_RUN.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 3, 1); }
-    @Override protected float soundVolume() { return 0.8F; }
+    @Override protected float soundVolume() { return Balance.SND_HEAVY; }
 
     @Override
     protected float levelFraction() {

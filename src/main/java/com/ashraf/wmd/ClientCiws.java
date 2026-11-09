@@ -35,10 +35,27 @@ public final class ClientCiws {
     static final int ROUNDS = 5;
     private static final float PLAIN_LEN = 2.6F, PLAIN_W = 0.03F, TRACER_LEN = 7.5F, TRACER_W = 0.055F, TRACER_GLOW = 0.26F;
 
+    private static final double SMALL_SPEED = 16.0;
+    private static final float SMALL_PLAIN_LEN = 0.9F, SMALL_PLAIN_W = 0.012F, SMALL_TRACER_LEN = 2.4F, SMALL_TRACER_W = 0.022F, SMALL_TRACER_GLOW = 0.09F;
+    static final int SMALL_TRACER_EVERY = 3;
+
     private static final class Round {
-        final Vec3 from, dir; final double t0, len; final boolean tracer; final long key;
-        Round(Vec3 from, Vec3 dir, double t0, double len, boolean tracer, long key) { this.from = from; this.dir = dir; this.t0 = t0; this.len = len; this.tracer = tracer; this.key = key; }
-        double flown(double tt) { return (tt - t0) * SPEED; }
+        final Vec3 from, dir; final double t0, len; final boolean tracer, small; final long key;
+        Round(Vec3 from, Vec3 dir, double t0, double len, boolean tracer, long key) { this(from, dir, t0, len, tracer, false, key); }
+        Round(Vec3 from, Vec3 dir, double t0, double len, boolean tracer, boolean small, long key) { this.from = from; this.dir = dir; this.t0 = t0; this.len = len; this.tracer = tracer; this.small = small; this.key = key; }
+        double flown(double tt) { return (tt - t0) * (small ? SMALL_SPEED : SPEED); }
+        float streakLen() { return small ? (tracer ? SMALL_TRACER_LEN : SMALL_PLAIN_LEN) : (tracer ? TRACER_LEN : PLAIN_LEN); }
+    }
+
+    static void smallRound(net.minecraft.world.level.Level lv, Vec3 from, Vec3 to, boolean tracer) {
+        if (!(lv instanceof ClientLevel level)) return;
+        Vec3 d = to.subtract(from);
+        double len = d.length();
+        if (len < 0.5) return;
+        net.minecraft.world.phys.BlockHitResult hit = level.clip(new net.minecraft.world.level.ClipContext(from, to, net.minecraft.world.level.ClipContext.Block.COLLIDER,
+                net.minecraft.world.level.ClipContext.Fluid.NONE, net.minecraft.world.phys.shapes.CollisionContext.empty()));
+        if (hit.getType() == net.minecraft.world.phys.HitResult.Type.BLOCK) len = Math.max(0.5, hit.getLocation().distanceTo(from));
+        TRACERS.add(new Round(from, d.normalize(), level.getGameTime() + level.random.nextDouble() * 0.5, len, tracer, true, ++keySeq));
     }
 
     private static final List<Round> TRACERS = new ArrayList<>();
@@ -166,13 +183,14 @@ public final class ClientCiws {
         stepSounds(level.getGameTime());
         long t = level.getGameTime();
 
-        TRACERS.removeIf(rd -> rd.flown(t) > rd.len + TRACER_LEN);
+        TRACERS.removeIf(rd -> rd.flown(t) > rd.len + rd.streakLen());
         for (Round rd : TRACERS) {
             if (!rd.tracer) continue;
             double f = rd.flown(t + 0.5);
             if (f < 0.0 || f > rd.len) continue;
             Vec3 h = rd.from.add(rd.dir.scale(f));
-            VeilBridge.glow(0x2C15_0001_0000_0000L ^ rd.key, h.x, h.y, h.z, 1.0F, 0.42F, 0.16F, 10.0F, 1.1F, t);
+            if (rd.small) VeilBridge.glow(0x2C15_0002_0000_0000L ^ rd.key, h.x, h.y, h.z, 1.0F, 0.5F, 0.2F, 3.5F, 0.6F, t);
+            else VeilBridge.glow(0x2C15_0001_0000_0000L ^ rd.key, h.x, h.y, h.z, 1.0F, 0.42F, 0.16F, 10.0F, 1.1F, t);
         }
         if (TRACERS.size() > 400) TRACERS.subList(0, TRACERS.size() - 400).clear();
     }
@@ -189,7 +207,7 @@ public final class ClientCiws {
         for (Round rd : TRACERS) {
             double f = rd.flown(tt);
             if (f <= 0.0) continue;
-            double headD = Math.min(f, rd.len), tailD = Math.max(0.0, f - (rd.tracer ? TRACER_LEN : PLAIN_LEN));
+            double headD = Math.min(f, rd.len), tailD = Math.max(0.0, f - rd.streakLen());
             if (tailD >= headD) continue;
             Vec3 head = rd.from.add(rd.dir.scale(headD)).subtract(cam), tail = rd.from.add(rd.dir.scale(tailD)).subtract(cam);
             Vec3 side = rd.dir.cross(head);
@@ -198,7 +216,15 @@ public final class ClientCiws {
             if (bb == null) bb = com.mojang.blaze3d.vertex.Tesselator.getInstance().begin(com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS,
                     com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_COLOR);
             float sizzle = 0.7F + rnd.nextFloat() * 0.3F;
-            if (rd.tracer) {
+            if (rd.small) {
+                if (rd.tracer) {
+                    streak(bb, head, tail, side, SMALL_TRACER_GLOW, 1.0F, 0.4F, 0.14F, 0.4F * sizzle, 0.0F);
+                    streak(bb, head, tail, side, SMALL_TRACER_W, 1.0F, 0.85F, 0.65F, 1.0F, 0.15F);
+                } else {
+                    streak(bb, head, tail, side, SMALL_PLAIN_W * 2.5F, 1.0F, 0.6F, 0.25F, 0.2F * sizzle, 0.0F);
+                    streak(bb, head, tail, side, SMALL_PLAIN_W, 1.0F, 0.93F, 0.78F, 0.9F * sizzle, 0.0F);
+                }
+            } else if (rd.tracer) {
                 streak(bb, head, tail, side, TRACER_GLOW, 1.0F, 0.35F, 0.12F, 0.45F * sizzle, 0.0F);
                 streak(bb, head, tail, side, TRACER_W, 1.0F, 0.85F, 0.7F, 1.0F, 0.15F);
             } else {

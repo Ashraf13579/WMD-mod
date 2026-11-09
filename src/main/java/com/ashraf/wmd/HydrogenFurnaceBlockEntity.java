@@ -77,7 +77,7 @@ public class HydrogenFurnaceBlockEntity extends ItemProcessBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.HF_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 1, 0); }
-    @Override protected float soundVolume() { return 0.5F; }
+    @Override protected float soundVolume() { return Balance.SND_MACHINE; }
 
     @Override
     protected void clientEffects(Level level) {

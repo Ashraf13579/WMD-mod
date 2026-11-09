@@ -32,7 +32,7 @@ public class XlDockBlock extends RobotDockBlock {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return level.isClientSide ? createTickerHelper(type, Wmd.XL_DOCK_BE.get(), RobotDockBlockEntity::clientTick)
+        return level.isClientSide ? createTickerHelper(type, Wmd.XL_DOCK_BE.get(), XlDockBlockEntity::xlClientTick)
                 : createTickerHelper(type, Wmd.XL_DOCK_BE.get(), RobotDockBlockEntity::serverTick);
     }
 }

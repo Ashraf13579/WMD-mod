@@ -50,7 +50,7 @@ public class C4ChargeBlockEntity extends BlockEntity implements Owned {
         if (level == null) return;
         fuseStart = level.getGameTime();
         fuseEnd = fuseStart + ticks;
-        level.playSound(null, worldPosition, WmdSounds.C4_BEEP.get(), SoundSource.BLOCKS, 1.0F, 0.8F);
+        level.playSound(null, worldPosition, WmdSounds.C4_BEEP.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 0.8F);
         setChanged();
         sync();
     }
@@ -65,7 +65,7 @@ public class C4ChargeBlockEntity extends BlockEntity implements Owned {
     public static void serverTick(Level level, BlockPos pos, BlockState state, C4ChargeBlockEntity be) {
         if (be.fuseEnd < 0 || !(level instanceof ServerLevel sl)) return;
         long now = sl.getGameTime(), left = be.fuseEnd - now;
-        if (left > 0 && left % (left > 60 ? 20 : left > 20 ? 8 : 3) == 0) sl.playSound(null, pos, WmdSounds.C4_BEEP.get(), SoundSource.BLOCKS, 0.8F, 1.0F);
+        if (left > 0 && left % (left > 60 ? 20 : left > 20 ? 8 : 3) == 0) sl.playSound(null, pos, WmdSounds.C4_BEEP.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
         if (left <= 0) breach(sl, pos, state);
     }
 

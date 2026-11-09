@@ -287,8 +287,9 @@ public class RadarBlockEntity extends BlockEntity implements Owned, GeoBlockEnti
             float hx = hl > 1.0E-3 ? (float) (v.x / hl) : 0.0F, hz = hl > 1.0E-3 ? (float) (v.z / hl) : 0.0F;
             String n = si.name() == null ? "" : si.name();
             boolean locked = keep.contains(si.id());
+            boolean mast = Masts.mastOnly(level, si);
             out.add(new ShipContact(si.id(), Math.round(c.x * 10.0) / 10.0, Math.round(c.y * 10.0) / 10.0, Math.round(c.z * 10.0) / 10.0,
-                    Math.round(hx * 100.0F) / 100.0F, Math.round(hz * 100.0F) / 100.0F, si.blockCount(), (float) Math.round(si.maxSize()),
+                    Math.round(hx * 100.0F) / 100.0F, Math.round(hz * 100.0F) / 100.0F, mast ? 1 : si.blockCount(), mast ? 1.0F : (float) Math.round(si.maxSize()),
                     rels.get(i).code(), n.length() > NAME_MAX ? n.substring(0, NAME_MAX) : n, locked, ShipTargets.isDesignated(owner, si.id(), now)));
             if (locked) TrackNet.reportShip(level, owner, frequency, si.id(), now);
         }
@@ -337,7 +338,7 @@ public class RadarBlockEntity extends BlockEntity implements Owned, GeoBlockEnti
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, RadarBlockEntity be) {
-        if (be.isOnline()) MachineLoop.ensure(be, WmdSounds.RADAR_RUN.get(), be::isOnline, 3.0, 0.5F, false);
+        if (be.isOnline()) MachineLoop.ensure(be, WmdSounds.RADAR_RUN.get(), be::isOnline, 3.0, Balance.SND_MACHINE, false);
         if (!be.shownReady) {
             be.shown = be.prevShown = be.bearing;
             be.shownReady = true;

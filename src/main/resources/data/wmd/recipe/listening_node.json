@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RCR",
+    "TNT",
+    "I I"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:prismarine_shard"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "T": {
+      "item": "wmd:battery_t1"
+    },
+    "N": {
+      "item": "wmd:network_card"
+    },
+    "I": {
+      "item": "minecraft:iron_bars"
+    }
+  },
+  "result": {
+    "id": "wmd:listening_node",
+    "count": 1
+  }
+}

@@ -40,7 +40,7 @@ public class MortarBlockEntity extends ArtilleryGunBlockEntity {
     @Override public PortMap guiPortMap() { return PORT_MAP; }
 
     @Override public IEnergyStorage guiEnergy() { return null; }
-    @Override protected float soundVolume() { return 0.05F; }
+    @Override protected float soundVolume() { return Balance.SND_AMBIENT; }
 
     @Override
     public IItemHandler itemPort(BlockPos part, Direction side) {

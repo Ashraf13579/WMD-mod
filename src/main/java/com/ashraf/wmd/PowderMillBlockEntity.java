@@ -75,7 +75,7 @@ public class PowderMillBlockEntity extends ItemProcessBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.PM_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 0, 0); }
-    @Override protected float soundVolume() { return 0.25F; }
+    @Override protected float soundVolume() { return Balance.SND_MACHINE; }
 
     private static final DustParticleOptions POWDER = new DustParticleOptions(new org.joml.Vector3f(0.18F, 0.18F, 0.2F), 1.0F);
 

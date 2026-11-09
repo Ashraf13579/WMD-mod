@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SWS",
+    "WCW",
+    "SHS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    },
+    "H": {
+      "item": "create:shaft"
+    }
+  },
+  "result": {
+    "id": "wmd:drive_coupling",
+    "count": 1
+  }
+}

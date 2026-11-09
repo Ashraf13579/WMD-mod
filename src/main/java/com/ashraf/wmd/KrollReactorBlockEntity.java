@@ -75,15 +75,75 @@ public class KrollReactorBlockEntity extends ItemProcessBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.KR_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 1, 1); }
-    @Override protected float soundVolume() { return 0.7F; }
+    @Override protected float soundVolume() { return Balance.SND_MACHINE; }
 
     @Override
     protected void clientEffects(Level level) {
-        if (level.getGameTime() % 4 != 0) return;
         var r = level.random;
-        double[] w = worldPoint((r.nextDouble() - 0.5) * 1.2, 2.9, 1.0 + (r.nextDouble() - 0.5) * 1.2);
-        level.addParticle(ParticleTypes.SMOKE, w[0], w[1], w[2], 0, 0.02, 0);
+        if (level.getGameTime() % 4 == 0) {
+            double[] w = worldPoint((r.nextDouble() - 0.5) * 1.2, 2.9, 1.0 + (r.nextDouble() - 0.5) * 1.2);
+            level.addParticle(ParticleTypes.SMOKE, w[0], w[1], w[2], 0, 0.02, 0);
+        }
+        double p = batch01(level.getGameTime());
+        if (lastFxP >= 0.0) {
+            if (lastFxP < KrollAnim.LID_UP && p >= KrollAnim.LID_UP) playOnce(level, WmdSounds.SEIS_HOIST.get(), Balance.SND_MECH, 0.9F);
+            if (lastFxP >= KrollAnim.LID_DOWN && p < lastFxP - 0.5) playOnce(level, WmdSounds.ST_DOCK_CLAMP.get(), Balance.SND_MECH, 0.8F);
+            if (lastFxP < KrollAnim.LID_OPEN && p >= KrollAnim.LID_OPEN)
+                for (int k = 0; k < 8; k++) fume(level, ParticleTypes.CLOUD, 0.04 + r.nextDouble() * 0.04);
+        }
+        lastFxP = p;
+        if (KrollAnim.lid01(p) > 0.3F && level.getGameTime() % 3 == 0) fume(level, ParticleTypes.WHITE_SMOKE, 0.03);
     }
+
+    private void fume(Level level, net.minecraft.core.particles.SimpleParticleType type, double vy) {
+        var r = level.random;
+        double a = r.nextDouble() * Math.PI * 2.0, d = r.nextDouble() * 0.35;
+        double[] w = worldPoint(Math.cos(a) * d, 2.4, 1.0 + Math.sin(a) * d);
+        level.addParticle(type, w[0], w[1], w[2], (r.nextDouble() - 0.5) * 0.01, vy, (r.nextDouble() - 0.5) * 0.01);
+    }
+
+    @Override
+    protected void runStopped(Level level) {
+        if (lidC > 0.3F) playOnce(level, WmdSounds.ST_DOCK_CLAMP.get(), Balance.SND_MECH, 0.8F);
+        lastFxP = -1.0;
+    }
+
+    private int syncP;
+    private double syncAt, lastBatch, animT = -1.0, lastFxP = -1.0;
+    private boolean syncFresh;
+    private float heatC = -1.0F, lidC, valveC;
+
+    @Override
+    public CompoundTag getUpdateTag(net.minecraft.core.HolderLookup.Provider registries) {
+        CompoundTag tag = super.getUpdateTag(registries);
+        tag.putInt("kp", progress);
+        return tag;
+    }
+
+    double batch01(double tt) {
+        if (syncFresh) { syncAt = tt; syncFresh = false; }
+        if (!isRunning()) return lastBatch;
+        double p = (syncP + Math.max(0.0, tt - syncAt)) / Balance.KROLL_CYCLE_TICKS;
+        lastBatch = p - Math.floor(p);
+        return lastBatch;
+    }
+
+    void animStep(double tt) {
+        double dt = animT < 0.0 ? 0.0 : Math.max(0.0, Math.min(20.0, tt - animT));
+        animT = tt;
+        boolean run = isRunning();
+        if (heatC < 0.0F) heatC = run ? 1.0F : 0.0F;
+        heatC += (float) (((run ? 1.0F : 0.0F) - heatC) * (1.0 - Math.exp(-dt / (run ? KrollAnim.HEAT_UP : KrollAnim.COOL))));
+        double p = batch01(tt);
+        float vt = run && KrollAnim.feeding(p) ? 1.0F : 0.0F, step = (float) (dt / KrollAnim.VALVE_TICKS);
+        valveC += Math.max(-step, Math.min(step, vt - valveC));
+        if (run) lidC = KrollAnim.lid01(p);
+        else lidC *= (float) Math.exp(-dt / 8.0);
+    }
+
+    float heatShown() { return Math.max(0.0F, heatC); }
+    float lidShown() { return lidC; }
+    float valveShown() { return valveC; }
 
     @Override
     protected String detail() { return "TiCl4 " + mb(ticl) + ", MgCl2 " + mb(mgcl) + ", magnesium " + mg.count() + ", sponge " + sponge.count() + ", batch " + progress * 100 / Balance.KROLL_CYCLE_TICKS + "%"; }
@@ -106,7 +166,10 @@ public class KrollReactorBlockEntity extends ItemProcessBlockEntity {
     public IEnergyStorage energyPort(BlockPos part, Direction side) { return at(part, side, 0, 0, 2, Direction.SOUTH) ? energy() : null; }
 
     @Override protected void saveExtra(CompoundTag tag) { tag.putInt("progress", progress); }
-    @Override protected void loadExtra(CompoundTag tag) { progress = tag.getInt("progress"); }
+    @Override protected void loadExtra(CompoundTag tag) {
+        progress = tag.getInt("progress");
+        if (tag.contains("kp")) { syncP = tag.getInt("kp"); syncFresh = true; }
+    }
 
     private static final PortMap PORT_MAP = new PortMap(-1, 1, 3).fluid(-1, 1, 1, Direction.WEST, "titanium_tetrachloride", false).item(-1, 0, 0, Direction.NORTH, false)
             .item(1, 0, 1, Direction.EAST, true).fluid(-1, 0, 2, Direction.WEST, "magnesium_chloride", true).power(0, 0, 2, Direction.SOUTH, false);

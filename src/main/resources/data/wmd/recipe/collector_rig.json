@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TAT",
+    "SHS",
+    "SPS"
+  ],
+  "key": {
+    "T": {
+      "tag": "c:plates/titanium"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "P": {
+      "item": "wmd:feed_pump"
+    }
+  },
+  "result": {
+    "id": "wmd:collector_rig",
+    "count": 1
+  }
+}

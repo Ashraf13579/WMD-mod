@@ -30,7 +30,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
-public class LaunchTerminalBlock extends BaseEntityBlock {
+public class LaunchTerminalBlock extends BaseEntityBlock implements net.minecraft.world.level.block.SimpleWaterloggedBlock {
 
     public static final MapCodec<LaunchTerminalBlock> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             propertiesCodec(), Codec.INT.fieldOf("tier").forGetter(LaunchTerminalBlock::getTier)
@@ -43,7 +43,7 @@ public class LaunchTerminalBlock extends BaseEntityBlock {
     public LaunchTerminalBlock(Properties properties, int tier) {
         super(properties);
         this.tier = tier;
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(FORMED, false).setValue(MachineBlock.MOUNT, Direction.UP));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(FORMED, false).setValue(MachineBlock.MOUNT, Direction.UP).setValue(Waterlog.W, false));
     }
 
     public int getTier() { return tier; }
@@ -53,7 +53,7 @@ public class LaunchTerminalBlock extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, FORMED, MachineBlock.MOUNT);
+        builder.add(FACING, FORMED, MachineBlock.MOUNT, Waterlog.W);
     }
 
     @Override
@@ -69,7 +69,19 @@ public class LaunchTerminalBlock extends BaseEntityBlock {
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction[] mf = ShipPlace.place(context, false, true);
-        return mf == null ? null : defaultBlockState().setValue(FACING, mf[1]).setValue(MachineBlock.MOUNT, mf[0]);
+        return mf == null ? null : Waterlog.placed(defaultBlockState(), context.getLevel(), context.getClickedPos()).setValue(FACING, mf[1]).setValue(MachineBlock.MOUNT, mf[0]);
+    }
+
+    @Override
+    protected net.minecraft.world.level.material.FluidState getFluidState(BlockState state) {
+        net.minecraft.world.level.material.FluidState f = Waterlog.fluid(state);
+        return f != null ? f : super.getFluidState(state);
+    }
+
+    @Override
+    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, net.minecraft.world.level.LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        Waterlog.tick(state, level, pos);
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
 
     @Override
@@ -106,13 +118,13 @@ public class LaunchTerminalBlock extends BaseEntityBlock {
                     PadStructure.form(level, pos, facing, mount, tier);
                     level.setBlock(pos, state.setValue(FORMED, true), 3);
                     player.displayClientMessage(Component.translatable("block.wmd.launch_terminal.formed"), true);
-                    level.playSound(null, pos, WmdSounds.MB_FORMED.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                    level.playSound(null, pos, WmdSounds.MB_FORMED.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
                 } else {
                     int n = PadStructure.size(tier);
                     BlockPos p = check.firstWrong();
                     player.displayClientMessage(Component.translatable("block.wmd.launch_terminal.incomplete",
                             n, n, check.wrong(), p.getX(), p.getY(), p.getZ()), true);
-                    level.playSound(null, pos, WmdSounds.MB_FAIL.get(), SoundSource.BLOCKS, 0.8F, 1.0F);
+                    level.playSound(null, pos, WmdSounds.MB_FAIL.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
                 }
             }
         }

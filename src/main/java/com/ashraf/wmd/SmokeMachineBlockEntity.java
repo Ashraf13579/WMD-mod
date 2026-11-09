@@ -106,12 +106,12 @@ public class SmokeMachineBlockEntity extends ProcessUnitBlockEntity implements O
             long t = sl.getGameTime() - be.launchedAt;
             if (t >= 0 && t < (long) TUBES * TUBE_GAP && t % TUBE_GAP == 0) {
                 Vec3 c = be.groundCentre().add(0.0, 2.2, 0.0);
-                sl.playSound(null, c.x, c.y, c.z, WmdSounds.CHAFF_CANISTERS.get(), SoundSource.BLOCKS, 2.5F, 0.85F + 0.04F * (t / TUBE_GAP));
-                sl.playSound(null, c.x, c.y, c.z, WmdSounds.DECOY_POP.get(), SoundSource.BLOCKS, 0.6F, 1.3F);
+                sl.playSound(null, c.x, c.y, c.z, WmdSounds.CHAFF_CANISTERS.get(), SoundSource.BLOCKS, Balance.SND_RELEASE, 0.85F + 0.04F * (t / TUBE_GAP));
+                sl.playSound(null, c.x, c.y, c.z, WmdSounds.DECOY_POP.get(), SoundSource.BLOCKS, Balance.SND_RELEASE, 1.3F);
             }
             if (t == 30) {
                 Vec3 c = be.groundCentre();
-                sl.playSound(null, c.x, c.y, c.z, WmdSounds.CHAFF_HISS.get(), SoundSource.BLOCKS, 3.0F, 0.5F);
+                sl.playSound(null, c.x, c.y, c.z, WmdSounds.CHAFF_HISS.get(), SoundSource.BLOCKS, Balance.SND_RELEASE, 0.5F);
             }
         }
         if (level.getGameTime() % 10 == 0) be.syncGauge();
@@ -186,7 +186,7 @@ public class SmokeMachineBlockEntity extends ProcessUnitBlockEntity implements O
 
     @Override protected SoundEvent runSound() { return WmdSounds.CHAFF_HISS.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 1, 0); }
-    @Override protected float soundVolume() { return 0.35F; }
+    @Override protected float soundVolume() { return Balance.SND_MACHINE; }
     @Override protected float soundPitch() { return 0.6F; }
 
     @Override

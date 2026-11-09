@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": {
+    "item": "wmd:nickel_cobalt_concentrate"
+  },
+  "result": {
+    "id": "wmd:nickel_cobalt_ingot"
+  },
+  "experience": 1.0,
+  "cookingtime": 200
+}

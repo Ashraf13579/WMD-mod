@@ -402,6 +402,30 @@ public final class MeshModel {
         }
     }
 
+    public void drawTintedZ(String bone, PoseStack.Pose pose, MultiBufferSource buffers, int light, int overlay, int tr, int tg, int tb, float z0, float z1) {
+        boolean dark = darkFor(pose);
+        Map<String, List<Part>> p = load();
+        if (p == null) return;
+        List<Part> list = p.get(bone);
+        if (list == null) return;
+        VertexConsumer vc = null;
+        int cur = -1;
+        for (Part part : list) {
+            if (vc == null || part.atlas() != cur) { cur = part.atlas(); vc = buffers.getBuffer(RenderType.entityCutoutNoCull(atlas(cur))); }
+            boolean paint = part.kind() == 2;
+            int l = part.glow() && !dark ? LightTexture.FULL_BRIGHT : light;
+            int cr = paint ? tr : 255, cg = paint ? tg : 255, cb = paint ? tb : 255;
+            float[] v = part.v();
+            for (int q = 0, i = 0; q < part.quads(); q++, i += 32) {
+                float zc = (v[i + 2] + v[i + 10] + v[i + 18] + v[i + 26]) * 0.25F;
+                if (zc < z0 || zc >= z1) continue;
+                for (int k = 0; k < 32; k += 8)
+                    vc.addVertex(pose, v[i + k], v[i + k + 1], v[i + k + 2]).setColor(cr, cg, cb, 255).setUv(v[i + k + 3], v[i + k + 4]).setOverlay(overlay).setLight(l)
+                            .setNormal(pose, v[i + k + 5], v[i + k + 6], v[i + k + 7]);
+            }
+        }
+    }
+
     public void drawColoured(String bone, PoseStack.Pose pose, MultiBufferSource buffers, int light, int overlay, int r, int g, int b) {
         boolean dark = darkFor(pose);
         Map<String, List<Part>> p = load();

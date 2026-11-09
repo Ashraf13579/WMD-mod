@@ -134,7 +134,7 @@ public class DroneCatapultBlockEntity extends BlockEntity implements BigDroneSit
         if (out == droneId) out = 0;
         drone.setStackInSlot(0, t.stack());
         returnBombs(left);
-        level.playSound(null, worldPosition, WmdSounds.CATAPULT_LATCH.get(), SoundSource.BLOCKS, 1.5F, 1.0F);
+        level.playSound(null, worldPosition, WmdSounds.CATAPULT_LATCH.get(), SoundSource.BLOCKS, Balance.SND_MECH, 1.0F);
         changedAndSync();
         return true;
     }

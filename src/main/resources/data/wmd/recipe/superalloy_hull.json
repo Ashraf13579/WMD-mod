@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "PPP",
+    "PNP",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "wmd:manganese_hull_plate"
+    },
+    "N": {
+      "item": "wmd:nickel_cobalt_ingot"
+    }
+  },
+  "result": {
+    "id": "wmd:superalloy_hull",
+    "count": 8
+  }
+}

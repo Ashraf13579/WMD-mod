@@ -37,7 +37,7 @@ public class C4ChargeBlock extends MachineBlock {
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, net.minecraft.world.entity.LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
-        if (!level.isClientSide) level.playSound(null, pos, WmdSounds.C4_PLACE.get(), net.minecraft.sounds.SoundSource.BLOCKS, 1.0F, 1.0F);
+        if (!level.isClientSide) level.playSound(null, pos, WmdSounds.C4_PLACE.get(), net.minecraft.sounds.SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
     }
 
     @Override

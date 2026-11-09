@@ -28,6 +28,12 @@ public class DroneHiveRenderer extends GeoBlockRenderer<DroneHiveBlockEntity> {
         return (float) (f * f * (3.0 - 2.0 * f));
     }
 
+    static double rotorRun(DroneHiveBlockEntity h, int bay, double tt) {
+        double t = tt - h.lidAt(bay), T = DroneHiveBlockEntity.LID_TICKS;
+        if (t < 0.0 || t >= T) return -1.0;
+        return t - t * t / (2.0 * T);
+    }
+
     static class HiveModel extends GeoModel<DroneHiveBlockEntity> {
         @Override public ResourceLocation getModelResource(DroneHiveBlockEntity be) { return rl("geo/block/drone_hive.geo.json"); }
         @Override public ResourceLocation getTextureResource(DroneHiveBlockEntity be) { return rl("textures/block/drone_hive.png"); }
@@ -92,7 +98,8 @@ public class DroneHiveRenderer extends GeoBlockRenderer<DroneHiveBlockEntity> {
             ps.last().pose().set(s.pose());
             ps.last().normal().set(s.normal());
             ps.translate(s.px() / 16.0F, s.py() / 16.0F, s.pz() / 16.0F);
-            DroneModuleRenderer.drawDrone(ps, t, DroneAnim.Item.DRONE, true, false, false, tt, buffers, light);
+            double rot = rotorRun(h, bay, tt);
+            DroneModuleRenderer.drawDrone(ps, t, DroneAnim.Item.DRONE, true, false, rot >= 0.0, Math.max(0.0, rot), buffers, light);
         }
         sockets.clear();
         meshPoses.clear();

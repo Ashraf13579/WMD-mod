@@ -152,7 +152,7 @@ public class StarterGeneratorBlockEntity extends ProcessUnitBlockEntity implemen
 
     @Override protected SoundEvent runSound() { return WmdSounds.SG_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(1, 0, 0); }
-    @Override protected float soundVolume() { return 0.45F; }
+    @Override protected float soundVolume() { return Balance.SND_MACHINE; }
 
     @Override
     protected void clientEffects(Level level) {

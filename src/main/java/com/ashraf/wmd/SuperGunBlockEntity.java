@@ -58,7 +58,7 @@ public class SuperGunBlockEntity extends ArtilleryGunBlockEntity {
     @Override protected Slot[] slots() { return slots; }
     @Override protected List<FluidTank> tanks() { return tanks; }
     @Override public PortMap guiPortMap() { return PORT_MAP; }
-    @Override protected float soundVolume() { return 0.2F; }
+    @Override protected float soundVolume() { return Balance.SND_SMALL; }
 
     public int propellant() { return charges.count(); }
 

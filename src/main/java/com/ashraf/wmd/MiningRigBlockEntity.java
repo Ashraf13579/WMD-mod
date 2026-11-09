@@ -211,7 +211,7 @@ public class MiningRigBlockEntity extends ItemProcessBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.MR_DRILL_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 0, 2); }
-    @Override protected float soundVolume() { return 0.8F; }
+    @Override protected float soundVolume() { return Balance.SND_HEAVY; }
 
     @Override protected float levelFraction() { return bitLife1000() / 1000.0F; }
 

@@ -121,7 +121,7 @@ public class LavaGeneratorBlockEntity extends ProcessUnitBlockEntity {
 
     @Override protected SoundEvent runSound() { return SoundEvents.LAVA_AMBIENT; }
     @Override protected BlockPos soundLocal() { return BlockPos.ZERO; }
-    @Override protected float soundVolume() { return heat == 2 ? 0.5F : 0.3F; }
+    @Override protected float soundVolume() { return heat == 2 ? Balance.SND_MACHINE : Balance.SND_SMALL; }
 
     public int heatShown() { return heat; }
 

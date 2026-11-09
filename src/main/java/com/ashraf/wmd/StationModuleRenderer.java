@@ -712,7 +712,8 @@ public class StationModuleRenderer implements BlockEntityRenderer<StationModuleB
         for (String side : new String[] { "p", "s" }) {
             float zs = side.equals("p") ? 1.0F : -1.0F;
             ps.pushPose();
-            CargoPodRenderer.about(ps, 88.0F, 112.0F, zs * 84.0F, Axis.XP, -zs * 100.0F * p[7]);
+
+            CargoPodRenderer.about(ps, 88.0F, 106.92F, zs * 84.3F, Axis.XP, -zs * 135.0F * p[7]);
             draw(mesh, "mr_shut_" + side, ps, buffers, light, overlay);
             ps.popPose();
         }

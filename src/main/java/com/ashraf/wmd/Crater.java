@@ -68,6 +68,15 @@ public class Crater {
 
     public Crater glass() { glass = true; return this; }
 
+    static final int NO_SEA = Integer.MIN_VALUE;
+    private int seaTop = NO_SEA;
+
+    public Crater sea(int top) { seaTop = top; return this; }
+
+    boolean wet() { return seaTop != NO_SEA; }
+
+    private boolean seaKeeps(BlockState state) { return seaTop != NO_SEA && state.getBlock() == Blocks.WATER; }
+
     private boolean peak;
     static final double PEAK_RISE = 0.55, PEAK_R = 0.22;
 
@@ -93,7 +102,7 @@ public class Crater {
 
     private Crater fastIf(boolean f) { fast = f; return this; }
 
-    private BlockState hole(int y) { return Blocks.AIR.defaultBlockState(); }
+    private BlockState hole(int y) { return seaTop != NO_SEA && y <= seaTop ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(); }
 
     private static final int MASK_AHEAD = 48;
     private static final java.util.concurrent.ExecutorService POOL = java.util.concurrent.Executors.newFixedThreadPool(
@@ -273,7 +282,7 @@ public class Crater {
                 if (sec.hasOnlyAir()) { y = y & ~15; continue; }
                 if ((col[2 + ((y - lo) >> 6)] & (1L << ((y - lo) & 63))) == 0) continue;
                 BlockState state = sec.getBlockState(lx, y & 15, lz);
-                if (state.isAir()) continue;
+                if (state.isAir() || seaKeeps(state)) continue;
                 p.set(x, y, z);
                 if (guard && !Config.Server.canBreak(level, p)) continue;
                 if (state.getDestroySpeed(level, p) < 0) continue;
@@ -377,7 +386,7 @@ public class Crater {
                 }
                 if (guard && !Config.Server.canBreak(level, p)) continue;
                 BlockState state = level.getBlockState(p);
-                if (state.isAir()) continue;
+                if (state.isAir() || seaKeeps(state)) continue;
                 if (state.getDestroySpeed(level, p) < 0) continue;
                 int rating = ratingAt(level, p, state);
                 if (rating > 0 && Hardened.survives(rating, Math.sqrt(v))) continue;
@@ -454,6 +463,7 @@ public class Crater {
         if (peak) t.putBoolean("peak", true);
         if (buster) t.putBoolean("buster", true);
         if (glass) t.putBoolean("glass", true);
+        if (seaTop != NO_SEA) t.putInt("sea", seaTop);
         return t;
     }
 
@@ -463,6 +473,7 @@ public class Crater {
                 t.contains("out") ? t.getDouble("out") : 0.0, t.contains("hold") ? t.getDouble("hold") : r * 1.5 + 16.0, t.getInt("phase"), t.getLong("cursor"), t.getInt("drops"))
                 .delay(t.getInt("dl")).fastIf(t.getBoolean("fast")).peakIf(t.getBoolean("peak")).busterIf(t.getBoolean("buster"));
         if (t.getBoolean("glass")) c.glass();
+        if (t.contains("sea")) c.sea(t.getInt("sea"));
         return c;
     }
 }

@@ -81,7 +81,7 @@ public class CokeOvenBlockEntity extends ItemProcessBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.CO_RUN_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 0, 0); }
-    @Override protected float soundVolume() { return 0.35F; }
+    @Override protected float soundVolume() { return Balance.SND_MACHINE; }
 
     public static final double DOOR_FROM = 0.8;
 

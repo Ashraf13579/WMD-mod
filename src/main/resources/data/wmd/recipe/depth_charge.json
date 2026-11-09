@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "PHP",
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "wmd:he_charge"
+    },
+    "H": {
+      "item": "minecraft:comparator"
+    }
+  },
+  "result": {
+    "id": "wmd:depth_charge",
+    "count": 2
+  }
+}

@@ -267,7 +267,7 @@ public class DroneModuleBlockEntity extends BlockEntity implements BigDroneSite,
         DroneType t = type();
         DroneRecipes.consume(inputs, DroneRecipes.needs(t));
         store.use(t.runFe());
-        level.playSound(null, worldPosition, WmdSounds.CC_PING.get(), SoundSource.BLOCKS, 0.8F, 1.0F);
+        level.playSound(null, worldPosition, WmdSounds.CC_PING.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
         enter(Stage.LOAD);
         if (player != null) player.displayClientMessage(Component.translatable("message.wmd.drone_line.started", Component.translatable("item.wmd.drone_" + t.id())), true);
     }
@@ -317,7 +317,7 @@ public class DroneModuleBlockEntity extends BlockEntity implements BigDroneSite,
                     if (s < 0) return;
                     h.setStackInSlot(s, t.stack());
                 }
-                level.playSound(null, worldPosition, WmdSounds.LAB_REACTOR_DONE.get(), SoundSource.BLOCKS, 0.8F, 1.0F);
+                level.playSound(null, worldPosition, WmdSounds.LAB_REACTOR_DONE.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
                 tell(Component.translatable("message.wmd.drone_line.done", Component.translatable("item.wmd.drone_" + t.id())));
                 enter(Stage.TO_HOME);
             }

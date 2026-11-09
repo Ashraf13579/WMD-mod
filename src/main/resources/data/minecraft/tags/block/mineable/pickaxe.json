@@ -24,6 +24,10 @@
     "wmd:reinforced_concrete",
     "wmd:blast_glass",
     "wmd:armour_plate",
+    "wmd:manganese_hull_plate",
+    "wmd:anechoic_tile",
+    "wmd:superalloy_hull",
+    "wmd:deep_viewport",
     "wmd:lab_core",
     "wmd:lab_press",
     "wmd:lab_filler",
@@ -181,6 +185,12 @@
     "wmd:bronze_block",
     "wmd:silver_block",
     "wmd:platinum_block",
-    "wmd:magnesium_block"
+    "wmd:magnesium_block",
+    {
+      "id": "wmd:drive_coupling",
+      "required": false
+    },
+    "wmd:hull_penetrator",
+    "wmd:torpedo_net"
   ]
 }

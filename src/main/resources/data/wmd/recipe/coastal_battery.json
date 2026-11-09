@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PXP",
+    "CRC",
+    "SBS"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/titanium"
+    },
+    "X": {
+      "item": "wmd:chip_rocketry_2"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "R": {
+      "item": "minecraft:piston"
+    },
+    "S": {
+      "item": "wmd:steel_block"
+    },
+    "B": {
+      "item": "wmd:busbar"
+    }
+  },
+  "result": {
+    "id": "wmd:coastal_battery",
+    "count": 1
+  }
+}

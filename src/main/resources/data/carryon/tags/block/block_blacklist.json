@@ -18,6 +18,10 @@
       "required": false
     },
     {
+      "id": "wmd:anechoic_tile",
+      "required": false
+    },
+    {
       "id": "wmd:antimatter_collider",
       "required": false
     },
@@ -278,11 +282,23 @@
       "required": false
     },
     {
+      "id": "wmd:coastal_battery",
+      "required": false
+    },
+    {
       "id": "wmd:coke_oven",
       "required": false
     },
     {
       "id": "wmd:coker",
+      "required": false
+    },
+    {
+      "id": "wmd:collector_rig",
+      "required": false
+    },
+    {
+      "id": "wmd:comms_buoy",
       "required": false
     },
     {
@@ -346,6 +362,10 @@
       "required": false
     },
     {
+      "id": "wmd:deep_viewport",
+      "required": false
+    },
+    {
       "id": "wmd:deepslate_lead_ore",
       "required": false
     },
@@ -370,11 +390,31 @@
       "required": false
     },
     {
+      "id": "wmd:depth_charge_rack",
+      "required": false
+    },
+    {
+      "id": "wmd:depth_charge_thrower",
+      "required": false
+    },
+    {
       "id": "wmd:desalter",
       "required": false
     },
     {
       "id": "wmd:diesel_generator",
+      "required": false
+    },
+    {
+      "id": "wmd:dock_crane",
+      "required": false
+    },
+    {
+      "id": "wmd:dredge_winch",
+      "required": false
+    },
+    {
+      "id": "wmd:drive_coupling",
       "required": false
     },
     {
@@ -426,6 +466,10 @@
       "required": false
     },
     {
+      "id": "wmd:escape_pod",
+      "required": false
+    },
+    {
       "id": "wmd:fcc",
       "required": false
     },
@@ -435,6 +479,10 @@
     },
     {
       "id": "wmd:fence_energizer",
+      "required": false
+    },
+    {
+      "id": "wmd:fire_control_console",
       "required": false
     },
     {
@@ -498,7 +546,15 @@
       "required": false
     },
     {
+      "id": "wmd:hull_penetrator",
+      "required": false
+    },
+    {
       "id": "wmd:hydrogen_furnace",
+      "required": false
+    },
+    {
+      "id": "wmd:hydrophone_array",
       "required": false
     },
     {
@@ -562,6 +618,10 @@
       "required": false
     },
     {
+      "id": "wmd:launch_cell",
+      "required": false
+    },
+    {
       "id": "wmd:launch_plate",
       "required": false
     },
@@ -598,6 +658,10 @@
       "required": false
     },
     {
+      "id": "wmd:listening_node",
+      "required": false
+    },
+    {
       "id": "wmd:machine_casing",
       "required": false
     },
@@ -611,6 +675,22 @@
     },
     {
       "id": "wmd:magnesium_cell",
+      "required": false
+    },
+    {
+      "id": "wmd:manganese_hull_plate",
+      "required": false
+    },
+    {
+      "id": "wmd:mine_bottom",
+      "required": false
+    },
+    {
+      "id": "wmd:mine_captor",
+      "required": false
+    },
+    {
+      "id": "wmd:mine_influence",
       "required": false
     },
     {
@@ -638,11 +718,23 @@
       "required": false
     },
     {
+      "id": "wmd:naval_reactor",
+      "required": false
+    },
+    {
       "id": "wmd:nitrate_ore",
       "required": false
     },
     {
       "id": "wmd:nitration_reactor",
+      "required": false
+    },
+    {
+      "id": "wmd:nodule_field",
+      "required": false
+    },
+    {
+      "id": "wmd:noisemaker_launcher",
       "required": false
     },
     {
@@ -659,6 +751,10 @@
     },
     {
       "id": "wmd:perimeter_sensor",
+      "required": false
+    },
+    {
+      "id": "wmd:periscope",
       "required": false
     },
     {
@@ -826,6 +922,14 @@
       "required": false
     },
     {
+      "id": "wmd:sonar_console",
+      "required": false
+    },
+    {
+      "id": "wmd:sonar_dome",
+      "required": false
+    },
+    {
       "id": "wmd:sorter",
       "required": false
     },
@@ -946,6 +1050,10 @@
       "required": false
     },
     {
+      "id": "wmd:superalloy_hull",
+      "required": false
+    },
+    {
       "id": "wmd:supply_interface",
       "required": false
     },
@@ -975,6 +1083,38 @@
     },
     {
       "id": "wmd:titanium_pipe",
+      "required": false
+    },
+    {
+      "id": "wmd:torpedo_launcher_deck",
+      "required": false
+    },
+    {
+      "id": "wmd:torpedo_line_fitout",
+      "required": false
+    },
+    {
+      "id": "wmd:torpedo_line_shop",
+      "required": false
+    },
+    {
+      "id": "wmd:torpedo_line_test",
+      "required": false
+    },
+    {
+      "id": "wmd:torpedo_net",
+      "required": false
+    },
+    {
+      "id": "wmd:torpedo_rack",
+      "required": false
+    },
+    {
+      "id": "wmd:torpedo_tube",
+      "required": false
+    },
+    {
+      "id": "wmd:towed_array_winch",
       "required": false
     },
     {

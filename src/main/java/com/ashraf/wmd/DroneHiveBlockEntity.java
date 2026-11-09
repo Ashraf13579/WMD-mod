@@ -126,7 +126,7 @@ public class DroneHiveBlockEntity extends BlockEntity implements Owned, GeoBlock
         bays.setStackInSlot(bay, t.stack());
         charge[bay] = 0;
         openLid(bay);
-        level.playSound(null, worldPosition, WmdSounds.HIVE_LID.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+        level.playSound(null, worldPosition, WmdSounds.HIVE_LID.get(), SoundSource.BLOCKS, Balance.SND_MECH, 1.0F);
         return true;
     }
 

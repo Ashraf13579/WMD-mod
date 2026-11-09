@@ -26,7 +26,8 @@ public abstract class BatteryTierBlock extends UnitBlock {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> t) {
-        return level.isClientSide ? createTickerHelper(t, type(), ProcessUnitBlockEntity::clientTick) : createTickerHelper(t, type(), ProcessUnitBlockEntity::serverTick);
+        return level.isClientSide ? createTickerHelper(t, type(), (l, p, s, be) -> { ProcessUnitBlockEntity.clientTick(l, p, s, be); be.clientFan(); })
+                : createTickerHelper(t, type(), ProcessUnitBlockEntity::serverTick);
     }
 
     public static class T1 extends BatteryTierBlock {

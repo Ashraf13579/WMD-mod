@@ -34,7 +34,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities;
 
-public class FluidValveBlock extends BaseEntityBlock {
+public class FluidValveBlock extends BaseEntityBlock implements net.minecraft.world.level.block.SimpleWaterloggedBlock {
 
     public static final MapCodec<FluidValveBlock> CODEC = simpleCodec(FluidValveBlock::new);
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
@@ -44,14 +44,14 @@ public class FluidValveBlock extends BaseEntityBlock {
 
     public FluidValveBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, true).setValue(ONE_WAY, false)
+        registerDefaultState(stateDefinition.any().setValue(Waterlog.W, false).setValue(FACING, Direction.NORTH).setValue(OPEN, true).setValue(ONE_WAY, false)
                 .setValue(FRONT, FluidPipeBlock.Conn.NONE).setValue(BACK, FluidPipeBlock.Conn.NONE));
     }
 
     @Override protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) { builder.add(FACING, OPEN, ONE_WAY, FRONT, BACK); }
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) { builder.add(FACING, OPEN, ONE_WAY, FRONT, BACK, Waterlog.W); }
 
     @Override protected RenderShape getRenderShape(BlockState state) { return RenderShape.MODEL; }
 
@@ -77,12 +77,19 @@ public class FluidValveBlock extends BaseEntityBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return withConnections(context.getLevel(), context.getClickedPos(), defaultBlockState().setValue(FACING, context.getNearestLookingDirection()));
+        return withConnections(context.getLevel(), context.getClickedPos(), Waterlog.placed(defaultBlockState(), context.getLevel(), context.getClickedPos()).setValue(FACING, context.getNearestLookingDirection()));
     }
 
     @Override
     protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        Waterlog.tick(state, level, pos);
         return level instanceof Level l ? withConnections(l, pos, state) : state;
+    }
+
+    @Override
+    protected net.minecraft.world.level.material.FluidState getFluidState(BlockState state) {
+        net.minecraft.world.level.material.FluidState f = Waterlog.fluid(state);
+        return f != null ? f : super.getFluidState(state);
     }
 
     @Override

@@ -65,12 +65,12 @@ public class SeismicScannerBlockEntity extends CctvDeviceEntity {
         long t = now - sweepAt;
         if (t > 0 && t <= sweepTicks() && t % Balance.SEIS_THUMP_TICKS == 0) {
             Vec3 c = Vec3.atBottomCenterOf(worldPosition);
-            sl.playSound(null, worldPosition, WmdSounds.SEIS_THUMP.get(), SoundSource.BLOCKS, 1.2F, 1.0F);
+            sl.playSound(null, worldPosition, WmdSounds.SEIS_THUMP.get(), SoundSource.BLOCKS, Balance.SND_RELEASE, 1.0F);
             BlockState under = sl.getBlockState(worldPosition.below());
             if (!under.isAir()) sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, under), c.x, c.y + 0.1, c.z, 24, 0.5, 0.05, 0.5, 0.15);
             sl.sendParticles(ParticleTypes.POOF, c.x, c.y + 0.1, c.z, 4, 0.4, 0.05, 0.4, 0.02);
         }
-        if (t >= 0 && t < sweepTicks() && t % Balance.SEIS_THUMP_TICKS == 2) sl.playSound(null, worldPosition, WmdSounds.SEIS_HOIST.get(), SoundSource.BLOCKS, 0.7F, 1.0F);
+        if (t >= 0 && t < sweepTicks() && t % Balance.SEIS_THUMP_TICKS == 2) sl.playSound(null, worldPosition, WmdSounds.SEIS_HOIST.get(), SoundSource.BLOCKS, Balance.SND_MECH, 1.0F);
         if (t == sweepTicks()) report(sl);
     }
 
@@ -97,7 +97,7 @@ public class SeismicScannerBlockEntity extends CctvDeviceEntity {
         }
         PacketDistributor.sendToPlayer(p, new SeismicResultPayload(List.copyOf(hits)));
         p.displayClientMessage(Component.translatable(hits.isEmpty() ? "message.wmd.seismic.none" : "message.wmd.seismic.found", hits.size()), false);
-        sl.playSound(null, worldPosition, WmdSounds.SEIS_RESULT.get(), SoundSource.BLOCKS, 0.9F, hits.isEmpty() ? 0.8F : 1.0F);
+        sl.playSound(null, worldPosition, WmdSounds.SEIS_RESULT.get(), SoundSource.BLOCKS, Balance.SND_CLICK, hits.isEmpty() ? 0.8F : 1.0F);
     }
 
     static int kind(BlockEntity be) {

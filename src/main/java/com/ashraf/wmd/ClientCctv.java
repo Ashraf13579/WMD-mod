@@ -71,6 +71,8 @@ public final class ClientCctv {
 
     public static boolean active() { return active != null; }
 
+    public static boolean viewing(BlockPos pos) { return active != null && active.pos() == pos.asLong(); }
+
     static Vec3 camPos() { return active == null ? Vec3.ZERO : CctvPayloads.lens(new CctvNet.Cam(BlockPos.of(active.pos()), active.yaw(), active.covert())); }
 
     static float camYaw() { Minecraft mc = Minecraft.getInstance(); return mc.player == null ? 0.0F : mc.player.getYRot(); }
@@ -170,14 +172,15 @@ public final class ClientCctv {
         if (f == null) return;
         Vec3 eye = camPos(), look = Vec3.directionFromRotation(mc.player.getXRot(), mc.player.getYRot());
         CctvPayloads.Mark best = null;
-        double bestCos = Math.cos(Math.toRadians(6.0));
+        boolean animal = false;
+        double bestCos = Math.cos(Math.toRadians(6.0)), animalCos = bestCos;
         for (CctvPayloads.Mark m : f.marks()) {
-            if (m.kind() == AreaMarkersPayload.CREATURE) continue;
-            Vec3 d = new Vec3(m.x(), m.y() + 0.9, m.z()).subtract(eye);
+            Vec3 d = new Vec3(m.x(), m.y() + 0.6, m.z()).subtract(eye);
             double c = d.normalize().dot(look);
+            if (m.kind() == AreaMarkersPayload.CREATURE) { if (c > animalCos) { animalCos = c; animal = true; } continue; }
             if (c > bestCos) { bestCos = c; best = m; }
         }
-        if (best == null) { mc.player.displayClientMessage(Component.translatable("hud.wmd.cctv.mark_none"), true); return; }
+        if (best == null) { mc.player.displayClientMessage(Component.translatable(animal ? "hud.wmd.cctv.mark_animal" : "hud.wmd.cctv.mark_none"), true); return; }
         WmdUi.confirm();
         PacketDistributor.sendToServer(new CctvPayloads.MarkTarget(open.monitor(), active.pos(), best.id()));
     }

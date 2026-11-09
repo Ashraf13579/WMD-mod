@@ -7,7 +7,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -112,8 +111,27 @@ public class SentryTurretBlockEntity extends ProcessUnitBlockEntity implements O
 
     private boolean sees(ServerLevel sl, Vec3 from, LivingEntity e) {
         Vec3 to = aimPoint(e);
-        if (sl.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, (Entity) null)).getType() != HitResult.Type.MISS) return false;
+        java.util.Set<BlockPos> own = ownCells();
+        net.minecraft.world.phys.BlockHitResult hit = net.minecraft.world.level.BlockGetter.traverseBlocks(from, to, sl, (lv, pos) -> {
+            if (own.contains(pos)) return null;
+            net.minecraft.world.level.block.state.BlockState st = lv.getBlockState(pos);
+            return lv.clipWithInteractionOverride(from, to, pos, st.getCollisionShape(lv, pos), st);
+        }, lv -> null);
+        if (hit != null && hit.getType() != HitResult.Type.MISS) return false;
         return SmokeScreens.entry(sl, from, to) < 0.0;
+    }
+
+    private java.util.Set<BlockPos> ownCellsCache;
+    private BlockState ownCellsFor;
+
+    private java.util.Set<BlockPos> ownCells() {
+        if (ownCellsCache != null && ownCellsFor == getBlockState()) return ownCellsCache;
+        java.util.Set<BlockPos> s = new java.util.HashSet<>();
+        s.add(worldPosition);
+        if (getBlockState().getBlock() instanceof MachineBlock mb)
+            for (BlockPos l : mb.footprint()) s.add(Machines.toWorld(worldPosition, facing(), Machines.mount(getBlockState()), l.getX(), l.getY(), l.getZ()));
+        ownCellsFor = getBlockState();
+        return ownCellsCache = s;
     }
 
     @Override
@@ -149,7 +167,7 @@ public class SentryTurretBlockEntity extends ProcessUnitBlockEntity implements O
             pending = 0;
             return true;
         }
-        if (targetId != tgt.getId()) { burstSince = -1; pending = 0; sl.playSound(null, worldPosition, WmdSounds.ST_ALERT.get(), SoundSource.BLOCKS, 1.0F, 1.0F); }
+        if (targetId != tgt.getId()) { burstSince = -1; pending = 0; sl.playSound(null, worldPosition, WmdSounds.ST_ALERT.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F); }
         float[] w = want(gun, aimPoint(tgt));
         float dy = Mth.wrapDegrees(w[0] - aimYaw), dp = w[1] - aimPitch;
         aimYaw = Mth.wrapDegrees(aimYaw + Mth.clamp(dy, -Balance.ST_TURN, Balance.ST_TURN));
@@ -202,8 +220,6 @@ public class SentryTurretBlockEntity extends ProcessUnitBlockEntity implements O
         if (be instanceof SentryTurretBlockEntity t) t.clientTurret(level);
     }
 
-    private static final DustParticleOptions TRACER = new DustParticleOptions(new org.joml.Vector3f(1.0F, 0.85F, 0.35F), 0.7F);
-
     private void clientTurret(Level level) {
         clientTicks++;
         prevYaw = shownYaw;
@@ -220,16 +236,12 @@ public class SentryTurretBlockEntity extends ProcessUnitBlockEntity implements O
         if (!clientFiring || !isRunning() || clientTicks % 2 != 0) return;
         Vec3 m = muzzleWorld(shownYaw, shownPitch);
         var r = level.random;
-        level.addParticle(ParticleTypes.SMALL_FLAME, m.x, m.y, m.z, 0, 0.01, 0);
+
+        VeilBridge.glow(0x5E47_0000_0000_0000L ^ worldPosition.asLong(), m.x, m.y, m.z, 1.0F, 0.72F, 0.3F, 3.0F, 0.9F, level.getGameTime());
         if (clientTicks % 6 == 0) level.addParticle(ParticleTypes.SMOKE, m.x, m.y + 0.05, m.z, 0, 0.03, 0);
         if (t == null) return;
         Vec3 to = t.position().add((r.nextDouble() - 0.5) * 0.8, t.getBbHeight() * (0.3 + r.nextDouble() * 0.5), (r.nextDouble() - 0.5) * 0.8);
-        Vec3 d = to.subtract(m);
-        for (int i = 1; i <= 10; i++) {
-            double f = (i + r.nextDouble()) / 11.0;
-            level.addParticle(TRACER, m.x + d.x * f, m.y + d.y * f, m.z + d.z * f, 0, 0, 0);
-        }
-        level.addParticle(ParticleTypes.CRIT, to.x, to.y, to.z, 0, 0.05, 0);
+        ClientCiws.smallRound(level, m, to, (clientTicks / 2) % ClientCiws.SMALL_TRACER_EVERY == 0);
     }
 
     public float yaw(float pt) { return prevYaw + Mth.wrapDegrees(shownYaw - prevYaw) * pt; }
@@ -243,7 +255,7 @@ public class SentryTurretBlockEntity extends ProcessUnitBlockEntity implements O
     @Override protected int rateMbPerTick() { return 1; }
     @Override protected SoundEvent runSound() { return WmdSounds.ST_IDLE_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return BlockPos.ZERO; }
-    @Override protected float soundVolume() { return 0.08F; }
+    @Override protected float soundVolume() { return Balance.SND_AMBIENT; }
     @Override protected float soundPitch() { return 1.4F; }
 
     @Override

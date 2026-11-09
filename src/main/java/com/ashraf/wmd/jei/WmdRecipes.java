@@ -98,6 +98,17 @@ public final class WmdRecipes {
         droneLine();
         bombLine();
         research();
+        nodules();
+    }
+
+    private static void nodules() {
+        machine("dredge_winch", List.of(p(List.of(item("nodule_field", 1)), List.of(item("manganese_nodule", Balance.DREDGE_YIELD_MAX)), uses(Balance.DREDGE_FE),
+                note("jei.wmd.note.dredge", Balance.DREDGE_YIELD_MIN, Balance.DREDGE_YIELD_MAX, Balance.DREDGE_REACH, Balance.DREDGE_CABLE))));
+        machine("collector_rig", List.of(
+                p(List.of(item("nodule_field", 1), item("seabed_crawler", 1)), List.of(item("manganese_nodule", Balance.CRAWLER_YIELD_MAX)), time(Balance.CRAWLER_COLLECT_TICKS),
+                        uses(Balance.RIG_FE), note("jei.wmd.note.crawler", Balance.CRAWLER_YIELD_MIN, Balance.CRAWLER_YIELD_MAX, Balance.CRAWLER_RADIUS)),
+                p(List.of(item("manganese_nodule", Balance.RIG_SEP_IN)), List.of(item("manganese_concentrate", Balance.RIG_MN_OUT), item("nickel_cobalt_concentrate", Balance.RIG_NICO_OUT)),
+                        time(Balance.RIG_SEP_TICKS), uses(Balance.RIG_FE), note("jei.wmd.note.separator"))));
     }
 
     private static void oil() {

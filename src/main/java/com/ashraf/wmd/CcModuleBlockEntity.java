@@ -148,7 +148,7 @@ public abstract class CcModuleBlockEntity extends ProcessUnitBlockEntity impleme
 
     @Override protected SoundEvent runSound() { return WmdSounds.CC_SERVER_LOOP.get(); }
     @Override protected BlockPos soundLocal() { return BlockPos.ZERO; }
-    @Override protected float soundVolume() { return 0.05F; }
+    @Override protected float soundVolume() { return Balance.SND_AMBIENT; }
 
     @Override
     public void ccAnimate(CcBones model, double tt, float partialTick) {}
