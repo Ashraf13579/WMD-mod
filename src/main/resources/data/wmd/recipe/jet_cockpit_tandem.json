@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:jet_cockpit_tandem"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "wmd:jet_cockpit"
+    },
+    {
+      "item": "wmd:jet_cockpit"
+    },
+    {
+      "item": "wmd:advanced_circuit"
+    }
+  ],
+  "result": {
+    "id": "wmd:jet_cockpit_tandem",
+    "count": 1
+  }
+}

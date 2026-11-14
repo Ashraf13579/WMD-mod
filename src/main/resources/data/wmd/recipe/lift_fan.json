@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:lift_fan"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PFP",
+    "TCT",
+    "PXP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "F": {
+      "item": "wmd:ducted_fan"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "X": {
+      "item": "minecraft:piston"
+    }
+  },
+  "result": {
+    "id": "wmd:lift_fan",
+    "count": 1
+  }
+}

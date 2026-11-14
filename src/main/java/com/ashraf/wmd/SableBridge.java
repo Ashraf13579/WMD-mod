@@ -44,6 +44,175 @@ public final class SableBridge {
         Wmd.LOGGER.error("Sable bridge switched off for this session after an error (WMD carries on as if Sable were not installed)", t);
     }
 
+    public static ScrewPropellerBlockEntity newScrew(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        if (loaded() && !failed) {
+            try { return SableEngines.screw(pos, state); } catch (Throwable t) { fail(t); }
+        }
+        return new ScrewPropellerBlockEntity(pos, state);
+    }
+
+    public static WingSectionBlock newWingSection(net.minecraft.world.level.block.state.BlockBehaviour.Properties p) {
+        if (loaded() && !failed) {
+            try { return SableWings.section(p); } catch (Throwable t) { fail(t); }
+        }
+        return new WingSectionBlock(p);
+    }
+
+    public static ControlSurfaceBlock newControlSurface(net.minecraft.world.level.block.state.BlockBehaviour.Properties p) {
+        if (loaded() && !failed) {
+            try { return SableWings.control(p); } catch (Throwable t) { fail(t); }
+        }
+        return new ControlSurfaceBlock(p);
+    }
+
+    public static PumpJetBlockEntity newPumpJet(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        if (loaded() && !failed) {
+            try { return SableEngines.pumpJet(pos, state); } catch (Throwable t) { fail(t); }
+        }
+        return new PumpJetBlockEntity(pos, state);
+    }
+
+    public static DuctedFanBlockEntity newDuctedFan(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        if (loaded() && !failed) {
+            try { return SableEngines.ductedFan(pos, state); } catch (Throwable t) { fail(t); }
+        }
+        return new DuctedFanBlockEntity(pos, state);
+    }
+
+    public static LiftFanBlockEntity newLiftFan(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        if (loaded() && !failed) {
+            try { return SableEngines.liftFan(pos, state); } catch (Throwable t) { fail(t); }
+        }
+        return new LiftFanBlockEntity(pos, state);
+    }
+
+    public static HeliRotorBlockEntity newHeliRotor(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        if (loaded() && !failed) {
+            try { return SableEngines.heliRotor(pos, state); } catch (Throwable t) { fail(t); }
+        }
+        return new HeliRotorBlockEntity(pos, state);
+    }
+
+    public static HeliTailBlockEntity newHeliTail(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        if (loaded() && !failed) {
+            try { return SableEngines.heliTail(pos, state); } catch (Throwable t) { fail(t); }
+        }
+        return new HeliTailBlockEntity(pos, state);
+    }
+
+    public static HeliTurboshaftBlockEntity newHeliTurboshaft(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) { return new HeliTurboshaftBlockEntity(pos, state); }
+
+    public static JetEngineBlockEntity newJetEngine(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        if (loaded() && !failed) {
+            try { return SableEngines.jet(pos, state); } catch (Throwable t) { fail(t); }
+        }
+        return new JetEngineBlockEntity(pos, state);
+    }
+
+    public static TurbopropBlockEntity newTurboprop(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        if (loaded() && !failed) {
+            try { return SableEngines.turboprop(pos, state); } catch (Throwable t) { fail(t); }
+        }
+        return new TurbopropBlockEntity(pos, state);
+    }
+
+    public static TiltrotorBlockEntity newTiltrotor(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        if (loaded() && !failed) {
+            try { return SableEngines.tiltrotor(pos, state); } catch (Throwable t) { fail(t); }
+        }
+        return new TiltrotorBlockEntity(pos, state);
+    }
+
+    public static WaterjetBlockEntity newWaterjet(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        if (loaded() && !failed) {
+            try { return SableEngines.waterjet(pos, state); } catch (Throwable t) { fail(t); }
+        }
+        return new WaterjetBlockEntity(pos, state);
+    }
+
+    public static AzimuthPodBlockEntity newAzimuthPod(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        if (loaded() && !failed) {
+            try { return SableEngines.azimuthPod(pos, state); } catch (Throwable t) { fail(t); }
+        }
+        return new AzimuthPodBlockEntity(pos, state);
+    }
+
+    public static CargoHookBlockEntity newCargoHook(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        if (loaded() && !failed) {
+            try { return SableEngines.cargoHook(pos, state); } catch (Throwable t) { fail(t); }
+        }
+        return new CargoHookBlockEntity(pos, state);
+    }
+
+    public static BowThrusterBlockEntity newBowThruster(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        if (loaded() && !failed) {
+            try { return SableEngines.bowThruster(pos, state); } catch (Throwable t) { fail(t); }
+        }
+        return new BowThrusterBlockEntity(pos, state);
+    }
+
+    public static TurbofanBlockEntity newTurbofan(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        if (loaded() && !failed) {
+            try { return SableEngines.turbofan(pos, state); } catch (Throwable t) { fail(t); }
+        }
+        return new TurbofanBlockEntity(pos, state);
+    }
+
+    public static LandingGearBlockEntity newLandingGear(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        if (loaded() && !failed) {
+            try { return SableGear.gear(pos, state); } catch (Throwable t) { fail(t); }
+        }
+        return new LandingGearBlockEntity(pos, state);
+    }
+
+    public static Object liftPlatform(ServerLevel level, DeckLiftBlockEntity lift, int sx, int sz) {
+        if (level == null || lift == null || liftFailed || !active()) return null;
+        try { return SableLift.add(level, lift, sx, sz); } catch (Throwable t) { liftFail(t); return null; }
+    }
+
+    public static void liftPlatformRemove(ServerLevel level, Object handle) {
+        if (level == null || handle == null) return;
+        try { SableLift.remove(level, handle); } catch (Throwable t) { liftFail(t); }
+    }
+
+    private static volatile boolean liftFailed;
+
+    private static void liftFail(Throwable t) {
+        if (liftFailed) return;
+        liftFailed = true;
+        Wmd.LOGGER.error("WMD deck lift: the Sable platform failed, lifts carry craft on their landing gear only for this session", t);
+    }
+
+    public static Object turntableDisc(ServerLevel level, TurntableBlockEntity tt, int n) {
+        if (level == null || tt == null || turnFailed || !active()) return null;
+        try { return SableTurntable.add(level, tt, n); } catch (Throwable t) { turnFail(t); return null; }
+    }
+
+    public static void turntableDiscRemove(ServerLevel level, Object handle) {
+        if (level == null || handle == null) return;
+        try { SableTurntable.remove(level, handle); } catch (Throwable t) { turnFail(t); }
+    }
+
+    private static volatile boolean turnFailed;
+
+    private static void turnFail(Throwable t) {
+        if (turnFailed) return;
+        turnFailed = true;
+        Wmd.LOGGER.error("WMD turntable: the Sable disc failed, turntables turn craft on their landing gear only for this session", t);
+    }
+
+    public static boolean wake(ServerLevel level, UUID id) {
+        if (level == null || id == null || !active()) return false;
+        try { return SableDebris.wake(level, id); } catch (Throwable t) { fail(t); return false; }
+    }
+
+    public static JatoRackBlockEntity newJato(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        if (loaded() && !failed) {
+            try { return SableEngines.jato(pos, state); } catch (Throwable t) { fail(t); }
+        }
+        return new JatoRackBlockEntity(pos, state);
+    }
+
     public static List<ShipInfo> allShips(ServerLevel level) {
         if (level == null || !active()) return List.of();
         try { return SableShips.all(level); } catch (Throwable t) { fail(t); return List.of(); }
@@ -138,6 +307,21 @@ public final class SableBridge {
         try { return SableShips.countBlocks(level, shipId, match); } catch (Throwable t) { fail(t); return 0; }
     }
 
+    public static double[] physicsAt(Level level, Vec3 p) {
+        if (!active() || level == null || p == null) return null;
+        try { return SableShips.physicsAt(level, p); } catch (Throwable t) { return null; }
+    }
+
+    public static boolean applyAir(ServerLevel level, java.util.List<double[]> points, int priority) {
+        if (!active() || level == null || points == null || points.isEmpty()) return false;
+        try { return SableShips.applyAir(level, points, priority); } catch (Throwable t) { Wmd.LOGGER.warn("WMD air: Sable refused the air curve", t); return false; }
+    }
+
+    public static int countLiftBlocks(ServerLevel level, UUID shipId) {
+        if (level == null || shipId == null || !active()) return 0;
+        try { return SableShips.countBlocks(level, shipId, SableShips::liftProvider); } catch (Throwable t) { fail(t); return 0; }
+    }
+
     public static boolean isOnShip(Level level, BlockPos pos) {
         if (level == null || pos == null || !active()) return false;
         try { return SableShips.onShip(level, pos); } catch (Throwable t) { fail(t); return false; }
@@ -207,6 +391,11 @@ public final class SableBridge {
     public static boolean debrisPush(ServerLevel level, UUID id, Vec3 vel, Vec3 offset) {
         if (level == null || id == null || !debrisActive()) return false;
         try { return SableDebris.push(level, id, vel, offset); } catch (Throwable t) { debrisFail(t); return false; }
+    }
+
+    public static boolean shipPush(ServerLevel level, UUID id, Vec3 dv, Vec3 offset) {
+        if (level == null || id == null || dv == null || !active()) return false;
+        try { boolean ok = SableDebris.push(level, id, dv, offset == null ? Vec3.ZERO : offset); if (ok) SableDebris.wake(level, id); return ok; } catch (Throwable t) { fail(t); return false; }
     }
 
     public static boolean debrisWake(ServerLevel level, UUID id) {

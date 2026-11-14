@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:sam_site"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RXR",
+    "TCT",
+    "PBP"
+  ],
+  "key": {
+    "R": {
+      "item": "wmd:radar_component"
+    },
+    "X": {
+      "item": "wmd:chip_defence_2"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "P": {
+      "tag": "c:plates/titanium"
+    },
+    "B": {
+      "item": "wmd:busbar"
+    }
+  },
+  "result": {
+    "id": "wmd:sam_site",
+    "count": 1
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:flight_check_tablet"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " G ",
+    "ACA",
+    " R "
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glass_pane"
+    },
+    "A": {
+      "item": "wmd:aluminium_plate"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "R": {
+      "item": "wmd:radar_component"
+    }
+  },
+  "result": {
+    "id": "wmd:flight_check_tablet",
+    "count": 1
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PBP",
+    "WCW",
+    "PIP"
+  ],
+  "key": {
+    "P": { "tag": "c:plates/steel" },
+    "B": { "item": "wmd:turbine_blades" },
+    "W": { "item": "wmd:copper_wire" },
+    "C": { "item": "wmd:basic_circuit" },
+    "I": { "tag": "c:ingots/copper" }
+  },
+  "result": { "id": "wmd:ducted_fan", "count": 1 }
+}

@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:cargo_hook_light"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PWP",
+    "PCP",
+    "PHP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    },
+    "H": {
+      "item": "minecraft:tripwire_hook"
+    }
+  },
+  "result": {
+    "id": "wmd:cargo_hook_light",
+    "count": 1
+  }
+}

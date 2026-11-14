@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:ammo_depot"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SDS",
+    "CBC",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "D": {
+      "item": "minecraft:iron_door"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "B": {
+      "item": "wmd:basic_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:ammo_depot",
+    "count": 1
+  }
+}

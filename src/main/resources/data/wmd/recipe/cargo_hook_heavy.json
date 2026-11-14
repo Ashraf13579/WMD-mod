@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:cargo_hook_heavy"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PWP",
+    "CHC",
+    "PHP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "C": {
+      "item": "wmd:cargo_hook_light"
+    },
+    "H": {
+      "item": "minecraft:chain"
+    }
+  },
+  "result": {
+    "id": "wmd:cargo_hook_heavy",
+    "count": 1
+  }
+}

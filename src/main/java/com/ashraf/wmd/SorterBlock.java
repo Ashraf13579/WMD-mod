@@ -106,7 +106,7 @@ public class SorterBlock extends BaseEntityBlock implements net.minecraft.world.
     @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!level.isClientSide && !newState.is(this)) {
-            if (level.getBlockEntity(pos) instanceof SorterBlockEntity be && !be.buffer().isEmpty())
+            if (!ShipRelink.shipMove(level, movedByPiston) && level.getBlockEntity(pos) instanceof SorterBlockEntity be && !be.buffer().isEmpty())
                 Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, be.buffer().copy());
             DuctNet.invalidateAround(level, pos);
         } else if (!level.isClientSide) {

@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:deck_console"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SGS",
+    "OCL",
+    " S "
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "G": {
+      "item": "minecraft:glass_pane"
+    },
+    "O": {
+      "item": "minecraft:observer"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "L": {
+      "item": "minecraft:lever"
+    }
+  },
+  "result": {
+    "id": "wmd:deck_console",
+    "count": 1
+  }
+}

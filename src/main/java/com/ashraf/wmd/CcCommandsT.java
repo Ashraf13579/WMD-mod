@@ -23,7 +23,7 @@ public final class CcCommandsT {
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("cc")
+                .then(Commands.literal("cc").requires(TestCmds::test)
                         .then(Commands.literal("defcon").then(Commands.argument("level", IntegerArgumentType.integer(1, 5))
                                 .executes(c -> defcon(c.getSource(), IntegerArgumentType.getInteger(c, "level")))))
                         .then(Commands.literal("log").executes(c -> log(c.getSource(), false))

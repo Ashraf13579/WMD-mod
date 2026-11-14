@@ -31,7 +31,7 @@ public final class CcCommands {
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("cc")
+                .then(Commands.literal("cc").requires(TestCmds::test)
                         .then(Commands.literal("build").executes(c -> build(c.getSource())))
                         .then(Commands.literal("install").then(Commands.argument("module", StringArgumentType.word()).suggests(MODULES)
                                 .executes(c -> install(c.getSource(), StringArgumentType.getString(c, "module"), true))))

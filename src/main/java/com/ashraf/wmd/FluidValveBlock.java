@@ -65,12 +65,13 @@ public class FluidValveBlock extends BaseEntityBlock implements net.minecraft.wo
     private static FluidPipeBlock.Conn connection(LevelReader level, BlockPos pos, Direction d) {
         BlockPos np = pos.relative(d);
         BlockState ns = level.getBlockState(np);
-        if (ns.getBlock() instanceof FluidPipeBlock) return FluidPipeBlock.cut(level, np, d.getOpposite()) ? FluidPipeBlock.Conn.NONE : FluidPipeBlock.Conn.PIPE;
-        if (ns.getBlock() instanceof FluidValveBlock) return axisOf(ns) == d.getAxis() ? FluidPipeBlock.Conn.PIPE : FluidPipeBlock.Conn.NONE;
+        if (ns.getBlock() instanceof FluidPipeBlock)
+            return FluidPipeBlock.cut(level, np, d.getOpposite()) || !FluidPipeBlockEntity.sameLine(level, pos, np) ? FluidPipeBlock.Conn.NONE : FluidPipeBlock.Conn.PIPE;
+        if (ns.getBlock() instanceof FluidValveBlock) return axisOf(ns) == d.getAxis() && FluidPipeBlockEntity.sameLine(level, pos, np) ? FluidPipeBlock.Conn.PIPE : FluidPipeBlock.Conn.NONE;
         return level instanceof Level l && l.getCapability(Capabilities.FluidHandler.BLOCK, np, d.getOpposite()) != null ? FluidPipeBlock.Conn.PORT : FluidPipeBlock.Conn.NONE;
     }
 
-    private BlockState withConnections(Level level, BlockPos pos, BlockState s) {
+    static BlockState withConnections(Level level, BlockPos pos, BlockState s) {
         Direction f = s.getValue(FACING);
         return s.setValue(FRONT, connection(level, pos, f)).setValue(BACK, connection(level, pos, f.getOpposite())).setValue(OPEN, !level.hasNeighborSignal(pos));
     }

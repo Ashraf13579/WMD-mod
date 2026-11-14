@@ -52,6 +52,8 @@ public final class ClientArtillery {
     private static final List<Cloud> CLOUDS = new ArrayList<>();
     private static final List<Flare> FLARES = new ArrayList<>();
     private static final Set<Long> WHISTLING = new HashSet<>();
+
+    private static final Set<Long> OWN = Statics.client(new HashSet<>());
     private static float jolt;
     private static long flareKeys = 0x4152_5400_0000_0000L;
 
@@ -69,11 +71,11 @@ public final class ClientArtillery {
         for (ArtImpactPayload p; (p = ArtilleryView.IMPACTS.poll()) != null; ) impact(level, p, cam, now);
         for (Iterator<ArtShell> it = ArtilleryView.SHELLS.values().iterator(); it.hasNext(); ) {
             ArtShell s = it.next();
-            if (now > s.endTime() + 40) { it.remove(); WHISTLING.remove(s.id()); continue; }
+            if (now > s.endTime() + 40) { it.remove(); WHISTLING.remove(s.id()); OWN.remove(s.id()); continue; }
             if (now < s.start() || now > s.endTime()) continue;
             Vec3 p = s.position(now);
             double d = p.distanceTo(cam);
-            if (d < Math.min(FX_RANGE, ClientConfig.trailRange()) && now > s.start() + 1) {
+            if (d < Math.min(FX_RANGE, ClientConfig.trailRange()) && now > s.start() + 1 && !OWN.contains(s.id())) {
                 Vec3 v = s.velocity(now);
                 int n = d < 96 ? 2 : 1;
                 for (int i = 0; i < n; i++) {
@@ -126,6 +128,7 @@ public final class ClientArtillery {
         if (s.gun() == Artillery.ROCKET) { MlrsClient.launch(level, s, cam); return; }
         if (s.gun() == Artillery.SUPER_GUN) { SuperGunClient.muzzle(level, s, cam); return; }
         Vec3 m = new Vec3(s.ox(), s.oy(), s.oz());
+        if (ClientGunner.ownShot(m)) { if (OWN.size() < 64) OWN.add(s.id()); return; }
         double d = m.distanceTo(cam);
         boolean how = s.gun() == Artillery.HOWITZER;
         LaunchSounds.gun(how, m.x, m.y, m.z);
@@ -188,6 +191,10 @@ public final class ClientArtillery {
     private static void impact(ClientLevel level, ArtImpactPayload p, Vec3 cam, long now) {
         if (p.gun() == Artillery.SUPER_GUN) return;
         Vec3 at = new Vec3(p.x(), p.y(), p.z());
+        if (OWN.contains(p.id())) {
+            ArtShell own = ArtilleryView.SHELLS.get(p.id());
+            ClientGunner.logMiss("heavy", own != null ? new Vec3(own.ox(), own.oy(), own.oz()) : at, at, level.getGameTime());
+        }
         double d = at.distanceTo(cam);
         RandomSource rnd = level.random;
         boolean how = p.gun() == Artillery.HOWITZER;
@@ -206,8 +213,8 @@ public final class ClientArtillery {
                 if (d < FX_RANGE * 2) for (int i = 0; i < 16; i++)
                     level.addAlwaysVisibleParticle(ParticleTypes.POOF, true, at.x, at.y, at.z, rnd.nextGaussian() * 0.15, rnd.nextGaussian() * 0.08, rnd.nextGaussian() * 0.15);
             }
-            case Artillery.HE, Artillery.GUIDED, Artillery.LASER, Artillery.ROCKET_ASSIST -> {
-                float size = how ? 1.5F : 1.0F;
+            case Artillery.HE, Artillery.GUIDED, Artillery.LASER, Artillery.ROCKET_ASSIST, Artillery.GUNSHIP_105 -> {
+                float size = p.kind() == Artillery.GUNSHIP_105 ? (float) Balance.GUNSHIP_HE_FX : how ? 1.5F : 1.0F;
                 VeilBridge.flash(at.x, at.y + 1.5, at.z, 1.0F, 0.6F, 0.25F, 16.0F * size, 3.5F, 0.5F, 7);
 
                 WmdSound.play(d < 200 ? WmdSounds.HE_NEAR.get() : WmdSounds.HE_FAR.get(), at.x, at.y, at.z, how ? 25.0F : 18.0F, (how ? 1.15F : 1.4F) + rnd.nextFloat() * 0.1F);
@@ -284,7 +291,7 @@ public final class ClientArtillery {
             ps.mulPose(noseAlong(dir));
             int light = p.y > level.getMaxBuildHeight() ? LightTexture.FULL_BRIGHT : LevelRenderer.getLightColor(level, BlockPos.containing(p));
             if (s.gun() == Artillery.SUPER_GUN) { SuperGunClient.drawShell(ps, buffers, light, s.type()); ps.popPose(); drew = true; continue; }
-            String name = Artillery.shellId(s.gun(), s.type());
+            String name = s.type() == Artillery.GUNSHIP_105 ? Artillery.shellId(Artillery.HOWITZER, Artillery.HE) : Artillery.shellId(s.gun(), s.type());
             MeshModel mesh = MeshModel.named(name);
             if (mesh.has("part")) {
                 float k = ShellItemRenderer.TRUE_SCALE;

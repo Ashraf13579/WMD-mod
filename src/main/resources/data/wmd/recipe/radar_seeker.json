@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:radar_seeker"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CRC",
+    "WGW",
+    " P "
+  ],
+  "key": {
+    "R": {
+      "item": "wmd:radar_component"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "G": {
+      "item": "wmd:guidance_t3"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "P": {
+      "item": "wmd:aluminium_plate"
+    }
+  },
+  "result": {
+    "id": "wmd:radar_seeker",
+    "count": 1
+  }
+}

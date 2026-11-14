@@ -28,7 +28,7 @@ public final class ShipImpactCommands {
 
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
-        LiteralArgumentBuilder<CommandSourceStack> shot = Commands.literal("shipshot").executes(c -> shot(c.getSource(), Artillery.HOWITZER, Artillery.HE));
+        LiteralArgumentBuilder<CommandSourceStack> shot = Commands.literal("shipshot").requires(TestCmds::test).executes(c -> shot(c.getSource(), Artillery.HOWITZER, Artillery.HE));
         String[] guns = { "mortar", "howitzer", "rocket", "super" };
         int[] gunIds = { Artillery.MORTAR, Artillery.HOWITZER, Artillery.ROCKET, Artillery.SUPER_GUN };
         String[] types = { "he", "cluster", "smoke", "illum" };
@@ -52,8 +52,8 @@ public final class ShipImpactCommands {
         }
         shot.then(mode);
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("dev")
-                        .then(Commands.literal("shipblast").then(Commands.argument("power", FloatArgumentType.floatArg(0.5F, 32.0F))
+                .then(Commands.literal("dev").requires(TestCmds::test)
+                        .then(Commands.literal("shipblast").requires(TestCmds::test).then(Commands.argument("power", FloatArgumentType.floatArg(0.5F, 32.0F))
                                 .executes(c -> blast(c.getSource(), FloatArgumentType.getFloat(c, "power")))))
                         .then(shot)));
     }

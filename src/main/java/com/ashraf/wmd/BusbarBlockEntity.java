@@ -9,6 +9,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -16,7 +19,32 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-public class BusbarBlockEntity extends BlockEntity {
+public class BusbarBlockEntity extends BlockEntity implements CopycatState.Host {
+
+    private final CopycatState copycat = new CopycatState();
+
+    @Override public CopycatState copycat() { return copycat; }
+
+    @Override public void copycatChanged() {
+        setChanged();
+        if (level == null || level.isClientSide) return;
+        BlockState st = getBlockState();
+        if (st.hasProperty(HullPenetratorBlock.SKINNED) && st.getValue(HullPenetratorBlock.SKINNED) != copycat.skinned())
+            level.setBlock(worldPosition, st = st.setValue(HullPenetratorBlock.SKINNED, copycat.skinned()), 3);
+        level.sendBlockUpdated(worldPosition, st, st, 3);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag tag = new CompoundTag();
+        copycat.putSync(tag);
+        return tag;
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
 
     public static final int CAPACITY = 400_000;
     public static final int RATE = Balance.BUS_NET_MAX_FLOW;
@@ -29,6 +57,7 @@ public class BusbarBlockEntity extends BlockEntity {
         final List<BusbarBlockEntity> members = new ArrayList<>();
         final List<BlockPos> epPos = new ArrayList<>();
         final List<Direction> epDir = new ArrayList<>();
+        final List<Boolean> epWmd = new ArrayList<>();
         long pool, cap;
         long lastTick = Long.MIN_VALUE, endpointsAt = -1_000L;
         boolean dead;
@@ -42,16 +71,17 @@ public class BusbarBlockEntity extends BlockEntity {
         }
 
         void refreshEndpoints(Level level) {
-            epPos.clear(); epDir.clear();
+            epPos.clear(); epDir.clear(); epWmd.clear();
             for (BusbarBlockEntity b : members) {
-                if (b.isRemoved()) continue;
+                if (b.isRemoved() || !level.isLoaded(b.worldPosition)) continue;
                 BlockState st = level.getBlockState(b.worldPosition);
                 if (!(st.getBlock() instanceof BusbarBlock)) continue;
                 for (Direction d : Direction.values()) {
                     if (!st.getValue(BusbarBlock.prop(d))) continue;
                     BlockPos np = b.worldPosition.relative(d);
+                    if (!level.isLoaded(np)) continue;
                     if (level.getBlockState(np).getBlock() instanceof BusbarBlock) continue;
-                    epPos.add(np); epDir.add(d);
+                    epPos.add(np); epDir.add(d); epWmd.add(Grid.isWmd(level, np));
                 }
             }
         }
@@ -67,10 +97,11 @@ public class BusbarBlockEntity extends BlockEntity {
                 IEnergyStorage[] st = new IEnergyStorage[k];
                 int[] kind = new int[k];
                 for (int i = 0; i < k; i++) {
+                    if (!level.isLoaded(epPos.get(i))) continue;
                     IEnergyStorage s = level.getCapability(Capabilities.EnergyStorage.BLOCK, epPos.get(i), epDir.get(i).getOpposite());
                     st[i] = s;
                     if (s == null) continue;
-                    boolean wmd = Grid.isWmd(level, epPos.get(i));
+                    boolean wmd = epWmd.get(i);
                     if (wmd && s.canExtract()) kind[i] = s.canReceive() ? 2 : 1;
                     else if (s.canReceive()) kind[i] = 3;
                 }
@@ -209,11 +240,13 @@ public class BusbarBlockEntity extends BlockEntity {
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.putInt("stored", share());
+        copycat.save(tag, registries);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         stored = Mth.clamp(tag.getInt("stored"), 0, CAPACITY);
+        copycat.load(tag, registries, level != null && level.isClientSide);
     }
 }

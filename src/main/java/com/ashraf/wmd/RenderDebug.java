@@ -35,7 +35,8 @@ public final class RenderDebug {
                                                             com.mojang.brigadier.arguments.DoubleArgumentType.getDouble(c, "r"));
                                                     return 1;
                                                 }))))));
-        event.getDispatcher().register(Commands.literal("wmdr")
+
+        if (!net.neoforged.fml.loading.FMLEnvironment.production) event.getDispatcher().register(Commands.literal("wmdr")
                 .then(Commands.literal("fast").executes(c -> mode(true)))
                 .then(Commands.literal("legacy").executes(c -> mode(false)))
                 .then(Commands.literal("cull").then(Commands.literal("on").executes(c -> cull(true))).then(Commands.literal("off").executes(c -> cull(false))))

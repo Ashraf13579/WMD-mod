@@ -43,10 +43,18 @@ public class OilFields extends SavedData {
         return got;
     }
 
-    public static List<BlockPos> clusterBelow(ServerLevel level, BlockPos well) {
-        BlockPos.MutableBlockPos c = well.below().mutable();
-        while (c.getY() >= level.getMinBuildHeight() && !level.getBlockState(c).is(Wmd.CRUDE_OIL_DEPOSIT.get())) c.move(Direction.DOWN);
-        if (c.getY() < level.getMinBuildHeight()) return List.of();
+    public static List<BlockPos> clusterBelow(net.minecraft.world.level.Level level, BlockPos well) { return clusterUnder(level, List.of(well)); }
+
+    public static List<BlockPos> clusterUnder(net.minecraft.world.level.Level level, List<BlockPos> tops) {
+        BlockPos start = null;
+        for (BlockPos top : tops) {
+            BlockPos.MutableBlockPos c = top.below().mutable();
+            int stop = start == null ? level.getMinBuildHeight() : start.getY() + 1;
+            while (c.getY() >= stop && !level.getBlockState(c).is(Wmd.CRUDE_OIL_DEPOSIT.get())) c.move(Direction.DOWN);
+            if (c.getY() >= stop) start = c.immutable();
+        }
+        if (start == null) return List.of();
+        BlockPos.MutableBlockPos c = start.mutable();
         List<BlockPos> out = new ArrayList<>();
         Set<BlockPos> seen = new HashSet<>();
         ArrayDeque<BlockPos> todo = new ArrayDeque<>();

@@ -34,6 +34,7 @@ public class LavaGeneratorBlockEntity extends ProcessUnitBlockEntity {
     private boolean scanned;
 
     private int heat;
+    private long lastBurn = -100;
     private int fePerTickNow;
     private int syncedSources = -1;
 
@@ -90,7 +91,8 @@ public class LavaGeneratorBlockEntity extends ProcessUnitBlockEntity {
         if (lava.getFluidAmount() >= Balance.LG_MB_PER_TICK) { h = 2; fe = Balance.LG_FE_PIPED; }
         else if (sources > 0) { h = 1; fe = Math.min(Balance.LG_FE_PASSIVE_MAX, sources * Balance.LG_FE_PER_SOURCE); }
         else { h = 0; fe = 0; }
-        if (stored + fe > Balance.LG_BUFFER_FE) { h = 0; fe = 0; }
+        if (stored + fe > Balance.LG_BUFFER_FE) { fe = 0; h = level.getGameTime() - lastBurn < 20 ? heat : 0; }
+        else if (fe > 0) lastBurn = level.getGameTime();
         if (h != heat || fe != fePerTickNow || sources != syncedSources) {
             heat = h;
             fePerTickNow = fe;

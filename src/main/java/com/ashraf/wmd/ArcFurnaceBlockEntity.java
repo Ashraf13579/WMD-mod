@@ -87,7 +87,7 @@ public class ArcFurnaceBlockEntity extends ItemProcessBlockEntity {
 
     @Override protected SoundEvent runSound() { return WmdSounds.ARC_FURNACE_RUN.get(); }
     @Override protected float soundPitch() { return 0.93F + 0.14F * Math.max(0.0F, Math.min(1.0F, progress01())); }
-    @Override protected void runStarted(net.minecraft.world.level.Level level) { playOnce(level, WmdSounds.ARC_STRIKE.get(), 1.1F, 0.95F + level.random.nextFloat() * 0.1F); }
+    @Override protected void runStarted(net.minecraft.world.level.Level level) { playOnce(level, WmdSounds.ARC_STRIKE.get(), Balance.SND_MECH, 0.95F + level.random.nextFloat() * 0.1F); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 1, 1); }
     @Override protected float soundVolume() { return Balance.SND_HEAVY; }
 

@@ -22,6 +22,8 @@ public final class Artillery {
     public static final int SPECIAL_BASE = 5, LASER = 5, CANISTER = 6, SENSOR = 7, PIERCE = 8, INCENDIARY = 9, FLAK = 10, CAMERA = 11, JAMMING = 12, ROCKET_ASSIST = 13,
             LEAFLET = 14, SUPER_NUKE = 15;
 
+    public static final int GUNSHIP_105 = 16;
+
     public static final int PICK_RACK = 20;
 
     public static boolean isSpecial(int type) { return type >= SPECIAL_BASE && type < SPECIAL_BASE + SPECIAL.length; }
@@ -29,6 +31,7 @@ public final class Artillery {
     public static String typeName(int type) {
         if (isSpecial(type)) return SPECIAL[type - SPECIAL_BASE];
         if (type == SUPER_NUKE) return "nuke";
+        if (type == GUNSHIP_105) return "gunship";
         return TYPES[clampType(type)];
     }
 
@@ -52,6 +55,7 @@ public final class Artillery {
         if (gun == ROCKET) return type == GUIDED ? "mlrs_pod_guided" : "mlrs_pod";
         if (gun == SUPER_GUN) return type == SUPER_NUKE ? "shell_super_nuke" : SuperGun.SHELL;
         if (isSpecial(type)) return "shell_howitzer_" + SPECIAL[type - SPECIAL_BASE];
+        if (type == GUNSHIP_105) return "shell_howitzer_gunship";
         return "shell_" + GUNS[gun] + "_" + TYPES[clampType(type)];
     }
 
@@ -73,6 +77,8 @@ public final class Artillery {
     }
 
     public static int clampType(int t) { return Math.max(0, Math.min(TYPES.length - 1, t)); }
+
+    public static int knownType(int t) { return t >= 0 && (t < TYPES.length || isSpecial(t) || t == SUPER_NUKE || t == GUNSHIP_105) ? t : clampType(t); }
 
     public static Item shellItem(int gun, int type) { return ItemProcessBlockEntity.wmd(shellId(gun, type)); }
 

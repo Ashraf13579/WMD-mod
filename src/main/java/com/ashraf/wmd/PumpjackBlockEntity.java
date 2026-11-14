@@ -41,8 +41,10 @@ public class PumpjackBlockEntity extends BlockEntity implements GeoBlockEntity, 
     private final FluidTank tank = new FluidTank(Balance.PUMPJACK_TANK_MB, fs -> fs.getFluid() == WmdFluids.CRUDE_OIL.source().get());
     private double progress;
     private boolean running;
+    private long lastRun = -100;
     private List<BlockPos> cluster;
     private long nextScan;
+    private boolean noOil;
 
     private float crank, crankSpeed;
 
@@ -75,7 +77,9 @@ public class PumpjackBlockEntity extends BlockEntity implements GeoBlockEntity, 
     @Override public boolean guiRunning() { return running; }
     @Override public List<Component> guiInfo() {
         return List.of(Component.translatable("gui.wmd.info.use", Balance.PUMPJACK_FE_PER_TICK * 20),
-                Component.translatable("gui.wmd.info.pumpjack", Balance.PUMPJACK_MB_PER_30S / 1000, 30));
+                Component.translatable("gui.wmd.info.pumpjack", Balance.PUMPJACK_MB_PER_30S / 1000, 30),
+                noOil ? Component.translatable("gui.wmd.info.pumpjack_no_oil").withStyle(net.minecraft.ChatFormatting.RED)
+                      : Component.translatable("gui.wmd.info.pumpjack_area"));
     }
 
     @Override
@@ -99,8 +103,9 @@ public class PumpjackBlockEntity extends BlockEntity implements GeoBlockEntity, 
         }
         ServerLevel sl = (ServerLevel) level;
         if (be.cluster == null || level.getGameTime() >= be.nextScan) {
-            be.cluster = OilFields.clusterBelow(sl, pos);
+            be.cluster = PumpjackBlock.fieldUnder(sl, pos, state);
             be.nextScan = level.getGameTime() + 100;
+            if (be.noOil != be.cluster.isEmpty()) { be.noOil = be.cluster.isEmpty(); be.setChanged(); level.sendBlockUpdated(pos, state, state, 3); }
         }
         boolean now = be.hasPower() && !be.cluster.isEmpty() && be.tank.getFluidAmount() < be.tank.getCapacity();
         if (now) {
@@ -120,8 +125,10 @@ public class PumpjackBlockEntity extends BlockEntity implements GeoBlockEntity, 
                 }
             }
         }
-        if (now != be.running) {
-            be.running = now;
+        if (now) be.lastRun = level.getGameTime();
+        boolean shown = now || level.getGameTime() - be.lastRun < 20;
+        if (shown != be.running) {
+            be.running = shown;
             be.setChanged();
             level.sendBlockUpdated(pos, state, state, 3);
         }
@@ -146,6 +153,7 @@ public class PumpjackBlockEntity extends BlockEntity implements GeoBlockEntity, 
         tag.putInt("energy", store.getEnergyStored());
         tag.putDouble("progress", progress);
         tag.putBoolean("running", running);
+        tag.putBoolean("noOil", noOil);
     }
 
     @Override
@@ -155,12 +163,14 @@ public class PumpjackBlockEntity extends BlockEntity implements GeoBlockEntity, 
         store.set(tag.getInt("energy"));
         progress = tag.getDouble("progress");
         running = tag.getBoolean("running");
+        noOil = tag.getBoolean("noOil");
     }
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("running", running);
+        tag.putBoolean("noOil", noOil);
         return tag;
     }
 

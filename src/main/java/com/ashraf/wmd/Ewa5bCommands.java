@@ -23,11 +23,11 @@ public final class Ewa5bCommands {
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("ewa")
+                .then(Commands.literal("ewa").requires(TestCmds::test)
                         .then(Commands.literal("status").executes(c -> ewaStatus(c.getSource())))
                         .then(Commands.literal("warn").executes(c -> ewaWarn(c.getSource(), 2000))
                                 .then(Commands.argument("dist", IntegerArgumentType.integer(100, 30_000)).executes(c -> ewaWarn(c.getSource(), IntegerArgumentType.getInteger(c, "dist"))))))
-                .then(Commands.literal("drone")
+                .then(Commands.literal("drone").requires(TestCmds::test)
                         .then(Commands.literal("give").executes(c -> droneGive(c.getSource())))
                         .then(Commands.literal("launch")
                                 .then(Commands.argument("x", IntegerArgumentType.integer())

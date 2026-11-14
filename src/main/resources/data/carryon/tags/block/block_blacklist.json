@@ -2,6 +2,10 @@
   "replace": false,
   "values": [
     {
+      "id": "wmd:air_search_radar",
+      "required": false
+    },
+    {
       "id": "wmd:alarm",
       "required": false
     },
@@ -15,6 +19,14 @@
     },
     {
       "id": "wmd:aluminium_pipe",
+      "required": false
+    },
+    {
+      "id": "wmd:ammo_depot",
+      "required": false
+    },
+    {
+      "id": "wmd:anchor_windlass",
       "required": false
     },
     {
@@ -38,7 +50,15 @@
       "required": false
     },
     {
+      "id": "wmd:arresting_wire",
+      "required": false
+    },
+    {
       "id": "wmd:atmospheric_column",
+      "required": false
+    },
+    {
+      "id": "wmd:azimuth_pod",
       "required": false
     },
     {
@@ -59,6 +79,10 @@
     },
     {
       "id": "wmd:battery_t4",
+      "required": false
+    },
+    {
+      "id": "wmd:battleship_turret",
       "required": false
     },
     {
@@ -150,6 +174,10 @@
       "required": false
     },
     {
+      "id": "wmd:bow_thruster",
+      "required": false
+    },
+    {
       "id": "wmd:bronze_block",
       "required": false
     },
@@ -170,7 +198,31 @@
       "required": false
     },
     {
+      "id": "wmd:cargo_hook_heavy",
+      "required": false
+    },
+    {
+      "id": "wmd:cargo_hook_light",
+      "required": false
+    },
+    {
+      "id": "wmd:cargo_pallet",
+      "required": false
+    },
+    {
+      "id": "wmd:cargo_pallet_heavy",
+      "required": false
+    },
+    {
       "id": "wmd:cargo_pod_hull",
+      "required": false
+    },
+    {
+      "id": "wmd:cargo_ramp",
+      "required": false
+    },
+    {
+      "id": "wmd:catapult_track",
       "required": false
     },
     {
@@ -262,6 +314,10 @@
       "required": false
     },
     {
+      "id": "wmd:chart_table",
+      "required": false
+    },
+    {
       "id": "wmd:chlor_alkali_cell",
       "required": false
     },
@@ -306,6 +362,10 @@
       "required": false
     },
     {
+      "id": "wmd:control_surface",
+      "required": false
+    },
+    {
       "id": "wmd:coolant_pump",
       "required": false
     },
@@ -315,6 +375,10 @@
     },
     {
       "id": "wmd:counter_battery_radar",
+      "required": false
+    },
+    {
+      "id": "wmd:countermeasure_dispenser",
       "required": false
     },
     {
@@ -338,10 +402,6 @@
       "required": false
     },
     {
-      "id": "wmd:crude_tank",
-      "required": false
-    },
-    {
       "id": "wmd:cruise_launcher",
       "required": false
     },
@@ -351,6 +411,26 @@
     },
     {
       "id": "wmd:deadhand_bunker",
+      "required": false
+    },
+    {
+      "id": "wmd:deck_console",
+      "required": false
+    },
+    {
+      "id": "wmd:deck_gun",
+      "required": false
+    },
+    {
+      "id": "wmd:deck_lift",
+      "required": false
+    },
+    {
+      "id": "wmd:turntable",
+      "required": false
+    },
+    {
+      "id": "wmd:deck_light",
       "required": false
     },
     {
@@ -410,11 +490,19 @@
       "required": false
     },
     {
+      "id": "wmd:drag_chute",
+      "required": false
+    },
+    {
       "id": "wmd:dredge_winch",
       "required": false
     },
     {
       "id": "wmd:drive_coupling",
+      "required": false
+    },
+    {
+      "id": "wmd:drogue_pod",
       "required": false
     },
     {
@@ -454,6 +542,14 @@
       "required": false
     },
     {
+      "id": "wmd:drop_tank",
+      "required": false
+    },
+    {
+      "id": "wmd:ducted_fan",
+      "required": false
+    },
+    {
       "id": "wmd:early_warning_array",
       "required": false
     },
@@ -463,6 +559,10 @@
     },
     {
       "id": "wmd:electrolyser",
+      "required": false
+    },
+    {
+      "id": "wmd:engine_telegraph",
       "required": false
     },
     {
@@ -490,6 +590,10 @@
       "required": false
     },
     {
+      "id": "wmd:flight_deck",
+      "required": false
+    },
+    {
       "id": "wmd:floodgate",
       "required": false
     },
@@ -514,11 +618,23 @@
       "required": false
     },
     {
+      "id": "wmd:fuel_tank",
+      "required": false
+    },
+    {
       "id": "wmd:furnace",
       "required": false
     },
     {
       "id": "wmd:fusion_reactor",
+      "required": false
+    },
+    {
+      "id": "wmd:gantry_cabinet",
+      "required": false
+    },
+    {
+      "id": "wmd:gantry_rail",
       "required": false
     },
     {
@@ -539,6 +655,54 @@
     },
     {
       "id": "wmd:ground_station",
+      "required": false
+    },
+    {
+      "id": "wmd:gun_pod",
+      "required": false
+    },
+    {
+      "id": "wmd:gun_turret",
+      "required": false
+    },
+    {
+      "id": "wmd:gunner_station",
+      "required": false
+    },
+    {
+      "id": "wmd:hangar_curtain",
+      "required": false
+    },
+    {
+      "id": "wmd:hangar_door",
+      "required": false
+    },
+    {
+      "id": "wmd:hawse_pipe",
+      "required": false
+    },
+    {
+      "id": "wmd:heavy_gun",
+      "required": false
+    },
+    {
+      "id": "wmd:heavy_loader",
+      "required": false
+    },
+    {
+      "id": "wmd:heli_rotor",
+      "required": false
+    },
+    {
+      "id": "wmd:heli_tail",
+      "required": false
+    },
+    {
+      "id": "wmd:heli_turboshaft",
+      "required": false
+    },
+    {
+      "id": "wmd:helm_station",
       "required": false
     },
     {
@@ -582,6 +746,26 @@
       "required": false
     },
     {
+      "id": "wmd:jammer_pod",
+      "required": false
+    },
+    {
+      "id": "wmd:jato_rack",
+      "required": false
+    },
+    {
+      "id": "wmd:jet_cockpit",
+      "required": false
+    },
+    {
+      "id": "wmd:jet_cockpit_tandem",
+      "required": false
+    },
+    {
+      "id": "wmd:jet_power_core",
+      "required": false
+    },
+    {
       "id": "wmd:kroll_reactor",
       "required": false
     },
@@ -606,6 +790,18 @@
       "required": false
     },
     {
+      "id": "wmd:landing_gear",
+      "required": false
+    },
+    {
+      "id": "wmd:landing_gear_bogie",
+      "required": false
+    },
+    {
+      "id": "wmd:landing_gear_large",
+      "required": false
+    },
+    {
       "id": "wmd:laser_defence",
       "required": false
     },
@@ -623,6 +819,10 @@
     },
     {
       "id": "wmd:launch_plate",
+      "required": false
+    },
+    {
+      "id": "wmd:launch_rail",
       "required": false
     },
     {
@@ -658,7 +858,15 @@
       "required": false
     },
     {
+      "id": "wmd:lift_fan",
+      "required": false
+    },
+    {
       "id": "wmd:listening_node",
+      "required": false
+    },
+    {
+      "id": "wmd:loader_track",
       "required": false
     },
     {
@@ -718,6 +926,10 @@
       "required": false
     },
     {
+      "id": "wmd:nav_light",
+      "required": false
+    },
+    {
       "id": "wmd:naval_reactor",
       "required": false
     },
@@ -738,7 +950,15 @@
       "required": false
     },
     {
+      "id": "wmd:nose_radar",
+      "required": false
+    },
+    {
       "id": "wmd:nuclear_reactor",
+      "required": false
+    },
+    {
+      "id": "wmd:ordnance_loader",
       "required": false
     },
     {
@@ -782,7 +1002,15 @@
       "required": false
     },
     {
+      "id": "wmd:pump_jet",
+      "required": false
+    },
+    {
       "id": "wmd:pumpjack",
+      "required": false
+    },
+    {
+      "id": "wmd:pylon",
       "required": false
     },
     {
@@ -830,6 +1058,10 @@
       "required": false
     },
     {
+      "id": "wmd:refuel_probe",
+      "required": false
+    },
+    {
       "id": "wmd:reinforced_concrete",
       "required": false
     },
@@ -842,11 +1074,23 @@
       "required": false
     },
     {
+      "id": "wmd:rf_receiver",
+      "required": false
+    },
+    {
+      "id": "wmd:rf_sender",
+      "required": false
+    },
+    {
       "id": "wmd:roaster",
       "required": false
     },
     {
       "id": "wmd:robot_dock",
+      "required": false
+    },
+    {
+      "id": "wmd:rocket_pod",
       "required": false
     },
     {
@@ -882,7 +1126,15 @@
       "required": false
     },
     {
+      "id": "wmd:sam_site",
+      "required": false
+    },
+    {
       "id": "wmd:satellite_facility",
+      "required": false
+    },
+    {
+      "id": "wmd:screw_propeller",
       "required": false
     },
     {
@@ -894,7 +1146,19 @@
       "required": false
     },
     {
+      "id": "wmd:service_arm",
+      "required": false
+    },
+    {
+      "id": "wmd:service_receptacle",
+      "required": false
+    },
+    {
       "id": "wmd:shell_press",
+      "required": false
+    },
+    {
+      "id": "wmd:ship_turbine",
       "required": false
     },
     {
@@ -910,11 +1174,19 @@
       "required": false
     },
     {
+      "id": "wmd:single_jet",
+      "required": false
+    },
+    {
       "id": "wmd:sinter_press",
       "required": false
     },
     {
       "id": "wmd:smoke_machine",
+      "required": false
+    },
+    {
+      "id": "wmd:snorkel_mast",
       "required": false
     },
     {
@@ -1030,6 +1302,10 @@
       "required": false
     },
     {
+      "id": "wmd:stealth_jet",
+      "required": false
+    },
+    {
       "id": "wmd:steam_engine",
       "required": false
     },
@@ -1046,6 +1322,10 @@
       "required": false
     },
     {
+      "id": "wmd:sub_diesel",
+      "required": false
+    },
+    {
       "id": "wmd:super_gun",
       "required": false
     },
@@ -1058,11 +1338,27 @@
       "required": false
     },
     {
+      "id": "wmd:survey_scanner",
+      "required": false
+    },
+    {
       "id": "wmd:swarm_launcher",
       "required": false
     },
     {
+      "id": "wmd:tailhook",
+      "required": false
+    },
+    {
+      "id": "wmd:targeting_pod",
+      "required": false
+    },
+    {
       "id": "wmd:thermal_net",
+      "required": false
+    },
+    {
+      "id": "wmd:tiltrotor",
       "required": false
     },
     {
@@ -1126,6 +1422,18 @@
       "required": false
     },
     {
+      "id": "wmd:turbofan",
+      "required": false
+    },
+    {
+      "id": "wmd:turboprop",
+      "required": false
+    },
+    {
+      "id": "wmd:twin_jet",
+      "required": false
+    },
+    {
       "id": "wmd:uraninite_deposit",
       "required": false
     },
@@ -1142,7 +1450,19 @@
       "required": false
     },
     {
+      "id": "wmd:waterjet",
+      "required": false
+    },
+    {
+      "id": "wmd:weapons_bay",
+      "required": false
+    },
+    {
       "id": "wmd:wind_turbine",
+      "required": false
+    },
+    {
+      "id": "wmd:wing_section",
       "required": false
     },
     {

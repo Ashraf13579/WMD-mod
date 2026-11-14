@@ -1,0 +1,72 @@
+{
+  "_doc": "Sections inside the creative tabs: per WMD tab (its registry path), the sections in display order. Each section has a lang key and matchers: an exact item id, 'prefix*', '*suffix', '*part*' or '@ClassName' (the item's class, or the block's class for a block item). An item goes into the FIRST section that matches it; items no section matches go into a last 'More' section (tools/creative_sections_qc.py lists them). Read by ClientCreativeSections.",
+  "wmd_tab": [
+    { "title": "creative.wmd.section.ores", "items": ["*_ore", "*_deposit", "raw_*", "*_chunk", "*_core_sample", "crushed_*"] },
+    { "title": "creative.wmd.section.metals", "items": ["*_ingot", "*_block", "*_plate", "*_rod", "*_wire", "*_cable", "*_sponge", "*_powder", "*_casing", "tungsten_tile"] },
+    { "title": "creative.wmd.section.chemicals", "items": ["*_dust", "*_concentrate", "*_oxide", "yellowcake", "*uranium*", "plutonium", "coke", "petroleum_coke", "caustic_soda", "silicon", "*_bucket", "*breeder_rod", "*fuel_rod"] },
+    { "title": "creative.wmd.section.parts", "items": ["*_circuit", "*drill_bit", "rocket_engine", "aluminium_airframe", "he_charge", "heat_shield_tile", "flare_pack", "chaff_pod", "*_impeller", "turbine_blades", "refractory_brick", "carbon_electrode", "superconducting_coil"] },
+    { "title": "creative.wmd.section.chips", "items": ["chip_*"] }
+  ],
+  "wmd_industry": [
+    { "title": "creative.wmd.section.tools", "items": ["oil_detector", "ground_scanner", "wrench", "field_manual", "research_station", "pipe_clearer", "creative_*"] },
+    { "title": "creative.wmd.section.generators", "items": ["diesel_generator", "coal_generator", "starter_generator", "solar_panel", "wind_turbine", "steam_engine", "lava_generator", "gasoline_engine", "free_piston_generator", "gas_turbine", "flare_stack"] },
+    { "title": "creative.wmd.section.power", "items": ["battery_*", "busbar", "power_port", "grid_converter"] },
+    { "title": "creative.wmd.section.logistics", "items": ["*_pipe", "fluid_valve", "floodgate", "canister", "item_duct", "sorter", "supply_interface", "storage_tank", "feed_pump", "water_intake"] },
+    { "title": "creative.wmd.section.oil", "items": ["pumpjack", "crude_oil_deposit", "desalter", "furnace", "atmospheric_column", "vacuum_column", "reformer", "fcc", "hydrotreater", "coker", "alkylation_unit", "acid_catalyst", "fuel_canister", "alkylate_canister"] },
+    { "title": "creative.wmd.section.metallurgy", "items": ["mining_rig", "chlor_alkali*", "magnesium_cell", "chlorinator", "kroll_reactor", "electrolyser", "blast_furnace", "coke_oven", "stamp_mill", "powder_mill", "crusher", "rolling_mill", "wire_drawer", "roaster", "hydrogen_furnace", "sinter_press", "leach_tank", "centrifuge", "arc_furnace", "nitration_reactor", "machine_casing", "generator_engine"] },
+    { "title": "creative.wmd.section.nuclear", "items": ["nuclear_reactor", "reactor_*", "control_rod_drive", "coolant_pump", "cooling_tower", "steam_turbine", "reprocessing_plant"] },
+    { "title": "creative.wmd.section.fusion", "items": ["fusion_reactor", "antimatter_*", "empty_trap_cell"] },
+    { "title": "creative.wmd.section.upgrades", "items": ["upgrade_*"] }
+  ],
+  "wmd_missiles": [
+    { "title": "creative.wmd.section.bay", "items": ["bay_*"] },
+    { "title": "creative.wmd.section.missiles", "items": ["missile_t*", "stage_*", "cruise_missile", "jet_engine", "guidance_core_t4", "@MissilePartItem"] },
+    { "title": "creative.wmd.section.seekers", "items": ["*_seeker", "cam_pod", "tv_module"] },
+    { "title": "creative.wmd.section.launch", "items": ["*launch_plate*", "*pad_plate*", "launch_terminal_*", "network_card", "link_card", "cruise_launcher"] },
+    { "title": "creative.wmd.section.missile_logistics", "items": ["robot_dock", "missile_robot", "xl_dock", "xl_transporter", "runner_charger", "parts_runner", "runner_upgrade_kit", "missile_depot", "missile_teleporter"] },
+    { "title": "creative.wmd.section.lab", "items": ["lab_*", "warhead_reactor", "reactor_repair_kit"] }
+  ],
+  "wmd_artillery": [
+    { "title": "creative.wmd.section.guns", "items": ["mortar", "howitzer", "super_gun", "railgun", "mlrs", "shell_press", "counter_battery_radar"] },
+    { "title": "creative.wmd.section.shells", "items": ["shell_*", "@ArtShellItem", "propellant_charge", "railgun_slug", "mlrs_pod*", "super_charge"] },
+    { "title": "creative.wmd.section.hand_weapons", "items": ["manpads_*", "javelin_*", "leaflet", "swarm_launcher", "swarm_drone_pack"] },
+    { "title": "creative.wmd.section.bombs", "items": ["bomb_*"] },
+    { "title": "creative.wmd.section.drones", "items": ["drone_*", "runway_*", "recon_drone"] },
+    { "title": "creative.wmd.section.targeting", "items": ["target_designator", "laser_tripod", "laser_receiver", "laser_tablet"] }
+  ],
+  "wmd_defence": [
+    { "title": "creative.wmd.section.radar", "items": ["radar_station", "radar_component", "early_warning_array", "decoy_*", "camo_net", "*deadhand*", "*dead_hand*"] },
+    { "title": "creative.wmd.section.interceptors", "items": ["interceptor_*", "kill_vehicle_pack"] },
+    { "title": "creative.wmd.section.point_defence", "items": ["ciws*", "upgrade_ciws_drum", "salvage_*", "laser_defence", "*forcefield*", "sentry_*"] },
+    { "title": "creative.wmd.section.fortification", "items": ["reinforced_concrete", "blast_glass", "armour_plate", "hardened_lid"] },
+    { "title": "creative.wmd.section.security", "items": ["cctv_camera", "covert_camera", "camera_relay", "perimeter_sensor", "seismic_scanner", "floodlight", "alarm", "hacking_device", "portable_jammer", "c4_charge", "detonator", "gas_mask"] },
+    { "title": "creative.wmd.section.traps", "items": ["fence_energizer", "electric_fence", "pressure_mine", "claymore", "thermal_net", "smoke_*"] }
+  ],
+  "wmd_space": [
+    { "title": "creative.wmd.section.command", "items": ["cc_*"] },
+    { "title": "creative.wmd.section.satellites", "items": ["satellite_*", "ground_station", "rtg_cell", "@PayloadUnitItem", "payload_unit*", "cubesat", "uplink_cell", "laser_designator_pod", "solar_cell"] },
+    { "title": "creative.wmd.section.eva", "items": ["eva_*", "oxygen_*", "crew_capsule", "used_crew_capsule"] },
+    { "title": "creative.wmd.section.station", "items": ["station_*", "tug_core", "orbital_frame", "life_support_unit", "power_core", "dt_fuel_canister", "cargo_pod"] },
+    { "title": "creative.wmd.section.orbital_weapons", "items": ["weapon_core", "orbital_rod"] }
+  ],
+  "wmd_deep_sea": [
+    { "title": "creative.wmd.section.sonar", "items": ["sonar_*", "hydrophone_array", "towed_array_winch", "listening_node", "sonobuoy", "deep_sonar_upgrade", "uuv"] },
+    { "title": "creative.wmd.section.torpedoes", "items": ["torpedo_*", "fire_control_console", "noisemaker*"] },
+    { "title": "creative.wmd.section.mines", "items": ["mine_*", "depth_charge*"] },
+    { "title": "creative.wmd.section.sea_missiles", "items": ["launch_cell", "asroc", "slbm", "cruise_capsule", "coastal_battery"] },
+    { "title": "creative.wmd.section.submarine", "items": ["naval_reactor", "periscope", "comms_buoy*", "escape_*", "hull_penetrator", "manganese_hull_plate", "superalloy_hull", "deep_viewport", "anechoic_tile", "dock_crane"] },
+    { "title": "creative.wmd.section.seabed", "items": ["dredge_winch", "collector_rig", "seabed_crawler", "manganese_*", "nickel_cobalt_*", "nodule_field"] },
+    { "title": "creative.wmd.section.ship_drives", "items": ["screw_propeller", "pump_jet", "sub_diesel", "snorkel_mast", "ship_turbine", "waterjet", "azimuth_pod", "bow_thruster", "engine_telegraph", "helm_station"] },
+    { "title": "creative.wmd.section.surface_fleet", "items": ["*anchor*", "*windlass*", "*hawse*", "chart_table", "*naval_gun*", "*deck_gun*", "*battleship*"] }
+  ],
+  "wmd_air_battles": [
+    { "title": "creative.wmd.section.example_jets", "items": ["single_jet", "twin_jet", "stealth_jet"] },
+    { "title": "creative.wmd.section.cockpits", "items": ["jet_cockpit*", "flight_deck", "power_core", "jet_power_core", "flight_check_tablet", "gunner_station"] },
+    { "title": "creative.wmd.section.engines", "items": ["turbofan", "ducted_fan", "lift_fan", "turboprop", "tiltrotor", "heli_*", "jato_*", "engine_repair_kit"] },
+    { "title": "creative.wmd.section.airframe", "items": ["wing_section", "control_surface", "landing_gear*", "tailhook", "drag_chute", "fuel_tank", "drop_tank", "nav_light", "refuel_probe", "drogue_pod", "cargo_hook_*", "cargo_ramp", "cargo_pallet*"] },
+    { "title": "creative.wmd.section.air_weapons", "items": ["pylon", "launch_rail", "weapons_bay", "aam_*", "radar_seeker", "gun_pod", "gun_turret", "heavy_gun", "rocket_pod", "air_rocket", "ashm"] },
+    { "title": "creative.wmd.section.air_sensors", "items": ["nose_radar", "targeting_pod", "jammer_pod", "dispenser", "air_search_radar", "sam_site"] },
+    { "title": "creative.wmd.section.carrier", "items": ["catapult_track", "arresting_wire", "deck_light", "deck_lift", "turntable", "deck_console", "hangar_door"] },
+    { "title": "creative.wmd.section.ground_crew", "items": ["service_*", "ammo_depot", "ordnance_loader", "heavy_loader", "loader_track", "survey_scanner", "gantry_*"] }
+  ]
+}

@@ -18,5 +18,7 @@ public class WmdJadePlugin implements IWailaPlugin {
     @Override
     public void registerClient(IWailaClientRegistration reg) {
         reg.registerBlockComponent(MachineInfoProvider.INSTANCE, Block.class);
+
+        reg.addRayTraceCallback((hit, accessor, original) -> com.ashraf.wmd.ClientCockpit.inJetSeat() ? null : accessor);
     }
 }

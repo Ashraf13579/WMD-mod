@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:drogue_pod"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PTP",
+    "PCP",
+    "HBH"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "T": {
+      "item": "wmd:turbine_blades"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "H": {
+      "item": "minecraft:dried_kelp_block"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    }
+  },
+  "result": {
+    "id": "wmd:drogue_pod",
+    "count": 1
+  }
+}

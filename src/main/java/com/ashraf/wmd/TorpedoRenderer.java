@@ -18,6 +18,8 @@ public class TorpedoRenderer extends EntityRenderer<TorpedoEntity> {
 
     static final float AXIS_Y = 6.0F / 16.0F;
 
+    static final float CHUTE_UP = 3.4F;
+
     public TorpedoRenderer(EntityRendererProvider.Context context) {
         super(context);
         shadowRadius = 0.0F;
@@ -31,6 +33,20 @@ public class TorpedoRenderer extends EntityRenderer<TorpedoEntity> {
         Vec3 d = new Vec3(e.getX() - e.xo, e.getY() - e.yo, e.getZ() - e.zo);
         if (d.lengthSqr() < 1.0E-8) d = e.getDeltaMovement();
         if (d.lengthSqr() < 1.0E-8) d = new Vec3(0, 0, -1);
+        if (e.drop() == TorpedoEntity.DROP_CHUTE) {
+            if (e.chuteSeen < 0) e.chuteSeen = e.tickCount;
+            MeshModel chute = MeshModel.named("drone_chute");
+            if (chute.has("chute")) {
+                float age = e.tickCount - e.chuteSeen + pt;
+                ps.pushPose();
+                ps.translate(0.0F, CHUTE_UP, 0.0F);
+                ps.mulPose(com.mojang.math.Axis.ZP.rotationDegrees((float) Math.sin(age * 0.15) * 6.0F));
+                float s = Math.min(1.0F, 0.25F + age / 10.0F);
+                ps.scale(s, s, s);
+                chute.draw("chute", ps.last(), buffers, light, OverlayTexture.NO_OVERLAY);
+                ps.popPose();
+            }
+        }
         ps.pushPose();
         ps.mulPose(frame(d.normalize()));
         ps.translate(0.0F, -k.axisPx() / 16.0F, 0.0F);
@@ -57,6 +73,11 @@ public class TorpedoRenderer extends EntityRenderer<TorpedoEntity> {
         Vector3f y = new Vector3f(up).sub(new Vector3f(z).mul(z.dot(up))).normalize();
         Vector3f x = new Vector3f(y).cross(z).normalize();
         return new Quaternionf().setFromNormalized(new Matrix3f(x, y, z));
+    }
+
+    @Override
+    public boolean shouldRender(TorpedoEntity e, net.minecraft.client.renderer.culling.Frustum frustum, double x, double y, double z) {
+        return e.drop() == TorpedoEntity.DROP_CHUTE || super.shouldRender(e, frustum, x, y, z);
     }
 
     @Override

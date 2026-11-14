@@ -66,6 +66,10 @@ public class CiwsBlockEntity extends BlockEntity implements Owned, GeoBlockEntit
 
     private final java.util.Set<Integer> triedBombs = new java.util.HashSet<>();
     private long nextShipBurst;
+
+    private long nextJetBurst;
+    private UUID jetLos;
+    private boolean jetClear;
     private long nextBurst;
 
     private final java.util.Set<Long> swarmBlocked = new java.util.HashSet<>();
@@ -233,6 +237,14 @@ public class CiwsBlockEntity extends BlockEntity implements Owned, GeoBlockEntit
             }
         }
 
+        if (target == null && drone == null && owner != null && powered && !droneOnly && AirGate.on()) {
+            AirGuns.Jet jet = AirGuns.groundTarget(sl, owner, frequency, gun, Balance.CIWS_JET_RANGE, now);
+            if (jet != null) {
+                if ((jetStep(sl, now, gun, jet) | changed) && (now % 4 == 0 || firingUntil == now + 6)) sync();
+                return;
+            }
+        }
+
         if (target == null && drone == null && owner != null && powered && !droneOnly) {
             ShipDefence.Target ship = ShipDefence.ciwsTarget(sl, owner, frequency, gun, now);
             if (ship != null) {
@@ -372,6 +384,30 @@ public class CiwsBlockEntity extends BlockEntity implements Owned, GeoBlockEntit
             int broken = ShipStrike.chew(sl, t.id(), gun, t.aim().add(dir.scale(200.0)), Balance.CIWS_SHIP_BLOCKS, (float) Balance.CIWS_SHIP_MAX_HARDNESS, owner);
             PacketDistributor.sendToPlayersNear(sl, null, gun.x, gun.y, gun.z, 900, new CiwsFirePayload(worldPosition, gun.x, gun.y, gun.z, t.aim().x, t.aim().y, t.aim().z, broken > 0));
             if (broken > 0) ShipDefence.logOnce(sl, owner, t.id(), "log.wmd.ship_ciws", t.name(), Integer.toString((int) gun.x), Integer.toString((int) gun.z));
+            changed = true;
+        }
+        return changed;
+    }
+
+    private boolean jetStep(ServerLevel sl, long now, Vec3 gun, AirGuns.Jet j) {
+        if (!AirGate.on()) return false;
+        Vec3 lead = j.lead(BULLET_SPEED);
+        int r = slew(gun, lead);
+        if (now % 4 == 0) store.use(Balance.CIWS_MOVE_FE);
+        boolean changed = (r & 1) != 0;
+        if (now % 4 == 0 || !j.id().equals(jetLos)) { jetClear = clearLine(sl, gun.add(j.pos().subtract(gun).normalize().scale(4.0)), j.pos()); jetLos = j.id(); }
+        if (now % 10 == 0) Rwr.lock(sl, j.id(), gun, owner, "ciws", worldPosition.asLong(), now);
+        if ((r & 2) != 0 && jetClear && now >= nextJetBurst && rounds > 0 && store.getEnergyStored() >= Balance.CIWS_FIRE_FE) {
+            int n = Math.min(rounds, Balance.CIWS_JET_ROUNDS);
+            rounds -= n;
+            store.use(Balance.CIWS_FIRE_FE);
+            HeatLog.fired(level, worldPosition, getOwner());
+            nextJetBurst = now + Balance.CIWS_JET_BURST_TICKS;
+            firingUntil = now + 6;
+            double p = AirGuns.roundHit(j.dist(), Balance.CIWS_RANGE, j.blocks(), j.speedBps());
+            int hits = AirGuns.burst(sl, j.id(), gun, j.pos(), n, p, Balance.CIWS_JET_MAX_BLOCKS, owner);
+            PacketDistributor.sendToPlayersNear(sl, null, gun.x, gun.y, gun.z, 900, new CiwsFirePayload(worldPosition, gun.x, gun.y, gun.z, lead.x, lead.y, lead.z, hits > 0));
+            if (hits > 0) ShipDefence.logOnce(sl, owner, j.id(), "log.wmd.jet_ciws", j.name(), Integer.toString((int) gun.x), Integer.toString((int) gun.z));
             changed = true;
         }
         return changed;

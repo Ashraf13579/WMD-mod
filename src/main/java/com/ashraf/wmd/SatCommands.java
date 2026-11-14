@@ -23,9 +23,9 @@ public final class SatCommands {
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("sat")
+                .then(Commands.literal("sat").requires(TestCmds::test)
                         .then(Commands.literal("list").executes(c -> list(c.getSource())))
-                        .then(Commands.literal("add")
+                        .then(Commands.literal("add").requires(TestCmds::test)
                                 .then(Commands.argument("type", StringArgumentType.word())
                                         .suggests((c, b) -> SharedSuggestionProvider.suggest(OrbitData.TYPES, b))
                                         .executes(c -> add(c.getSource(), StringArgumentType.getString(c, "type"), c.getSource().getPlayerOrException()))
@@ -34,11 +34,11 @@ public final class SatCommands {
                         .then(Commands.literal("remove")
                                 .then(Commands.argument("id", IntegerArgumentType.integer(1))
                                         .executes(c -> remove(c.getSource(), IntegerArgumentType.getInteger(c, "id")))))
-                        .then(Commands.literal("pass")
+                        .then(Commands.literal("pass").requires(TestCmds::test)
                                 .executes(c -> pass(c.getSource(), -1))
                                 .then(Commands.argument("id", IntegerArgumentType.integer(1))
                                         .executes(c -> pass(c.getSource(), IntegerArgumentType.getInteger(c, "id")))))
-                        .then(Commands.literal("life")
+                        .then(Commands.literal("life").requires(TestCmds::test)
                                 .then(Commands.argument("id", IntegerArgumentType.integer(1))
                                         .then(Commands.argument("hours", IntegerArgumentType.integer(0, 100_000))
                                                 .executes(c -> life(c.getSource(), IntegerArgumentType.getInteger(c, "id"), IntegerArgumentType.getInteger(c, "hours"))))))));

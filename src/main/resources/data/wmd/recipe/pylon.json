@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:pylon"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    " C ",
+    "SRS"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "wmd:pylon",
+    "count": 1
+  }
+}

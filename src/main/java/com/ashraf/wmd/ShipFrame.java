@@ -73,6 +73,38 @@ public final class ShipFrame {
         return s == null ? dir : s;
     }
 
+    public static boolean sameShip(Level level, BlockPos a, BlockPos b) {
+        if (level == null || a == null || b == null || !level.isClientSide || !SableBridge.active()) return false;
+        try { return SableClient.sameShip(level, a, b); } catch (Throwable t) { SableBridge.fail(t); return false; }
+    }
+
+    public static net.minecraft.world.phys.BlockHitResult clipPastShip(Level level, BlockPos own, net.minecraft.world.level.ClipContext ctx) {
+        net.minecraft.world.phys.BlockHitResult h;
+        if (level == null || own == null || !level.isClientSide || !SableBridge.active()) h = level.clip(ctx);
+        else {
+            try { h = SableClient.clipSkipping(level, own, ctx); }
+            catch (ClassCastException e) { h = level.clip(ctx); }
+            catch (Throwable t) { SableBridge.fail(t); h = level.clip(ctx); }
+        }
+        if (h.getType() == net.minecraft.world.phys.HitResult.Type.BLOCK && onShip(level, h.getBlockPos())) {
+            Vec3 w = drawnWorld(level, h.getBlockPos(), h.getLocation(), Float.NaN);
+            return new net.minecraft.world.phys.BlockHitResult(w, h.getDirection(), h.getBlockPos(), h.isInside());
+        }
+        return h;
+    }
+
+    public static java.util.List<java.util.UUID> craftsNear(Level level, Vec3 p, double r) {
+        if (level == null || p == null || !level.isClientSide || !SableBridge.active()) return java.util.List.of();
+        try { return SableClient.craftsNear(level, p.x, p.y, p.z, r); }
+        catch (Throwable t) { SableBridge.fail(t); return java.util.List.of(); }
+    }
+
+    public static org.joml.Matrix4d craftMatrix(Level level, java.util.UUID id, float pt) {
+        if (level == null || id == null || !level.isClientSide || !SableBridge.active()) return null;
+        try { return SableClient.craftMatrix(level, id, pt); }
+        catch (Throwable t) { SableBridge.fail(t); return null; }
+    }
+
     public static Vec3 drawnWorld(Level level, BlockPos pos, Vec3 p, float pt) {
         if (level == null || pos == null || p == null || !level.isClientSide || !SableBridge.active()) return p;
         try {

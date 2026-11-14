@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " W ",
+    "TCT",
+    " A "
+  ],
+  "key": {
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    },
+    "A": {
+      "item": "wmd:aluminium_casing"
+    }
+  },
+  "result": {
+    "id": "wmd:engine_repair_kit",
+    "count": 2
+  }
+}

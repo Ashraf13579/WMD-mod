@@ -132,7 +132,7 @@ public final class ArtilleryManager extends SavedData {
 
     private static boolean groundEffect(int type) {
         if (type == Artillery.GUIDED || SpecialShells.groundEffect(type)) return true;
-        return type == Artillery.HE || type == Artillery.CLUSTER;
+        return type == Artillery.HE || type == Artillery.CLUSTER || type == Artillery.GUNSHIP_105;
     }
 
     private static double holdRadius(ArtShell s) { return (s.gun() == Artillery.MORTAR ? 16.0 : 24.0) + (s.type() == Artillery.CLUSTER ? clusterRadius(s.gun()) : 0.0); }
@@ -273,7 +273,7 @@ public final class ArtilleryManager extends SavedData {
         return on;
     }
 
-    private static boolean needsGround(ArtShell s) { return s.gun() == Artillery.ROCKET || s.gun() == Artillery.SUPER_GUN || s.type() == Artillery.HE || s.type() == Artillery.GUIDED || SpecialShells.groundEffect(s.type()); }
+    private static boolean needsGround(ArtShell s) { return s.gun() == Artillery.ROCKET || s.gun() == Artillery.SUPER_GUN || s.type() == Artillery.HE || s.type() == Artillery.GUIDED || s.type() == Artillery.GUNSHIP_105 || SpecialShells.groundEffect(s.type()); }
 
     private static double holdArea(ArtShell s) {
         if (s.gun() == Artillery.ROCKET) return Mlrs.HOLD;
@@ -299,7 +299,7 @@ public final class ArtilleryManager extends SavedData {
             return;
         }
         switch (s.type()) {
-            case Artillery.HE, Artillery.GUIDED -> {
+            case Artillery.HE, Artillery.GUIDED, Artillery.GUNSHIP_105 -> {
                 if (!s.prepared() && !level.hasChunkAt(new BlockPos(gx, level.getMinBuildHeight(), gz))) fm.holdForTest(level, gx, gz, holdRadius(s));
                 int gy = ground(level, gx, gz, s.ty(), true);
                 heBurst(level, fm, s, gx, gy, gz);
@@ -333,19 +333,21 @@ public final class ArtilleryManager extends SavedData {
     static int holdOf(ArtShell s) { return (int) Math.ceil(holdRadius(s)); }
 
     private void heBurst(ServerLevel level, FlightManager fm, ArtShell s, int gx, int gy, int gz) {
-        double r = s.gun() == Artillery.MORTAR ? Balance.MORTAR_HE_RADIUS : Balance.HOWITZER_HE_RADIUS;
+        boolean g105 = s.type() == Artillery.GUNSHIP_105;
+        double r = g105 ? Balance.GUNSHIP_HE_RADIUS : s.gun() == Artillery.MORTAR ? Balance.MORTAR_HE_RADIUS : Balance.HOWITZER_HE_RADIUS;
         Vec3 pos = new Vec3(gx + 0.5, gy, gz + 0.5);
-        WarheadFx.hurt(level, pos, r, 3.5, 0.6, s.gun() == Artillery.MORTAR ? 0.5 : 0.8, 0.6, 3, hasOwner(s.owner()) ? s.owner() : null);
+        WarheadFx.hurt(level, pos, r, g105 ? Balance.GUNSHIP_HE_REACH : 3.5, g105 ? Balance.GUNSHIP_HE_LETHAL : 0.6, g105 ? Balance.GUNSHIP_HE_DMG : s.gun() == Artillery.MORTAR ? 0.5 : 0.8, 0.6, 3,
+                hasOwner(s.owner()) ? s.owner() : null);
         FusionReactorBlockEntity.blastAt(level, pos, r);
         AntimatterStoreBlockEntity.blastAt(level, pos, r);
         RailgunBlockEntity.blastAt(level, pos, r);
         Crater crater = new Crater(gx, gy, gz, r, 0.6, 0.4, 0.0, holdRadius(s));
         fm.craters.add(crater);
         DamageRings.queue(level, crater, WarheadType.HE);
-        MapFeed.hit(level, s.gun() == Artillery.MORTAR ? "mortar he" : "howitzer he", 0, false, gx + 0.5, gy, gz + 0.5, r, hasOwner(s.owner()) ? s.owner() : null);
+        MapFeed.hit(level, g105 ? "gunship 105" : s.gun() == Artillery.MORTAR ? "mortar he" : "howitzer he", 0, false, gx + 0.5, gy, gz + 0.5, r, hasOwner(s.owner()) ? s.owner() : null);
         Debris.blast(level, gx, gy, gz, r, crater);
         fm.setDirty();
-        ShipStrike.blast(level, pos, r, ShipStrike.powerForGun(s.gun()), hasOwner(s.owner()) ? s.owner() : null);
+        ShipStrike.blast(level, pos, r, g105 ? (float) Balance.GUNSHIP_HE_SHIP_POWER : ShipStrike.powerForGun(s.gun()), hasOwner(s.owner()) ? s.owner() : null);
         send(level, s, pos.x, gy, pos.z);
     }
 
@@ -368,7 +370,7 @@ public final class ArtilleryManager extends SavedData {
         else if (s.gun() == Artillery.ROCKET) Mlrs.burstAt(level, s, p);
         else {
             switch (s.type()) {
-                case Artillery.HE, Artillery.GUIDED, Artillery.LASER, Artillery.ROCKET_ASSIST, Artillery.PIERCE -> heBurst(level, fm, s, gx, gy, gz);
+                case Artillery.HE, Artillery.GUIDED, Artillery.LASER, Artillery.ROCKET_ASSIST, Artillery.PIERCE, Artillery.GUNSHIP_105 -> heBurst(level, fm, s, gx, gy, gz);
                 case Artillery.CLUSTER -> {
                     send(level, s, p.x, p.y, p.z);
                     WarheadFx.hurt(level, p, 1.5, 3.0, 0.6, 0.45, 1.0, 3, owner);

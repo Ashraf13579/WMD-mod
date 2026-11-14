@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:tiltrotor"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TTT",
+    "PSP",
+    "PCP"
+  ],
+  "key": {
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "S": {
+      "item": "wmd:heli_turboshaft"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:tiltrotor",
+    "count": 1
+  }
+}

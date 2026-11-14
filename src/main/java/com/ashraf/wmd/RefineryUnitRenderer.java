@@ -32,6 +32,13 @@ public class RefineryUnitRenderer<T extends ProcessUnitBlockEntity> extends GeoB
 
         @Override
         public void setCustomAnimations(T be, long instanceId, AnimationState<T> state) {
+
+            if (be instanceof ShipEngine && be instanceof CcAnimated own) {
+                double t0 = (be.getLevel() != null ? be.getLevel().getGameTime() : 0) + state.getPartialTick();
+                own.ccAnimate(ClientCcBones.of(this), t0, state.getPartialTick());
+                BoneOverrides.apply(this, getModelResource(be));
+                return;
+            }
             float a = be.spinAngle(state.getPartialTick());
             getBone("shaft").ifPresent(b -> b.setRotX(a));
 

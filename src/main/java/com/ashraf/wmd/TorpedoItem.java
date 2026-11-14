@@ -26,6 +26,8 @@ public class TorpedoItem extends Item {
         }
         lines.add(Component.translatable("tooltip.wmd.torpedo.stats", String.format("%.0f", kind.speed() * 20.0), String.format("%,d", (int) kind.range()),
                 String.format("%.0f", kind.power())).withStyle(net.minecraft.ChatFormatting.DARK_AQUA));
+        if (AirGate.AVAILABLE && (kind == TorpedoKind.T1 || kind == TorpedoKind.T2))
+            lines.add(Component.translatable("tooltip.wmd.torpedo.air").withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
         if (kind != TorpedoKind.T1) lines.add(Component.translatable("tooltip.wmd.torpedo.guide." + kind.id, (int) Balance.TORP_SEEK_RANGE, (int) Balance.TORP_WIRE_LEN)
                 .withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
     }

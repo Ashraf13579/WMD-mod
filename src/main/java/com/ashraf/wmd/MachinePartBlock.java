@@ -69,8 +69,23 @@ public class MachinePartBlock extends BaseEntityBlock implements net.minecraft.w
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new MachinePartBlockEntity(pos, state); }
 
+    @Override protected boolean hasAnalogOutputSignal(BlockState state) { return true; }
+
+    @Override
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        BlockPos c = controllerOf(level, pos);
+        return c != null && level.getBlockEntity(c) instanceof ComparatorMachine m ? net.minecraft.util.Mth.clamp(m.comparatorOutput(), 0, 15) : 0;
+    }
+
     private static BlockPos controllerOf(Level level, BlockPos pos) {
         return level.getBlockEntity(pos) instanceof MachinePartBlockEntity be ? be.validController(level) : null;
+    }
+
+    @Override
+    public float getExplosionResistance(BlockState state, BlockGetter level, BlockPos pos, net.minecraft.world.level.Explosion explosion) {
+        BlockPos c = level.getBlockEntity(pos) instanceof MachinePartBlockEntity be ? be.validController(level) : null;
+        if (c != null && level.getBlockState(c).getBlock() instanceof StorageTankBlock t) return t.getExplosionResistance(level.getBlockState(c), level, c, explosion);
+        return super.getExplosionResistance(state, level, pos, explosion);
     }
 
     @Override

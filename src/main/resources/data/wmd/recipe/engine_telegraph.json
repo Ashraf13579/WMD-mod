@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CBC",
+    " L ",
+    "III"
+  ],
+  "key": {
+    "C": {
+      "tag": "c:ingots/copper"
+    },
+    "B": {
+      "item": "minecraft:bell"
+    },
+    "L": {
+      "item": "minecraft:lever"
+    },
+    "I": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "result": {
+    "id": "wmd:engine_telegraph",
+    "count": 1
+  }
+}

@@ -20,6 +20,8 @@ public final class WmdInfo {
     }
 
     public static void register(IRecipeRegistration reg) {
+        for (String ore : com.ashraf.wmd.GroundScannerItem.ORES) info(reg, ore + "_core_sample");
+        info(reg, "ground_scanner");
         info(reg, "ciws", Math.round(Balance.CRAM_HIT * 100), Proc.n((long) Balance.CRAM_RANGE), Balance.CRAM_ROUNDS_PER_SHOT, Math.round(Balance.DOME_HIT * 100));
         info(reg, "camo_net", Balance.CAMO_MAX_SPAN, Balance.CAMO_MAX_SPAN);
         info(reg, "decoy_launcher", Balance.DECOY_LIFE_MINUTES / 60);
@@ -132,6 +134,19 @@ public final class WmdInfo {
         info(reg, "mine_bottom", (int) Balance.MINE_BOT_SIDE, (int) Balance.MINE_BOT_LISTEN);
         info(reg, "mine_captor", (int) Balance.MINE_CAP_RANGE);
         info(reg, "depth_charge_thrower", Balance.KG_RELOAD_TICKS / 20);
+
+        info(reg, "engine_telegraph");
+        info(reg, "helm_station");
+        info(reg, "jato_booster", Balance.JATO_BURN / 20);
+        info(reg, "jet_power_core", Proc.n(Balance.CORE_BUFFER_FE));
+        info(reg, "rf_sender", Proc.n(Balance.RF_SEND_FE * 20L), Balance.RF_EFFICIENCY, Proc.n(Balance.RF_RANGE));
+        info(reg, "rf_receiver", Proc.n(Balance.RF_OUT_FE * 20L), Balance.RF_EFFICIENCY, Proc.n(Balance.RF_RANGE));
+        info(reg, "aam_heat", Proc.n((long) Balance.AAM_RANGE[0]));
+        info(reg, "aam_radar", Proc.n((long) Balance.AAM_RANGE[1]), Proc.n((long) Balance.AAM_PITBULL));
+        info(reg, "aam_arm", Proc.n((long) Balance.AAM_RANGE[2]));
+        info(reg, "aam_agm", Proc.n((long) Balance.AAM_RANGE[3]));
+        info(reg, "wing_section");
+        info(reg, "control_surface");
 
         for (com.ashraf.wmd.WmdFluids.Entry e : com.ashraf.wmd.WmdFluids.ALL)
             reg.addIngredientInfo(new net.neoforged.neoforge.fluids.FluidStack(e.source().get(), 1000), mezz.jei.api.neoforge.NeoForgeTypes.FLUID_STACK,

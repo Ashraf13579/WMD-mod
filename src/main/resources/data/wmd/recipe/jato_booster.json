@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    { "item": "wmd:rocket_engine" },
+    { "item": "wmd:propellant_charge" },
+    { "item": "wmd:propellant_charge" },
+    { "tag": "c:plates/steel" },
+    { "tag": "c:plates/steel" }
+  ],
+  "result": { "id": "wmd:jato_booster", "count": 1 }
+}

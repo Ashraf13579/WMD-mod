@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:single_jet"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TJT",
+    "PCP"
+  ],
+  "key": {
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "J": {
+      "item": "wmd:jet_engine"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:single_jet",
+    "count": 1
+  }
+}

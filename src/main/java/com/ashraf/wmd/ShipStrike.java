@@ -48,6 +48,7 @@ public final class ShipStrike {
 
     public static int blast(ServerLevel level, Vec3 pos, double radius, float power, UUID shooter) {
         if (level == null || pos == null || power <= 0.0F || !SableBridge.active()) return 0;
+        AirEngineBlockEntity.blastAt(level, pos, radius, power);
         long now = level.getGameTime();
         long[] u = USED.computeIfAbsent(level.dimension(), k -> new long[2]);
         if (u[0] != now) { u[0] = now; u[1] = 0; }
@@ -69,6 +70,8 @@ public final class ShipStrike {
 
     public static int chew(ServerLevel level, UUID shipId, Vec3 from, Vec3 to, int maxBlocks, float maxHardness, UUID shooter) {
         if (level == null || shipId == null || !SableBridge.active()) return 0;
+        AirEngineBlockEntity.rayAt(level, from, to, maxBlocks);
+        TankDamage.rayAt(level, from, to, maxBlocks);
         try { return SableImpact.breakAlong(level, shipId, from, to, maxBlocks, maxHardness, shooter); }
         catch (Throwable t) { SableBridge.fail(t); return 0; }
     }

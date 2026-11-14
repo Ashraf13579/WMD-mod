@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:landing_gear_bogie"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SPS",
+    "LAL",
+    "S S"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "L": {
+      "item": "wmd:landing_gear_large"
+    },
+    "A": {
+      "item": "wmd:aluminium_plate"
+    }
+  },
+  "result": {
+    "id": "wmd:landing_gear_bogie",
+    "count": 1
+  }
+}

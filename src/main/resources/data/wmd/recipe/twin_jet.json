@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:twin_jet"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PTP",
+    "JCJ",
+    "PTP"
+  ],
+  "key": {
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "J": {
+      "item": "wmd:jet_engine"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:twin_jet",
+    "count": 1
+  }
+}

@@ -33,7 +33,7 @@ public final class SableCommands {
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("dev").then(Commands.literal("ships")
+                .then(Commands.literal("dev").requires(TestCmds::test).then(Commands.literal("ships").requires(TestCmds::test)
                         .executes(c -> ships(c.getSource(), DEFAULT_RADIUS))
                         .then(Commands.literal("near").then(Commands.argument("radius", IntegerArgumentType.integer(1, 30_000))
                                 .executes(c -> ships(c.getSource(), IntegerArgumentType.getInteger(c, "radius")))))

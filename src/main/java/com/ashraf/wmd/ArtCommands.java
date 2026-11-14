@@ -24,7 +24,7 @@ public final class ArtCommands {
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("art")
+                .then(Commands.literal("art").requires(TestCmds::test)
                         .then(Commands.literal("give")
                                 .then(Commands.argument("what", StringArgumentType.word())
                                         .suggests((c, b) -> SharedSuggestionProvider.suggest(new String[] { "mortar", "howitzer", "shell_press", "counter_battery_radar" }, b))

@@ -19,6 +19,8 @@ public class FireControlScreen extends MachineScreen implements WmdUi.Kit {
 
     private static boolean strikePage;
 
+    private static boolean gunsPage;
+
     private EditBox xBox, zBox;
     private String xText = "", zText = "";
     private boolean filled;
@@ -49,12 +51,16 @@ public class FireControlScreen extends MachineScreen implements WmdUi.Kit {
         addActionTab("icon_freq", Component.translatable("gui.wmd.kit.tab.freq"), () -> minecraft.setScreen(new FrequencyScreen(this, c::frequency, f -> send(FireControlConsoleBlockEntity.A_FREQ, f, 0))));
         int x = px(), y = py();
 
-        WmdUi.KitButton torp = new WmdUi.KitButton(x + 56, y + PAGE_Y, 54, 11, Component.translatable(P + "page_torp"), b -> page(false));
-        WmdUi.KitButton strike = new WmdUi.KitButton(x + 112, y + PAGE_Y, 54, 11, Component.translatable(P + "page_strike"), b -> page(true));
-        torp.active = strikePage;
+        WmdUi.KitButton torp = new WmdUi.KitButton(x + 42, y + PAGE_Y, 40, 11, Component.translatable(P + "page_torp"), b -> page(0));
+        WmdUi.KitButton strike = new WmdUi.KitButton(x + 84, y + PAGE_Y, 40, 11, Component.translatable(P + "page_strike"), b -> page(1));
+        WmdUi.KitButton guns = new WmdUi.KitButton(x + 126, y + PAGE_Y, 40, 11, Component.translatable(P + "page_guns"), b -> page(2));
+        torp.active = strikePage || gunsPage;
         strike.active = !strikePage;
+        guns.active = !gunsPage;
         addRenderableWidget(torp);
         addRenderableWidget(strike);
+        addRenderableWidget(guns);
+        if (gunsPage) { initGuns(c, x, y); return; }
         if (strikePage) { initStrike(c, x, y); return; }
 
         addRenderableWidget(new WmdUi.KitButton(x + 6, y + 111, 20, 12, Component.literal("<"), b -> pickTarget(-1)));
@@ -113,10 +119,20 @@ public class FireControlScreen extends MachineScreen implements WmdUi.Kit {
         return new Integer[] { x, z };
     }
 
-    private void page(boolean strike) {
-        if (strikePage == strike) return;
-        strikePage = strike;
+    private void page(int p) {
+        if (strikePage == (p == 1) && gunsPage == (p == 2)) return;
+        strikePage = p == 1;
+        gunsPage = p == 2;
         rebuildWidgets();
+    }
+
+    private void initGuns(FireControlConsoleBlockEntity c, int x, int y) {
+        addRenderableWidget(new WmdUi.KitButton(x + 6, y + S_OWN_BTN_Y, 96, 12, Component.translatable(P + "gun.heavy_btn"), b -> {
+            CompoundTag r = c.gunRow();
+            if (r != null && r.getBoolean("xl")) send(FireControlConsoleBlockEntity.A_GHEAVY, c.gunSelected(), 0);
+        }));
+        addRenderableWidget(new WmdUi.KitButton(x + 6, y + 206, 78, 14, Component.translatable(P + "fire"), b -> send(FireControlConsoleBlockEntity.A_GFIRE, c.gunSelected(), 0), true));
+        addRenderableWidget(new WmdUi.KitButton(x + 88, y + 206, 78, 14, Component.translatable(P + "salvo"), b -> send(FireControlConsoleBlockEntity.A_SALVO, 0, 0), true));
     }
 
     @Override
@@ -148,14 +164,15 @@ public class FireControlScreen extends MachineScreen implements WmdUi.Kit {
         FireControlConsoleBlockEntity c = be();
         if (button == 0 && c != null) {
             int x = px(), y = py();
-            int n = Math.min(Balance.FCC_ROWS, strikePage ? c.strikeRows().size() : c.launcherRows().size());
+            int n = Math.min(Balance.FCC_ROWS, gunsPage ? c.gunRows().size() : strikePage ? c.strikeRows().size() : c.launcherRows().size());
             for (int i = 0; i < n; i++)
                 if (WmdUi.over(mx, my, x + 5, y + ROW_Y + i * 10 - 1, PW - 10, 10)) {
-                    send(strikePage ? FireControlConsoleBlockEntity.A_SSEL : FireControlConsoleBlockEntity.A_SELECT, i, 0); WmdUi.click(); return true;
+                    send(gunsPage ? FireControlConsoleBlockEntity.A_GSEL : strikePage ? FireControlConsoleBlockEntity.A_SSEL : FireControlConsoleBlockEntity.A_SELECT, i, 0);
+                    WmdUi.click(); return true;
                 }
 
             int wx = x + 6, wy = y + MAP_Y, ww = PW - 12;
-            if (!strikePage && WmdUi.over(mx, my, wx, wy, ww, MAP_H)) {
+            if (!strikePage && !gunsPage && WmdUi.over(mx, my, wx, wy, ww, MAP_H)) {
                 int t = FireControlPicture.targetAt(ww, MAP_H, c, mx - wx, my - wy);
                 if (t >= 0) { send(FireControlConsoleBlockEntity.A_TARGET, t, 0); WmdUi.click(); return true; }
             }
@@ -188,15 +205,16 @@ public class FireControlScreen extends MachineScreen implements WmdUi.Kit {
         WmdUi.panel(g, x, y, PW, PH);
         drawSelectedTab(g);
         boolean on = c.isRunning();
-        List<CompoundTag> rows = strikePage ? c.strikeRows() : c.launcherRows(), tg = c.targetRows();
-        Component chip = !on ? Component.translatable(P + "offline") : rows.isEmpty() ? Component.translatable(P + (strikePage ? "s_none" : "none"))
-                : Component.translatable(P + (strikePage ? "s_chip" : "launchers"), rows.size());
+        List<CompoundTag> rows = gunsPage ? c.gunRows() : strikePage ? c.strikeRows() : c.launcherRows(), tg = c.targetRows();
+        Component chip = !on ? Component.translatable(P + "offline") : rows.isEmpty() ? Component.translatable(P + (gunsPage ? "gun.none" : strikePage ? "s_none" : "none"))
+                : Component.translatable(P + (gunsPage ? "gun.chip" : strikePage ? "s_chip" : "launchers"), rows.size());
         WmdUi.header(g, font, x, y, PW, new ItemStack(c.getBlockState().getBlock().asItem()), Component.translatable(c.getBlockState().getBlock().getDescriptionId()), chip,
                 !on ? WmdUi.K_BAD : rows.isEmpty() ? WmdUi.K_WARN : WmdUi.K_GOOD, on && !rows.isEmpty());
 
-        drawLeft(g, Component.translatable(P + "freq", c.frequency()), x + 6, y + PAGE_Y + 2, 48, GREY);
-        int ux = strikePage ? x + 112 : x + 56;
-        g.fill(ux + 3, y + PAGE_Y + 11, ux + 51, y + PAGE_Y + 12, WmdUi.BLUE_LIGHT);
+        drawLeft(g, Component.translatable(P + "freq", c.frequency()), x + 6, y + PAGE_Y + 2, 34, GREY);
+        int ux = gunsPage ? x + 126 : strikePage ? x + 84 : x + 42;
+        g.fill(ux + 3, y + PAGE_Y + 11, ux + 37, y + PAGE_Y + 12, WmdUi.BLUE_LIGHT);
+        if (gunsPage) { renderGuns(g, c, x, y, cx, rows); return; }
         if (strikePage) { renderStrike(g, c, x, y, cx, rows); return; }
         int wx = x + 6, wy = y + MAP_Y, ww = PW - 12;
         WmdUi.well(g, wx, wy, ww, MAP_H);
@@ -230,6 +248,51 @@ public class FireControlScreen extends MachineScreen implements WmdUi.Kit {
         if (rows.isEmpty()) fit(g, Component.translatable(P + "s_how"), cx, y + ROW_Y + 8, GREY);
         for (int i = 0; i < rows.size() && i < Balance.FCC_ROWS; i++) drawRow(g, x, y, i, rows.get(i), i == c.strikeSelected(), FireControlPicture.strikeWords(rows.get(i), i));
         fit(g, Component.translatable(P + "s_hint_fire"), cx, y + 192, GREY);
+    }
+
+    private void renderGuns(GuiGraphics g, FireControlConsoleBlockEntity c, int x, int y, int cx, List<CompoundTag> rows) {
+        CompoundTag t = c.targetRow();
+        Component tw = t != null ? Component.translatable(P + "gun.t_contact", c.target() + 1, t.getInt("x"), t.getInt("z"))
+                : c.strikeSet() ? Component.translatable(P + "gun.t_xz", c.strikeX(), c.strikeZ()) : Component.translatable(P + "gun.t_none");
+        fit(g, tw, cx, y + S_LINE_Y, t != null || c.strikeSet() ? TEXT : GREY);
+        fit(g, Component.translatable(t != null && t.hasUUID("sh") ? P + "gun.lead" : t != null ? P + "gun.no_lead" : P + "gun.t_how"), cx, y + S_LINE_Y + 11, GREY);
+        fit(g, Component.translatable(P + "gun.air"), cx, y + S_HINT_Y, GREY);
+        CompoundTag r = c.gunRow();
+        if (r == null) fit(g, Component.translatable(P + "gun.pick"), cx, y + S_HINT_Y + 10, GREY);
+        else {
+            int st = r.getInt("st");
+            fit(g, Component.translatable(P + "gun.st_line", gunLabel(r, c.gunSelected()), Component.translatable(P + "gun.st." + st)), cx, y + S_HINT_Y + 10,
+                    st == NavalGunBlockEntity.ST_READY ? GOOD : gunBad(st) ? BAD : WARN);
+            int nx = r.getInt("nx");
+            Component next = nx < 0 ? Component.translatable("message.wmd.naval_gun.none") : NavalGunBlockEntity.roundItem(nx).getHoverName();
+            fit(g, r.getBoolean("xl") ? Component.translatable(P + "gun.ammo_xl", r.getInt("n"), r.getInt("max"), r.getInt("c"), r.getInt("cmax"), next,
+                    Component.translatable(r.getBoolean("hv") ? P + "gun.mode_heavy" : P + "gun.mode_shell"))
+                    : Component.translatable(P + "gun.ammo", r.getInt("n"), r.getInt("max"), next), cx, y + S_DETAIL_Y, TEXT);
+            int rc = r.getInt("rc");
+            fit(g, rc == FireControlConsoleBlockEntity.RC_NONE ? Component.translatable(P + "gun.r_none")
+                    : Component.translatable(P + "gun.r_" + (rc == FireControlConsoleBlockEntity.RC_OK ? "ok" : rc == FireControlConsoleBlockEntity.RC_FAR ? "far" : "close"), r.getInt("d")),
+                    cx, y + S_OWN_Y, rc == FireControlConsoleBlockEntity.RC_OK ? GOOD : rc == FireControlConsoleBlockEntity.RC_NONE ? GREY : WARN);
+        }
+        WmdUi.divider(g, x + 5, y + ROW_Y - 4, PW - 10);
+        if (rows.isEmpty()) fit(g, Component.translatable(P + "gun.how"), cx, y + ROW_Y + 8, GREY);
+        for (int i = 0; i < rows.size() && i < Balance.FCC_ROWS; i++) {
+            CompoundTag row = rows.get(i);
+            int ry = y + ROW_Y + i * 10, st = row.getInt("st");
+            boolean sel = i == c.gunSelected();
+            if (sel) g.fill(x + 5, ry - 1, x + PW - 5, ry + 9, 0x402D6BB0);
+            g.fill(x + 7, ry, x + 9, ry + 8, st == NavalGunBlockEntity.ST_READY ? GOOD : gunBad(st) ? BAD : WARN);
+            Component words = Component.translatable(P + "gun.row", gunLabel(row, i), Component.translatable(P + "gun.st." + st), row.getInt("n"),
+                    row.getInt("d") < 0 ? "--" : String.format("%,d", row.getInt("d")));
+            drawLeft(g, words, x + 12, ry, PW - 18, sel ? TEXT : GREY);
+        }
+        fit(g, Component.translatable(P + "gun.hint_fire"), cx, y + 192, GREY);
+    }
+
+    private static Component gunLabel(CompoundTag r, int i) { return Component.translatable(r.getBoolean("xl") ? P + "gun.label_xl" : P + "gun.label", i + 1); }
+
+    private static boolean gunBad(int st) {
+        return st == NavalGunBlockEntity.ST_EMPTY || st == NavalGunBlockEntity.ST_NO_CRAFT || st == NavalGunBlockEntity.ST_NO_POWER || st == NavalGunBlockEntity.ST_BLOCKED
+                || st == NavalGunBlockEntity.ST_NO_CHARGE || st == NavalGunBlockEntity.ST_OUT;
     }
 
     private void drawRow(GuiGraphics g, int x, int y, int i, CompoundTag r, boolean sel, Component words) {

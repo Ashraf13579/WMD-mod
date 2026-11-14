@@ -144,7 +144,7 @@ public final class ClientPeriscope {
 
     @SubscribeEvent
     static void fov(net.neoforged.neoforge.client.event.ViewportEvent.ComputeFov event) {
-        if (active != null && event.usedConfiguredFov()) event.setFOV(event.getFOV() / zoomFactor());
+        if (active != null && event.usedConfiguredFov()) { event.setFOV(event.getFOV() / zoomFactor()); lastFov = event.getFOV(); }
     }
 
     @SubscribeEvent
@@ -179,7 +179,42 @@ public final class ClientPeriscope {
         String top = String.format("%03d", brg) + "°   x" + (zoom == 0 ? "1" : zoom == 1 ? String.valueOf(Balance.PERI_ZOOM_LOW) : String.valueOf((int) Balance.PERI_ZOOM_HIGH));
         g.drawCenteredString(font, top, cx, cy - r + 14, 0xFFE8F0E8);
         g.drawCenteredString(font, Component.translatable("hud.wmd.periscope.hint"), cx, cy + r - 22, 0xFFB0C0B0);
+        airMarks(g, mc, cx, cy, r, h);
         if (mc.level.getGameTime() - enteredAt < 6) g.fill(0, 0, w, h, 0xFF000000);
+    }
+
+    private static float[] marks = new float[0];
+    private static long marksAt;
+    private static double lastFov = 70.0;
+
+    public static void airMarks(PeriscopeAirPayload p) {
+        Minecraft mc = Minecraft.getInstance();
+        marks = p.marks();
+        marksAt = mc.level == null ? 0L : mc.level.getGameTime();
+    }
+
+    private static void airMarks(GuiGraphics g, Minecraft mc, int cx, int cy, int r, int h) {
+        if (cam == null || marks.length < 4 || mc.level.getGameTime() - marksAt > 30) return;
+        float yr = mc.player.getYRot() * Mth.DEG_TO_RAD, xr = mc.player.getXRot() * Mth.DEG_TO_RAD;
+        Vec3 f = new Vec3(-Mth.sin(yr) * Mth.cos(xr), -Mth.sin(xr), Mth.cos(yr) * Mth.cos(xr));
+        Vec3 right = new Vec3(-Mth.cos(yr), 0.0, -Mth.sin(yr));
+        Vec3 up = right.cross(f);
+        Vec3 eye = cam.position();
+        double k = (h / 2.0) / Math.tan(Math.toRadians(lastFov) / 2.0);
+        for (int i = 0; i + 3 < marks.length; i += 4) {
+            Vec3 d = new Vec3(marks[i], marks[i + 1], marks[i + 2]).subtract(eye);
+            double z = d.dot(f);
+            if (z < 1.0) continue;
+            int sx = cx + (int) Math.round(d.dot(right) / z * k), sy = cy - (int) Math.round(d.dot(up) / z * k);
+            if ((sx - cx) * (sx - cx) + (sy - cy) * (sy - cy) > (r - 10) * (r - 10)) continue;
+            int col = marks[i + 3] > 0.5F ? 0xFFFF5A4A : 0xFFE8F0E8;
+            for (int s = -4; s <= 4; s++) {
+                int o = 4 - Math.abs(s);
+                g.fill(sx + s, sy - o, sx + s + 1, sy - o + 1, col);
+                g.fill(sx + s, sy + o, sx + s + 1, sy + o + 1, col);
+            }
+            g.drawCenteredString(mc.font, String.format("%,d", (int) Math.round(d.length())), sx, sy + 7, col);
+        }
     }
 
     public static void clearStatics() { active = null; cam = null; }

@@ -46,7 +46,7 @@ public class ShellPressBlockEntity extends ItemProcessBlockEntity implements Own
     private static final String PLATE = "wmd:steel_plate", HE = "wmd:he_charge", CHAR = "minecraft:charcoal", MG = "wmd:magnesium_ingot", RS = "minecraft:redstone",
             CIRC = "wmd:basic_circuit";
 
-    public static final List<Recipe> RECIPES = List.of(
+    public static final List<Recipe> RECIPES = withAir(List.of(
             new Recipe("wmd:shell_mortar_he", 4, PLATE, 1, HE, 1, RS, 1),
             new Recipe("wmd:shell_mortar_smoke", 4, PLATE, 1, CHAR, 2, RS, 1),
             new Recipe("wmd:shell_mortar_illum", 4, PLATE, 1, MG, 1, RS, 1),
@@ -75,7 +75,14 @@ public class ShellPressBlockEntity extends ItemProcessBlockEntity implements Own
             new Recipe("wmd:shell_howitzer_jamming", 2, PLATE, 2, "wmd:aluminium_plate", 4, RS, 1),
             new Recipe("wmd:shell_howitzer_rocket", 2, PLATE, 2, HE, 2, "wmd:alkylate_canister", 1),
             new Recipe("wmd:shell_howitzer_leaflet", 4, PLATE, 2, "minecraft:paper", 16, RS, 1),
-            new Recipe("wmd:shell_super_nuke", 1, PLATE, 8, "wmd:warhead_nuke", 1, CIRC, 2));
+            new Recipe("wmd:shell_super_nuke", 1, PLATE, 8, "wmd:warhead_nuke", 1, CIRC, 2)));
+
+    private static List<Recipe> withAir(List<Recipe> base) {
+        if (!AirGate.AVAILABLE) return base;
+        List<Recipe> l = new ArrayList<>(base);
+        l.add(new Recipe("wmd:shell_howitzer_gunship", 1, "wmd:shell_howitzer_he", 1, HE, 3, RS, 1));
+        return List.copyOf(l);
+    }
 
     static boolean anyRecipe(ItemStack s, int slot) {
         for (Recipe r : RECIPES) {

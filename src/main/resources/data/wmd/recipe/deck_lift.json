@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:deck_lift"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "PAP"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "A": {
+      "item": "wmd:aluminium_plate"
+    }
+  },
+  "result": {
+    "id": "wmd:deck_lift",
+    "count": 4
+  }
+}

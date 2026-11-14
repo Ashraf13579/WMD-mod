@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:hangar_door"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "CRC"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "minecraft:chain"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "wmd:hangar_door",
+    "count": 4
+  }
+}

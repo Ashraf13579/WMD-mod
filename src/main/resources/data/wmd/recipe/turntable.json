@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:turntable"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "PCP"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:turntable",
+    "count": 4
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    { "id": "wmd:wing_section", "required": false },
+    { "id": "wmd:control_surface", "required": false }
+  ]
+}

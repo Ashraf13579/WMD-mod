@@ -18,7 +18,7 @@ public final class ReconCommands {
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("sat").then(Commands.literal("recon")
+                .then(Commands.literal("sat").requires(TestCmds::test).then(Commands.literal("recon").requires(TestCmds::test)
                         .then(Commands.literal("target")
                                 .then(Commands.argument("x", IntegerArgumentType.integer(-29_000_000, 29_000_000))
                                         .then(Commands.argument("z", IntegerArgumentType.integer(-29_000_000, 29_000_000))

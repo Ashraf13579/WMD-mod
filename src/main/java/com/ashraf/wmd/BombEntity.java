@@ -38,6 +38,8 @@ public class BombEntity extends Entity {
 
     private UUID owner, ownShip;
     private Vec3 vel = Vec3.ZERO;
+
+    private long[] held;
     private Set<BlockPos> ownCells = Set.of();
     private double aimX, aimZ;
     private boolean aimed, whistled;
@@ -120,6 +122,8 @@ public class BombEntity extends Entity {
     public void tick() {
         super.tick();
         if (!(level() instanceof ServerLevel sl)) { clientTick(); return; }
+        if (!isRemoved()) held = RunnerChunks.follow(sl, getUUID(), position(), vel.lengthSqr() > 1.0E-6 ? vel : getDeltaMovement(), held);
+
         if (isDud()) { dudTick(sl); return; }
         if (fuse() >= 0) { fuseTick(sl); return; }
         if (startPos == null) { discard(); return; }
@@ -378,6 +382,7 @@ public class BombEntity extends Entity {
 
     @Override
     public void remove(RemovalReason reason) {
+        if (level() instanceof ServerLevel sr) held = RunnerChunks.release(sr, getUUID(), held);
         super.remove(reason);
         if (level() instanceof ServerLevel s8 && type() == BombType.TSAR) TsarEvent.gone(s8, this);
         if (!(level() instanceof ServerLevel sl) || !FALLING.remove(this)) return;

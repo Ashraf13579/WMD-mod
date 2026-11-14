@@ -121,7 +121,7 @@ public class ForcefieldBlockEntity extends ProcessUnitBlockEntity implements Mod
                 if (stateTicks >= Balance.FF_CRACK_TICKS) {
                     Forcefield.send(sl, this, Forcefield.FX_SHATTER, new Vec3(0.0, 1.0, 0.0), 1.0F);
                     go(DOWN);
-                    playOnce(sl, WmdSounds.FF_DOWN.get(), 3.0F, 1.0F);
+                    playOnce(sl, WmdSounds.FF_DOWN.get(), Balance.SND_ALARM, 1.0F);
                 }
             }
             case DOWN -> {
@@ -131,9 +131,9 @@ public class ForcefieldBlockEntity extends ProcessUnitBlockEntity implements Mod
             default -> { }
         }
         if (state == BOOT) {
-            if (stateTicks == 1) playOnce(level, WmdSounds.FF_BOOT.get(), 4.0F, 1.0F);
-            for (int k = 0; k < 4; k++) if (stateTicks == 40 + 25 * k) playOnce(level, WmdSounds.FF_PYLON.get(), 2.5F, 0.9F + 0.07F * k);
-            if (stateTicks == 140) playOnce(level, WmdSounds.FF_DOME_UP.get(), 8.0F, 1.0F);
+            if (stateTicks == 1) playOnce(level, WmdSounds.FF_BOOT.get(), Balance.SND_RELEASE, 1.0F);
+            for (int k = 0; k < 4; k++) if (stateTicks == 40 + 25 * k) playOnce(level, WmdSounds.FF_PYLON.get(), Balance.SND_MECH, 0.9F + 0.07F * k);
+            if (stateTicks == 140) playOnce(level, WmdSounds.FF_DOME_UP.get(), Balance.SND_ALARM, 1.0F);
         }
         return state == BOOT || state == UP;
     }
@@ -281,7 +281,7 @@ public class ForcefieldBlockEntity extends ProcessUnitBlockEntity implements Mod
             else { setChanged(); sync(true); }
         } else if (m == MODE_OFF) {
             on = false;
-            if (state == WAIT || state == BOOT || state == UP) { go(OFF); if (level != null) playOnce(level, WmdSounds.FF_OFF.get(), 3.0F, 1.0F); }
+            if (state == WAIT || state == BOOT || state == UP) { go(OFF); if (level != null) playOnce(level, WmdSounds.FF_OFF.get(), Balance.SND_RELEASE, 1.0F); }
             else { setChanged(); sync(true); }
         }
     }

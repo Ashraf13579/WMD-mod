@@ -101,7 +101,7 @@ public class MiningRigBlockEntity extends ItemProcessBlockEntity {
     @Override
     protected boolean process() {
         if (level == null) return false;
-        if (level.getGameTime() >= nextScan || (progress == 0 && current == null && targets.isEmpty())) scan();
+        if (level.getGameTime() >= nextScan) scan();
         if (progress == 0) {
             if (bitLife <= 0) {
                 if (bit.count() < 1) return fail(NO_BIT);
@@ -121,7 +121,7 @@ public class MiningRigBlockEntity extends ItemProcessBlockEntity {
                 raw = rawFor(level.getBlockState(p), bitTier);
                 if (raw != null) { current = p; break; }
             }
-            if (current == null) { targets.clear(); return fail(WRONG_BIT); }
+            if (current == null) return fail(WRONG_BIT);
             if (!ore.fits(wmd(raw), Balance.RIG_RAW_PER_BLOCK)) return fail(OUT_FULL);
             water.drain(Balance.RIG_WATER_MB, IFluidHandler.FluidAction.EXECUTE);
             cycleTicks = ticksFor(bitTier);

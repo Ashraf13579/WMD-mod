@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PWP",
+    "CBC",
+    "PWP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "C": {
+      "tag": "c:ingots/copper"
+    },
+    "B": {
+      "item": "wmd:basic_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:screw_propeller",
+    "count": 1
+  }
+}

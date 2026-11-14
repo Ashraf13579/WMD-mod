@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:jet_cockpit"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GGG",
+    "THT",
+    "TCT"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "H": {
+      "item": "wmd:helm_station"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:jet_cockpit",
+    "count": 1
+  }
+}

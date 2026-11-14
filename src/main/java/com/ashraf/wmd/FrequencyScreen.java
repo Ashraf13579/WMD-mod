@@ -13,14 +13,20 @@ public class FrequencyScreen extends Screen {
     private final Screen parent;
     private final IntSupplier current;
     private final IntConsumer sender;
+    private final String labelKey;
     private EditBox box;
     private boolean synced;
 
     public FrequencyScreen(Screen parent, IntSupplier current, IntConsumer sender) {
-        super(Component.translatable("gui.wmd.frequency.title"));
+        this(parent, current, sender, "gui.wmd.frequency.title", "gui.wmd.frequency.label");
+    }
+
+    public FrequencyScreen(Screen parent, IntSupplier current, IntConsumer sender, String titleKey, String labelKey) {
+        super(Component.translatable(titleKey));
         this.parent = parent;
         this.current = current;
         this.sender = sender;
+        this.labelKey = labelKey;
     }
 
     @Override
@@ -63,7 +69,7 @@ public class FrequencyScreen extends Screen {
         WmdUi.drawFit(g, font, title, left + 8, top + 6, W - 16 - WmdHelp.ROOM, WmdUi.TEXT);
         WmdUi.divider(g, left + 8, top + 16, W - 16);
         WmdHelp.button(g, left + W - 8 - WmdHelp.SIZE, top + 4);
-        WmdUi.drawFit(g, font, Component.translatable("gui.wmd.frequency.label"), left + 12, top + 24, W - 24, WmdUi.TEXT_MUTED);
+        WmdUi.drawFit(g, font, Component.translatable(labelKey), left + 12, top + 24, W - 24, WmdUi.TEXT_MUTED);
     }
 
     @Override

@@ -54,6 +54,11 @@ public class GroundScannerItem extends Item {
             }
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
+        if (player.isShiftKeyDown()) {
+
+            if (!level.isClientSide) player.displayClientMessage(Component.translatable("item.wmd.ground_scanner.not_deposit", oreName(tuned(ctx.getItemInHand()))), true);
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
         return InteractionResult.PASS;
     }
 

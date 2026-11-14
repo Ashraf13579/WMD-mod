@@ -55,7 +55,7 @@ final class DuctNet {
                     BlockState ns = level.getBlockState(n);
                     if (ns.getBlock() instanceof SorterBlock) {
                         if (ns.getValue(SorterBlock.prop(d.getOpposite())) == SorterBlock.Face.INPUT) net.dests.add(new End(p, d, true));
-                    } else if (ns.getBlock() instanceof ItemDuctBlock && net.members.size() < Balance.DUCT_MAX && net.members.add(n)) {
+                    } else if (ns.getBlock() instanceof ItemDuctBlock && joins(level, n, ns, d, net.owner) && net.members.size() < Balance.DUCT_MAX && net.members.add(n)) {
                         todo.add(n);
                     }
                 }
@@ -66,6 +66,12 @@ final class DuctNet {
             if (level.getBlockEntity(m) instanceof ItemDuctBlockEntity be) be.net = net;
         }
         return net;
+    }
+
+    private static boolean joins(Level level, BlockPos n, BlockState ns, Direction d, java.util.UUID netOwner) {
+        if (ns.getValue(ItemDuctBlock.prop(d.getOpposite())) != ItemDuctBlock.Conn.DUCT) return false;
+        java.util.UUID o = ItemDuctBlock.ductOwner(level, n);
+        return netOwner == null || o == null || netOwner.equals(o);
     }
 
     static void invalidateAround(Level level, BlockPos pos) {

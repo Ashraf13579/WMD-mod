@@ -70,6 +70,8 @@ final class RunnerChunks {
     }
 
     private static void set(ServerLevel sl, UUID id, long c, boolean add, boolean ticking) {
+
+        if (!ticking) { AsyncChunks.ticket(sl, id.getMostSignificantBits() ^ id.getLeastSignificantBits(), ChunkPos.getX(c), ChunkPos.getZ(c), add); return; }
         CONTROLLER.forceChunk(sl, id, ChunkPos.getX(c), ChunkPos.getZ(c), add, ticking);
     }
 }

@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import dev.ryanhcode.sable.api.physics.mass.MassData;
+import dev.ryanhcode.sable.physics.config.dimension_physics.DimensionPhysicsData;
 import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
 import dev.ryanhcode.sable.companion.SableCompanion;
 import dev.ryanhcode.sable.companion.SubLevelAccess;
@@ -190,6 +191,10 @@ final class SableShips {
         return out;
     }
 
+    static boolean liftProvider(net.minecraft.world.level.block.state.BlockState st) {
+        return st.getBlock() instanceof dev.ryanhcode.sable.api.block.BlockSubLevelLiftProvider;
+    }
+
     static int countBlocks(ServerLevel level, UUID id, java.util.function.Predicate<net.minecraft.world.level.block.state.BlockState> match) {
         int[] n = { 0 };
         for (LevelChunk ch : plotChunks(level, id).values())
@@ -226,5 +231,23 @@ final class SableShips {
         if (c == null) return null;
         SubLevel s = c.getSubLevel(id);
         return s == null || s.isRemoved() ? null : s.logicalPose().transformPositionInverse(world);
+    }
+
+    static double[] physicsAt(Level level, net.minecraft.world.phys.Vec3 p) {
+        org.joml.Vector3d v = new org.joml.Vector3d(p.x, p.y, p.z);
+        double pr = DimensionPhysicsData.getAirPressure(level, v);
+        org.joml.Vector3d g = DimensionPhysicsData.getGravity(level, v);
+        double d = level instanceof ServerLevel sl ? DimensionPhysicsData.getUniversalDrag(sl) : 0.0;
+        return new double[] { pr, g.x, g.y, g.z, d };
+    }
+
+    static boolean applyAir(ServerLevel level, List<double[]> points, int priority) {
+        dev.ryanhcode.sable.physics.config.dimension_physics.BezierResourceFunction f = new dev.ryanhcode.sable.physics.config.dimension_physics.BezierResourceFunction();
+        for (double[] p : points) f.addPoint(new dev.ryanhcode.sable.physics.config.dimension_physics.BezierResourceFunction.BezierPoint(p[0], p[1], p[2]));
+        dev.ryanhcode.sable.physics.config.dimension_physics.DimensionPhysics dp = new dev.ryanhcode.sable.physics.config.dimension_physics.DimensionPhysics(
+                level.dimension().location(), priority, java.util.Optional.empty(), java.util.Optional.empty(), java.util.Optional.of(1.0), java.util.Optional.of(f),
+                java.util.Optional.empty(), false);
+        DimensionPhysicsData.addPhysicsWithPriority(level.dimension(), dp);
+        return DimensionPhysicsData.of(level) == dp;
     }
 }

@@ -201,6 +201,7 @@ public final class ShipDefence {
             for (UUID id : candidates(sl, owner, freq, now)) {
                 SableBridge.ShipInfo s = SableBridge.shipInfo(sl, id);
                 if (s == null || !eligible(sl, owner, id, now) || chased(pend, id, owner)) continue;
+                if (AirGate.on() && !s.isLarge() && AirPicture.isAircraft(sl, id)) continue;
                 double d = distToBox(s.worldBounds(), from);
                 if (d > range || from.distanceTo(s.worldCenter()) < Balance.SHIP_INT_MIN_DIST) continue;
                 if (d < bestD) { bestD = d; bestShip = s; }

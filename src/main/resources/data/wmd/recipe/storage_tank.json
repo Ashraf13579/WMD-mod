@@ -3,7 +3,7 @@
   "category": "misc",
   "pattern": [
     "STS",
-    "TAT",
+    "TGT",
     "STS"
   ],
   "key": {
@@ -13,8 +13,8 @@
     "T": {
       "tag": "c:ingots/tin"
     },
-    "A": {
-      "tag": "c:ingots/aluminum"
+    "G": {
+      "tag": "c:glass_blocks"
     }
   },
   "result": {

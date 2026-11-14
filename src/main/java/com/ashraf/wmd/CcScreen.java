@@ -516,9 +516,12 @@ public class CcScreen extends MachineScreen implements WmdUi.Kit {
             if (w.id() == selectedWarning) selRow(g, x + 4, ly - 1, x + PW - 4, ly + 17);
             else if (WmdUi.over(mouseX, mouseY, x + 4, ly - 2, PW - 8, 20)) g.fill(x + 4, ly - 1, x + PW - 4, ly + 17, ROW_HOVER);
             WmdUi.divider(g, x + 5, ly - 3, PW - 10);
-            boolean airship = AirshipWatch.isWarning(w.id());
+            boolean contact = CcContactWatch.isContact(w);
+            boolean airship = AirshipWatch.isWarning(w.id()) || contact;
             boolean drone = w.what() == CommandCenter.Warning.WHAT_DRONE, bomb = w.what() == CommandCenter.Warning.WHAT_BOMB;
-            Component first = airship ? Component.translatable("gui.wmd.cc.warn_airship", w.ox(), w.oz())
+            Component first = contact ? Component.translatable(w.what() == CcContactWatch.WHAT_AIRCRAFT ? "gui.wmd.cc.warn_aircraft"
+                            : w.what() == CcContactWatch.WHAT_TORPEDO ? "gui.wmd.cc.warn_torpedo" : "gui.wmd.cc.warn_sonar", w.ox(), w.oz())
+                    : airship ? Component.translatable("gui.wmd.cc.warn_airship", w.ox(), w.oz())
                     : drone ? Component.translatable("gui.wmd.cc.warn_drone", w.tier(), w.ox(), w.oz())
                     : bomb ? Component.translatable("gui.wmd.cc.warn_bomb", w.ox(), w.oz())
                     : Component.translatable("gui.wmd.cc.warn_site", w.ox(), w.oz());

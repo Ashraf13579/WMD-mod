@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:anchor_windlass"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PWP",
+    "CAC",
+    "CCC"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "C": {
+      "item": "minecraft:chain"
+    },
+    "A": {
+      "item": "minecraft:iron_block"
+    }
+  },
+  "result": {
+    "id": "wmd:anchor_windlass",
+    "count": 1
+  }
+}

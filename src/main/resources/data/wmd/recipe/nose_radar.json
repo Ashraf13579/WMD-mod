@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:nose_radar"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " A ",
+    "ARA",
+    "PCP"
+  ],
+  "key": {
+    "A": {
+      "item": "wmd:aluminium_plate"
+    },
+    "R": {
+      "item": "wmd:radar_component"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "result": {
+    "id": "wmd:nose_radar",
+    "count": 1
+  }
+}

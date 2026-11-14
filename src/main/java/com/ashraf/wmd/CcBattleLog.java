@@ -122,6 +122,7 @@ public final class CcBattleLog extends SavedData {
     }
 
     static void onWarning(MinecraftServer server, UUID owner, CommandCenter.Warning w) {
+        if (CcContactWatch.isNaval(w.id())) return;
         if (AirshipWatch.isWarning(w.id())) return;
         if (DroneWarnings.isDrone(w.id())) { add(server, owner, LAUNCH_IN, "log.wmd.drone_in", "T" + w.tier(), Integer.toString(w.ox()), Integer.toString(w.oz())); return; }
         if (DroneWarnings.isBomb(w.id())) { add(server, owner, LAUNCH_IN, "log.wmd.bomb_in", Integer.toString(w.ix()), Integer.toString(w.iz())); return; }

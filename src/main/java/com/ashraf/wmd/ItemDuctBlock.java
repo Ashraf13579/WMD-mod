@@ -131,6 +131,7 @@ public class ItemDuctBlock extends BaseEntityBlock implements net.minecraft.worl
         be.claim(p);
         BlockState next = withConnections(level, pos, state, p.getUUID());
         if (next != state) level.setBlock(pos, next, 3);
+        next.updateNeighbourShapes(level, pos, 3);
         DuctNet.invalidateAround(level, pos);
     }
 
@@ -155,13 +156,13 @@ public class ItemDuctBlock extends BaseEntityBlock implements net.minecraft.worl
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean movedByPiston) {
         BlockState next = withConnections(level, pos, state, ownerOf(level, pos));
         if (next != state) level.setBlock(pos, next, 2);
-        if (!level.isClientSide) DuctNet.invalidateAround(level, pos);
+        if (next != state && !level.isClientSide) DuctNet.invalidateAround(level, pos);
     }
 
     @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!level.isClientSide && !newState.is(this)) {
-            if (level.getBlockEntity(pos) instanceof ItemDuctBlockEntity be)
+            if (!ShipRelink.shipMove(level, movedByPiston) && level.getBlockEntity(pos) instanceof ItemDuctBlockEntity be)
                 for (ItemStack s : be.takeTransit()) Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, s);
             DuctNet.invalidateAround(level, pos);
         }

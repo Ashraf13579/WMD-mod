@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:jet_power_core"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PWP",
+    "BCB",
+    "PWP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "B": {
+      "item": "wmd:battery_t1"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:jet_power_core",
+    "count": 1
+  }
+}

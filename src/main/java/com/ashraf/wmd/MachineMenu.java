@@ -143,7 +143,8 @@ public class MachineMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return be != null && !be.isRemoved() && Reach.within(player, be.getBlockPos(), 20.0);
+
+        return be != null && !be.isRemoved() && Reach.within(player, be.getBlockPos(), be instanceof TurntableBlockEntity ? Balance.TT_MENU_REACH : 20.0);
     }
 
     private static final class Vec3Helper {

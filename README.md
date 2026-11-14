@@ -13,7 +13,7 @@ Requirements: JDK 21.
 ```
 
 The jar is written to `build/libs/`. Required at runtime: NeoForge 21.1.200 or newer and GeckoLib 4.8 or newer. Optional integrations:
-Distant Horizons, Veil, Sable, JEI / EMI, Jade, CC: Tweaked, BlueMap.
+Distant Horizons, Veil, Sable, Create (6.0.10+), Create: Deep Seas (3.3.0+), JEI / EMI, Jade, CC: Tweaked, BlueMap.
 
 ## Issues
 Bug reports and compatibility problems are welcome in the Issues tab. Please include the mod version, your mod list and the log.

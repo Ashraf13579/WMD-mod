@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:landing_gear_large"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SPS",
+    "GAG",
+    "BSB"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "G": {
+      "item": "wmd:landing_gear"
+    },
+    "A": {
+      "item": "wmd:aluminium_plate"
+    },
+    "B": {
+      "item": "minecraft:black_wool"
+    }
+  },
+  "result": {
+    "id": "wmd:landing_gear_large",
+    "count": 1
+  }
+}

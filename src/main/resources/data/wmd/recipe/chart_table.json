@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:chart_table"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GMG",
+    "SCS",
+    "S S"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "G": {
+      "item": "minecraft:glass_pane"
+    },
+    "M": {
+      "item": "minecraft:map"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:chart_table",
+    "count": 1
+  }
+}

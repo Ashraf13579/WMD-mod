@@ -55,6 +55,7 @@ public final class ClientShaderTest {
 
     @SubscribeEvent
     static void register(RegisterClientCommandsEvent event) {
+        if (net.neoforged.fml.loading.FMLEnvironment.production) return;
         event.getDispatcher().register(Commands.literal("wmdshadertest")
                 .executes(c -> { place(); return 1; })
                 .then(Commands.literal("off").executes(c -> { remove(); return 1; })));

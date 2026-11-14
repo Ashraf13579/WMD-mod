@@ -42,6 +42,6 @@ public class AlarmMenu extends AbstractContainerMenu {
     @Override
     public boolean stillValid(Player player) {
         return access.evaluate((level, p) -> level.getBlockState(p).getBlock() instanceof AlarmBlock
-                && player.distanceToSqr(p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5) <= 64.0, true);
+                && Reach.within(player, p, 8.0), true);
     }
 }

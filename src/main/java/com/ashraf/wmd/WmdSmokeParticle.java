@@ -11,7 +11,7 @@ import net.minecraft.util.Mth;
 
 public class WmdSmokeParticle extends TextureSheetParticle {
 
-    public enum Kind { BANK, TRAIL, FLAME, VAPOUR, GAS, SPARK, SPRAY, DUST, WAKE, CAVITY }
+    public enum Kind { BANK, TRAIL, FLAME, VAPOUR, GAS, SPARK, SPRAY, DUST, WAKE, CAVITY, CONTRAIL, HAZE, NAV }
 
     private final Kind kind;
     private float startSize, endSize;
@@ -19,6 +19,9 @@ public class WmdSmokeParticle extends TextureSheetParticle {
     private final float shade;
 
     static float nextSize = 1.0F;
+
+    static int nextColor = 0xFFFFFF;
+    private final int navColor = nextColor;
 
     protected WmdSmokeParticle(ClientLevel level, double x, double y, double z, double vx, double vy, double vz, SpriteSet sprites, Kind kind) {
         super(level, x, y, z);
@@ -120,6 +123,36 @@ public class WmdSmokeParticle extends TextureSheetParticle {
                 hasPhysics = false;
                 shade = 0.85F + random.nextFloat() * 0.15F;
             }
+            case HAZE -> {
+                lifetime = 9 + random.nextInt(6);
+                startSize = 0.3F + random.nextFloat() * 0.15F;
+                endSize = 1.0F + random.nextFloat() * 0.5F;
+                maxAlpha = 0.09F;
+                friction = 0.86F;
+                gravity = -0.01F;
+                hasPhysics = false;
+                shade = 0.85F;
+            }
+            case NAV -> {
+                lifetime = 2;
+                startSize = 0.22F;
+                endSize = 0.22F;
+                maxAlpha = 1.0F;
+                friction = 1.0F;
+                gravity = 0.0F;
+                hasPhysics = false;
+                shade = 1.0F;
+            }
+            case CONTRAIL -> {
+                lifetime = 140 + random.nextInt(40);
+                startSize = 0.3F + random.nextFloat() * 0.12F;
+                endSize = 1.5F + random.nextFloat() * 0.6F;
+                maxAlpha = 0.6F;
+                friction = 0.9F;
+                gravity = 0.0F;
+                hasPhysics = false;
+                shade = 1.0F;
+            }
             default -> {
                 lifetime = 40 + random.nextInt(30);
                 startSize = 0.35F + random.nextFloat() * 0.3F;
@@ -132,6 +165,10 @@ public class WmdSmokeParticle extends TextureSheetParticle {
             }
         }
         float m = nextSize;
+        if (m < 1.0F && m > 0.0F) {
+            startSize *= m; endSize *= m;
+            lifetime = Math.max(10, (int) (lifetime * m));
+        }
         if (m > 1.0F) {
             startSize *= m; endSize *= m;
             if (kind != Kind.FLAME) lifetime = (int) (lifetime * (1.0F + (m - 1.0F) * 0.5F));
@@ -143,6 +180,7 @@ public class WmdSmokeParticle extends TextureSheetParticle {
     }
 
     private void setColour(float age) {
+        if (kind == Kind.NAV) { setColor((navColor >> 16 & 255) / 255.0F, (navColor >> 8 & 255) / 255.0F, (navColor & 255) / 255.0F); return; }
         if (kind == Kind.FLAME || kind == Kind.SPARK) {
 
             float r = 1.0F, g = Mth.lerp(age, 0.92F, 0.32F), b = Mth.lerp(age, 0.62F, 0.08F);
@@ -155,7 +193,8 @@ public class WmdSmokeParticle extends TextureSheetParticle {
             if (kind == Kind.WAKE) { setColor(0.86F * s, 0.95F * s, 1.0F * s); return; }
             if (kind == Kind.CAVITY) { setColor(0.76F * s, 0.84F * s, 0.90F * s); return; }
             if (kind == Kind.BANK) s = Mth.lerp(Math.min(1.0F, age * 2.0F), shade * 0.82F, shade);
-            setColor(s, s, s * 1.02F);
+
+            setColor(Math.min(1.0F, s), Math.min(1.0F, s), Math.min(1.0F, s * 1.02F));
         }
     }
 
@@ -165,8 +204,8 @@ public class WmdSmokeParticle extends TextureSheetParticle {
         float a = Mth.clamp(age / (float) lifetime, 0.0F, 1.0F);
         float grow = 1.0F - (1.0F - a) * (1.0F - a);
         quadSize = Mth.lerp(grow, startSize, endSize);
-        float fadeIn = kind == Kind.FLAME || kind == Kind.SPARK ? 1.0F : Mth.clamp(age / 6.0F, 0.0F, 1.0F);
-        float fadeOut = a < 0.55F ? 1.0F : 1.0F - (a - 0.55F) / 0.45F;
+        float fadeIn = kind == Kind.FLAME || kind == Kind.SPARK || kind == Kind.NAV ? 1.0F : Mth.clamp(age / 6.0F, 0.0F, 1.0F);
+        float fadeOut = kind == Kind.NAV || a < 0.55F ? 1.0F : 1.0F - (a - 0.55F) / 0.45F;
         alpha = maxAlpha * fadeIn * Mth.clamp(fadeOut, 0.0F, 1.0F);
         setColour(a);
         if ((kind == Kind.BANK || kind == Kind.GAS) && onGround) {
@@ -182,7 +221,9 @@ public class WmdSmokeParticle extends TextureSheetParticle {
 
     @Override
     protected int getLightColor(float partialTick) {
-        if (kind == Kind.FLAME || kind == Kind.SPARK) return 0xF000F0;
+        if (kind == Kind.FLAME || kind == Kind.SPARK || kind == Kind.NAV) return 0xF000F0;
+
+        if (kind == Kind.CONTRAIL || y >= level.getMaxBuildHeight()) return net.minecraft.client.renderer.LightTexture.pack(0, 15);
 
         net.minecraft.core.BlockPos pos = net.minecraft.core.BlockPos.containing(x, y, z);
         if (!level.hasChunkAt(pos)) return net.minecraft.client.renderer.LightTexture.pack(0, 15);

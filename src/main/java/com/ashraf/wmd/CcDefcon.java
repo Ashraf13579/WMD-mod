@@ -83,6 +83,12 @@ public final class CcDefcon {
             if (d <= 2) for (CcBuildingBlockEntity b : CommandCenter.activeBuildings(owner)) b.sealCheckNow();
             return;
         }
+        if (CcContactWatch.isContact(w)) {
+            String key = w.what() == CcContactWatch.WHAT_AIRCRAFT ? "hud.wmd.cc.alert.aircraft" : w.what() == CcContactWatch.WHAT_TORPEDO ? "hud.wmd.cc.alert.torpedo" : "hud.wmd.cc.alert.sonar";
+            banner(server, owner, B_INCOMING, true, key, Integer.toString(w.ox()), Integer.toString(w.oz()));
+            if (d <= 2) for (CcBuildingBlockEntity b : CommandCenter.activeBuildings(owner)) b.sealCheckNow();
+            return;
+        }
         if (AirshipWatch.isWarning(w.id())) {
             banner(server, owner, B_INCOMING, true, "hud.wmd.cc.alert.airship", Integer.toString(w.ox()), Integer.toString(w.oz()));
             if (d <= 2) for (CcBuildingBlockEntity b : CommandCenter.activeBuildings(owner)) b.sealCheckNow();

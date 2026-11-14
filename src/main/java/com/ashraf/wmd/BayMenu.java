@@ -32,6 +32,8 @@ public class BayMenu extends AbstractContainerMenu {
     public static final int SEEKER_X = PART_X + PART_STEP, SEEKER_INDEX = 7;
     private static final int MACHINE_SLOTS = 8, PLAYER_END = MACHINE_SLOTS + 36;
 
+    public static final int MODE_BTN = 40;
+
     private final BlockPos pos;
     private final ContainerData data;
 
@@ -100,6 +102,7 @@ public class BayMenu extends AbstractContainerMenu {
     public boolean clickMenuButton(Player player, int id) {
         if (!(player instanceof ServerPlayer sp) || !(player.level().getBlockEntity(pos) instanceof BayModuleBlockEntity core) || core.kind != BayKind.CORE) return false;
         if (id == 32) { core.cycleMode(); return true; }
+        if (id >= MODE_BTN && id < MODE_BTN + BayModuleBlockEntity.MODES) { core.setMode(id - MODE_BTN); return true; }
         int s = id & 15, action = id >> 4;
         if (s >= BayBuilder.Socket.values().length || action > 1) return false;
         if (action == 1 && !Access.mayMine(core, sp)) { Access.deny(core, sp, CcAlarms.BREAK); return false; }

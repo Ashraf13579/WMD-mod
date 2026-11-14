@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "MCM",
+    "PBP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "M": {
+      "item": "wmd:motor_t2"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    },
+    "B": {
+      "item": "minecraft:blast_furnace"
+    }
+  },
+  "result": {
+    "id": "wmd:sub_diesel",
+    "count": 1
+  }
+}

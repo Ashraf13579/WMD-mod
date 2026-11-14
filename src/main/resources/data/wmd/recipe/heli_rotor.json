@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:heli_rotor"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TTT",
+    "PXP",
+    "PCP"
+  ],
+  "key": {
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "X": {
+      "item": "minecraft:piston"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:heli_rotor",
+    "count": 1
+  }
+}

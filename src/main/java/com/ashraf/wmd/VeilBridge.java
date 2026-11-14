@@ -22,6 +22,16 @@ public final class VeilBridge {
     private static Object irisApi;
     private static java.lang.reflect.Method irisInUse;
 
+    private static Boolean irisInstalled;
+
+    static boolean lightsOff() {
+        if (irisInstalled == null) {
+            irisInstalled = ModList.get().isLoaded("iris");
+            if (irisInstalled) Wmd.LOGGER.info("[wmd] Iris is installed: Veil keeps its light buffers off (even with no shaderpack), so WMD's Veil lights are off; aircraft lights use block light");
+        }
+        return irisInstalled || shaderPackOn();
+    }
+
     static boolean shaderPackOn() {
         long t = now();
 
@@ -66,9 +76,20 @@ public final class VeilBridge {
     }
 
     public static void glow(long key, double x, double y, double z, float r, float g, float b, float radius, float brightness, float inscatter, long gameTime) {
-        if (!active() || shaderPackOn()) return;
+
+        if (!active() || lightsOff()) { WmdLights.glow(key, x, y, z, r, g, b, radius, brightness, inscatter, gameTime); return; }
         try {
             VeilLights.glow(key, x, y, z, r, g, b, radius, brightness, inscatter, gameTime);
+        } catch (Throwable t) {
+            fail(t);
+        }
+    }
+
+    public static void spot(long key, double x, double y, double z, double dx, double dy, double dz, float r, float g, float b, float angle, float distance, float brightness, long gameTime) {
+        if (ClientHemp.darkAt(x, z)) return;
+        if (!active() || lightsOff()) { WmdLights.spot(key, x, y, z, dx, dy, dz, r, g, b, angle, distance, brightness, gameTime); return; }
+        try {
+            VeilLights.spot(key, x, y, z, dx, dy, dz, r, g, b, angle, distance, brightness, gameTime);
         } catch (Throwable t) {
             fail(t);
         }
@@ -79,7 +100,7 @@ public final class VeilBridge {
     }
 
     public static void flash(double x, double y, double z, float r, float g, float b, float radius, float brightness, float inscatter, int duration) {
-        if (!active() || shaderPackOn()) return;
+        if (!active() || lightsOff()) { WmdLights.flash(x, y, z, r, g, b, radius, brightness, inscatter, duration, now()); return; }
         try {
             VeilLights.flash(x, y, z, r, g, b, radius, brightness, inscatter, duration, now());
         } catch (Throwable t) {
@@ -93,7 +114,7 @@ public final class VeilBridge {
 
     public static boolean quasar(String emitter, double x, double y, double z) {
         if (!active() || quasarFailed) return false;
-        if (shaderPackOn()) {
+        if (lightsOff()) {
             if (QUASAR_LIGHT_ONLY.contains(emitter)) return true;
             for (String p : QUASAR_LIT) if (emitter.startsWith(p) && !emitter.endsWith("_nl")) { emitter = emitter + "_nl"; break; }
         }
@@ -154,6 +175,7 @@ public final class VeilBridge {
     }
 
     static void tick(long gameTime) {
+        WmdLights.sweep(gameTime);
         if (!active()) return;
         try {
             VeilLights.sweep(gameTime);
@@ -163,7 +185,13 @@ public final class VeilBridge {
         }
     }
 
+    static void frameStart() {
+        if (!active()) return;
+        VeilLights.prepareShadowGrid();
+    }
+
     static void clear() {
+        WmdLights.clear();
         if (!active()) return;
         try {
             VeilLights.clear();

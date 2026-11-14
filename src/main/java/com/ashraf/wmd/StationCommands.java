@@ -30,7 +30,7 @@ public final class StationCommands {
                             return 1;
                         }))))));
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("station")
+                .then(Commands.literal("station").requires(TestCmds::test)
                         .then(Commands.literal("spawn")
                                 .then(Commands.literal("core").executes(c -> spawn(c.getSource(), Station.CORE, -1)))
                                 .then(Commands.literal("habitat").executes(c -> spawn(c.getSource(), Station.HABITAT, -1)))

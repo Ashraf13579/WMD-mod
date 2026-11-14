@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:azimuth_pod"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PWP",
+    "BCB",
+    "PIP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "B": {
+      "item": "wmd:turbine_blades"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "I": {
+      "tag": "c:ingots/copper"
+    }
+  },
+  "result": {
+    "id": "wmd:azimuth_pod",
+    "count": 1
+  }
+}

@@ -15,7 +15,7 @@ public final class LaserSpots {
 
     private LaserSpots() {}
 
-    public static final int SRC_DEV = 0, SRC_TRIPOD = 1, SRC_SATELLITE = 2, SRC_DRONE = 3;
+    public static final int SRC_DEV = 0, SRC_TRIPOD = 1, SRC_SATELLITE = 2, SRC_DRONE = 3, SRC_POD = 4;
 
     public record Spot(int id, UUID owner, ResourceKey<Level> dim, Vec3 pos, int source, long seen, Vec3 origin) {
         Spot moved(Vec3 p, Vec3 o, long now) { return new Spot(id, owner, dim, p, source, now, o != null ? o : origin); }

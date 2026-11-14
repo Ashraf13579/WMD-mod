@@ -449,13 +449,6 @@ public class Wmd {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PumpjackBlockEntity>> PUMPJACK_BE =
             BLOCK_ENTITY_TYPES.register("pumpjack", () -> BlockEntityType.Builder.of(PumpjackBlockEntity::new, PUMPJACK.get()).build(null));
 
-    public static final DeferredBlock<CrudeTankBlock> CRUDE_TANK = BLOCKS.registerBlock("crude_tank", CrudeTankBlock::new,
-            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 12.0F).sound(SoundType.METAL)
-                    .pushReaction(PushReaction.BLOCK).noOcclusion());
-    public static final DeferredItem<BlockItem> CRUDE_TANK_ITEM = ITEMS.registerSimpleBlockItem("crude_tank", CRUDE_TANK);
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrudeTankBlockEntity>> CRUDE_TANK_BE =
-            BLOCK_ENTITY_TYPES.register("crude_tank", () -> BlockEntityType.Builder.of(CrudeTankBlockEntity::new, CRUDE_TANK.get()).build(null));
-
     public static final DeferredBlock<FeedPumpBlock> FEED_PUMP = BLOCKS.registerBlock("feed_pump", FeedPumpBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 12.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(8)));
     public static final DeferredItem<BlockItem> FEED_PUMP_ITEM = ITEMS.registerSimpleBlockItem("feed_pump", FEED_PUMP);
@@ -1148,6 +1141,58 @@ public class Wmd {
     public static final DeferredItem<TorpedoItem> TORPEDO_ATT = ITEMS.register("torpedo_att", () -> new TorpedoItem(TorpedoKind.ATT, new Item.Properties().stacksTo(4)));
     public static final DeferredItem<Item> ESCAPE_CAPSULE = ITEMS.register("escape_capsule", () -> new Item(new Item.Properties().stacksTo(4)));
 
+    public static final DeferredBlock<ScrewPropellerBlock> SCREW_PROPELLER = BLOCKS.registerBlock("screw_propeller", ScrewPropellerBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(2)));
+    public static final DeferredItem<BlockItem> SCREW_PROPELLER_ITEM = ITEMS.registerSimpleBlockItem("screw_propeller", SCREW_PROPELLER);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ScrewPropellerBlockEntity>> SCREW_PROPELLER_BE =
+            BLOCK_ENTITY_TYPES.register("screw_propeller", () -> BlockEntityType.Builder.of(SableBridge::newScrew, SCREW_PROPELLER.get()).build(null));
+    public static final DeferredBlock<EngineTelegraphBlock> ENGINE_TELEGRAPH = BLOCKS.registerBlock("engine_telegraph", EngineTelegraphBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(4.0F, 12.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion());
+    public static final DeferredItem<BlockItem> ENGINE_TELEGRAPH_ITEM = ITEMS.registerSimpleBlockItem("engine_telegraph", ENGINE_TELEGRAPH);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EngineTelegraphBlockEntity>> ENGINE_TELEGRAPH_BE =
+            BLOCK_ENTITY_TYPES.register("engine_telegraph", () -> BlockEntityType.Builder.of(EngineTelegraphBlockEntity::new, ENGINE_TELEGRAPH.get()).build(null));
+    public static final DeferredBlock<HelmStationBlock> HELM_STATION = BLOCKS.registerBlock("helm_station", HelmStationBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 15.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(2)));
+    public static final DeferredItem<BlockItem> HELM_STATION_ITEM = ITEMS.registerSimpleBlockItem("helm_station", HELM_STATION);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HelmStationBlockEntity>> HELM_STATION_BE =
+            BLOCK_ENTITY_TYPES.register("helm_station", () -> BlockEntityType.Builder.of(HelmStationBlockEntity::new, HELM_STATION.get()).build(null));
+
+    public static final DeferredBlock<PumpJetBlock> PUMP_JET = BLOCKS.registerBlock("pump_jet", PumpJetBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(2)));
+    public static final DeferredItem<BlockItem> PUMP_JET_ITEM = ITEMS.registerSimpleBlockItem("pump_jet", PUMP_JET);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PumpJetBlockEntity>> PUMP_JET_BE =
+            BLOCK_ENTITY_TYPES.register("pump_jet", () -> BlockEntityType.Builder.of(SableBridge::newPumpJet, PUMP_JET.get()).build(null));
+
+    public static final DeferredBlock<DuctedFanBlock> DUCTED_FAN = BLOCKS.registerBlock("ducted_fan", DuctedFanBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 15.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(2)));
+    public static final DeferredItem<AirEngineItem> DUCTED_FAN_ITEM = ITEMS.registerItem("ducted_fan", p -> new AirEngineItem(DUCTED_FAN.get(), p), new Item.Properties());
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DuctedFanBlockEntity>> DUCTED_FAN_BE =
+            BLOCK_ENTITY_TYPES.register("ducted_fan", () -> BlockEntityType.Builder.of(SableBridge::newDuctedFan, DUCTED_FAN.get()).build(null));
+    public static final DeferredBlock<TurbofanBlock> TURBOFAN = BLOCKS.registerBlock("turbofan", TurbofanBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(4)));
+    public static final DeferredItem<AirEngineItem> TURBOFAN_ITEM = ITEMS.registerItem("turbofan", p -> new AirEngineItem(TURBOFAN.get(), p), new Item.Properties());
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TurbofanBlockEntity>> TURBOFAN_BE =
+            BLOCK_ENTITY_TYPES.register("turbofan", () -> BlockEntityType.Builder.of(SableBridge::newTurbofan, TURBOFAN.get()).build(null));
+    public static final DeferredBlock<JatoRackBlock> JATO_RACK = BLOCKS.registerBlock("jato_rack", JatoRackBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(4.0F, 12.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(6)));
+    public static final DeferredItem<AirEngineItem> JATO_RACK_ITEM = ITEMS.registerItem("jato_rack", p -> new AirEngineItem(JATO_RACK.get(), p), new Item.Properties());
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<JatoRackBlockEntity>> JATO_RACK_BE =
+            BLOCK_ENTITY_TYPES.register("jato_rack", () -> BlockEntityType.Builder.of(SableBridge::newJato, JATO_RACK.get()).build(null));
+
+    public static final DeferredItem<Item> JATO_BOOSTER = ITEMS.registerSimpleItem("jato_booster", new Item.Properties().stacksTo(8));
+
+    public static final DeferredItem<EngineRepairKitItem> ENGINE_REPAIR_KIT = ITEMS.registerItem("engine_repair_kit", EngineRepairKitItem::new, new Item.Properties().stacksTo(16));
+    public static final DeferredBlock<SubDieselBlock> SUB_DIESEL = BLOCKS.registerBlock("sub_diesel", SubDieselBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 15.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(3)));
+    public static final DeferredItem<BlockItem> SUB_DIESEL_ITEM = ITEMS.registerSimpleBlockItem("sub_diesel", SUB_DIESEL);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SubDieselBlockEntity>> SUB_DIESEL_BE =
+            BLOCK_ENTITY_TYPES.register("sub_diesel", () -> BlockEntityType.Builder.of(SubDieselBlockEntity::new, SUB_DIESEL.get()).build(null));
+    public static final DeferredBlock<SnorkelMastBlock> SNORKEL_MAST = BLOCKS.registerBlock("snorkel_mast", SnorkelMastBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 15.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(2)));
+    public static final DeferredItem<BlockItem> SNORKEL_MAST_ITEM = ITEMS.registerSimpleBlockItem("snorkel_mast", SNORKEL_MAST);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SnorkelMastBlockEntity>> SNORKEL_MAST_BE =
+            BLOCK_ENTITY_TYPES.register("snorkel_mast", () -> BlockEntityType.Builder.of(SnorkelMastBlockEntity::new, SNORKEL_MAST.get()).build(null));
+
     public static final DeferredItem<DepthChargeItem> DEPTH_CHARGE = ITEMS.register("depth_charge", () -> new DepthChargeItem(new Item.Properties().stacksTo(8)));
     public static final DeferredBlock<DepthChargeRackBlock> DEPTH_CHARGE_RACK = BLOCKS.registerBlock("depth_charge_rack", DepthChargeRackBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(2)));
@@ -1319,6 +1364,15 @@ public class Wmd {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<StorageTankBlockEntity>> STORAGE_TANK_BE =
             BLOCK_ENTITY_TYPES.register("storage_tank", () -> BlockEntityType.Builder.of(StorageTankBlockEntity::new, STORAGE_TANK.get()).build(null));
 
+    static { aliasCrudeTank(); }
+    static void aliasCrudeTank() {
+        net.minecraft.resources.ResourceLocation from = net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MODID, "crude_tank"),
+                to = net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MODID, "storage_tank");
+        BLOCKS.addAlias(from, to);
+        ITEMS.addAlias(from, to);
+        BLOCK_ENTITY_TYPES.addAlias(from, to);
+    }
+
     public static final DeferredBlock<HydrotreaterBlock> HYDROTREATER = BLOCKS.registerBlock("hydrotreater", HydrotreaterBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 12.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(11)));
     public static final DeferredItem<BlockItem> HYDROTREATER_ITEM = ITEMS.registerSimpleBlockItem("hydrotreater", HYDROTREATER);
@@ -1464,6 +1518,10 @@ public class Wmd {
             BLOCK_ENTITY_TYPES.register("crew_capsule_hull", () -> BlockEntityType.Builder.of(CrewCapsuleBlockEntity::new, CREW_CAPSULE_BLOCK.get()).build(null));
     public static final DeferredHolder<EntityType<?>, EntityType<TurretSeatEntity>> TURRET_SEAT = ENTITY_TYPES.register("turret_seat",
             () -> EntityType.Builder.<TurretSeatEntity>of(TurretSeatEntity::new, MobCategory.MISC).sized(0.5F, 0.5F).clientTrackingRange(10).build("turret_seat"));
+    public static final DeferredHolder<EntityType<?>, EntityType<HelmSeatEntity>> HELM_SEAT = ENTITY_TYPES.register("helm_seat",
+            () -> EntityType.Builder.<HelmSeatEntity>of(HelmSeatEntity::new, MobCategory.MISC).sized(0.5F, 0.3F).clientTrackingRange(10).build("helm_seat"));
+    public static final DeferredHolder<EntityType<?>, EntityType<JatoBottleEntity>> JATO_BOTTLE = ENTITY_TYPES.register("jato_bottle",
+            () -> EntityType.Builder.<JatoBottleEntity>of(JatoBottleEntity::new, MobCategory.MISC).sized(0.7F, 0.7F).clientTrackingRange(10).updateInterval(2).build("jato_bottle"));
     public static final DeferredHolder<EntityType<?>, EntityType<CrewSeatEntity>> CREW_SEAT = ENTITY_TYPES.register("crew_seat",
             () -> EntityType.Builder.<CrewSeatEntity>of(CrewSeatEntity::new, MobCategory.MISC).sized(0.5F, 0.5F).clientTrackingRange(10).build("crew_seat"));
 
@@ -1829,7 +1887,6 @@ public class Wmd {
                 output.accept(BATTERY_T3_ITEM.get());
                 output.accept(BATTERY_T4_ITEM.get());
                 output.accept(BUSBAR_ITEM.get());
-                output.accept(HULL_PENETRATOR_ITEM.get());
                 output.accept(FLUID_PIPE_ITEM.get());
                 output.accept(ALUMINIUM_PIPE_ITEM.get());
                 output.accept(TITANIUM_PIPE_ITEM.get());
@@ -1848,7 +1905,6 @@ public class Wmd {
                 output.accept(UPGRADE_BUFFER.get());
                 output.accept(UPGRADE_MUFFLER.get());
                 output.accept(UPGRADE_AUTO_EJECT.get());
-                output.accept(CRUDE_TANK_ITEM.get());
                 output.accept(FEED_PUMP_ITEM.get());
                 output.accept(WATER_INTAKE_ITEM.get());
                 output.accept(MINING_RIG_ITEM.get());
@@ -1988,46 +2044,6 @@ public class Wmd {
                 output.accept(SHELL_PRESS_ITEM.get());
                 output.accept(SUPER_GUN_ITEM.get());
                 output.accept(COUNTER_BATTERY_RADAR_ITEM.get());
-                output.accept(SONAR_DOME_ITEM.get());
-                output.accept(HYDROPHONE_ARRAY_ITEM.get());
-                output.accept(SONAR_CONSOLE_ITEM.get());
-                output.accept(TOWED_ARRAY_WINCH_ITEM.get());
-                output.accept(LISTENING_NODE_ITEM.get());
-                output.accept(COASTAL_BATTERY_ITEM.get());
-                output.accept(DOCK_CRANE_ITEM.get());
-                output.accept(TORPEDO_TUBE_ITEM.get());
-                output.accept(TORPEDO_LAUNCHER_DECK_ITEM.get());
-                output.accept(TORPEDO_RACK_ITEM.get());
-                output.accept(FIRE_CONTROL_CONSOLE_ITEM.get());
-                output.accept(TORPEDO_T1.get());
-                output.accept(TORPEDO_T2.get());
-                output.accept(TORPEDO_T3.get());
-                output.accept(TORPEDO_T4.get());
-                output.accept(UUV.get());
-                output.accept(TORPEDO_ATT.get());
-                output.accept(NAVAL_REACTOR_ITEM.get());
-                output.accept(PERISCOPE_ITEM.get());
-                output.accept(COMMS_BUOY_WINCH_ITEM.get());
-                output.accept(ESCAPE_POD_ITEM.get());
-                output.accept(ESCAPE_CAPSULE.get());
-                output.accept(NOISEMAKER.get());
-                output.accept(NOISEMAKER_LAUNCHER_ITEM.get());
-                output.accept(DEPTH_CHARGE.get());
-                output.accept(SONOBUOY.get());
-                output.accept(LAUNCH_CELL_ITEM.get());
-                output.accept(ASROC.get());
-                output.accept(SLBM.get());
-                output.accept(CRUISE_CAPSULE.get());
-                output.accept(DEPTH_CHARGE_RACK_ITEM.get());
-                output.accept(DREDGE_WINCH_ITEM.get()); output.accept(COLLECTOR_RIG_ITEM.get()); output.accept(SEABED_CRAWLER.get());
-                output.accept(MANGANESE_NODULE.get()); output.accept(MANGANESE_CONCENTRATE.get()); output.accept(NICKEL_COBALT_CONCENTRATE.get());
-                output.accept(MANGANESE_INGOT.get()); output.accept(NICKEL_COBALT_INGOT.get()); output.accept(NODULE_FIELD_ITEM.get());
-                output.accept(MANGANESE_HULL_PLATE_ITEM.get()); output.accept(SUPERALLOY_HULL_ITEM.get()); output.accept(DEEP_VIEWPORT_ITEM.get());
-                output.accept(ANECHOIC_TILE_ITEM.get()); output.accept(DEEP_SONAR_UPGRADE.get());
-                output.accept(TORPEDO_NET_ITEM.get());
-                output.accept(DEPTH_CHARGE_THROWER_ITEM.get());
-                output.accept(MINE_INFLUENCE_ITEM.get()); output.accept(MINE_BOTTOM_ITEM.get()); output.accept(MINE_CAPTOR_ITEM.get());
-                output.accept(TORPEDO_LINE_SHOP_ITEM.get()); output.accept(TORPEDO_LINE_FITOUT_ITEM.get()); output.accept(TORPEDO_LINE_TEST_ITEM.get());
                 output.accept(MLRS_ITEM.get());
                 output.accept(TARGET_DESIGNATOR.get());
                 output.accept(RECON_DRONE.get());
@@ -2185,10 +2201,78 @@ public class Wmd {
                 output.accept(STATION_FUEL_CELL.get());
             }).build());
 
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> WMD_TAB_DEEP_SEA = CREATIVE_MODE_TABS.register("wmd_deep_sea", () -> CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup.wmd.deep_sea"))
+            .withTabsBefore(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MODID, "wmd_space"))
+            .icon(() -> TORPEDO_T2.get().getDefaultInstance())
+            .displayItems((parameters, output) -> {
+                output.accept(SONAR_DOME_ITEM.get());
+                output.accept(HYDROPHONE_ARRAY_ITEM.get());
+                output.accept(SONAR_CONSOLE_ITEM.get());
+                output.accept(TOWED_ARRAY_WINCH_ITEM.get());
+                output.accept(LISTENING_NODE_ITEM.get());
+                output.accept(COASTAL_BATTERY_ITEM.get());
+                output.accept(DOCK_CRANE_ITEM.get());
+                output.accept(TORPEDO_TUBE_ITEM.get());
+                output.accept(TORPEDO_LAUNCHER_DECK_ITEM.get());
+                output.accept(TORPEDO_RACK_ITEM.get());
+                output.accept(FIRE_CONTROL_CONSOLE_ITEM.get());
+                output.accept(TORPEDO_T1.get());
+                output.accept(TORPEDO_T2.get());
+                output.accept(TORPEDO_T3.get());
+                output.accept(TORPEDO_T4.get());
+                output.accept(UUV.get());
+                output.accept(TORPEDO_ATT.get());
+                output.accept(NAVAL_REACTOR_ITEM.get());
+                output.accept(PERISCOPE_ITEM.get());
+                output.accept(COMMS_BUOY_WINCH_ITEM.get());
+                output.accept(ESCAPE_POD_ITEM.get());
+                output.accept(ESCAPE_CAPSULE.get());
+                output.accept(NOISEMAKER.get());
+                output.accept(NOISEMAKER_LAUNCHER_ITEM.get());
+                output.accept(DEPTH_CHARGE.get());
+                output.accept(SONOBUOY.get());
+                output.accept(LAUNCH_CELL_ITEM.get());
+                output.accept(ASROC.get());
+                output.accept(SLBM.get());
+                output.accept(CRUISE_CAPSULE.get());
+                output.accept(DEPTH_CHARGE_RACK_ITEM.get());
+                output.accept(DREDGE_WINCH_ITEM.get()); output.accept(COLLECTOR_RIG_ITEM.get()); output.accept(SEABED_CRAWLER.get());
+                output.accept(MANGANESE_NODULE.get()); output.accept(MANGANESE_CONCENTRATE.get()); output.accept(NICKEL_COBALT_CONCENTRATE.get());
+                output.accept(MANGANESE_INGOT.get()); output.accept(NICKEL_COBALT_INGOT.get()); output.accept(NODULE_FIELD_ITEM.get());
+                output.accept(MANGANESE_HULL_PLATE_ITEM.get()); output.accept(SUPERALLOY_HULL_ITEM.get()); output.accept(DEEP_VIEWPORT_ITEM.get());
+                output.accept(ANECHOIC_TILE_ITEM.get()); output.accept(DEEP_SONAR_UPGRADE.get());
+                output.accept(TORPEDO_NET_ITEM.get());
+                output.accept(DEPTH_CHARGE_THROWER_ITEM.get());
+                output.accept(MINE_INFLUENCE_ITEM.get()); output.accept(MINE_BOTTOM_ITEM.get()); output.accept(MINE_CAPTOR_ITEM.get());
+                output.accept(TORPEDO_LINE_SHOP_ITEM.get()); output.accept(TORPEDO_LINE_FITOUT_ITEM.get()); output.accept(TORPEDO_LINE_TEST_ITEM.get());
+                output.accept(HULL_PENETRATOR_ITEM.get());
+
+                output.accept(SCREW_PROPELLER_ITEM.get()); output.accept(ENGINE_TELEGRAPH_ITEM.get()); output.accept(HELM_STATION_ITEM.get());
+                output.accept(PUMP_JET_ITEM.get()); output.accept(SUB_DIESEL_ITEM.get()); output.accept(SNORKEL_MAST_ITEM.get());
+                if (AirGate.AVAILABLE) AirBlocks.navyTab(output);
+             }).build());
+
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> WMD_TAB_AIR = CREATIVE_MODE_TABS.register("wmd_air_battles", () -> CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup.wmd.air_battles"))
+            .withTabsBefore(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MODID, "wmd_deep_sea"))
+            .icon(() -> TURBOFAN_ITEM.get().getDefaultInstance())
+            .displayItems((parameters, output) -> {
+                output.accept(DUCTED_FAN_ITEM.get());
+                output.accept(TURBOFAN_ITEM.get());
+                output.accept(JATO_RACK_ITEM.get());
+                output.accept(JATO_BOOSTER.get());
+                output.accept(ENGINE_REPAIR_KIT.get());
+                if (AirGate.AVAILABLE) AirBlocks.tab(output);
+             }).build());
+
     public Wmd(IEventBus modEventBus, ModContainer modContainer) {
         WmdMaterials.init();
+        WmdGameRules.init();
 
         modEventBus.addListener(this::commonSetup);
+
+        if (AirGate.AVAILABLE) AirBlocks.init();
 
         BLOCKS.register(modEventBus);
         NoduleRetrogen.register(modEventBus);
@@ -2314,7 +2398,6 @@ public class Wmd {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, MACHINE_PART_BE.get(), (be, side) -> be.fluid(side));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, MACHINE_PART_BE.get(), (be, side) -> Grid.gridOnly(be.energy(side)));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, PUMPJACK_BE.get(), (be, side) -> be.fluidPort(be.getBlockPos(), side));
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CRUDE_TANK_BE.get(), (be, side) -> be.fluidPort(be.getBlockPos(), side));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, PUMPJACK_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CHLOR_ALKALI_BE.get(), (be, side) -> be.fluidPort(be.getBlockPos(), side));
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CHLOR_ALKALI_BE.get(), (be, side) -> ItemPorts.wmdOnly(be.itemPort(be.getBlockPos(), side)));
@@ -2447,6 +2530,17 @@ public class Wmd {
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, NAVAL_REACTOR_BE.get(), (be, side) -> ItemPorts.wmdOnly(be.itemPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, NAVAL_REACTOR_BE.get(), (be, side) -> be.fluidPort(be.getBlockPos(), side));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, PERISCOPE_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, SCREW_PROPELLER_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, PUMP_JET_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DUCTED_FAN_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, TURBOFAN_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        if (AirGate.AVAILABLE) AirBlocks.capabilities(event);
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, TURBOFAN_BE.get(), (be, side) -> be.fluidPort(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, SUB_DIESEL_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, SUB_DIESEL_BE.get(), (be, side) -> be.fluidPort(be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, SNORKEL_MAST_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, HELM_STATION_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, COMMS_BUOY_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ESCAPE_POD_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DEPTH_CHARGE_RACK_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
@@ -2512,7 +2606,22 @@ public class Wmd {
         registrar.playToServer(ArtGunPayload.TYPE, ArtGunPayload.STREAM_CODEC, ArtGunPayload::handle);
         registrar.playToServer(CruisePayload.TYPE, CruisePayload.STREAM_CODEC, CruisePayload::handle);
         registrar.playToClient(UnderwaterBlastPayload.TYPE, UnderwaterBlastPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> UnderwaterBlastView.onReceive(p)));
+        registrar.playToClient(PeriscopeAirPayload.TYPE, PeriscopeAirPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientPeriscope.airMarks(p)));
         registrar.playToClient(PeriscopePayload.TYPE, PeriscopePayload.STREAM_CODEC, PeriscopePayload::handle);
+        registrar.playToServer(HelmInputPayload.TYPE, HelmInputPayload.STREAM_CODEC, HelmInputPayload::handle);
+        registrar.playToClient(HelmHudPayload.TYPE, HelmHudPayload.STREAM_CODEC, HelmHudPayload::handle);
+        registrar.playToServer(CockpitInputPayload.TYPE, CockpitInputPayload.STREAM_CODEC, CockpitInputPayload::handle);
+        registrar.playToClient(CockpitHudPayload.TYPE, CockpitHudPayload.STREAM_CODEC, CockpitHudPayload::handle);
+        registrar.playToClient(ApHudPayload.TYPE, ApHudPayload.STREAM_CODEC, ApHudPayload::handle);
+        registrar.playToServer(ApPayloads.Ask.TYPE, ApPayloads.Ask.STREAM_CODEC, ApPayloads::handleAsk);
+        registrar.playToClient(ApPayloads.State.TYPE, ApPayloads.State.STREAM_CODEC, ApPayloads::handleState);
+        registrar.playToClient(FlightCheckPayload.Show.TYPE, FlightCheckPayload.Show.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> FlightCheckScreen.show(p.tag())));
+        registrar.playToServer(FlightCheckPayload.Ask.TYPE, FlightCheckPayload.Ask.STREAM_CODEC, FlightCheckPayload.Ask::handle);
+        registrar.playToClient(AirframePayload.Show.TYPE, AirframePayload.Show.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> AirframeScreen.show(p.tag())));
+        registrar.playToServer(AirframePayload.Ask.TYPE, AirframePayload.Ask.STREAM_CODEC, AirframePayload.Ask::handle);
+        registrar.playToClient(LoadoutPayload.Show.TYPE, LoadoutPayload.Show.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> LoadoutScreen.show(p.tag())));
+        registrar.playToServer(LoadoutPayload.Act.TYPE, LoadoutPayload.Act.STREAM_CODEC, LoadoutPayload.Act::handle);
+        registrar.playToClient(RwrPayload.TYPE, RwrPayload.STREAM_CODEC, RwrPayload::handle);
         registrar.playToClient(SmokePayload.TYPE, SmokePayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> SmokePayload.onReceive(p)));
         registrar.playToClient(DomeMarkersPayload.TYPE, DomeMarkersPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> DomeMarkersPayload.onReceive(p)));
         registrar.playToClient(ArtShellsPayload.TYPE, ArtShellsPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ArtilleryView.onShells(p)));
@@ -2575,6 +2684,11 @@ public class Wmd {
         registrar.playToClient(LaunchSoundPayload.TYPE, LaunchSoundPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> LaunchSounds.play(p)));
         registrar.playToClient(EvadePayload.TYPE, EvadePayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientIntercepts.evade(p)));
         registrar.playToClient(CounterPayload.TYPE, CounterPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientIntercepts.counter(p)));
+        registrar.playToClient(AamPayload.TYPE, AamPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientAam.update(p)));
+        registrar.playToClient(AamDecoyPayload.TYPE, AamDecoyPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientAam.decoy(p)));
+        registrar.playToClient(AamBurstPayload.TYPE, AamBurstPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientAam.burst(p)));
+        registrar.playToClient(AirRocketPayload.TYPE, AirRocketPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientAirRockets.update(p)));
+        registrar.playToClient(PalletFarPayload.TYPE, PalletFarPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientPallets.update(p)));
         registrar.playToClient(InterceptSteerPayload.TYPE, InterceptSteerPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientIntercepts.steer(p)));
         registrar.playToClient(InterceptFxPayload.TYPE, InterceptFxPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientIntercepts.fx(p)));
         registrar.playToClient(OrbitPayload.TYPE, OrbitPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> OrbitView.set(p)));

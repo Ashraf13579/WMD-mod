@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:jammer_pod"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ACA",
+    "RJR",
+    "APA"
+  ],
+  "key": {
+    "A": {
+      "item": "wmd:aluminium_plate"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "R": {
+      "item": "wmd:radar_component"
+    },
+    "J": {
+      "item": "wmd:portable_jammer"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "result": {
+    "id": "wmd:jammer_pod",
+    "count": 1
+  }
+}

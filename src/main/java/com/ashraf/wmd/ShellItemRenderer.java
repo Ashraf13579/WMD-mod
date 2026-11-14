@@ -30,6 +30,8 @@ public class ShellItemRenderer extends BlockEntityWithoutLevelRenderer {
     public void renderByItem(ItemStack stack, ItemDisplayContext ctx, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay) {
         if (!(stack.getItem() instanceof ArtShellItem it)) return;
         String name = it.isPropellant() ? "propellant_charge" : Artillery.shellId(it.gun(), it.type());
+        boolean g105 = it.type() == Artillery.GUNSHIP_105;
+        if (g105) name = Artillery.shellId(Artillery.HOWITZER, Artillery.HE);
         MeshModel mesh = MeshModel.named(name);
         if (!mesh.has("part")) return;
         Minecraft mc = Minecraft.getInstance();
@@ -42,11 +44,13 @@ public class ShellItemRenderer extends BlockEntityWithoutLevelRenderer {
         if (ctx == ItemDisplayContext.GUI) {
             Lighting.setupForFlatItems();
             MultiBufferSource.BufferSource src = buffers instanceof MultiBufferSource.BufferSource bs ? bs : mc.renderBuffers().bufferSource();
-            mesh.draw("part", poseStack.last(), src, packedLight, packedOverlay);
+            if (g105) mesh.drawTinted("part", poseStack.last(), src, packedLight, packedOverlay, 120, 128, 140, 255, false);
+            else mesh.draw("part", poseStack.last(), src, packedLight, packedOverlay);
             src.endBatch();
             RenderSystem.enableDepthTest();
             Lighting.setupFor3DItems();
-        } else {
+        } else if (g105) mesh.drawTinted("part", poseStack.last(), buffers, packedLight, packedOverlay, 120, 128, 140, 255, false);
+        else {
             mesh.draw("part", poseStack.last(), buffers, packedLight, packedOverlay);
         }
         poseStack.popPose();
@@ -63,6 +67,7 @@ public class ShellItemRenderer extends BlockEntityWithoutLevelRenderer {
         java.util.List<String> more = new java.util.ArrayList<>(java.util.List.of(ids));
         for (int t = 0; t < Artillery.SPECIAL.length; t++) more.add(Artillery.shellId(Artillery.HOWITZER, Artillery.SPECIAL_BASE + t));
         more.add(Artillery.shellId(Artillery.SUPER_GUN, Artillery.SUPER_NUKE));
+        more.add(Artillery.shellId(Artillery.HOWITZER, Artillery.GUNSHIP_105));
         ids = MlrsItemRenderer.cleanIds(more.toArray(new String[0]));
         net.minecraft.world.item.Item[] items = new net.minecraft.world.item.Item[ids.length];
         for (int j = 0; j < ids.length; j++) items[j] = ItemProcessBlockEntity.wmd(ids[j]);

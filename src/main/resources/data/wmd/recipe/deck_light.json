@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:deck_light"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " G ",
+    "SLS"
+  ],
+  "key": {
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "L": {
+      "item": "minecraft:redstone_lamp"
+    }
+  },
+  "result": {
+    "id": "wmd:deck_light",
+    "count": 4
+  }
+}

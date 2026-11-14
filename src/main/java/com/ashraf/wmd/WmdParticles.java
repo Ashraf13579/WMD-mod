@@ -28,5 +28,10 @@ public final class WmdParticles {
 
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> TORPEDO_WAKE = TYPES.register("torpedo_wake", () -> new SimpleParticleType(true));
 
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> CONTRAIL = TYPES.register("contrail", () -> new SimpleParticleType(true));
+
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> HEAT_HAZE = TYPES.register("heat_haze", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> NAV_LIGHT = TYPES.register("nav_light", () -> new SimpleParticleType(true));
+
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> UW_GAS = TYPES.register("uw_gas", () -> new SimpleParticleType(true));
 }

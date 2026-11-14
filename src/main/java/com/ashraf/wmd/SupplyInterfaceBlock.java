@@ -72,7 +72,7 @@ public class SupplyInterfaceBlock extends BaseEntityBlock implements net.minecra
 
     @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        if (!level.isClientSide && !newState.is(this) && level.getBlockEntity(pos) instanceof SupplyInterfaceBlockEntity be)
+        if (!ShipRelink.shipMove(level, movedByPiston) && !level.isClientSide && !newState.is(this) && level.getBlockEntity(pos) instanceof SupplyInterfaceBlockEntity be)
             for (ItemStack s : be.takeAll()) Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, s);
         super.onRemove(state, level, pos, newState, movedByPiston);
     }

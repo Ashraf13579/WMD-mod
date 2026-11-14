@@ -124,7 +124,9 @@ public final class RadarStructure {
         BlockPos c = findController(level, partPos);
         if (c == null) return null;
 
-        boolean edge = side != null && Machines.atPart(c, Direction.NORTH, Machines.mount(level.getBlockState(c)), partPos, side, 0, 0, HALF, Direction.SOUTH);
+        BlockState cs = level.getBlockState(c);
+        Direction facing = cs.hasProperty(MachineBlock.FACING) ? cs.getValue(MachineBlock.FACING) : Direction.NORTH;
+        boolean edge = side != null && Machines.atPart(c, facing, Machines.mount(cs), partPos, side, 0, 0, HALF, Direction.SOUTH);
         return edge && level.getBlockEntity(c) instanceof RadarBlockEntity be ? be.getEnergy() : null;
     }
 

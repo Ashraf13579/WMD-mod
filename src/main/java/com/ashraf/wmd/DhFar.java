@@ -127,6 +127,9 @@ final class DhFar {
             }
         }
         tickIntercepts(level, cam, near, now);
+        tickAams(cam, near);
+        tickRockets(cam, near);
+        tickPallets(level, cam);
         tickMirrors();
         DhShells.tick(register, cam, Math.min(near, 512.0), now);
         GROUPS.entrySet().removeIf(e -> {
@@ -148,11 +151,12 @@ final class DhFar {
         if (register != null) {
             for (IDhApiRenderableBoxGroup g : SHOT_GROUPS.values()) { try { register.remove(g.getId()); } catch (RuntimeException ignored) { } }
             for (IDhApiRenderableBoxGroup g : BURST_GROUPS.values()) { try { register.remove(g.getId()); } catch (RuntimeException ignored) { } }
+            for (IDhApiRenderableBoxGroup g : AAM_GROUPS.values()) { try { register.remove(g.getId()); } catch (RuntimeException ignored) { } }
         }
         if (register != null) for (IDhApiRenderableBoxGroup g : MIRROR_GROUPS.values()) { try { register.remove(g.getId()); } catch (RuntimeException ignored) { } }
         MIRROR_GROUPS.clear();
         SHOT_GROUPS.clear();
-        BURST_GROUPS.clear();
+        BURST_GROUPS.clear(); AAM_GROUPS.clear();
         DhShells.reset(register);
         GROUPS.clear();
         CLOUDS.clear();
@@ -284,6 +288,153 @@ final class DhFar {
             register.remove(e.getValue().getId());
             return true;
         });
+    }
+
+    private static final Map<Long, IDhApiRenderableBoxGroup> AAM_GROUPS = new HashMap<>();
+
+    private static void tickAams(Vec3 cam, double near) {
+        for (ClientAam.Shot s : ClientAam.SHOTS.values()) {
+            if (s.drawn == null) continue;
+            boolean far = s.drawn.distanceTo(cam) > near;
+            IDhApiRenderableBoxGroup g = AAM_GROUPS.get(s.id);
+            if (far && g == null) {
+                Vec3 p = s.drawn;
+                g = DhApi.Delayed.customRenderObjectFactory.createRelativePositionedGroup(Wmd.MODID + ":aam", new DhApiVec3d(p.x, p.y, p.z), buildAam(s, p, cam));
+                g.setSkyLight(15);
+                g.setBlockLight(6);
+                final IDhApiRenderableBoxGroup gg = g;
+                final long id = s.id;
+                g.setPreRenderFunc(param -> updateAam(id, gg));
+                register.add(g);
+                AAM_GROUPS.put(s.id, g);
+            } else if (g != null && !far) {
+                register.remove(g.getId());
+                AAM_GROUPS.remove(s.id);
+            }
+        }
+        AAM_GROUPS.entrySet().removeIf(e -> {
+            if (ClientAam.SHOTS.containsKey(e.getKey())) return false;
+            register.remove(e.getValue().getId());
+            return true;
+        });
+    }
+
+    private static void updateAam(long id, IDhApiRenderableBoxGroup g) {
+        Minecraft mc = Minecraft.getInstance();
+        ClientAam.Shot s = ClientAam.SHOTS.get(id);
+        if (s == null || mc.level == null) { g.setActive(false); return; }
+        Vec3 p = ClientAam.position(s, mc.level.getGameTime() + mc.getTimer().getGameTimeDeltaPartialTick(false));
+        g.setActive(true);
+        g.setOriginBlockPos(new DhApiVec3d(p.x, p.y, p.z));
+        List<DhApiRenderableBox> boxes = buildAam(s, p, mc.gameRenderer.getMainCamera().getPosition());
+        g.clear();
+        g.addAll(boxes);
+        g.triggerBoxChange();
+    }
+
+    private static final Map<Integer, IDhApiRenderableBoxGroup> PALLET_GROUPS = new HashMap<>();
+
+    private static void tickPallets(ClientLevel level, Vec3 cam) {
+        Map<Integer, ClientPallets.Far> live = ClientPallets.live(level.getGameTime());
+        for (Map.Entry<Integer, ClientPallets.Far> e : live.entrySet()) {
+            ClientPallets.Far f = e.getValue();
+            IDhApiRenderableBoxGroup g = PALLET_GROUPS.get(e.getKey());
+            if (g != null) register.remove(g.getId());
+            g = DhApi.Delayed.customRenderObjectFactory.createRelativePositionedGroup(Wmd.MODID + ":drop_pallet", new DhApiVec3d(f.pos().x, f.pos().y, f.pos().z), buildPallet(f, cam));
+            g.setSkyLight(15);
+            g.setBlockLight(4);
+            register.add(g);
+            PALLET_GROUPS.put(e.getKey(), g);
+        }
+        PALLET_GROUPS.entrySet().removeIf(e -> {
+            if (live.containsKey(e.getKey())) return false;
+            register.remove(e.getValue().getId());
+            return true;
+        });
+    }
+
+    private static List<DhApiRenderableBox> buildPallet(ClientPallets.Far f, Vec3 cam) {
+        List<DhApiRenderableBox> boxes = new ArrayList<>(4);
+        double sc = Mth.clamp(f.pos().distanceTo(cam) / 1500.0, 1.0, 3.0), w = (f.heavy() ? 2.0 : 1.0) * sc;
+        boxes.add(cube(new Vec3(0, 0.5 * sc, 0), w, new Color(96, 104, 80), EDhApiBlockMaterial.WOOD));
+        if (f.chute()) {
+            double cw = (f.heavy() ? 6.0 : 3.4) * sc, cy = 4.0 * sc;
+            boxes.add(new DhApiRenderableBox(new DhApiVec3d(-cw / 2, cy, -cw / 2), new DhApiVec3d(cw / 2, cy + 0.8 * sc, cw / 2), new Color(225, 230, 236), EDhApiBlockMaterial.SNOW));
+            boxes.add(new DhApiRenderableBox(new DhApiVec3d(-cw / 5, cy + 0.8 * sc, -cw / 5), new DhApiVec3d(cw / 5, cy + 1.2 * sc, cw / 5), new Color(74, 163, 255), EDhApiBlockMaterial.SNOW));
+        }
+        return boxes;
+    }
+
+    private static final Map<Long, IDhApiRenderableBoxGroup> ROCKET_GROUPS = new HashMap<>();
+
+    private static void tickRockets(Vec3 cam, double near) {
+        for (ClientAirRockets.Shot s : ClientAirRockets.SHOTS.values()) {
+            if (s.drawn == null) continue;
+            boolean far = s.drawn.distanceTo(cam) > near;
+            IDhApiRenderableBoxGroup g = ROCKET_GROUPS.get(s.id);
+            if (far && g == null) {
+                Vec3 p = s.drawn;
+                g = DhApi.Delayed.customRenderObjectFactory.createRelativePositionedGroup(Wmd.MODID + ":air_rocket", new DhApiVec3d(p.x, p.y, p.z), buildRocket(s, p, cam));
+                g.setSkyLight(15);
+                g.setBlockLight(6);
+                final IDhApiRenderableBoxGroup gg = g;
+                final long id = s.id;
+                g.setPreRenderFunc(param -> updateRocket(id, gg));
+                register.add(g);
+                ROCKET_GROUPS.put(s.id, g);
+            } else if (g != null && !far) {
+                register.remove(g.getId());
+                ROCKET_GROUPS.remove(s.id);
+            }
+        }
+        ROCKET_GROUPS.entrySet().removeIf(e -> {
+            if (ClientAirRockets.SHOTS.containsKey(e.getKey())) return false;
+            register.remove(e.getValue().getId());
+            return true;
+        });
+    }
+
+    private static void updateRocket(long id, IDhApiRenderableBoxGroup g) {
+        Minecraft mc = Minecraft.getInstance();
+        ClientAirRockets.Shot s = ClientAirRockets.SHOTS.get(id);
+        if (s == null || mc.level == null) { g.setActive(false); return; }
+        Vec3 p = ClientAirRockets.position(s, mc.level.getGameTime() + mc.getTimer().getGameTimeDeltaPartialTick(false));
+        g.setActive(true);
+        g.setOriginBlockPos(new DhApiVec3d(p.x, p.y, p.z));
+        List<DhApiRenderableBox> boxes = buildRocket(s, p, mc.gameRenderer.getMainCamera().getPosition());
+        g.clear();
+        g.addAll(boxes);
+        g.triggerBoxChange();
+    }
+
+    private static List<DhApiRenderableBox> buildRocket(ClientAirRockets.Shot s, Vec3 p, Vec3 cam) {
+        List<DhApiRenderableBox> boxes = new ArrayList<>(24);
+        double sc = Mth.clamp(p.distanceTo(cam) / 2000.0, 0.8, 2.0), w = 0.7 * sc;
+        Vec3 dir = s.vel == null || s.vel.lengthSqr() < 1.0E-8 ? new Vec3(0, 0, -1) : s.vel.normalize();
+        for (int i = 0; i < 2; i++) boxes.add(cube(dir.scale((i - 0.5) * w), w, i == 1 ? NOSE : new Color(225, 228, 232), EDhApiBlockMaterial.METAL));
+        if (s.burning)
+            for (int k = 0; k < 2; k++) boxes.add(cube(dir.scale(-(w * 1.5 + k * w * 0.8)), w * (1.0 - k * 0.25), k == 0 ? new Color(255, 200, 90) : new Color(255, 130, 40), EDhApiBlockMaterial.ILLUMINATED));
+        int k = 0;
+        for (Vec3 q : s.trail) {
+            if (++k < 2) continue;
+            boxes.add(cube(q.subtract(p), w * (0.45 + k * 0.02), new Color(200, 200, 206, Math.max(10, 120 - k * 6)), EDhApiBlockMaterial.STONE));
+        }
+        return boxes;
+    }
+
+    private static List<DhApiRenderableBox> buildAam(ClientAam.Shot s, Vec3 p, Vec3 cam) {
+        List<DhApiRenderableBox> boxes = new ArrayList<>(32);
+        double sc = Mth.clamp(p.distanceTo(cam) / 2000.0, 0.8, 2.0), w = 1.0 * sc;
+        Vec3 dir = s.vel == null || s.vel.lengthSqr() < 1.0E-8 ? new Vec3(0, 0, -1) : s.vel.normalize();
+        for (int i = 0; i < 3; i++) boxes.add(cube(dir.scale((i - 1) * w), w, i == 2 ? NOSE : new Color(225, 228, 232), EDhApiBlockMaterial.METAL));
+        if (s.burning)
+            for (int k = 0; k < 3; k++) boxes.add(cube(dir.scale(-(w * 2.0 + k * w * 0.8)), w * (1.0 - k * 0.2), k == 0 ? new Color(255, 200, 90) : new Color(255, 130, 40), EDhApiBlockMaterial.ILLUMINATED));
+        int k = 0;
+        for (Vec3 q : s.trail) {
+            if (++k < 2) continue;
+            boxes.add(cube(q.subtract(p), w * (0.5 + k * 0.02), new Color(200, 200, 206, Math.max(10, 130 - k * 5)), EDhApiBlockMaterial.STONE));
+        }
+        return boxes;
     }
 
     private static void updateShot(long id, IDhApiRenderableBoxGroup g) {

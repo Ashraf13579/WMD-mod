@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:service_arm"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PHP",
+    "KTK",
+    "SBS"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "H": {
+      "item": "wmd:advanced_circuit"
+    },
+    "K": {
+      "item": "minecraft:piston"
+    },
+    "T": {
+      "item": "wmd:fuel_tank"
+    },
+    "S": {
+      "item": "wmd:steel_block"
+    },
+    "B": {
+      "item": "wmd:busbar"
+    }
+  },
+  "result": {
+    "id": "wmd:service_arm",
+    "count": 1
+  }
+}

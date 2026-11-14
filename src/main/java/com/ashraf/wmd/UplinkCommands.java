@@ -23,7 +23,7 @@ public final class UplinkCommands {
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("uplink")
+                .then(Commands.literal("uplink").requires(TestCmds::test)
                         .then(Commands.literal("status").executes(c -> status(c.getSource().getPlayerOrException())))
                         .then(Commands.literal("give")
                                 .executes(c -> give(c.getSource().getPlayerOrException(), 1))

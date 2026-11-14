@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:heavy_loader"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TPT",
+    "LCL",
+    "TPT"
+  ],
+  "key": {
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "L": {
+      "item": "wmd:ordnance_loader"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:heavy_loader",
+    "count": 1
+  }
+}

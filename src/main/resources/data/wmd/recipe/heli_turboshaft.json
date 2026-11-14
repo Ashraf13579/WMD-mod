@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:heli_turboshaft"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PFP",
+    "PCP",
+    "PRP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "F": {
+      "item": "wmd:ducted_fan"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "wmd:heli_turboshaft",
+    "count": 1
+  }
+}

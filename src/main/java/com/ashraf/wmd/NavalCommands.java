@@ -23,17 +23,17 @@ public final class NavalCommands {
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("dev")
-                        .then(Commands.literal("subs").executes(c -> subs(c.getSource())))
-                        .then(Commands.literal("water").executes(c -> water(c.getSource())))
-                        .then(Commands.literal("ballast").then(Commands.argument("percent", com.mojang.brigadier.arguments.IntegerArgumentType.integer(0, 100))
+                .then(Commands.literal("dev").requires(TestCmds::test)
+                        .then(Commands.literal("subs").requires(TestCmds::test).executes(c -> subs(c.getSource())))
+                        .then(Commands.literal("water").requires(TestCmds::test).executes(c -> water(c.getSource())))
+                        .then(Commands.literal("ballast").requires(TestCmds::test).then(Commands.argument("percent", com.mojang.brigadier.arguments.IntegerArgumentType.integer(0, 100))
                                 .executes(c -> ballast(c.getSource(), com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(c, "percent")))))
-                        .then(Commands.literal("testsub").executes(c -> testSub(c.getSource(), 14))
+                        .then(Commands.literal("testsub").requires(TestCmds::test).executes(c -> testSub(c.getSource(), 14))
                                 .then(Commands.argument("length", com.mojang.brigadier.arguments.IntegerArgumentType.integer(8, 40))
                                         .executes(c -> testSub(c.getSource(), com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(c, "length")))))
-                        .then(Commands.literal("noise").then(Commands.argument("db", DoubleArgumentType.doubleArg(10.0, 250.0))
+                        .then(Commands.literal("noise").requires(TestCmds::test).then(Commands.argument("db", DoubleArgumentType.doubleArg(10.0, 250.0))
                                 .executes(c -> noise(c.getSource(), DoubleArgumentType.getDouble(c, "db")))))
-                        .then(Commands.literal("listen").executes(c -> listen(c.getSource(), 512.0))
+                        .then(Commands.literal("listen").requires(TestCmds::test).executes(c -> listen(c.getSource(), 512.0))
                                 .then(Commands.argument("range", DoubleArgumentType.doubleArg(8.0, 8192.0))
                                         .executes(c -> listen(c.getSource(), DoubleArgumentType.getDouble(c, "range")))))));
     }

@@ -109,6 +109,7 @@ public final class ClientCiws {
         ClientLevel level = Minecraft.getInstance().level;
         if (level == null) return;
         Vec3 muzzle = new Vec3(p.fx(), p.fy(), p.fz()), eject = muzzle, side = new Vec3(1, 0, 0);
+        boolean pod = level.getBlockEntity(p.pos()) instanceof GunPodBlockEntity;
         if (level.getBlockEntity(p.pos()) instanceof CiwsBlockEntity be) {
             muzzle = be.muzzleWorld(); eject = be.ejectWorld(); side = be.sideWorld();
             be.recoil = 2.4F; be.heat = Math.min(1.0F, be.heat + 0.05F);
@@ -120,6 +121,7 @@ public final class ClientCiws {
         Vec3 dir = d.scale(1.0 / len);
         long t = level.getGameTime();
         var rnd = level.random;
+        if (pod) { podFire(level, muzzle, dir, to, len, p.hit(), t); return; }
 
         Session ss = SESSIONS.get(p.pos());
         if (ss == null) { ss = new Session(); SESSIONS.put(p.pos(), ss); play(ss, WmdSounds.CIWS_START.get(), p.pos(), false, 0, t); }
@@ -160,6 +162,22 @@ public final class ClientCiws {
         if (player != null) {
             double dist = player.position().distanceTo(muzzle);
             if (dist < 70.0) shake = Math.max(shake, (float) (1.0 - dist / 70.0) * 0.55F + 0.04F);
+        }
+    }
+
+    private static void podFire(ClientLevel level, Vec3 muzzle, Vec3 dir, Vec3 to, double len, boolean hit, long t) {
+        var rnd = level.random;
+        float flick = 0.7F + rnd.nextFloat() * 0.3F;
+        VeilBridge.flash(muzzle.x + dir.x * 1.2, muzzle.y + dir.y * 1.2, muzzle.z + dir.z * 1.2, 1.0F, 0.72F, 0.3F, 10.0F, 1.2F * flick, 2);
+        level.addParticle(ParticleTypes.SMOKE, muzzle.x + dir.x, muzzle.y + dir.y, muzzle.z + dir.z, dir.x * 0.05, 0.02, dir.z * 0.05);
+        for (int i = 0; i < ROUNDS; i++) {
+            Vec3 spread = new Vec3((rnd.nextDouble() - 0.5) * 0.01, (rnd.nextDouble() - 0.5) * 0.01, (rnd.nextDouble() - 0.5) * 0.01);
+            TRACERS.add(new Round(muzzle.add(dir.scale(1.0)), dir.add(spread).normalize(), t + i / (double) ROUNDS, Math.min(len + 30.0, Balance.GPOD_RANGE + 60.0), i == ROUNDS - 1, keySeq++));
+        }
+        if (hit) {
+            level.addParticle(ParticleTypes.CRIT, to.x, to.y, to.z, 0.4, 0.4, 0.4);
+            level.addParticle(ParticleTypes.POOF, to.x, to.y, to.z, 0.0, 0.05, 0.0);
+            VeilBridge.flash(to.x, to.y, to.z, 1.0F, 0.8F, 0.4F, 14.0F, 1.2F, 2);
         }
     }
 

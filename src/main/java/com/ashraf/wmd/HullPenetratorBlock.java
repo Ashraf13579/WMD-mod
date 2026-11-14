@@ -28,10 +28,43 @@ public class HullPenetratorBlock extends BusbarBlock {
 
     public static final MapCodec<HullPenetratorBlock> CODEC = simpleCodec(HullPenetratorBlock::new);
 
+    public static final net.minecraft.world.level.block.state.properties.BooleanProperty SKINNED =
+            net.minecraft.world.level.block.state.properties.BooleanProperty.create("skinned");
+
     public HullPenetratorBlock(Properties properties) { super(properties); }
 
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
+
+    @Override
+    protected void createBlockStateDefinition(net.minecraft.world.level.block.state.StateDefinition.Builder<net.minecraft.world.level.block.Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(SKINNED);
+    }
+
+    @Override
+    protected net.minecraft.world.ItemInteractionResult useItemOn(ItemStack stack, BlockState state, net.minecraft.world.level.Level level, BlockPos pos, Player player,
+                                                                  net.minecraft.world.InteractionHand hand, net.minecraft.world.phys.BlockHitResult hit) {
+        if (hand != net.minecraft.world.InteractionHand.MAIN_HAND) return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        boolean wrench = stack.is(Wmd.WRENCH.get()) && player.isShiftKeyDown();
+        if (!wrench && !(stack.getItem() instanceof net.minecraft.world.item.BlockItem)) return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if (!wrench && !ScrewPropellerBlockEntity.copyable(((net.minecraft.world.item.BlockItem) stack.getItem()).getBlock().defaultBlockState(), level, pos))
+            return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if (level.isClientSide) return net.minecraft.world.ItemInteractionResult.SUCCESS;
+        if (!(level.getBlockEntity(pos) instanceof BusbarBlockEntity be)) return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if (!ClaimGuard.mayPlace(level, player, List.of(pos), pos)) return net.minecraft.world.ItemInteractionResult.CONSUME;
+        return CopycatState.interact(level, player, pos, be) ? net.minecraft.world.ItemInteractionResult.CONSUME
+                : net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
+    @Override
+    protected void onRemove(BlockState state, net.minecraft.world.level.Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        if (!ShipRelink.shipMove(level, movedByPiston) && !state.is(newState.getBlock()) && !level.isClientSide && level.getBlockEntity(pos) instanceof BusbarBlockEntity be) {
+            ItemStack back = be.copycat().takeItem();
+            if (!back.isEmpty()) net.minecraft.world.level.block.Block.popResource(level, pos, back);
+        }
+        super.onRemove(state, level, pos, newState, movedByPiston);
+    }
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) { return Shapes.block(); }
@@ -62,5 +95,6 @@ public class HullPenetratorBlock extends BusbarBlock {
     public void appendHoverText(ItemStack stack, Item.TooltipContext ctx, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable("tooltip.wmd.hull_penetrator").withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("tooltip.wmd.deep_hull.rating", Balance.DEEP_FITTING_RATING).withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable("tooltip.wmd.copycat_skin").withStyle(ChatFormatting.GRAY));
     }
 }

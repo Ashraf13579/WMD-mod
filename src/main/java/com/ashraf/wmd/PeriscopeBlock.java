@@ -37,6 +37,7 @@ public class PeriscopeBlock extends UnitBlock {
         if (!player.isShiftKeyDown() && level.getBlockEntity(controller) instanceof PeriscopeBlockEntity be && be.canLook()
                 && player instanceof net.minecraft.server.level.ServerPlayer sp) {
             net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(sp, new PeriscopePayload(controller));
+            PeriscopeAir.watch(sp, controller);
             return;
         }
         super.interact(level, controller, player);

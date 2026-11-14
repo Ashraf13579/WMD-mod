@@ -170,6 +170,19 @@ public final class SonarNet {
         return out;
     }
 
+    public static List<Fix> ownerFixes(ServerLevel level, UUID owner) {
+        List<Fix> out = new ArrayList<>();
+        if (owner == null) return out;
+        String pre = owner + "|", dim = "|" + level.dimension().location();
+        for (String k : new ArrayList<>(BEARINGS.keySet())) {
+            if (!k.startsWith(pre) || !k.endsWith(dim) || k.length() <= pre.length() + dim.length()) continue;
+            int f;
+            try { f = Integer.parseInt(k.substring(pre.length(), k.length() - dim.length())); } catch (NumberFormatException e) { continue; }
+            for (Contact c : contacts(level, owner, f)) if (c.fix() != null) out.add(c.fix());
+        }
+        return out;
+    }
+
     public static List<Fix> pingFixes(ServerLevel level, UUID owner, int freq) {
         List<Fix> l = PINGS.get(key(level, owner, freq));
         if (l == null) return List.of();

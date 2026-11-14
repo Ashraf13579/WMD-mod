@@ -32,6 +32,8 @@ public class FireControlConsoleBlockEntity extends ProcessUnitBlockEntity implem
 
     public static final int A_STRIKE = 9, A_STRIKE_CLR = 10, A_SSEL = 11, A_SFIRE = 12, A_SSALVO = 13, A_OWN_X = 14, A_OWN_Z = 15, A_OWN_CLR = 16;
 
+    public static final int A_GSEL = 17, A_GFIRE = 18, A_GHEAVY = 19;
+
     public static final int RC_NONE = 0, RC_OK = 1, RC_CLOSE = 2, RC_FAR = 3;
 
     private final OwnerData ownerData = new OwnerData();
@@ -50,6 +52,9 @@ public class FireControlConsoleBlockEntity extends ProcessUnitBlockEntity implem
     private long strikeAt;
 
     private ListTag strikes = new ListTag();
+
+    private ListTag guns = new ListTag();
+    private int gSel;
 
     public FireControlConsoleBlockEntity(BlockPos pos, BlockState state) { super(Wmd.FIRE_CONTROL_CONSOLE_BE.get(), pos, state, Balance.FCC_FE); }
 
@@ -80,6 +85,13 @@ public class FireControlConsoleBlockEntity extends ProcessUnitBlockEntity implem
     public int strikeSelected() { return sSel; }
 
     public CompoundTag strikeRow() { List<CompoundTag> l = strikeRows(); return sSel >= 0 && sSel < l.size() ? l.get(sSel) : null; }
+    public List<CompoundTag> gunRows() { return rows(guns); }
+    public int gunSelected() { return gSel; }
+    public CompoundTag gunRow() { List<CompoundTag> l = gunRows(); return gSel >= 0 && gSel < l.size() ? l.get(gSel) : null; }
+
+    private Vec3[] gunTarget(ServerLevel sl) {
+        return NavalFire.gunTarget(sl, targetRow(), strikeSet ? new int[] { strikeX, strikeZ } : null, SableBridge.worldPos(sl, worldPosition));
+    }
 
     private static List<CompoundTag> rows(ListTag t) { List<CompoundTag> l = new ArrayList<>(); for (Tag x : t) if (x instanceof CompoundTag c) l.add(c); return l; }
 
@@ -202,6 +214,7 @@ public class FireControlConsoleBlockEntity extends ProcessUnitBlockEntity implem
             CompoundTag t = new CompoundTag();
             t.putInt("x", Mth.floor(f.x())); t.putInt("y", Mth.floor(f.y())); t.putInt("z", Mth.floor(f.z())); t.putInt("d", (int) Math.round(f.depth()));
             t.putBoolean("s", f.submerged()); t.putBoolean("w", f.label().startsWith("wreck:")); t.putString("n", f.label());
+            if (f.ship() != null) t.putUUID("sh", f.ship());
             tg.add(t);
         }
         for (SonarNet.Contact c : SonarNet.contacts(sl, getOwner(), frequency)) {
@@ -255,6 +268,8 @@ public class FireControlConsoleBlockEntity extends ProcessUnitBlockEntity implem
         for (BlockEntity m : strikeMembers(sl)) sr.add(m instanceof LaunchCellBlockEntity lc ? cellRow(sl, lc) : batteryRow(sl, (CoastalBatteryBlockEntity) m));
         strikes = sr;
         if (sSel >= strikes.size()) sSel = Math.max(0, strikes.size() - 1);
+        guns = NavalFire.rows(sl, worldPosition, getOwner(), gunTarget(sl));
+        gSel = NavalFire.clampRow(gSel, guns.size());
 
         ListTag tp = new ListTag();
         UUID o = getOwner();
@@ -310,6 +325,7 @@ public class FireControlConsoleBlockEntity extends ProcessUnitBlockEntity implem
                 fired += DepthChargeThrowerBlockEntity.salvo(sl, getOwner(), frequency, by);
                 int used = net(sl).size();
                 fired += batterySalvo(batteries(sl, used + cells(sl, used).size()), by);
+                fired += NavalFire.salvo(sl, worldPosition, getOwner(), gunTarget(sl));
                 if (fired > 0) { lastShot = sl.getGameTime(); fireKey(sl); }
                 if (by != null) by.displayClientMessage(Component.translatable("gui.wmd.fcc.salvo_fired", fired), true);
             }
@@ -337,6 +353,9 @@ public class FireControlConsoleBlockEntity extends ProcessUnitBlockEntity implem
                 else if (m instanceof CoastalBatteryBlockEntity cb) cb.consoleTarget(true, pendX, z, by);
                 if (m != null && by != null) by.displayClientMessage(Component.translatable("gui.wmd.fcc.own_set", a + 1, pendX, z), true);
             }
+            case A_GSEL -> gSel = Math.max(0, a);
+            case A_GFIRE -> { if (NavalFire.fire(sl, worldPosition, getOwner(), a, gunTarget(sl), by)) { lastShot = sl.getGameTime(); fireKey(sl); } }
+            case A_GHEAVY -> NavalFire.toggleHeavy(sl, worldPosition, getOwner(), a, by);
             case A_OWN_CLR -> {
                 BlockEntity m = strikeAt(sl, a);
                 if (m instanceof LaunchCellBlockEntity lc) { lc.act(by, LaunchCellBlockEntity.A_CLEAR, 0); lc.recheck(); }
@@ -448,6 +467,8 @@ public class FireControlConsoleBlockEntity extends ProcessUnitBlockEntity implem
         strikeSet = tag.getBoolean("fcStrike"); strikeX = tag.getInt("fcSx"); strikeZ = tag.getInt("fcSz"); strikeAt = tag.getLong("fcSat");
         sSel = tag.getInt("fcSsel");
         if (tag.contains("fcStrikes")) strikes = tag.getList("fcStrikes", Tag.TAG_COMPOUND);
+        if (tag.contains("fcGuns")) guns = tag.getList("fcGuns", Tag.TAG_COMPOUND);
+        gSel = tag.getInt("fcGsel");
         target = tag.contains("fcTgt") ? tag.getInt("fcTgt") : -1;
         if (tag.contains("fcRows")) rows = tag.getList("fcRows", Tag.TAG_COMPOUND);
         if (tag.contains("fcTargets")) targets = tag.getList("fcTargets", Tag.TAG_COMPOUND);
@@ -473,6 +494,8 @@ public class FireControlConsoleBlockEntity extends ProcessUnitBlockEntity implem
         tag.putBoolean("fcStrike", strikeSet); tag.putInt("fcSx", strikeX); tag.putInt("fcSz", strikeZ); tag.putLong("fcSat", strikeAt);
         tag.putInt("fcSsel", sSel);
         tag.put("fcStrikes", strikes);
+        tag.put("fcGuns", guns);
+        tag.putInt("fcGsel", gSel);
         return tag;
     }
 }

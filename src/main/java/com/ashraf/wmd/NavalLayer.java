@@ -13,10 +13,18 @@ public final class NavalLayer {
 
     public static final int NO_WATER = Integer.MIN_VALUE;
 
+    static final int COVER = 8;
+
     public static int waterTop(Level level, int x, int z) {
         if (level == null || !level.hasChunk(x >> 4, z >> 4)) return NO_WATER;
         int top = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z) - 1;
-        return level.getFluidState(new BlockPos(x, top, z)).is(FluidTags.WATER) ? top : NO_WATER;
+
+        BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos(x, top, z);
+        for (int k = 0; k <= COVER; k++) {
+            p.setY(top - k);
+            if (level.getFluidState(p).is(FluidTags.WATER)) return top - k;
+        }
+        return NO_WATER;
     }
 
     public static double depthBelowSurface(Level level, Vec3 p) {

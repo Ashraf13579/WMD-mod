@@ -13,6 +13,7 @@ public final class ClientClock {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) { mono = Long.MIN_VALUE; held = false; return; }
         long raw = mc.level.getGameTime();
+        if (raw < mono - 200) mono = raw;
         held = raw < mono;
         if (!held) mono = raw;
     }

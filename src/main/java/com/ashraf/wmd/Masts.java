@@ -10,7 +10,7 @@ public final class Masts {
 
     private Masts() {}
 
-    public static final int PERISCOPE = 1, BUOY = 2;
+    public static final int PERISCOPE = 1, BUOY = 2, SNORKEL = 3;
 
     private static final Map<String, long[]> UP = Statics.server(new HashMap<>());
 
@@ -18,15 +18,17 @@ public final class Masts {
 
     public static void beat(ServerLevel level, UUID ship, int kind) {
         if (level == null || ship == null) return;
-        long[] u = UP.computeIfAbsent(key(level, ship), k -> new long[2]);
-        u[kind == BUOY ? 1 : 0] = level.getGameTime() + Balance.MAST_TTL;
+        long[] u = UP.computeIfAbsent(key(level, ship), k -> new long[3]);
+        u[idx(kind)] = level.getGameTime() + Balance.MAST_TTL;
     }
 
     public static void drop(ServerLevel level, UUID ship, int kind) {
         if (level == null || ship == null) return;
         long[] u = UP.get(key(level, ship));
-        if (u != null) u[kind == BUOY ? 1 : 0] = 0L;
+        if (u != null) u[idx(kind)] = 0L;
     }
+
+    private static int idx(int kind) { return kind == BUOY ? 1 : kind == SNORKEL ? 2 : 0; }
 
     private static boolean live(ServerLevel level, UUID ship, int i) {
         if (level == null || ship == null) return false;
@@ -34,7 +36,7 @@ public final class Masts {
         return u != null && u[i] >= level.getGameTime();
     }
 
-    public static boolean up(ServerLevel level, UUID ship) { return live(level, ship, 0) || live(level, ship, 1); }
+    public static boolean up(ServerLevel level, UUID ship) { return live(level, ship, 0) || live(level, ship, 1) || live(level, ship, 2); }
 
     public static boolean buoyUp(ServerLevel level, UUID ship) { return live(level, ship, 1); }
 

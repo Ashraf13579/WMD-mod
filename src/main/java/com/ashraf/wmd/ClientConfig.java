@@ -26,6 +26,16 @@ public final class ClientConfig {
             .comment("Holding a fluid pipe, busbar or wrench: machines within 16 blocks show their ports in the world (blue = in, orange = out, cyan = power).")
             .define("portOverlay", false);
 
+    public enum LightQuality { OFF, LOW, HIGH }
+
+    public static final ModConfigSpec.EnumValue<LightQuality> WMD_LIGHTS = BUILDER
+            .comment("WMD's dynamic lights (lamps, aircraft lights, missile flames, explosions lighting the ground and walls) when Veil cannot draw them, e.g. with Iris installed or a shaderpack on. HIGH = up to 12 lights, 16 blocks; LOW = 6 lights, 10 blocks (for slower PCs); OFF = none.")
+            .defineEnum("wmdLights", LightQuality.HIGH);
+
+    public static final ModConfigSpec.BooleanValue WMD_LIGHTS_UNDER_SHADERS = BUILDER
+            .comment("Also draw WMD's dynamic lights while an Iris shaderpack is on. Off by default: the pack lights the world itself (WMD lamps give block light), and some packs show WMD's lights as patches or flicker.")
+            .define("wmdLightsUnderShaders", false);
+
     public enum HoloDetail { LOW, MEDIUM, HIGH }
 
     public static final ModConfigSpec.DoubleValue CAMERA_SHAKE = BUILDER

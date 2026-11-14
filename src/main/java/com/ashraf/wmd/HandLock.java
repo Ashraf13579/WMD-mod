@@ -84,9 +84,12 @@ public final class HandLock {
             if (SableBridge.active()) {
                 for (SableBridge.ShipInfo s : SableBridge.allShips(level)) {
                     Vec3 c = s.worldCenter();
-                    if (c.distanceTo(eye) > range + 32.0) continue;
+
+                    double lim = AirGate.on() && AirPicture.isAircraft(level, s.id()) ? range * AirHeat.factor(level, s.id(), level.getGameTime()) : range;
+                    if (c.distanceTo(eye) > lim + 32.0) continue;
+                    if (lim != range && !AirHeat.rearAspect(level, s.id(), c, s.linearVelocity() == null ? null : s.linearVelocity().scale(0.05), eye, level.getGameTime())) continue;
                     double cos = cosTo(eye, look, c);
-                    if (s.worldBounds().clip(eye, eye.add(look.scale(range))).isPresent()) cos = Math.max(cos, minCos + 1.0E-6);
+                    if (s.worldBounds().clip(eye, eye.add(look.scale(lim))).isPresent()) cos = Math.max(cos, minCos + 1.0E-6);
                     if (cos >= bestCos && !SmokeScreens.inside(level, c)) { bestCos = cos; best = new Target(T_SHIP, s.id(), 0, 0L, null); }
                 }
             }

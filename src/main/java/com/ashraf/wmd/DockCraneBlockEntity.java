@@ -118,14 +118,23 @@ public class DockCraneBlockEntity extends ProcessUnitBlockEntity implements Owne
         return new float[] { slew, luff, (float) drop };
     }
 
-    static boolean liftable(ItemStack s) { return !s.isEmpty() && s.getMaxStackSize() <= 4; }
+    static boolean liftable(ItemStack s) { return !s.isEmpty() && (s.getMaxStackSize() <= 4 || NavalGunBlockEntity.isRound(s)); }
+
+    private int liftCount(ServerLevel sl) {
+        return dstPos != null && sl.getBlockEntity(dstPos) instanceof NavalGunBlockEntity ng ? ng.spec().craneStack() : 1;
+    }
 
     private boolean receiverKind(BlockEntity be, boolean onShip) {
         if (be instanceof TorpedoLauncherBlockEntity || be instanceof LaunchCellBlockEntity || be instanceof CoastalBatteryBlockEntity) return true;
+        if (be instanceof NavalGunBlockEntity) return onShip;
         return be instanceof TorpedoRackBlockEntity && onShip;
     }
 
     private int freeSlot(BlockEntity be, ItemStack s) {
+        if (be instanceof NavalGunBlockEntity ng) {
+            ItemStack one = s.copyWithCount(1);
+            return !be.isRemoved() && Access.trusts(ng, getOwner()) && ng.accepts(one) && ng.room(one) ? 0 : -1;
+        }
         if (!(be instanceof ItemProcessBlockEntity ip) || be.isRemoved()) return -1;
         if (be instanceof Owned o && !Access.trusts(o, getOwner())) return -1;
         Container c = ip.slotContainer();
@@ -230,17 +239,23 @@ public class DockCraneBlockEntity extends ProcessUnitBlockEntity implements Owne
         if (be instanceof TorpedoRackBlockEntity rack) {
             Container c = rack.slotContainer();
             if (srcSlot >= c.getContainerSize() || !liftable(c.getItem(srcSlot))) return ItemStack.EMPTY;
-            return c.removeItem(srcSlot, 1);
+            return c.removeItem(srcSlot, liftCount(sl));
         }
         if (be == null || be instanceof ProcessUnitBlockEntity) return ItemStack.EMPTY;
         IItemHandler h = sl.getCapability(Capabilities.ItemHandler.BLOCK, srcPos, null);
         if (h == null || srcSlot >= h.getSlots() || !liftable(h.getStackInSlot(srcSlot))) return ItemStack.EMPTY;
-        return h.extractItem(srcSlot, 1, false);
+        return h.extractItem(srcSlot, liftCount(sl), false);
     }
 
     private boolean giveToReceiver(ServerLevel sl) {
         if (dstPos == null || carried.isEmpty()) return false;
         BlockEntity be = sl.getBlockEntity(dstPos);
+        if (be instanceof NavalGunBlockEntity ng) {
+            int n = 0;
+            while (!carried.isEmpty() && freeSlot(ng, carried) >= 0 && ng.loadOne(carried.copyWithCount(1))) { carried.shrink(1); n++; }
+            if (carried.isEmpty()) carried = ItemStack.EMPTY;
+            return n > 0;
+        }
         int slot = be == null ? -1 : freeSlot(be, carried);
         if (slot < 0) return false;
         ((ItemProcessBlockEntity) be).slotContainer().setItem(slot, carried.copyWithCount(1));

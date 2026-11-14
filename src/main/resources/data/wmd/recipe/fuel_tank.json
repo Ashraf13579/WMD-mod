@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:fuel_tank"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "PBP",
+    "PGP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "G": {
+      "item": "minecraft:comparator"
+    }
+  },
+  "result": {
+    "id": "wmd:fuel_tank",
+    "count": 1
+  }
+}

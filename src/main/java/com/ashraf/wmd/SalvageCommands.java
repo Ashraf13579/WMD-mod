@@ -23,7 +23,7 @@ public final class SalvageCommands {
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("salvage")
+                .then(Commands.literal("salvage").requires(TestCmds::test)
                         .then(Commands.literal("locate").executes(c -> locate(c.getSource())))
                         .then(Commands.literal("turret").executes(c -> turretDebug(c.getSource())))
                         .then(Commands.literal("build")

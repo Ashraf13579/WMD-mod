@@ -6,7 +6,16 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "wmd:escape_pod"
+          "name": "wmd:escape_pod",
+          "functions": [
+            {
+              "function": "minecraft:copy_components",
+              "source": "block_entity",
+              "include": [
+                "minecraft:custom_data"
+              ]
+            }
+          ]
         }
       ],
       "conditions": [

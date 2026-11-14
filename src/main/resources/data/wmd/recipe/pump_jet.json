@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PTP",
+    "MAM",
+    "PTP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/titanium"
+    },
+    "T": {
+      "item": "wmd:turbine_blades"
+    },
+    "M": {
+      "item": "wmd:motor_t3"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:pump_jet",
+    "count": 1
+  }
+}

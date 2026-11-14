@@ -1,0 +1,27 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:gantry_rail"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    " I ",
+    "P  "
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "I": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "result": {
+    "id": "wmd:gantry_rail",
+    "count": 4
+  }
+}

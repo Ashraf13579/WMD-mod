@@ -111,6 +111,53 @@ public final class BayAnim {
         public double rbz = REST_BZ, rtx = REST_TX, rdy = REST_DY, rjaw;
         public boolean rcarry, rplaced, wmoving;
         public double wpos;
+
+        public boolean air;
+        public int airKind = -1;
+        public double airOff, jigClamp, roll;
+    }
+
+    public static final double AIR_RT = 60, AIR_DX = 16, AIR_JIG = 78, AIR_MOTOR = 7;
+
+    public static double airLen(int k) { return k == AirMissiles.HEAT ? 38.4 : k == AirMissiles.AGM ? 41.6 : 48.0; }
+
+    public static double airNose(int k) { return k == AirMissiles.HEAT ? 5.0 : k == AirMissiles.RADAR ? 6.3 : k == AirMissiles.ARM ? 7.7 : 6.2; }
+    public static double airGuid(int k) { return k == AirMissiles.HEAT ? 9.0 : k == AirMissiles.RADAR ? 8.5 : k == AirMissiles.ARM ? 11.0 : 10.4; }
+
+    public static double airCentre(int k, int sec) {
+        double l = airLen(k);
+        return switch (sec) {
+            case 1 -> AIR_RT + AIR_MOTOR / 2.0;
+            case 2 -> AIR_RT + l - (airNose(k) + airGuid(k)) / 2.0;
+            case 3 -> AIR_RT + l - airNose(k) / 2.0;
+            default -> AIR_RT + l / 2.0;
+        };
+    }
+
+    public static void airPose(Pose p, BayModuleBlockEntity.Stage stage, double f, int k, int stations) {
+        p.air = true; p.airKind = k;
+        final double w = 90 - airCentre(k, 0), c = SEG_C[1] - airCentre(k, 1), g = SEG_C[2] - airCentre(k, 2), n = SEG_C[3] - airCentre(k, 3), m = 80 - airCentre(k, 0);
+        final double last = stations <= 0 ? n : m;
+        double off = 0;
+        switch (stage) {
+            case ROLL_WELD -> off = lerp(0, w, s(f));
+            case WELD -> off = w;
+            case ROLL_CRANE -> off = lerp(w, c, s(f));
+            case CRANE -> off = c;
+            case ROLL_WARHEAD -> off = lerp(c, g, s(f));
+            case WARHEAD -> off = f < 0.47 ? g : f < 0.53 ? lerp(g, n, s(seg(f, 0.47, 0.53))) : n;
+            case ROLL_CLEAN -> off = lerp(n, m, s(f));
+            case CLEAN, ROLL_PAINT, PAINT, ROLL_CRYO, CRYO -> off = m;
+            case RETURN -> off = lerp(last, 0, s(f));
+            default -> off = 0;
+        }
+        p.airOff = off;
+        p.cradleZ += off;
+        p.jigClamp = stage == BayModuleBlockEntity.Stage.FETCH ? s(seg(f, 0.84, 0.92)) : 1.0;
+        int ord = stage.ordinal();
+        p.roll = stage == BayModuleBlockEntity.Stage.WELD ? Math.PI / 2 * s(seg(f, 0.45, 0.55))
+                : ord > BayModuleBlockEntity.Stage.WELD.ordinal() && stage != BayModuleBlockEntity.Stage.IDLE ? Math.PI / 2 : 0.0;
+        if (stage == BayModuleBlockEntity.Stage.IDLE) p.roll = Math.PI / 2;
     }
 
     private static double s(double x) { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); }

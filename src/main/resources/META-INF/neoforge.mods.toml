@@ -48,8 +48,9 @@ authors="${mod_authors}" #optional
 description='''${mod_description}'''
 
 # The [[mixins]] block allows you to declare your mixin config to FML so that it gets loaded.
-#[[mixins]]
-#config="${mod_id}.mixins.json"
+# 11 Nov 2026: WMD's first mixin config (client only: the section banners in the WMD creative tabs, CreativeScreenMixin)
+[[mixins]]
+config="${mod_id}.mixins.json"
 
 # The [[accessTransformers]] block allows you to declare where your AT file is.
 # If this block is omitted, a fallback attempt will be made to load an AT from META-INF/accesstransformer.cfg
@@ -116,6 +117,23 @@ description='''${mod_description}'''
     type="optional"
     versionRange="[2.0,)"
     ordering="AFTER"
+    side="BOTH"
+
+# Create is optional: when present, the drive coupling turns WMD power into rotation (and back), and the screw / pump-jet / power core take Create
+# rotation (src/create/java, loaded by name). WMD runs without it. Declared so launchers show the soft dependency.
+[[dependencies.${mod_id}]]
+    modId="create"
+    type="optional"
+    versionRange="[6.0.10,)"
+    ordering="NONE"
+    side="BOTH"
+
+# Create: Deep Seas is optional: when present, WMD sonar, hulls, ballast and the helm work with its submarines (DeepSeasBridge). WMD runs without it.
+[[dependencies.${mod_id}]]
+    modId="create_submarine"
+    type="optional"
+    versionRange="[3.3.0,)"
+    ordering="NONE"
     side="BOTH"
 
 # BlueMap (web 3D map) is optional: when present, WMD adds map layers (impact history, zones, border; optional admin and war layers). WMD runs without it (MapBridge).

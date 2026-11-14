@@ -27,6 +27,107 @@ public class FieldManualScreen extends Screen {
 
     private record Page(String id, String[] rows, Supplier<Object[]> args) {}
 
+    private static List<Page> withAir(List<Page> base) {
+        if (!AirGate.AVAILABLE) return base;
+        List<Page> l = new java.util.ArrayList<>(base);
+        l.add(new Page("air_search_radar", new String[] { "busbar > air_search_radar" },
+                () -> new Object[] { n((int) Balance.ASR_RANGE), n(Balance.ASR_SWEEP_TICKS / 20), n(Balance.ASR_FE * 20), n((int) Balance.ASR_CLUTTER_RANGE), n((int) Balance.ASR_CLUTTER_AGL) }));
+        l.add(new Page("sam_site", new String[] { "air_search_radar aam_radar > sam_site" },
+                () -> new Object[] { n((int) Balance.SAM_RANGE), n((int) Balance.AAM_PITBULL), n(Balance.SAM_SHOT_FE) }));
+        l.add(new Page("jet_power_core", new String[] { "busbar > jet_power_core", "~jet_fuel > jet_power_core" },
+                () -> new Object[] { n(Balance.CORE_BUFFER_FE), n(Balance.CORE_APU_FE * 20), n((int) Math.round(Balance.CORE_APU_START * 100)) }));
+        l.add(new Page("rf_power", new String[] { "busbar > rf_sender", "rf_sender > rf_receiver > busbar" },
+                () -> new Object[] { n(Balance.RF_SEND_FE * 20), n(Balance.RF_OUT_FE * 20), Balance.RF_EFFICIENCY, n(Balance.RF_RANGE) }));
+        l.add(new Page("service_arm", new String[] { "~jet_fuel ~diesel busbar > service_arm", "service_receptacle > jet_power_core" },
+                () -> new Object[] { n((int) Balance.SA_REACH), n(Balance.SA_FUEL_RATE * 20), n(Balance.SA_GROUND_FE * 20), n(Balance.SA_FE_MOVE * 20) }));
+        l.add(new Page("countermeasure_dispenser", new String[] { "flare_pack > countermeasure_dispenser", "chaff_pod > countermeasure_dispenser" },
+                () -> new Object[] { n(Balance.AAM_DISPENSER_FLARES), n(Balance.AAM_DISPENSER_CHAFF), n(Balance.DISP_PER_ITEM) }));
+        l.add(new Page("wing", new String[] { "wing_section > control_surface" },
+                () -> new Object[] { n((int) Balance.WING_CS_MAX), n((int) Balance.WING_CS_RUDDER_MAX) }));
+        l.add(new Page("air_stations", new String[] { "aam_heat > pylon", "aam_radar > launch_rail" },
+                () -> new Object[] { n((int) Balance.AAM_HEAT_CONE), n((int) Balance.AAM_HEAT_LOCK_RANGE), n(Balance.STATION_LAUNCH_FE) }));
+        l.add(new Page("weapons_bay", new String[] { "aam_arm > weapons_bay", "aam_radar > weapons_bay" },
+                () -> new Object[] { n(Balance.WBAY_GROUP_MAX), n(Balance.WBAY_LAUNCH_DELAY) }));
+        l.add(new Page("gun_pod", new String[] { "ciws + jet_power_core > gun_pod", "ciws_ammo > gun_pod" },
+                () -> new Object[] { n(Balance.GPOD_ROUNDS), n(Balance.GPOD_BOX), n((int) Balance.GPOD_RANGE) }));
+        l.add(new Page("rocket_pod", new String[] { "basic_circuit + aluminium_plate > rocket_pod", "he_charge + aluminium_plate > air_rocket" },
+                () -> new Object[] { n(Balance.RPOD_TUBES), n(Balance.AIR_ROCKET_CRAFT), n((int) Balance.RPOD_RANGE_MIN), n((int) Balance.RPOD_RANGE_MAX) }));
+        l.add(new Page("gunner", new String[] { "gun_pod + advanced_circuit > gun_turret", "advanced_circuit > gunner_station" },
+                () -> new Object[] { n(Balance.GTUR_ROUNDS), n(Balance.GTUR_BOX), n((int) Balance.GTUR_RANGE) }));
+        l.add(new Page("heavy_gun", new String[] { "howitzer + advanced_circuit > heavy_gun", "shell_howitzer_he > heavy_gun" },
+                () -> new Object[] { n(Balance.HGUN_RACK), n((int) Balance.HGUN_RANGE) }));
+        l.add(new Page("naval_guns", new String[] { "howitzer + advanced_circuit > deck_gun", "howitzer + chip_metallurgy_3 > battleship_turret" },
+                () -> new Object[] { n(Balance.NGUN_RACK), n((int) Balance.NGUN_EYE_RANGE), n((int) Balance.NGUN_CON_RANGE), n(Balance.XGUN_RACK), n(Balance.XGUN_CHARGES),
+                        n((int) Balance.XGUN_CON_RANGE), n(SuperGun.chargeRange(Balance.XGUN_HEAVY_CHARGES_MAX)) }));
+        l.add(new Page("flight_check", new String[] { "laser_tablet > flight_check_tablet" },
+                () -> new Object[] { n((int) Balance.FC_REACH), n((int) Math.round(Balance.FC_TW_MIN * 100)) }));
+        l.add(new Page("airframe", new String[] { "laser_tablet > flight_check_tablet" },
+                () -> new Object[] { n(Balance.REC_SHOW_TICKS / 20) }));
+        l.add(new Page("autopilot", new String[] { "jet_cockpit" },
+                () -> new Object[] { n(Balance.AP_FLOOR), n(Balance.AP_WP_MAX), n((int) Math.round(Balance.AL_DH)) }));
+        l.add(new Page("survey_scanner", new String[] { "flight_check_tablet > survey_scanner" },
+                () -> new Object[] { n((int) Balance.SCANNER_RANGE) }));
+        l.add(new Page("gantry", new String[] { "survey_scanner engine_repair_kit > gantry_cabinet", "gantry_rail" },
+                () -> new Object[] { n(Balance.GANTRY_SPAN_MIN), n(Balance.GANTRY_SPAN_MAX), n(Balance.GANTRY_FE) }));
+        l.add(new Page("loadout", new String[0],
+                () -> new Object[] { n((int) Balance.AD_RANGE), String.format("%.1f", Balance.LOADER_REACH), String.format("%.1f", Balance.HEAVY_LOADER_REACH), n(Balance.LOADER_TRACK_MAX) }));
+        l.add(new Page("loadout_screen", new String[0],
+                () -> new Object[] { n(Balance.LO_PRESETS) }));
+        l.add(new Page("air_guns", new String[] { "air_search_radar > ciws" },
+                () -> new Object[] { n((int) Balance.CIWS_JET_RANGE) }));
+        l.add(new Page("jammer_pod", new String[] { "jet_power_core > jammer_pod" },
+                () -> new Object[] { n((int) Math.round(Balance.AIRJAM_LOCK_FACTOR * 100)), n(Balance.JAM_POD_FE * 20) }));
+        l.add(new Page("bay_air", new String[] { "airframe_t2 motor_t2 guidance_t2 warhead_frag > bay_core", "heat_seeker radar_seeker arm_seeker laser_seeker > aam_heat" },
+                () -> new Object[] { Balance.BAY_AIR_YIELD, Math.round(Balance.AAM_REFINED_BONUS * 100) }));
+        l.add(new Page("aam_arm", new String[] { "arm_seeker > aam_arm", "aam_arm > pylon" },
+                () -> new Object[] { n((int) Balance.AAM_ARM_CONE), n((int) Balance.AAM_RANGE[AirMissiles.ARM]) }));
+        l.add(new Page("ashm", new String[] { "airframe_t3 jet_engine guidance_t3 warhead_he_t1 > bay_core", "radar_seeker > ashm", "ashm > pylon weapons_bay" },
+                () -> new Object[] { Balance.ASHM_BAY_YIELD, n((int) Math.round(Balance.ASHM_SPEED * 20)), n((int) Balance.ASHM_RANGE), n((int) Balance.ASHM_RADAR_RANGE) }));
+        l.add(new Page("landing_gear", new String[] { "landing_gear > jet_cockpit" },
+                () -> new Object[] { n(Balance.GEAR_CYCLE_TICKS / 20) }));
+        l.add(new Page("tow_bar", new String[] { "tow_bar > landing_gear" },
+                () -> new Object[] { Balance.TOW_SPEED_MAX, Balance.REVERSE_SPEED }));
+        l.add(new Page("anchor_windlass", new String[] { "hawse_pipe > anchor_windlass" },
+                () -> new Object[] { n(Balance.ANCHOR_WATER_MAX), n(Balance.ANCHOR_PIPES_MAX), n(Balance.ANCHOR_FE_WEIGH) }));
+        l.add(new Page("chart_table", new String[] { "helm_station > chart_table" },
+                () -> new Object[] { n(Balance.SP_WP_MAX), n(Balance.SP_MARGIN_SUB), n(Balance.SP_MARGIN_SHIP), n(Balance.CHART_FE) }));
+        l.add(new Page("deck_console", new String[] { "deck_light catapult_track arresting_wire > deck_console", "service_arm ammo_depot gantry_cabinet > deck_console" },
+                () -> new Object[] { n((int) Balance.FDC_RANGE), n(Balance.FDC_FE), n(Balance.FDC_FOLD_TICKS / 20) }));
+        l.add(new Page("cargo_ramp", new String[] { "cargo_pallet cargo_pallet_heavy > cargo_ramp" },
+                () -> new Object[] { n(Balance.RAMP_W_MIN), n(Balance.RAMP_W_MAX), Balance.PALLET_FALL, n((int) Balance.STATIC_LINE_MIN) }));
+        l.add(new Page("deck_lift", new String[] { "deck_lift > landing_gear" },
+                () -> new Object[] { n(Balance.LIFT_MIN), n(Balance.LIFT_MAX), n(Balance.LIFT_MAX_DROP) }));
+        l.add(new Page("turntable", new String[] { "landing_gear > turntable" },
+                () -> new Object[] { n(Balance.TT_MIN), n(Balance.TT_MAX), String.format("%.1f", Balance.TT_TICKS_90 / 20.0) }));
+        l.add(new Page("helicopter", new String[] { "heli_turboshaft > heli_rotor", "heli_turboshaft > heli_tail" },
+                () -> new Object[] { n(HeliRotorBlockEntity.LENGTHS[0]), n(HeliRotorBlockEntity.LENGTHS[1]), n(HeliRotorBlockEntity.LENGTHS[2]) }));
+        l.add(new Page("jet_engines", new String[] { "jet_power_core > single_jet", "jet_engine > twin_jet" },
+                () -> new Object[] { n((int) Balance.JET1_THRUST), n((int) Balance.JET2_THRUST), n((int) Balance.JETS_THRUST) }));
+        l.add(new Page("turboprop", new String[] { "heli_turboshaft > turboprop", "heli_turboshaft > tiltrotor" },
+                () -> new Object[] { n((int) Balance.TP_AIRFLOW) }));
+        l.add(new Page("ship_drives", new String[] { "ship_turbine > waterjet", "bow_thruster > hull_penetrator" },
+                () -> new Object[0]));
+        l.add(new Page("cargo_hook", new String[] { "cargo_hook_light > cargo_hook_heavy" }, () -> new Object[0]));
+        l.add(new Page("refuel", new String[] { "drogue_pod > refuel_probe" }, () -> new Object[0]));
+        l.add(new Page("aircraft_light", new String[] { "nav_light > jet_cockpit", "nav_light > wing_section" }, () -> new Object[0]));
+        l.add(new Page("lift_fan", new String[] { "turbofan > lift_fan", "drag_chute > landing_gear" },
+                () -> new Object[] { n((int) Math.round(Balance.LIFT_ENGINE_SHARE * 100)), n((int) Balance.CHUTE_MIN_SPEED) }));
+        l.add(new Page("carrier_ops", new String[] { "catapult_track > landing_gear", "arresting_wire > tailhook", "deck_light > jet_cockpit" },
+                () -> new Object[] { n(Balance.CAT_MIN), n(Balance.CAT_MAX), n((int) Balance.CAT_END_SPEED), n((int) Balance.WIRE_RUNOUT) }));
+        l.add(new Page("targeting_pod", new String[] { "laser_tripod + jet_power_core > targeting_pod", "targeting_pod > aam_agm" },
+                () -> new Object[] { n((int) Balance.TPOD_RANGE) }));
+        l.add(new Page("aam_agm", new String[] { "laser_seeker > aam_agm", "aam_agm > pylon", "laser_tripod > aam_agm" },
+                () -> new Object[] { n((int) Balance.AGM_CONE), n((int) Balance.AAM_RANGE[AirMissiles.AGM]) }));
+        l.add(new Page("nose_radar", new String[] { "jet_power_core > nose_radar", "nose_radar > aam_radar" },
+                () -> new Object[] { n((int) Balance.NOSE_RANGE), n((int) Balance.NOSE_SEARCH_CONE), n((int) Balance.AIR_NOSE_LOCK_RANGE), n((int) Balance.AAM_PITBULL),
+                        n(Balance.NOSE_FE * 20) }));
+        l.add(new Page("jet_cockpit", new String[] { "jet_power_core > jet_cockpit" },
+                () -> new Object[] { n(Balance.COCKPIT_FE * 20), n(Balance.EJECT_HOLD_TICKS / 20) }));
+        l.add(new Page("flight_deck", new String[] { "jet_cockpit jet_cockpit advanced_circuit > flight_deck" },
+                () -> new Object[] { n(Balance.FDK_FE * 20) }));
+        return List.copyOf(l);
+    }
+
     private record Chapter(String key, String first) {}
 
     private static final List<Chapter> CHAPTERS = List.of(new Chapter("industry", "overview"), new Chapter("missiles", "launch"), new Chapter("fuels", "oil_upgrades"),
@@ -43,7 +144,7 @@ public class FieldManualScreen extends Screen {
         try { return Config.GRID_CONVERTER_EFFICIENCY.get(); } catch (RuntimeException e) { return 50; }
     }
 
-    private static final List<Page> PAGES = List.of(
+    private static final List<Page> PAGES = withAir(List.of(
             new Page("contents", new String[0], () -> new Object[0]),
             new Page("overview", new String[] {
                     "pumpjack > ~crude_oil > desalter > ~brine",
@@ -471,6 +572,30 @@ public class FieldManualScreen extends Screen {
                     () -> new Object[] { n((int) Balance.ATT_DETECT), n((int) Math.round(Balance.TORP_SPEED[TorpedoKind.ATT.ordinal()] * 20)) }),
             new Page("escape_pod", new String[] { "escape_capsule > escape_pod" },
                     () -> new Object[] { n(Balance.POD_SEATS), n((int) Balance.POD_REACH) }),
+
+            new Page("screw_propeller", new String[] { "helm_station > screw_propeller" },
+                    () -> new Object[] { n(Balance.SCREW_FE * 20), n((Balance.SCREW_FE + Balance.SCREW_FE_LOAD) * 20) }),
+            new Page("engine_telegraph", new String[] { "engine_telegraph > screw_propeller" },
+                    () -> new Object[] { n((int) EngineTelegraphBlockEntity.RUDDER_CLICK) }),
+            new Page("helm_station", new String[] { "helm_station > screw_propeller" },
+                    () -> new Object[] { n(Balance.HELM_FE * 20) }),
+
+            new Page("pump_jet", new String[] { "helm_station > pump_jet" },
+                    () -> new Object[] { n(Balance.PJ_FE * 20), n((Balance.PJ_FE + Balance.PJ_FE_LOAD) * 20) }),
+            new Page("sub_diesel", new String[] { "sub_diesel > snorkel_mast" },
+                    () -> new Object[] { n(Balance.SD_FE_PER_TICK * 20) }),
+            new Page("snorkel_mast", new String[] { "snorkel_mast > sub_diesel" },
+                    () -> new Object[] { String.valueOf(Balance.SN_HEAD_UP) }),
+
+            new Page("ducted_fan", new String[] { "engine_telegraph > ducted_fan" },
+                    () -> new Object[] { n(Balance.EDF_FE * 20), n((Balance.EDF_FE + Balance.EDF_FE_LOAD) * 20), n((int) Balance.EDF_AIRFLOW) }),
+            new Page("turbofan", new String[] { "hydrotreater > turbofan" },
+                    () -> new Object[] { n(Balance.TF_STARTER_FE * 20), n((int) Balance.TF_AIRFLOW) }),
+            new Page("engine_damage", new String[] { "turbofan > engine_repair_kit", "ducted_fan > engine_repair_kit" },
+                    () -> new Object[] { n((int) Math.round(Balance.ENGINE_SMOKE * 100)), n((int) Math.round(Balance.ENGINE_SMOKE_THRUST * 100)),
+                            n((int) Math.round(Balance.ENGINE_FIRE * 100)), n((int) Math.round(Balance.ENGINE_FIRE_THRUST * 100)), n((int) Balance.CONTRAIL_Y), n((int) Balance.CONTRAIL_SPEED) }),
+            new Page("jato_rack", new String[] { "jato_booster > jato_rack" },
+                    () -> new Object[] { n(Balance.JATO_BURN / 20), n(Balance.JATO_PROP_LIFE / 20) }),
             new Page("depth_charge", new String[] { "depth_charge > depth_charge_rack" },
                     () -> new Object[] { n((int) Math.round(Balance.DC_SINK * 20)), n((int) Balance.DC_DEPTH_MIN), n((int) Balance.DC_DEPTH_MAX), n(Balance.DC_RACK_FE * 20) }),
             new Page("kgun", new String[] { "depth_charge_rack > depth_charge_thrower > depth_charge" },
@@ -533,7 +658,7 @@ public class FieldManualScreen extends Screen {
             new Page("config_server", new String[0],
                     () -> new Object[0]),
             new Page("strike_toast", new String[0],
-                    () -> new Object[0]));
+                    () -> new Object[0])));
 
     static int indexOf(String id) {
         if (id != null) for (int i = 0; i < PAGES.size(); i++) if (PAGES.get(i).id().equals(id)) return i;

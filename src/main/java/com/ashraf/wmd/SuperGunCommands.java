@@ -20,8 +20,8 @@ public final class SuperGunCommands {
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("art")
-                        .then(Commands.literal("super")
+                .then(Commands.literal("art").requires(TestCmds::test)
+                        .then(Commands.literal("super").requires(TestCmds::test)
                                 .then(Commands.literal("give").executes(c -> give(c.getSource())))
                                 .then(Commands.literal("ready").executes(c -> ready(c.getSource())))
                                 .then(Commands.literal("fire")

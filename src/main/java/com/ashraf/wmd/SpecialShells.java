@@ -180,13 +180,15 @@ public final class SpecialShells {
         Drones ds = level == level.getServer().overworld() ? Drones.get(level.getServer()) : null;
         if (ds != null) for (Drones.Drone d : ds.drones()) if (d.airborne() && (o == null || !o.equals(d.owner)) && d.pos().distanceToSqr(pos) <= f2) { near = true; break; }
         if (!near) for (BombEntity b : BombEntity.FALLING) if (b.level() == level && !b.isRemoved() && (o == null || !o.equals(b.owner())) && b.position().distanceToSqr(pos) <= f2) { near = true; break; }
+        UUID nearShip = null;
         if (!near && SableBridge.active()) {
             UUID own = s.gunPos() == 0L ? null : SableBridge.shipIdAt(level, BlockPos.of(s.gunPos()));
             for (SableBridge.ShipInfo sh : SableBridge.shipsIntersecting(level, new AABB(pos, pos).inflate(Balance.FLAK_FUZE)))
-                if (!sh.id().equals(own)) { near = true; break; }
+                if (!sh.id().equals(own)) { near = true; nearShip = sh.id(); break; }
         }
         if (!near) return null;
         burst(level, ds, s, pos, o);
+        if (nearShip != null && AirGate.on()) AirGuns.flakFrags(level, nearShip, pos, o);
         ArtilleryManager.sendImpact(level, s, pos.x, pos.y, pos.z);
         return pos;
     }

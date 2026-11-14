@@ -42,6 +42,11 @@ public class StorageTankBlock extends MachineBlock {
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new StorageTankBlockEntity(pos, state); }
 
     @Override
+    public float getExplosionResistance(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos, net.minecraft.world.level.Explosion explosion) {
+        return Config.Server.tankDamage() ? 3_600_000.0F : super.getExplosionResistance(state, level, pos, explosion);
+    }
+
+    @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return level.isClientSide
                 ? createTickerHelper(type, Wmd.STORAGE_TANK_BE.get(), StorageTankBlockEntity::clientTick)

@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:wing_section"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "wmd:aluminium_plate"
+    }
+  },
+  "result": {
+    "id": "wmd:wing_section",
+    "count": 4
+  }
+}

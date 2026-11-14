@@ -111,6 +111,21 @@ public final class DeepSeasBridge {
         } catch (Throwable t) { fail(t); return -1; }
     }
 
+    public static double ballastFraction(ServerLevel level, UUID shipId) {
+        if (level == null || shipId == null || !active()) return -1.0;
+        long cap = 0, amt = 0;
+        try {
+            for (BlockPos p : SableBridge.blockEntitiesOn(level, shipId)) {
+                Object be = level.getBlockEntity(p);
+                if (be == null || !be.getClass().getName().endsWith("BallastTankBlockEntity")) continue;
+                Class<?> c = be.getClass();
+                cap += (Integer) c.getMethod("getClusterTotalCapacity").invoke(be);
+                amt += (Integer) c.getMethod("getClusterTotalAmount").invoke(be);
+            }
+            return cap <= 0 ? -1.0 : Math.max(0.0, Math.min(1.0, amt / (double) cap));
+        } catch (Throwable t) { fail(t); return -1.0; }
+    }
+
     private static boolean hullBound, hullFailed;
     private static Method mHullValues, mHullUpdate, mWeakest, mPropDepth, mWpState;
 

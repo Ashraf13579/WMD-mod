@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:cargo_pallet_heavy"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WCW",
+    "ACA",
+    "PPP"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:white_wool"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "A": {
+      "item": "wmd:aluminium_plate"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "result": {
+    "id": "wmd:cargo_pallet_heavy",
+    "count": 1
+  }
+}

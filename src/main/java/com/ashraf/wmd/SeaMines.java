@@ -8,7 +8,6 @@ import java.util.UUID;
 import java.util.WeakHashMap;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -55,9 +54,26 @@ public final class SeaMines {
         if (r <= 0.0) return;
         for (Mine x : near(level, at, r)) {
             BlockPos p = BlockPos.of(x.pos());
-            level.getServer().tell(new TickTask(level.getServer().getTickCount() + Balance.MINE_SYMPATHY_TICKS, () -> {
-                if (level.getBlockEntity(p) instanceof SeaMineBlockEntity be) be.sympathetic(level);
-            }));
+            DUE.computeIfAbsent(level, l -> new ArrayList<>()).add(new long[] { level.getGameTime() + Balance.MINE_SYMPATHY_TICKS, p.asLong() });
+        }
+    }
+
+    private static final Map<Level, List<long[]>> DUE = Statics.server(new WeakHashMap<>());
+
+    @net.neoforged.fml.common.EventBusSubscriber(modid = Wmd.MODID)
+    static final class Ticker {
+        @net.neoforged.bus.api.SubscribeEvent
+        static void tick(net.neoforged.neoforge.event.tick.LevelTickEvent.Post e) {
+            if (!(e.getLevel() instanceof ServerLevel sl)) return;
+            List<long[]> due = DUE.get(sl);
+            if (due == null || due.isEmpty()) return;
+            long now = sl.getGameTime();
+            List<long[]> go = new ArrayList<>();
+            due.removeIf(d -> { if (d[0] <= now) { go.add(d); return true; } return false; });
+            for (long[] d : go) {
+                BlockPos p = BlockPos.of(d[1]);
+                if (sl.isLoaded(p) && sl.getBlockEntity(p) instanceof SeaMineBlockEntity be) be.sympathetic(sl);
+            }
         }
     }
 

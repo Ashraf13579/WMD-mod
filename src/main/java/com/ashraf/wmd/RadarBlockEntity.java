@@ -170,6 +170,13 @@ public class RadarBlockEntity extends BlockEntity implements Owned, GeoBlockEnti
         if (level != null) { level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3); lastSyncT = level.getGameTime(); bearingDirty = false; }
     }
 
+    void startBearing(float deg) {
+        bearing = norm(deg);
+        targetBearing = bearing;
+        baseBearing = bearing;
+        sync();
+    }
+
     public void setTargetBearing(float deg) {
         targetBearing = norm(deg);
         setChanged();
@@ -258,6 +265,7 @@ public class RadarBlockEntity extends BlockEntity implements Owned, GeoBlockEnti
         UUID own = SableBridge.shipIdAt(level, worldPosition);
         FlightManager fm = FlightManager.get(level);
         java.util.List<SableBridge.ShipInfo> near = new java.util.ArrayList<>(SableBridge.largeShipsNear(level, wc.x, wc.z, DETECT_RANGE));
+
         near.sort(java.util.Comparator.comparingDouble(si -> si.worldCenter().distanceToSqr(wc)));
         java.util.List<SableBridge.ShipInfo> shown = new java.util.ArrayList<>();
         java.util.List<ShipFaction.Relation> rels = new java.util.ArrayList<>();
@@ -292,6 +300,10 @@ public class RadarBlockEntity extends BlockEntity implements Owned, GeoBlockEnti
                     Math.round(hx * 100.0F) / 100.0F, Math.round(hz * 100.0F) / 100.0F, mast ? 1 : si.blockCount(), mast ? 1.0F : (float) Math.round(si.maxSize()),
                     rels.get(i).code(), n.length() > NAME_MAX ? n.substring(0, NAME_MAX) : n, locked, ShipTargets.isDesignated(owner, si.id(), now)));
             if (locked) TrackNet.reportShip(level, owner, frequency, si.id(), now);
+            if (AirGate.on() && AirPicture.isAircraft(level, si.id())) {
+                Rwr.search(level, si.id(), wc, owner, "radar", worldPosition.asLong(), now);
+                if (locked) Rwr.lock(level, si.id(), wc, owner, "radar", worldPosition.asLong(), now);
+            }
         }
         if (out.equals(ships)) return false;
         ships = List.copyOf(out);

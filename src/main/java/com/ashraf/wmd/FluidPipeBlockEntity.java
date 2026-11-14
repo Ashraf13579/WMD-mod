@@ -22,6 +22,10 @@ public class FluidPipeBlockEntity extends BlockEntity {
     private net.minecraft.world.level.material.Fluid synced = net.minecraft.world.level.material.Fluids.EMPTY;
     private int shownColour;
 
+    private net.minecraft.world.level.material.Fluid memory = net.minecraft.world.level.material.Fluids.EMPTY;
+
+    private net.minecraft.world.level.material.Fluid lineChecked;
+
     public int fluidColour() {
         if (tank.isEmpty()) return 0;
         net.minecraft.world.level.material.Fluid f = tank.getFluid().getFluid();
@@ -40,7 +44,7 @@ public class FluidPipeBlockEntity extends BlockEntity {
     public FluidPipeBlockEntity(BlockPos pos, BlockState state) {
         super(Wmd.FLUID_PIPE_BE.get(), pos, state);
         int tier = state.getBlock() instanceof FluidPipeBlock p ? p.tier : 1;
-        this.tank = new FluidTank(Balance.PIPE_CAPACITY_TIER[tier - 1]);
+        this.tank = new FluidTank(Balance.PIPE_CAPACITY_TIER[tier - 1], f -> sameKind(memory, f.getFluid()));
         this.rate = Balance.PIPE_RATE_TIER[tier - 1];
     }
 
@@ -55,6 +59,16 @@ public class FluidPipeBlockEntity extends BlockEntity {
 
     public IFluidHandler getHandler() { return tank; }
 
+    public net.minecraft.world.level.material.Fluid kind() { return tank.isEmpty() ? memory : tank.getFluid().getFluid(); }
+
+    static boolean sameKind(net.minecraft.world.level.material.Fluid a, net.minecraft.world.level.material.Fluid b) {
+        return a == net.minecraft.world.level.material.Fluids.EMPTY || b == net.minecraft.world.level.material.Fluids.EMPTY || a.isSame(b);
+    }
+
+    static boolean sameLine(net.minecraft.world.level.LevelReader level, BlockPos a, BlockPos b) {
+        return !(level.getBlockEntity(a) instanceof FluidPipeBlockEntity pa) || !(level.getBlockEntity(b) instanceof FluidPipeBlockEntity pb) || sameKind(pa.kind(), pb.kind());
+    }
+
     public static void serverTick(Level level, BlockPos pos, BlockState state, FluidPipeBlockEntity be) {
         FluidTank tank = be.tank;
         int pulledFrom = 0;
@@ -66,8 +80,9 @@ public class FluidPipeBlockEntity extends BlockEntity {
             IFluidHandler h = level.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(d), d.getOpposite());
             if (h == null) continue;
             int want = Math.min(be.rate, space);
-            FluidStack got = tank.isEmpty() ? h.drain(want, IFluidHandler.FluidAction.EXECUTE)
-                    : h.drain(new FluidStack(tank.getFluid().getFluid(), want), IFluidHandler.FluidAction.EXECUTE);
+            net.minecraft.world.level.material.Fluid k = be.kind();
+            FluidStack got = k == net.minecraft.world.level.material.Fluids.EMPTY ? h.drain(want, IFluidHandler.FluidAction.EXECUTE)
+                    : h.drain(new FluidStack(k, want), IFluidHandler.FluidAction.EXECUTE);
             if (!got.isEmpty()) {
                 tank.fill(got, IFluidHandler.FluidAction.EXECUTE);
                 pulledFrom |= 1 << d.ordinal();
@@ -88,7 +103,7 @@ public class FluidPipeBlockEntity extends BlockEntity {
             if (FluidPipeBlock.connOf(state, d) != FluidPipeBlock.Conn.PIPE) continue;
             if (!(level.getBlockEntity(pos.relative(d)) instanceof FluidPipeBlockEntity other)) continue;
             if (!passes(state, d) || !passes(other.getBlockState(), d)) continue;
-            if (!other.tank.isEmpty() && !other.tank.getFluid().is(tank.getFluid().getFluid())) continue;
+            if (!sameKind(other.kind(), tank.getFluid().getFluid())) continue;
 
             int diff = tank.getFluidAmount() * other.tank.getCapacity() - other.tank.getFluidAmount() * tank.getCapacity();
             if (diff <= other.tank.getCapacity()) continue;
@@ -99,6 +114,10 @@ public class FluidPipeBlockEntity extends BlockEntity {
 
         net.minecraft.world.level.material.Fluid now = tank.isEmpty() ? net.minecraft.world.level.material.Fluids.EMPTY : tank.getFluid().getFluid();
         if (now != be.synced) { be.synced = now; level.sendBlockUpdated(pos, state, state, 3); }
+
+        if (now != net.minecraft.world.level.material.Fluids.EMPTY && now != be.memory) { be.memory = now; be.setChanged(); }
+        net.minecraft.world.level.material.Fluid line = be.kind();
+        if (line != be.lineChecked) { be.lineChecked = line; FluidPipeBlock.refreshAround(level, pos); }
         if (level.getGameTime() % 20 == 0) be.setChanged();
     }
 
@@ -107,6 +126,7 @@ public class FluidPipeBlockEntity extends BlockEntity {
         super.saveAdditional(tag, registries);
         tank.writeToNBT(registries, tag);
         tag.putInt("cut", cutMask);
+        if (memory != net.minecraft.world.level.material.Fluids.EMPTY) tag.putString("mem", net.minecraft.core.registries.BuiltInRegistries.FLUID.getKey(memory).toString());
     }
 
     @Override
@@ -114,11 +134,13 @@ public class FluidPipeBlockEntity extends BlockEntity {
         super.loadAdditional(tag, registries);
         tank.readFromNBT(registries, tag);
         cutMask = tag.getInt("cut");
+        net.minecraft.resources.ResourceLocation mem = tag.contains("mem") ? net.minecraft.resources.ResourceLocation.tryParse(tag.getString("mem")) : null;
+        memory = mem == null ? net.minecraft.world.level.material.Fluids.EMPTY : net.minecraft.core.registries.BuiltInRegistries.FLUID.get(mem);
         if (level != null && level.isClientSide) {
             int c = fluidColour();
             if (c != shownColour) { shownColour = c; level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 8); }
         }
     }
 
-    public void clear() { tank.setFluid(FluidStack.EMPTY); setChanged(); }
+    public void clear() { tank.setFluid(FluidStack.EMPTY); memory = net.minecraft.world.level.material.Fluids.EMPTY; setChanged(); }
 }

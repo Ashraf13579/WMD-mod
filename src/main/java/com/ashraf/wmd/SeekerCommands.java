@@ -23,8 +23,8 @@ public final class SeekerCommands {
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("dev")
-                        .then(Commands.literal("laser")
+                .then(Commands.literal("dev").requires(TestCmds::test)
+                        .then(Commands.literal("laser").requires(TestCmds::test)
                                 .then(Commands.literal("set").then(Commands.argument("pos", BlockPosArgument.blockPos())
                                         .executes(c -> light(c.getSource(), Vec3.atBottomCenterOf(BlockPosArgument.getLoadedBlockPos(c, "pos"))))))
                                 .then(Commands.literal("here").executes(c -> light(c.getSource(), c.getSource().getPosition())))
@@ -34,8 +34,8 @@ public final class SeekerCommands {
                                                 .executes(c -> enemy(c.getSource(), Vec3.atBottomCenterOf(BlockPosArgument.getLoadedBlockPos(c, "pos"))))))
                                 .then(Commands.literal("clear").executes(c -> clear(c.getSource())))
                                 .then(Commands.literal("list").executes(c -> list(c.getSource()))))
-                        .then(Commands.literal("heat").executes(c -> heat(c.getSource())))
-                        .then(Commands.literal("radars").executes(c -> radars(c.getSource())))));
+                        .then(Commands.literal("heat").requires(TestCmds::test).executes(c -> heat(c.getSource())))
+                        .then(Commands.literal("radars").requires(TestCmds::test).executes(c -> radars(c.getSource())))));
     }
 
     @SubscribeEvent

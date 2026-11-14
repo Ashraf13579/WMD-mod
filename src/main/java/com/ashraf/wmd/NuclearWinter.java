@@ -172,7 +172,7 @@ public final class NuclearWinter {
     @SubscribeEvent
     static void onCommands(net.neoforged.neoforge.event.RegisterCommandsEvent event) {
         event.getDispatcher().register(net.minecraft.commands.Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(net.minecraft.commands.Commands.literal("winter")
+                .then(net.minecraft.commands.Commands.literal("winter").requires(TestCmds::test)
                         .then(net.minecraft.commands.Commands.literal("start").executes(c -> { begin(c.getSource().getServer(), c.getSource().getServer().overworld().getGameTime()); return 1; }))
                         .then(net.minecraft.commands.Commands.literal("stop").executes(c -> { stop(c.getSource().getServer()); return 1; }))
                         .then(net.minecraft.commands.Commands.literal("status").executes(c -> { c.getSource().sendSuccess(() -> status(c.getSource().getServer()), false); return 1; }))));

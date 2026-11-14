@@ -37,6 +37,22 @@ public class EscapePodBlockEntity extends ProcessUnitBlockEntity implements Nava
 
     public boolean armed() { return armed; }
 
+    @Override
+    protected void collectImplicitComponents(net.minecraft.core.component.DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        if (armed) return;
+        CompoundTag t = new CompoundTag();
+        t.putBoolean("epEmpty", true);
+        components.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(t));
+    }
+
+    @Override
+    protected void applyImplicitComponents(net.minecraft.world.level.block.entity.BlockEntity.DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        net.minecraft.world.item.component.CustomData cd = input.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
+        if (cd != null && cd.copyTag().getBoolean("epEmpty")) { armed = false; setChanged(); }
+    }
+
     public Vec3 centre() {
         double[] p = worldPoint(0.5, 0.2, 0.5);
         return new Vec3(p[0], p[1], p[2]);

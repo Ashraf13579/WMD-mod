@@ -78,6 +78,7 @@ public final class ClientCruise {
     }
 
     static void render(Flight f, double t, Vec3 p, Vec3 cam, PoseStack ps, MultiBufferSource buffers, ClientLevel level) {
+        if (AntiShipMissiles.isAshm(f.build())) { ClientAshm.render(f, t, p, cam, ps, buffers, level); return; }
         Vec3 a = f.position(t + 1.0).subtract(p);
         if (a.lengthSqr() < 1.0E-8) return;
         Vec3 b = f.position(t + 3.0).subtract(f.position(t + 2.0));
@@ -98,6 +99,7 @@ public final class ClientCruise {
     private static final java.util.Set<Long> WHOOSHED = new java.util.HashSet<>();
 
     static void tickFx(ClientLevel level, Flight f, long now, Vec3 p, Vec3 prev, Vec3 cam, RandomSource rnd) {
+        if (AntiShipMissiles.isAshm(f.build())) { ClientAshm.tickFx(level, f, now, p, prev, cam, rnd); return; }
         Vec3 back = prev.subtract(p);
         double len = back.length();
         if (len < 1.0E-4) return;

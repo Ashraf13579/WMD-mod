@@ -78,6 +78,11 @@ public final class Mlrs {
         burst(level, FlightManager.get(level), s, (int) Math.floor(p.x), (int) Math.floor(p.y), (int) Math.floor(p.z));
     }
 
+    static void airBurst(ServerLevel level, Vec3 p, UUID owner) {
+        ArtShell s = new ArtShell(0L, owner, "", Artillery.ROCKET, Artillery.HE, p.x, p.y, p.z, p.x, p.y, p.z, level.getGameTime(), 1, 0L, 0, false, true);
+        burst(level, FlightManager.get(level), s, (int) Math.floor(p.x), (int) Math.floor(p.y), (int) Math.floor(p.z));
+    }
+
     private static void burst(ServerLevel level, FlightManager fm, ArtShell s, int gx, int gy, int gz) {
         double r = Balance.MLRS_HE_RADIUS;
         Vec3 pos = new Vec3(gx + 0.5, gy, gz + 0.5);
@@ -88,6 +93,7 @@ public final class Mlrs {
         Debris.blast(level, gx, gy, gz, r, crater);
         fm.setDirty();
         ShipStrike.blast(level, pos, r, ShipStrike.powerForGun(Artillery.ROCKET), hasOwner(s.owner()) ? s.owner() : null);
+        TankDamage.blastAt(level, pos, r);
         PacketDistributor.sendToPlayersNear(level, null, pos.x, gy, pos.z, ArtilleryManager.NEAR,
                 new ArtImpactPayload(s.id(), s.gun(), s.type(), pos.x, gy, pos.z, ArtImpactPayload.IMPACT));
         if (s.last() && hasOwner(s.owner()))

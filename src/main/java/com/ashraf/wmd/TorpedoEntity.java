@@ -28,6 +28,9 @@ public class TorpedoEntity extends Entity {
 
     private static final EntityDataAccessor<Integer> KIND = SynchedEntityData.defineId(TorpedoEntity.class, EntityDataSerializers.INT);
 
+    private static final EntityDataAccessor<Integer> DROP = SynchedEntityData.defineId(TorpedoEntity.class, EntityDataSerializers.INT);
+    static final int DROP_NONE = 0, DROP_FALL = 1, DROP_CHUTE = 2;
+
     private UUID owner, ownShip;
     private Vec3 heading = new Vec3(0, 0, -1), vel = Vec3.ZERO, start;
     private double depth = -1.0, run;
@@ -47,6 +50,10 @@ public class TorpedoEntity extends Entity {
 
     private boolean netRipped;
 
+    private int airTicks;
+
+    int chuteSeen = -1;
+
     private int lerpSteps;
     private double lx, ly, lz;
 
@@ -57,7 +64,9 @@ public class TorpedoEntity extends Entity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) { builder.define(KIND, 0); }
+    protected void defineSynchedData(SynchedEntityData.Builder builder) { builder.define(KIND, 0); builder.define(DROP, DROP_NONE); }
+
+    public int drop() { return entityData.get(DROP); }
 
     public TorpedoKind kind() { return TorpedoKind.of(entityData.get(KIND)); }
 
@@ -92,6 +101,61 @@ public class TorpedoEntity extends Entity {
         return e;
     }
 
+    static TorpedoEntity airDrop(ServerLevel level, TorpedoKind kind, Vec3 at, Vec3 v, Vec3 fwd, UUID owner, UUID ownShip) {
+        TorpedoEntity e = new TorpedoEntity(Wmd.TORPEDO.get(), level);
+        e.entityData.set(KIND, kind.ordinal());
+        e.entityData.set(DROP, DROP_FALL);
+        e.setPos(at.x, at.y, at.z);
+        Vec3 h = new Vec3(v.x, 0.0, v.z);
+        if (h.lengthSqr() < 0.04 && fwd != null) h = new Vec3(fwd.x, 0.0, fwd.z);
+        e.heading = h.lengthSqr() < 1e-6 ? new Vec3(0, 0, -1) : h.normalize();
+        e.vel = v;
+        e.depth = -1.0;
+        e.owner = owner;
+        e.ownShip = ownShip;
+        e.start = at;
+        level.addFreshEntity(e);
+        return e;
+    }
+
+    private boolean airTick(ServerLevel sl, Vec3 pos) {
+        if (sl.getFluidState(BlockPos.containing(pos)).is(FluidTags.WATER)) {
+            entityData.set(DROP, DROP_NONE);
+            vel = new Vec3(vel.x, Math.max(vel.y, -0.4), vel.z);
+            sl.sendParticles(ParticleTypes.SPLASH, pos.x, pos.y + 0.6, pos.z, 40, 0.6, 0.2, 0.6, 0.3);
+            sl.sendParticles(ParticleTypes.BUBBLE, pos.x, pos.y, pos.z, 30, 0.4, 0.4, 0.4, 0.2);
+            sl.playSound(null, pos.x, pos.y, pos.z, WmdSounds.BUOY_SPLASH.get(), SoundSource.NEUTRAL, Balance.SND_MECH, 0.8F);
+            NoiseNet.pulse(sl, pos, Balance.TORP_DB + 6.0, NoiseNet.Kind.LAUNCH, owner, 30);
+            return false;
+        }
+        airTicks++;
+        int ph = entityData.get(DROP);
+        if (ph == DROP_FALL && airTicks >= Balance.ATORP_CHUTE_DELAY) {
+            entityData.set(DROP, DROP_CHUTE);
+            ph = DROP_CHUTE;
+            sl.playSound(null, pos.x, pos.y, pos.z, WmdSounds.CHUTE_OPEN.get(), SoundSource.NEUTRAL, Balance.SND_MECH, 1.1F);
+        }
+        if (ph == DROP_CHUTE) {
+            double vy = vel.y + Mth.clamp(-Balance.ATORP_CHUTE_FALL - vel.y, -0.08, 0.12);
+            Vec3 hz = new Vec3(vel.x, 0.0, vel.z).scale(0.9);
+            if (hz.length() < Balance.ATORP_CHUTE_DRIFT) hz = heading.scale(Balance.ATORP_CHUTE_DRIFT);
+            vel = new Vec3(hz.x, vy, hz.z);
+        } else vel = UnderwaterMotion.coast(sl, pos, vel);
+        Vec3 next = pos.add(vel);
+        if (SableBridge.active()) {
+            java.util.List<SableBridge.ShipInfo> cands = new java.util.ArrayList<>();
+            for (SableBridge.ShipInfo s : SableBridge.shipsAlongSegment(sl, pos, next)) if (!s.id().equals(ownShip) || airTicks > 40) cands.add(s);
+            ProjectilePath.PathHit h = cands.isEmpty() ? null : SableBridge.exactHit(sl, pos, next, cands);
+            if (h != null) { dud(sl, h.pos()); return true; }
+        }
+        BlockHitResult hit = sl.clip(new ClipContext(pos, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+        if (hit.getType() == HitResult.Type.BLOCK) { dud(sl, hit.getLocation()); return true; }
+        if (airTicks > Balance.ATORP_MAX_AIR_TICKS || next.y < sl.getMinBuildHeight()) { discard(); return true; }
+        setPos(next.x, next.y, next.z);
+        setDeltaMovement(vel);
+        return true;
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -102,8 +166,9 @@ public class TorpedoEntity extends Entity {
         if (k.drone()) { droneTick(sl, k); return; }
         if (k == TorpedoKind.ATT) { AntiTorpedo.tick(this, sl); return; }
         Vec3 pos = position();
+        if (entityData.get(DROP) != DROP_NONE && airTick(sl, pos)) return;
         if (run >= k.range()) { detonate(sl, pos, null, "end"); return; }
-        if (tickCount > (int) (k.range() / Math.max(0.1, k.speed())) + 600 || pos.y < sl.getMinBuildHeight()) { discard(); return; }
+        if (tickCount - airTicks > (int) (k.range() / Math.max(0.1, k.speed())) + 600 || pos.y < sl.getMinBuildHeight()) { discard(); return; }
         boolean wet = sl.getFluidState(BlockPos.containing(pos)).is(FluidTags.WATER);
         if (!wet) {
             vel = UnderwaterMotion.coast(sl, pos, vel);
@@ -395,6 +460,7 @@ public class TorpedoEntity extends Entity {
 
     Object loop;
     private void runLoop() {
+        if (drop() != DROP_NONE) return;
         TorpedoKind k = kind();
         net.minecraft.sounds.SoundEvent s = k == TorpedoKind.T4 ? WmdSounds.T4_RUN_LOOP.get() : k.drone() ? WmdSounds.UUV_RUN_LOOP.get() : WmdSounds.TP_RUN_LOOP.get();
         float v = k == TorpedoKind.T4 ? 6.0F : k.drone() ? 1.0F : 2.0F;

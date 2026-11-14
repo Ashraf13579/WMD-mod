@@ -222,6 +222,7 @@ public class SatelliteFacilityBlockEntity extends ItemProcessBlockEntity impleme
     @Override
     public IItemHandler itemPort(BlockPos part, Direction side) {
         if (at(part, side, -3, 0, 2, Direction.WEST)) return hatchIn;
+        if (at(part, side, 3, 0, 2, Direction.EAST)) return hatchOut;
         return null;
     }
 

@@ -18,7 +18,7 @@ public record ArtImpactPayload(long id, int gun, int kind, double x, double y, d
                 buf.writeVarLong(p.id()); buf.writeByte(p.gun()); buf.writeByte(p.kind());
                 buf.writeDouble(p.x()); buf.writeDouble(p.y()); buf.writeDouble(p.z()); buf.writeByte(p.stage());
             },
-            buf -> new ArtImpactPayload(buf.readVarLong(), buf.readByte(), Artillery.clampType(buf.readByte()), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readByte()));
+            buf -> new ArtImpactPayload(buf.readVarLong(), buf.readByte(), Artillery.knownType(buf.readByte()),       buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readByte()));
 
     @Override
     public Type<? extends CustomPacketPayload> type() { return TYPE; }

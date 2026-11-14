@@ -23,7 +23,7 @@ public final class CruiseCommands {
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("cruise")
+                .then(Commands.literal("cruise").requires(TestCmds::test)
                         .then(Commands.literal("give").executes(c -> give(c.getSource(), 3, false))
                                 .then(Commands.argument("tier", StringArgumentType.word())
                                         .suggests((c, b) -> SharedSuggestionProvider.suggest(new String[] { "t2", "t3", "t2tv", "t3tv" }, b))

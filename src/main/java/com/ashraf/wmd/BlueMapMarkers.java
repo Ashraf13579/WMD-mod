@@ -35,8 +35,8 @@ final class BlueMapMarkers {
     private static volatile BlueMapAPI api;
 
     static final String S_HIST = "wmd-history", S_ZONES = "wmd-zones", S_BORDER = "wmd-border", S_ADM_M = "wmd-admin-machines", S_ADM_F = "wmd-admin-flights",
-            S_WAR_M = "wmd-war-machines", S_WAR_F = "wmd-war-flights", S_WAR_S = "wmd-war-ships";
-    private static final String[] ALL = { S_HIST, S_ZONES, S_BORDER, S_ADM_M, S_ADM_F, S_WAR_M, S_WAR_F, S_WAR_S };
+            S_WAR_M = "wmd-war-machines", S_WAR_F = "wmd-war-flights", S_WAR_S = "wmd-war-ships", S_ADM_AS = "wmd-admin-air-sea";
+    private static final String[] ALL = { S_HIST, S_ZONES, S_BORDER, S_ADM_M, S_ADM_F, S_ADM_AS, S_WAR_M, S_WAR_F, S_WAR_S };
 
     private static final Map<MarkerSet, Map<String, String>> SIGS = Statics.server(java.util.Collections.synchronizedMap(new IdentityHashMap<>()));
 
@@ -72,6 +72,7 @@ final class BlueMapMarkers {
 
         draw(map, S_ADM_M, "WMD admin: machines", true, 20, s.admin(), machines(dim, s, true));
         draw(map, S_ADM_F, "WMD admin: missiles", true, 21, s.admin(), flights(dim, s));
+        draw(map, S_ADM_AS, "WMD admin: air + sea", true, 22, s.admin(), airSea(dim, s));
 
         draw(map, S_WAR_M, "WMD war map: machines", false, 30, s.war(), machines(dim, s, false));
         draw(map, S_WAR_F, "WMD war map: missiles", false, 31, s.war(), flights(dim, s));
@@ -214,6 +215,21 @@ final class BlueMapMarkers {
             String what = "Airship " + (sh.name() == null || sh.name().isEmpty() || sh.name().startsWith("(") ? "" : sh.name() + " ") + "(" + sh.blocks() + " blocks, " + Math.round(sh.size()) + " long)";
             String html = "<div title=\"" + esc(what) + "\" style=\"width:14px;height:14px;transform:rotate(45deg);background:#f59e0b;border:2px solid #fff;box-shadow:0 0 4px #000;\"></div>";
             out.put("s-" + sh.id(), mk(new HtmlMarker(what, new Vector3d(sh.x(), sh.y(), sh.z()), html, new Vector2i(9, 9)), "s" + (long) (sh.x() / 4) + "/" + (long) (sh.z() / 4) + "/" + (long) (sh.y() / 4)));
+        }
+        return out;
+    }
+
+    private static Map<String, Object[]> airSea(String dim, MapFeed.Snapshot s) {
+        Map<String, Object[]> out = new LinkedHashMap<>();
+        for (MapFeed.Track t : s.tracks()) {
+            if (!t.dim().equals(dim)) continue;
+            String col = switch (t.kind()) { case MapFeed.T_AIRCRAFT -> "#3a7bd5"; case MapFeed.T_AAM -> "#f2a23a"; case MapFeed.T_TORPEDO -> "#e5484d"; default -> "#2bb3a3"; };
+            int size = t.kind() == MapFeed.T_AAM || t.kind() == MapFeed.T_TORPEDO ? 8 : 12;
+            String shape = t.kind() == MapFeed.T_SHIP ? "border-radius:2px;" : t.kind() == MapFeed.T_AIRCRAFT ? "transform:rotate(45deg);" : "border-radius:50%;";
+            String html = "<div title=\"" + esc(t.label()) + "\" style=\"width:" + size + "px;height:" + size + "px;" + shape + "background:" + col
+                    + ";border:2px solid #fff;box-shadow:0 0 4px #000;\"></div>";
+            out.put(t.id(), mk(new HtmlMarker(t.label(), new Vector3d(t.x(), t.y(), t.z()), html, new Vector2i(size / 2 + 2, size / 2 + 2)),
+                    "t" + (long) (t.x() / 4) + "/" + (long) (t.z() / 4) + "/" + (long) (t.y() / 4)));
         }
         return out;
     }

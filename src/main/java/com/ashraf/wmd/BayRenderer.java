@@ -295,6 +295,9 @@ public class BayRenderer extends GeoBlockRenderer<BayModuleBlockEntity> {
         BayModuleBlockEntity core = be.core();
         if (core == null) return;
         BayAnim.Pose p = be.kind.isRack() ? be.rackPose(pt) : be.pose(pt);
+
+        final boolean airLine = p.air, airStock = airLine || (core.mode() == BayModuleBlockEntity.MODE_AIR && core.stage() == BayModuleBlockEntity.Stage.IDLE);
+        final int airK = p.airKind >= 0 ? p.airKind : Math.max(0, core.airKindShown());
         for (Map.Entry<String, Socket> e : sockets.entrySet()) {
             String n = e.getKey();
             Socket s = e.getValue();
@@ -302,6 +305,14 @@ public class BayRenderer extends GeoBlockRenderer<BayModuleBlockEntity> {
             ps.last().pose().set(s.pose());
             ps.last().normal().set(s.normal());
             ps.translate(s.px() / 16.0F, s.py() / 16.0F, s.pz() / 16.0F);
+            if ((airLine && n.startsWith("m1_")) || (airStock && (n.startsWith("part") || n.startsWith("held")))) {
+                unscale(ps, p.cal);
+                int k = n.startsWith("m1_") ? -1 : slotOf(n);
+                if (n.equals("m1_air")) BayAirArt.jig(ps, buffers, light, airK, p.attached | 1, p.jigClamp, p.roll, core.paintProgress(pt));
+                else if (k == 0) BayAirArt.jig(ps, buffers, light, airK, 1, 0.0, 0.0, 0.0F);
+                else if (k > 0) BayAirArt.cassette(ps, buffers, light, airK, k);
+                continue;
+            }
             if (n.equals("hm") || n.startsWith("smm")) {
 
                 MissileBuild b = core.build();

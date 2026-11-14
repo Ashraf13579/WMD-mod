@@ -318,6 +318,7 @@ public class FusionReactorBlockEntity extends ProcessUnitBlockEntity implements 
     }
 
     public static void blastAt(ServerLevel sl, net.minecraft.world.phys.Vec3 pos, double r) {
+        TankDamage.blastAt(sl, pos, r);
         NavalReactorBlockEntity.blastAt(sl, pos, r);
         for (FusionReactorBlockEntity be : new java.util.ArrayList<>(LOADED)) {
             if (be.level != sl || be.isRemoved() || !be.hot()) continue;

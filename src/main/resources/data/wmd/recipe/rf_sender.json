@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:rf_sender"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "AWA",
+    "CXC",
+    "TUT"
+  ],
+  "key": {
+    "A": {
+      "item": "wmd:aluminium_plate"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "X": {
+      "item": "wmd:chip_power_2"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "U": {
+      "item": "wmd:busbar"
+    }
+  },
+  "result": {
+    "id": "wmd:rf_sender",
+    "count": 1
+  }
+}

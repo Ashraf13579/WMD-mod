@@ -93,8 +93,8 @@ public class CentrifugeBlockEntity extends ItemProcessBlockEntity {
     }
 
     @Override protected SoundEvent runSound() { return WmdSounds.CENTRIFUGE_RUN.get(); }
-    @Override protected void runStarted(net.minecraft.world.level.Level level) { playOnce(level, WmdSounds.CENTRIFUGE_START.get(), 0.6F, 1.0F); }
-    @Override protected void runStopped(net.minecraft.world.level.Level level) { playOnce(level, WmdSounds.CENTRIFUGE_STOP.get(), 0.6F, 1.0F); }
+    @Override protected void runStarted(net.minecraft.world.level.Level level) { playOnce(level, WmdSounds.CENTRIFUGE_START.get(), Balance.SND_MECH, 1.0F); }
+    @Override protected void runStopped(net.minecraft.world.level.Level level) { playOnce(level, WmdSounds.CENTRIFUGE_STOP.get(), Balance.SND_MECH, 1.0F); }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 1, 0); }
     @Override protected float soundVolume() { return Balance.SND_MACHINE; }
 

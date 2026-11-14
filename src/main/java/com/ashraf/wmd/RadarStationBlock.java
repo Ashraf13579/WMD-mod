@@ -31,7 +31,8 @@ public class RadarStationBlock extends BaseEntityBlock {
 
     public RadarStationBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(FORMED, false).setValue(MachineBlock.MOUNT, net.minecraft.core.Direction.UP));
+        registerDefaultState(stateDefinition.any().setValue(FORMED, false).setValue(MachineBlock.MOUNT, net.minecraft.core.Direction.UP)
+                .setValue(MachineBlock.FACING, net.minecraft.core.Direction.NORTH));
     }
 
     @Override
@@ -39,12 +40,15 @@ public class RadarStationBlock extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FORMED, MachineBlock.MOUNT);
+        builder.add(FORMED, MachineBlock.MOUNT, MachineBlock.FACING);
     }
 
     @Override
     public BlockState getStateForPlacement(net.minecraft.world.item.context.BlockPlaceContext context) {
-        return defaultBlockState().setValue(MachineBlock.MOUNT, ShipPlace.upFor(context));
+
+        net.minecraft.core.Direction[] mf = ShipPlace.place(context, false);
+        if (mf == null) return defaultBlockState().setValue(MachineBlock.MOUNT, ShipPlace.upFor(context));
+        return defaultBlockState().setValue(MachineBlock.MOUNT, mf[0]).setValue(MachineBlock.FACING, mf[1]);
     }
 
     @Override
@@ -81,6 +85,9 @@ public class RadarStationBlock extends BaseEntityBlock {
         if (in == null && claimOk && check.complete()) {
             if (moved) level.setBlock(ctrl, state, Block.UPDATE_ALL);
             RadarStructure.form(level, ctrl);
+            if (placer != null && level.getBlockEntity(ctrl) instanceof RadarBlockEntity rbe0 && mount == net.minecraft.core.Direction.UP
+                    && !SableBridge.isOnShip(level, ctrl))
+                rbe0.startBearing((placer.getDirection().toYRot() + 180.0F) % 360.0F);
             if (placer instanceof Player player) {
                 if (level.getBlockEntity(ctrl) instanceof RadarBlockEntity rbe && rbe.getOwner() == null) rbe.claim(player);
                 player.displayClientMessage(Component.translatable("block.wmd.radar_station.formed"), true);

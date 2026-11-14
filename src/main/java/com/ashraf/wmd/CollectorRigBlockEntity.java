@@ -162,7 +162,7 @@ public class CollectorRigBlockEntity extends ItemProcessBlockEntity implements O
         setStatus(S_WORKING);
         setState(C_DESCEND);
         sl.playSound(null, cPos.x, cPos.y, cPos.z, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 1.4F, 0.7F);
-        playOnce(sl, WmdSounds.T4_WINCH.get(), 1.0F, 0.8F);
+        playOnce(sl, WmdSounds.T4_WINCH.get(), Balance.SND_CLICK, 0.8F);
     }
 
     @Override
@@ -311,7 +311,11 @@ public class CollectorRigBlockEntity extends ItemProcessBlockEntity implements O
 
     private void dock(ServerLevel sl) {
         removeCrawler(sl);
-        if (!deployed.isEmpty()) { if (crawler.stack.isEmpty()) crawler.stack = deployed.copy(); crawler.sync(); deployed = ItemStack.EMPTY; }
+        if (!deployed.isEmpty()) {
+            if (crawler.stack.isEmpty()) crawler.stack = deployed.copy();
+            else net.minecraft.world.level.block.Block.popResource(sl, worldPosition.above(), deployed.copy());
+            crawler.sync(); deployed = ItemStack.EMPTY;
+        }
         if (pending > 0) { int room = Math.max(0, Balance.RIG_HOPPER - hopper.count()); hopper.add(Wmd.MANGANESE_NODULE.get(), Math.min(room, pending)); pending = 0; }
         cPos = null;
         target = null;

@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:ordnance_loader"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SPS",
+    "ACA",
+    "SPS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "P": {
+      "item": "minecraft:sticky_piston"
+    },
+    "A": {
+      "item": "wmd:aluminium_plate"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:ordnance_loader",
+    "count": 1
+  }
+}

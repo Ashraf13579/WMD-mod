@@ -49,8 +49,12 @@ public final class MapFeed {
 
     public record Ship(String dim, String id, String name, double x, double y, double z, int blocks, double size) {}
 
+    public record Track(String dim, String id, int kind, String label, double x, double y, double z) {}
+    public static final int T_AIRCRAFT = 0, T_AAM = 1, T_TORPEDO = 2, T_SHIP = 3;
+
     public record Snapshot(boolean history, boolean zones, boolean border, boolean admin, boolean war, boolean showOwners,
-                           List<Hit> hits, List<Zone> zoneList, List<Border> borders, List<Machine> machines, List<FlightLine> flights, List<Ship> ships) {}
+                           List<Hit> hits, List<Zone> zoneList, List<Border> borders, List<Machine> machines, List<FlightLine> flights, List<Ship> ships,
+                           List<Track> tracks) {}
 
     private static final Map<ResourceKey<Level>, LongOpenHashSet> LOADED = new HashMap<>();
     private static final int SWEEP_PER_TICK = 160;
@@ -186,6 +190,7 @@ public final class MapFeed {
         List<Border> bl = new ArrayList<>();
         List<FlightLine> fl = new ArrayList<>();
         List<Ship> sl = new ArrayList<>();
+        List<Track> tl = new ArrayList<>();
         for (ServerLevel l : server.getAllLevels()) {
             String dim = l.dimension().location().toString();
             long now = l.getGameTime();
@@ -215,6 +220,7 @@ public final class MapFeed {
                 fl.add(new FlightLine(dim, f.id(), f.tier(), b.warheadType(), name == null ? "?" : name, sample(f, t0, now, 12),
                         f.targetKnown() ? sample(f, now, t1, 12) : new double[0], c.x, c.y, c.z, f.targetKnown(), left, f.isCruise()));
             }
+            if (admin) airSea(l, dim, tl);
             if (war || admin) for (SableBridge.ShipInfo si : SableBridge.allShips(l)) {
                 if (!si.isLarge()) continue;
                 sl.add(new Ship(dim, si.id().toString(), si.name(), si.worldCenter().x, si.worldCenter().y, si.worldCenter().z, si.blockCount(), si.maxSize()));
@@ -224,7 +230,29 @@ public final class MapFeed {
         if (admin || war) for (MapData.Machine m : d.machines().values())
             ml.add(new Machine(m.dim(), m.x() + 0.5, m.y() + 0.5, m.z() + 0.5, m.kind(), m.type(), m.ownerName() == null || m.ownerName().isEmpty() ? m.owner().toString().substring(0, 8) : m.ownerName(),
                     m.decoy(), m.camo()));
-        return new Snapshot(hist, zones, border, admin, war, owners, hits, zl, bl, ml, fl, sl);
+        return new Snapshot(hist, zones, border, admin, war, owners, hits, zl, bl, ml, fl, sl, tl);
+    }
+
+    private static void airSea(ServerLevel l, String dim, List<Track> out) {
+        if (AirGate.on()) {
+            for (AirPicture.Aircraft a : AirPicture.all(l))
+                out.add(new Track(dim, "a" + a.id(), T_AIRCRAFT, "Aircraft " + (a.name() == null || a.name().isEmpty() ? "" : a.name() + " ") + "(" + a.blocks() + " blocks, "
+                        + Math.round(a.speedBps()) + " b/s)", a.pos().x, a.pos().y, a.pos().z));
+            for (AirMissiles.Shot s : AirMissiles.inFlight(l))
+                if (s.pos != null) out.add(new Track(dim, "m" + s.id, T_AAM, "Air-to-air missile (" + AirMissiles.NAMES[s.kind] + ")", s.pos.x, s.pos.y, s.pos.z));
+        }
+        for (net.minecraft.world.entity.Entity e : l.getAllEntities())
+            if (e instanceof TorpedoEntity t) out.add(new Track(dim, "t" + t.getUUID(), T_TORPEDO, "Torpedo", t.getX(), t.getY(), t.getZ()));
+        if (!SableBridge.active()) return;
+        for (SableBridge.ShipInfo si : SableBridge.allShips(l)) {
+            Vec3 c = si.worldCenter();
+            if (c == null || c.y > l.getSeaLevel() + 12 || !NavalLayer.visibleAboveWater(l, si) || (AirGate.on() && AirPicture.isAircraft(l, si.id()))) continue;
+            int top = l.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, (int) Math.floor(c.x), (int) Math.floor(c.z));
+            if (!l.getFluidState(BlockPos.containing(c.x, top - 1, c.z)).is(net.minecraft.tags.FluidTags.WATER)) continue;
+            out.add(new Track(dim, "s" + si.id(), T_SHIP, "Ship at sea " + (si.name() == null || si.name().isEmpty() || si.name().startsWith("(") ? "" : si.name() + " ")
+                    + "(" + si.blockCount() + " blocks)", c.x, c.y, c.z));
+            if (out.size() > 512) return;
+        }
     }
 
     private static double[] sample(Flight f, double from, double to, int n) {
@@ -245,7 +273,7 @@ public final class MapFeed {
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("dev").then(Commands.literal("bluemap")
+                .then(Commands.literal("dev").requires(TestCmds::test).then(Commands.literal("bluemap").requires(TestCmds::test)
                         .executes(c -> status(c.getSource()))
                         .then(Commands.literal("status").executes(c -> status(c.getSource())))
                         .then(Commands.literal("sync").executes(c -> sync(c.getSource())))

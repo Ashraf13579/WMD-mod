@@ -89,7 +89,7 @@ public final class CcGps {
         long[] times = new long[GpsPayload.MAX_WARNS * 2];
         for (int i = ws.size() - 1; i >= 0 && nw < GpsPayload.MAX_WARNS; i--) {
             CommandCenter.Warning w = ws.get(i);
-            if (w.sat() || AirshipWatch.isWarning(w.id())) continue;
+            if (w.sat() || AirshipWatch.isWarning(w.id()) || CcContactWatch.isNaval(w.id())) continue;
             warns[nw * 4] = w.ix(); warns[nw * 4 + 1] = w.iz(); warns[nw * 4 + 2] = w.ox(); warns[nw * 4 + 3] = w.oz();
             times[nw * 2] = w.launchGt(); times[nw * 2 + 1] = w.impactGt();
             nw++;

@@ -27,6 +27,7 @@ public class WmdClient {
     @SubscribeEvent
     static void registerModelLoaders(net.neoforged.neoforge.client.event.ModelEvent.RegisterGeometryLoaders event) {
         event.register(PipeModel.LOADER_ID, PipeModel.Loader.INSTANCE);
+        if (AirGate.AVAILABLE) event.register(WingModel.LOADER_ID, WingModel.Loader.INSTANCE);
         event.register(DuctModel.LOADER_ID, DuctModel.Loader.INSTANCE);
     }
 
@@ -80,8 +81,6 @@ public class WmdClient {
                 context -> new WarheadReactorRenderer());
         MountedRenderer.register(event, Wmd.PUMPJACK_BE.get(),
                 context -> new PumpjackRenderer());
-        MountedRenderer.register(event, Wmd.CRUDE_TANK_BE.get(),
-                context -> new CrudeTankRenderer());
         MountedRenderer.register(event, Wmd.STORAGE_TANK_BE.get(),
                 context -> new StorageTankRenderer());
         MountedRenderer.register(event, Wmd.FEED_PUMP_BE.get(),
@@ -170,6 +169,7 @@ public class WmdClient {
                 context -> new StagedUnitRenderer<DeadHandBlockEntity>("deadhand_bunker", 4, 3));
 
         MountedRenderer.register(event, Wmd.CREW_CAPSULE_BE.get(), context -> new CrewCapsuleRenderer());
+        event.registerBlockEntityRenderer(Wmd.BUSBAR_BE.get(), context -> new BusbarRenderer());
         event.registerBlockEntityRenderer(Wmd.STATION_MODULE_BE.get(), context -> new StationModuleRenderer());
         event.registerBlockEntityRenderer(Wmd.STATION_FIXTURE_BE.get(), context -> new StationFixtureRenderer());
         event.registerBlockEntityRenderer(Wmd.CARGO_POD_BE.get(), context -> new CargoPodRenderer());
@@ -192,6 +192,8 @@ public class WmdClient {
         event.registerEntityRenderer(Wmd.BIG_DRONE_ENTITY.get(), StrikeDroneRenderer::new);
         event.registerEntityRenderer(Wmd.PILOT_BODY.get(), PilotBodyRenderer::new);
         event.registerEntityRenderer(Wmd.TURRET_SEAT.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
+        event.registerEntityRenderer(Wmd.HELM_SEAT.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
+        event.registerEntityRenderer(Wmd.JATO_BOTTLE.get(), JatoBottleRenderer::new);
         event.registerEntityRenderer(Wmd.CREW_SEAT.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
         event.registerEntityRenderer(Wmd.HAND_MISSILE.get(), HandMissileRenderer::new);
         event.registerEntityRenderer(Wmd.BOMB.get(), BombRenderer::new);
@@ -234,6 +236,7 @@ public class WmdClient {
         MountedRenderer.register(event, Wmd.CC_STRIKE_PLANNER_BE.get(), context -> new CcRenderersB.StrikePlanner());
         MountedRenderer.register(event, Wmd.CC_MISSILE_CAM_BE.get(), context -> new CcRenderersB.MissileCam());
         MountedRenderer.register(event, Wmd.CC_INTERCEPTOR_CONSOLE_BE.get(), context -> new CcRenderersS5.InterceptorConsole());
+        if (AirGate.AVAILABLE) AirBlocksClient.renderers(event);
 
         MountedRenderer.register(event, Wmd.COUNTER_BATTERY_RADAR_BE.get(), context -> new StagedUnitRenderer<CounterBatteryRadarBlockEntity>("counter_battery_radar", 7, 3));
 
@@ -250,6 +253,17 @@ public class WmdClient {
 
         MountedRenderer.register(event, Wmd.NAVAL_REACTOR_BE.get(), context -> new NavalReactorRenderer());
         MountedRenderer.register(event, Wmd.PERISCOPE_BE.get(), context -> new StagedUnitRenderer<PeriscopeBlockEntity>("periscope", 7));
+
+        MountedRenderer.register(event, Wmd.SCREW_PROPELLER_BE.get(), context -> new ScrewPropellerRenderer());
+        MountedRenderer.register(event, Wmd.PUMP_JET_BE.get(), context -> new PumpJetRenderer());
+
+        MountedRenderer.register(event, Wmd.DUCTED_FAN_BE.get(), context -> new AirEngineRenderer("ducted_fan", 2, 3));
+        MountedRenderer.register(event, Wmd.TURBOFAN_BE.get(), context -> new AirEngineRenderer("turbofan", 3, 5));
+        MountedRenderer.register(event, Wmd.JATO_RACK_BE.get(), context -> new AirEngineRenderer("jato", 1, 3));
+        MountedRenderer.register(event, Wmd.SUB_DIESEL_BE.get(), context -> new StagedUnitRenderer<SubDieselBlockEntity>("sub_diesel", 2));
+        MountedRenderer.register(event, Wmd.SNORKEL_MAST_BE.get(), context -> new SnorkelMastRenderer());
+        MountedRenderer.register(event, Wmd.ENGINE_TELEGRAPH_BE.get(), context -> new StagedUnitRenderer<EngineTelegraphBlockEntity>("engine_telegraph", 2));
+        MountedRenderer.register(event, Wmd.HELM_STATION_BE.get(), context -> new StagedUnitRenderer<HelmStationBlockEntity>("helm_station", 2, 2));
         MountedRenderer.register(event, Wmd.COMMS_BUOY_BE.get(), context -> new StagedUnitRenderer<CommsBuoyBlockEntity>("comms_buoy", 2, 1));
         MountedRenderer.register(event, Wmd.ESCAPE_POD_BE.get(), context -> new StagedUnitRenderer<EscapePodBlockEntity>("escape_pod", 3, 1));
 
@@ -356,6 +370,9 @@ public class WmdClient {
         event.registerSpriteSet(WmdParticles.VACUUM_SPARK.get(), sprites -> new WmdSmokeParticle.Provider(sprites, WmdSmokeParticle.Kind.SPARK));
         event.registerSpriteSet(WmdParticles.WATER_SPRAY.get(), sprites -> new WmdSmokeParticle.Provider(sprites, WmdSmokeParticle.Kind.SPRAY));
         event.registerSpriteSet(WmdParticles.TORPEDO_WAKE.get(), sprites -> new WmdSmokeParticle.Provider(sprites, WmdSmokeParticle.Kind.WAKE));
+        event.registerSpriteSet(WmdParticles.CONTRAIL.get(), sprites -> new WmdSmokeParticle.Provider(sprites, WmdSmokeParticle.Kind.CONTRAIL));
+        event.registerSpriteSet(WmdParticles.HEAT_HAZE.get(), sprites -> new WmdSmokeParticle.Provider(sprites, WmdSmokeParticle.Kind.HAZE));
+        event.registerSpriteSet(WmdParticles.NAV_LIGHT.get(), sprites -> new WmdSmokeParticle.Provider(sprites, WmdSmokeParticle.Kind.NAV));
         event.registerSpriteSet(WmdParticles.UW_GAS.get(), sprites -> new WmdSmokeParticle.Provider(sprites, WmdSmokeParticle.Kind.CAVITY));
     }
 
@@ -409,6 +426,7 @@ public class WmdClient {
 
     @SubscribeEvent
     static void registerScreens(RegisterMenuScreensEvent event) {
+        if (AirGate.AVAILABLE) AirBlocksClient.screens(event);
         event.register(Wmd.GENERATOR_MENU.get(), GeneratorScreen::new);
         event.register(Wmd.TERMINAL_MENU.get(), TerminalScreen::new);
         event.register(Wmd.RADAR_MENU.get(), RadarScreen::new);
@@ -439,6 +457,8 @@ public class WmdClient {
                 : CcScreenC.handles(menu.machine()) ? new CcScreenC(menu, inv, title)
                 : menu.machine() instanceof CcInterceptorConsoleBlockEntity ? new CcScreenS5(menu, inv, title)
                 : menu.machine() instanceof CounterBatteryRadarBlockEntity ? new CounterBatteryScreen(menu, inv, title)
+                : menu.machine() instanceof AirSearchRadarBlockEntity ? new AirSearchRadarScreen(menu, inv, title)
+                : menu.machine() instanceof SamSiteBlockEntity ? new SamSiteScreen(menu, inv, title)
                 : menu.machine() instanceof FireControlConsoleBlockEntity ? new FireControlScreen(menu, inv, title)
                 : menu.machine() instanceof DepthChargeRackBlockEntity ? new DepthChargeScreen(menu, inv, title)
                 : menu.machine() instanceof DredgeWinchBlockEntity ? new DredgeScreen(menu, inv, title)
@@ -448,6 +468,9 @@ public class WmdClient {
                 : menu.machine() instanceof LaunchCellBlockEntity ? new LaunchCellScreen(menu, inv, title)
                 : menu.machine() instanceof CoastalBatteryBlockEntity ? new CoastalBatteryScreen(menu, inv, title)
                 : menu.machine() instanceof DockCraneBlockEntity ? new DockCraneScreen(menu, inv, title)
+                : menu.machine() instanceof ServiceArmBlockEntity ? new ServiceArmScreen(menu, inv, title)
+                : menu.machine() instanceof CargoRampBlockEntity ? new CargoRampScreen(menu, inv, title)
+                : menu.machine() instanceof TurntableBlockEntity ? new TurntableScreen(menu, inv, title)
                 : menu.machine() instanceof SonarSensorBlockEntity || menu.machine() instanceof SonarConsoleBlockEntity ? new SonarScreen(menu, inv, title)
                 : menu.machine() instanceof TorpedoLauncherBlockEntity ? new TorpedoScreen(menu, inv, title)
                 : menu.machine() instanceof CcArtilleryConsoleBlockEntity ? new CcScreenArtillery(menu, inv, title)

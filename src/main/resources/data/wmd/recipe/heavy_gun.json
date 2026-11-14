@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:heavy_gun"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SHS",
+    "PCP",
+    "SAS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "H": {
+      "item": "wmd:howitzer"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "A": {
+      "item": "wmd:aluminium_plate"
+    }
+  },
+  "result": {
+    "id": "wmd:heavy_gun",
+    "count": 1
+  }
+}

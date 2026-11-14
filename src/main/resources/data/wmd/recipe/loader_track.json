@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:loader_track"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "S S",
+    "IRI"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "I": {
+      "item": "wmd:steel_ingot"
+    },
+    "R": {
+      "item": "minecraft:rail"
+    }
+  },
+  "result": {
+    "id": "wmd:loader_track",
+    "count": 8
+  }
+}

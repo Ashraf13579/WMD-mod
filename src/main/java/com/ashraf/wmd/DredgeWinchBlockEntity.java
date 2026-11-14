@@ -124,7 +124,7 @@ public class DredgeWinchBlockEntity extends ItemProcessBlockEntity implements Ow
                 queued = false;
                 setStatus(S_WORKING);
                 setPhase(P_TILT_OUT);
-                playOnce(sl, WmdSounds.T4_WINCH.get(), 0.9F, 1.1F);
+                playOnce(sl, WmdSounds.T4_WINCH.get(), Balance.SND_CLICK, 1.1F);
                 return true;
             }
             case P_TILT_OUT -> {
@@ -149,7 +149,7 @@ public class DredgeWinchBlockEntity extends ItemProcessBlockEntity implements Ow
                     grabbed = target != null ? NoduleMining.collect(sl, target, Balance.DREDGE_YIELD_MIN, Balance.DREDGE_YIELD_MAX) : 0;
                     if (grabbed == 0 && status == S_WORKING) status = S_EMPTY;
                     setPhase(P_HAUL);
-                    playOnce(sl, WmdSounds.T4_WINCH.get(), 0.9F, 0.9F);
+                    playOnce(sl, WmdSounds.T4_WINCH.get(), Balance.SND_CLICK, 0.9F);
                 }
                 return true;
             }

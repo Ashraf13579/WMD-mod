@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "wmd:helm_seat",
+      "required": false
+    },
+    {
+      "id": "wmd:cockpit_seat",
+      "required": false
+    },
+    {
+      "id": "wmd:gunner_seat",
+      "required": false
+    }
+  ]
+}

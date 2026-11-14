@@ -52,6 +52,7 @@ public abstract class ProcessUnitBlockEntity extends BlockEntity implements GeoB
     private float levelTarget, levelShown;
     Object soundHandle;
     private int clientAge;
+    int clientAge() { return clientAge; }
     private boolean wasRunning;
 
     private float spin, spinSpeed;
@@ -77,6 +78,8 @@ public abstract class ProcessUnitBlockEntity extends BlockEntity implements GeoB
     protected abstract SoundEvent runSound();
     protected abstract BlockPos soundLocal();
     protected float soundVolume() { return Balance.SND_MACHINE; }
+
+    protected boolean cabinSound() { return false; }
 
     protected float soundPitch() { return 1.0F; }
 
@@ -178,6 +181,8 @@ public abstract class ProcessUnitBlockEntity extends BlockEntity implements GeoB
     }
     public boolean hasPower() { return store.getEnergyStored() >= feCost(); }
     protected IEnergyStorage energy() { return store; }
+
+    protected void chargeDirect(int n) { if (n > 0) { store.set(store.getEnergyStored() + n); setChanged(); } }
 
     protected boolean useExtraEnergy(int n) {
         if (store.getEnergyStored() < feCost() + n) return false;

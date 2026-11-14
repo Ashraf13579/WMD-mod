@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " P ",
+    "PHP",
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "H": {
+      "item": "minecraft:piston"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:snorkel_mast",
+    "count": 1
+  }
+}

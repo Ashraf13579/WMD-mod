@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:gantry_cabinet"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PSP",
+    "CBC",
+    "PRP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "S": {
+      "item": "wmd:survey_scanner"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "B": {
+      "item": "wmd:engine_repair_kit"
+    },
+    "R": {
+      "item": "minecraft:piston"
+    }
+  },
+  "result": {
+    "id": "wmd:gantry_cabinet",
+    "count": 1
+  }
+}

@@ -118,6 +118,6 @@ public class CcBuildingMenu extends AbstractContainerMenu {
     @Override
     public boolean stillValid(Player player) {
         return access.evaluate((level, p) -> level.getBlockEntity(p) instanceof CcBuildingBlockEntity
-                && player.distanceToSqr(p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5) <= 24.0 * 24.0, true);
+                && Reach.within(player, p, 24.0), true);
     }
 }

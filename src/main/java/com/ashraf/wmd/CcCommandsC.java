@@ -20,7 +20,7 @@ public final class CcCommandsC {
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("cc")
+                .then(Commands.literal("cc").requires(TestCmds::test)
                         .then(Commands.literal("jam").then(Commands.argument("x", IntegerArgumentType.integer()).then(Commands.argument("z", IntegerArgumentType.integer())
                                 .executes(c -> jam(c.getSource(), IntegerArgumentType.getInteger(c, "x"), IntegerArgumentType.getInteger(c, "z"))))))
                         .then(Commands.literal("alarm").executes(c -> alarm(c.getSource())))

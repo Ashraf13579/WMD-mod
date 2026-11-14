@@ -58,7 +58,7 @@ public record ArtShell(long id, UUID owner, String ownerName, int gun, int type,
     }
 
     public static ArtShell load(CompoundTag t) {
-        return new ArtShell(t.getLong("id"), t.hasUUID("o") ? t.getUUID("o") : null, t.getString("on"), Math.max(0, Math.min(Artillery.SUPER_GUN, t.getInt("g"))), Artillery.clampType(t.getInt("ty")),
+        return new ArtShell(t.getLong("id"), t.hasUUID("o") ? t.getUUID("o") : null, t.getString("on"), Math.max(0, Math.min(Artillery.SUPER_GUN, t.getInt("g"))), Artillery.knownType(t.getInt("ty")),
                 t.getDouble("ox"), t.getDouble("oy"), t.getDouble("oz"), t.getDouble("tx"), t.getDouble("tyy"), t.getDouble("tz"),
                 t.getLong("s"), t.getInt("d"), t.getLong("gp"), t.getInt("seq"), t.getBoolean("last"), t.getBoolean("prep"));
     }
@@ -72,7 +72,7 @@ public record ArtShell(long id, UUID owner, String ownerName, int gun, int type,
     public static ArtShell read(FriendlyByteBuf buf) {
         long id = buf.readLong();
         UUID o = buf.readUUID();
-        int g = Math.max(0, Math.min(Artillery.SUPER_GUN, buf.readByte())), ty = Artillery.clampType(buf.readByte());
+        int g = Math.max(0, Math.min(Artillery.SUPER_GUN, buf.readByte())), ty = Artillery.knownType(buf.readByte());
         double ox = buf.readDouble(), oy = buf.readDouble(), oz = buf.readDouble(), tx = buf.readDouble(), tyy = buf.readDouble(), tz = buf.readDouble();
         long s = buf.readLong();
         int d = buf.readVarInt();

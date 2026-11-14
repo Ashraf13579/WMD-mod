@@ -32,6 +32,7 @@ public final class MachineShapes {
         MESH_OF.put("interceptor_battery_t2", "battery_t2");
         MESH_OF.put("bay_rack_r", "bay_rack_r");
         MESH_OF.put("cooling_tower", "cooling_tower_xl");
+        MESH_OF.put("jet_power_core", "power_core");
     }
 
     private static JsonObject file(String mesh) {

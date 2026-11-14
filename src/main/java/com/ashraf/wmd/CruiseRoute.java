@@ -23,16 +23,23 @@ public final class CruiseRoute {
 
     public final Dr dr;
 
+    public final boolean air;
+
     private double[] px, pz, cum;
 
     private double lastCornerS, lastCornerIn;
 
     public CruiseRoute(double ox, double oz, double fx, double fz, int[] xs, int[] zs, float speed, short[] alt) {
-        this(ox, oz, fx, fz, xs, zs, speed, alt, null);
+        this(ox, oz, fx, fz, xs, zs, speed, alt, null, false);
     }
 
     private CruiseRoute(double ox, double oz, double fx, double fz, int[] xs, int[] zs, float speed, short[] alt, Dr dr) {
+        this(ox, oz, fx, fz, xs, zs, speed, alt, dr, false);
+    }
+
+    private CruiseRoute(double ox, double oz, double fx, double fz, int[] xs, int[] zs, float speed, short[] alt, Dr dr, boolean air) {
         this.dr = dr;
+        this.air = air && dr == null;
         this.ox = ox; this.oz = oz;
         double l = Math.hypot(fx, fz);
         this.fx = l > 1.0E-6 ? fx / l : 0.0; this.fz = l > 1.0E-6 ? fz / l : -1.0;
@@ -104,12 +111,17 @@ public final class CruiseRoute {
         if (dr != null) return this;
         int[] nx = xs.clone(), nz = zs.clone();
         nx[nx.length - 1] = x; nz[nz.length - 1] = z;
-        return new CruiseRoute(ox, oz, fx, fz, nx, nz, speed, alt);
+        return new CruiseRoute(ox, oz, fx, fz, nx, nz, speed, alt, null, air);
     }
 
-    public CruiseRoute withAlt(short[] a) { return new CruiseRoute(ox, oz, fx, fz, xs, zs, speed, a); }
+    public CruiseRoute withAlt(short[] a) { return new CruiseRoute(ox, oz, fx, fz, xs, zs, speed, a, null, air); }
 
-    public static double radarRange(Flight f, double normal) { return f.isCruise() ? Math.min(normal, Balance.CRUISE_RADAR_RANGE) : normal; }
+    public CruiseRoute withAir(boolean a) { return dr != null ? this : new CruiseRoute(ox, oz, fx, fz, xs, zs, speed, alt, null, a); }
+
+    public static double radarRange(Flight f, double normal) {
+        if (!f.isCruise()) return normal;
+        return Math.min(normal, f.cruise() != null && f.cruise().air ? Balance.ASHM_RADAR_RANGE : Balance.CRUISE_RADAR_RANGE);
+    }
 
     private void build() {
         if (cum != null) return;
@@ -163,11 +175,13 @@ public final class CruiseRoute {
     public double distanceAt(double t) {
         double v = speed, v0 = 0.5 * v;
         if (t <= 0.0) return 0.0;
+        if (air) return v * t;
         if (t < ACCEL_T) return v0 * t + (v - v0) * t * t / (2.0 * ACCEL_T);
         return v0 * ACCEL_T + (v - v0) * ACCEL_T * 0.5 + v * (t - ACCEL_T);
     }
 
     public int ticks() {
+        if (air) return Math.max(1, (int) Math.ceil(length() / speed));
         double L = length(), v = speed, v0 = 0.5 * v, sA = v0 * ACCEL_T + (v - v0) * ACCEL_T * 0.5;
         if (L <= sA) {
             double a = (v - v0) / (2.0 * ACCEL_T);
@@ -193,6 +207,7 @@ public final class CruiseRoute {
         if (t >= f.duration()) s = L;
         double[] g = ground(s);
         double y = profile(s);
+        if (air) return new Vec3(g[0], airHeight(f, s, t, L, y), g[1]);
         if (s < CLIMB_D) {
             double k = smooth(s / CLIMB_D);
             y = (1.0 - k) * (f.oy() + s * Math.tan(Math.toRadians(PITCH_DEG))) + k * y;
@@ -207,6 +222,15 @@ public final class CruiseRoute {
     }
 
     private static double smooth(double x) { x = Mth.clamp(x, 0.0, 1.0); return x * x * (3.0 - 2.0 * x); }
+
+    double airHeight(Flight f, double s, double t, double L, double y) {
+        double top = f.oy() - Math.min(Balance.ASHM_DROP, 0.04 * t * t);
+        double dD = Math.max(CLIMB_D, (top - y) / Math.tan(Math.toRadians(Balance.ASHM_DESCENT_DEG)));
+        if (s < dD) { double k = smooth(s / dD); y = (1.0 - k) * top + k * y; }
+        double dStart = Math.max(0.0, L - Balance.ASHM_TERMINAL);
+        if (s > dStart && L > 1.0) { double u = Mth.clamp((s - dStart) / Math.max(1.0, L - dStart), 0.0, 1.0); double k = u * u; y = (1.0 - k) * y + k * f.endY(); }
+        return y;
+    }
 
     public short[] sampleAltitude(ServerLevel level) {
         double L = length();
@@ -249,6 +273,7 @@ public final class CruiseRoute {
         int[] a = new int[alt == null ? 0 : alt.length];
         for (int i = 0; i < a.length; i++) a[i] = alt[i];
         t.putIntArray("alt", a);
+        if (air) t.putBoolean("air", true);
         return t;
     }
 
@@ -258,7 +283,7 @@ public final class CruiseRoute {
         for (int i = 0; i < a.length; i++) s[i] = (short) a[i];
         int[] xs = t.getIntArray("xs"), zs = t.getIntArray("zs");
         if (xs.length == 0 || xs.length != zs.length) return null;
-        return new CruiseRoute(t.getDouble("ox"), t.getDouble("oz"), t.getDouble("fx"), t.getDouble("fz"), xs, zs, t.getFloat("v"), s);
+        return new CruiseRoute(t.getDouble("ox"), t.getDouble("oz"), t.getDouble("fx"), t.getDouble("fz"), xs, zs, t.getFloat("v"), s, null, t.getBoolean("air"));
     }
 
     public void write(FriendlyByteBuf buf) {
@@ -270,6 +295,7 @@ public final class CruiseRoute {
         buf.writeFloat(speed);
         buf.writeVarInt(alt == null ? 0 : alt.length);
         if (alt != null) for (short v : alt) buf.writeShort(v);
+        buf.writeBoolean(air);
     }
 
     public static CruiseRoute read(FriendlyByteBuf buf) {
@@ -284,6 +310,6 @@ public final class CruiseRoute {
         if (m < 0 || m > 4096) throw new IllegalArgumentException("cruise route: bad profile length " + m);
         short[] a = new short[m];
         for (int i = 0; i < m; i++) a[i] = buf.readShort();
-        return new CruiseRoute(ox, oz, fx, fz, xs, zs, v, a);
+        return new CruiseRoute(ox, oz, fx, fz, xs, zs, v, a, null, buf.readBoolean());
     }
 }

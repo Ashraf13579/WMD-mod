@@ -24,6 +24,7 @@ public final class SeekerGuidance {
             Flight f = list.get(i);
             String seeker = f.build().seeker();
             if (seeker.isEmpty() || Satellites.toOrbit(f.build()) || f.build().isInterceptor() || now < f.start() || now >= f.endTime() - 2) continue;
+            if (MissileBuild.SEEK_RADAR.equals(seeker)) continue;
             if (Uplink.lockActive(mgr, f)) continue;
             if ((f.uflags() & Flight.U_SEEK_LOST) != 0) continue;
             if ((f.uflags() & Flight.U_SEEK_DONE) == 0) {

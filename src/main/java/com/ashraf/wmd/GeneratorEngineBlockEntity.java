@@ -41,6 +41,7 @@ public class GeneratorEngineBlockEntity extends BlockEntity implements GeoBlockE
     private final FluidTank fuel = new FluidTank(Balance.GENERATOR_TANK_MB, fs -> fs.getFluid() == WmdFluids.DIESEL.source().get());
     private int feCredit;
     private boolean running;
+    private long lastMade = -100;
 
     private static final RawAnimation ANIM_RUNNING = RawAnimation.begin().thenLoop("running");
     private static final RawAnimation ANIM_IDLE = RawAnimation.begin().thenLoop("idle");
@@ -212,7 +213,8 @@ public class GeneratorEngineBlockEntity extends BlockEntity implements GeoBlockE
             }
         }
 
-        boolean nowRunning = made;
+        if (made) lastMade = level.getGameTime();
+        boolean nowRunning = made || level.getGameTime() - lastMade < 20;
         if (nowRunning != running) {
             running = nowRunning;
             changed = true;

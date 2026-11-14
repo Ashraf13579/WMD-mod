@@ -24,7 +24,7 @@ public final class ReactorCommands {
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("reactor")
+                .then(Commands.literal("reactor").requires(TestCmds::test)
                         .then(Commands.literal("build")
                                 .executes(c -> build(c.getSource(), true))
                                 .then(Commands.literal("bare").executes(c -> build(c.getSource(), false))))

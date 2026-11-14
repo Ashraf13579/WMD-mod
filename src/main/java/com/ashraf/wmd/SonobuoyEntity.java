@@ -56,9 +56,12 @@ public class SonobuoyEntity extends Entity {
 
     private long sensorId() { return getUUID().getMostSignificantBits() | Long.MIN_VALUE; }
 
+    private long[] held;
+
     @Override
     public void tick() {
         super.tick();
+        if (level() instanceof ServerLevel sr && !isRemoved()) held = RunnerChunks.follow(sr, getUUID(), position(), getDeltaMovement(), held);
         Level l = level();
         Vec3 pos = position();
         boolean wet = l.getFluidState(BlockPos.containing(pos)).is(FluidTags.WATER);
@@ -118,6 +121,7 @@ public class SonobuoyEntity extends Entity {
 
     @Override
     public void remove(RemovalReason reason) {
+        if (level() instanceof ServerLevel sr) held = RunnerChunks.release(sr, getUUID(), held);
         if (level() instanceof ServerLevel sl) SonarNet.forget(sl, owner, freq, sensorId());
         super.remove(reason);
     }

@@ -306,7 +306,7 @@ public final class Debris {
             if (p.pushLeft == 0 && p.speed < 0.05 && (now + p.blocks) % wakeEvery == 0) SableBridge.debrisWake(level, p.id);
             AABB b = SableBridge.debrisBounds(level, p.id);
             if (b == null) { it.remove(); continue; }
-            if (now >= p.until) { vanish(level, p.look, p.blocks, b); SableBridge.debrisRemove(level, p.id); it.remove(); continue; }
+            if (now >= p.until) { vanish(level, p.look, p.blocks, b); removeBody(level, p.id); it.remove(); continue; }
             Vec3 c = b.getCenter();
             if (p.last != null) {
                 Vec3 step = c.subtract(p.last);
@@ -328,7 +328,7 @@ public final class Debris {
             if (p.collapse && !p.freed && now - p.born > Balance.COLLAPSE_STUCK_TICKS) {
                 Wmd.LOGGER.info("[collapse] a stuck piece of {} blocks went as dust", p.blocks);
                 vanish(level, p.look, p.blocks, b);
-                SableBridge.debrisRemove(level, p.id);
+                removeBody(level, p.id);
                 it.remove();
                 continue;
             }
@@ -361,7 +361,7 @@ public final class Debris {
             Piece old = st.live.remove(0);
             AABB b = SableBridge.debrisBounds(level, old.id);
             if (b != null) vanish(level, old.look, old.blocks, b);
-            SableBridge.debrisRemove(level, old.id);
+            removeBody(level, old.id);
         }
 
         for (BlockPos p : from) level.setBlock(p, Blocks.AIR.defaultBlockState(), FLAGS);
@@ -518,34 +518,50 @@ public final class Debris {
 
     private static final Set<UUID> NOT_REMNANT = Statics.server(new HashSet<>());
 
+    private static final java.util.Map<UUID, Long> GONE = Statics.server(new java.util.HashMap<>());
+    private static final long GONE_TICKS = 6_000L;
+
+    private static boolean removeBody(ServerLevel level, UUID id) {
+        GONE.put(id, level.getGameTime() + GONE_TICKS);
+        return SableBridge.debrisRemove(level, id);
+    }
+
+    private static boolean oursLately(UUID parent, Set<UUID> mine, long now) {
+        if (parent == null) return false;
+        if (mine.contains(parent)) return true;
+        Long t = GONE.get(parent);
+        return t != null && t >= now;
+    }
+
     private static void sweep(ServerLevel level, State st, long now) {
         Set<UUID> mine = new HashSet<>();
         for (Piece p : st.live) mine.add(p.id);
+        GONE.values().removeIf(v -> v < now);
         for (SableBridge.DebrisScan s : SableBridge.debrisScan(level)) {
             if (mine.contains(s.id())) continue;
             if (s.until() < 0) {
 
-                if (!NOT_REMNANT.contains(s.id()) && SableBridge.debrisRemnant(level, s.id())) {
+                if (!NOT_REMNANT.contains(s.id()) && oursLately(s.splitFrom(), mine, now) && SableBridge.debrisRemnant(level, s.id())) {
                     Wmd.LOGGER.info("[debris] a lost remnant {} went (untagged natural lump)", s.id());
                     vanish(level, Blocks.DIRT.defaultBlockState(), 4, s.bounds());
-                    SableBridge.debrisRemove(level, s.id());
+                    removeBody(level, s.id());
                 } else NOT_REMNANT.add(s.id());
                 continue;
             }
             boolean child = s.splitFrom() != null && mine.contains(s.splitFrom());
             if (child && s.until() > now) { st.live.add(new Piece(s.id(), s.until(), Blocks.DIRT.defaultBlockState(), 4, Vec3.ZERO, Vec3.ZERO, 0)); continue; }
             vanish(level, Blocks.DIRT.defaultBlockState(), 4, s.bounds());
-            SableBridge.debrisRemove(level, s.id());
+            removeBody(level, s.id());
         }
     }
 
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("dev").then(Commands.literal("debris")
+                .then(Commands.literal("dev").requires(TestCmds::test).then(Commands.literal("debris").requires(TestCmds::test)
                         .executes(c -> test(c.getSource(), 10))
                         .then(Commands.argument("radius", IntegerArgumentType.integer(1, 160)).executes(c -> test(c.getSource(), IntegerArgumentType.getInteger(c, "radius"))))
-                        .then(Commands.literal("at").then(Commands.argument("pos", net.minecraft.commands.arguments.coordinates.BlockPosArgument.blockPos())
+                        .then(Commands.literal("at").requires(TestCmds::test).then(Commands.argument("pos", net.minecraft.commands.arguments.coordinates.BlockPosArgument.blockPos())
                                 .executes(c -> testAt(c.getSource(), net.minecraft.commands.arguments.coordinates.BlockPosArgument.getBlockPos(c, "pos"), 10))
                                 .then(Commands.argument("radius", IntegerArgumentType.integer(1, 160)).executes(c -> testAt(c.getSource(),
                                         net.minecraft.commands.arguments.coordinates.BlockPosArgument.getBlockPos(c, "pos"), IntegerArgumentType.getInteger(c, "radius"))))))
@@ -607,7 +623,7 @@ public final class Debris {
             for (Piece p : st.live) {
                 AABB b = SableBridge.debrisBounds(level, p.id);
                 if (b != null) vanish(level, p.look, p.blocks, b);
-                if (SableBridge.debrisRemove(level, p.id)) n++;
+                if (removeBody(level, p.id)) n++;
             }
             st.live.clear();
             st.seen.clear();

@@ -73,7 +73,6 @@ public final class Balance {
     public static final int PUMPJACK_MB_PER_30S = 1000;
     public static final int PUMPJACK_FE_PER_TICK = 400;
     public static final int PUMPJACK_TANK_MB = 8000;
-    public static final int CRUDE_TANK_MB = 256_000;
     public static final int FEED_PUMP_MB_PER_TICK = 10, FEED_PUMP_FE_PER_TICK = 100, FEED_PUMP_TANK_MB = 8_000;
 
     public static final int CELL_FE_PER_TICK = 360, CELL_CYCLE_TICKS = 100, CELL_TANK_MB = 8_000, CELL_BRINE_MB = 500, CELL_CL_FROM_BRINE = 500, CELL_H2_FROM_BRINE = 250, CELL_CAUSTIC = 1;
@@ -175,6 +174,24 @@ public final class Balance {
 
     public static final int STORAGE_TANK_MB = 256_000;
 
+    public static final int TANK_HP_STORAGE = 300, TANK_HP_CORE = 100;
+    public static final double TANK_LEAK = 0.6, TANK_FIRE = 0.3;
+
+    public static final double TANK_BLAST_DMG = 40.0, TANK_BLAST_R_REF = 4.0, TANK_BLAST_PAD = 2.0, TANK_ROUND_DMG = 1.5;
+
+    public static final double TANK_BURN_HP_STORAGE = 3.0, TANK_BURN_HP_CORE = 5.0, TANK_BURN_HP_FUEL = 5.0;
+
+    public static final int TANK_LEAK_MB_STORAGE = 500, TANK_LEAK_MB_CORE = 40, TANK_LEAK_MB_FUEL = 20, TANK_LEAK_MB_DROP = 40;
+
+    public static final double TANK_BLAST_MIN_FILL = 0.10;
+
+    public static final double TANK_R_FUEL = 1.5, TANK_R_DROP = 2.0, TANK_R_CORE = 2.5, TANK_R_STORAGE = 4.0, TANK_R_GAS = 6.0, TANK_FIREBALL_GAS = 2.0;
+
+    public static final float TANK_SHIP_POWER = 2.5F;
+
+    public static final int TANK_POOL_TICKS = 600, TANK_OIL_TICKS = 1_200, TANK_BOILOVER_TICKS = 300, TANK_SHIP_FIRE_TICKS = 300, TANK_TOXIC_TICKS = 1_200;
+    public static final double TANK_POOL_R = 2.0, TANK_BOILOVER_R = 2.5, TANK_STEAM_R = 6.0, TANK_TOXIC_R = 10.0;
+
     public static final int COAL_GEN_FE_PER_TICK = 200, COAL_GEN_BUFFER_FE = 400_000, COAL_GEN_OUT_PER_TICK = 2_000, COAL_GEN_FUEL_MAX = 64;
 
     public static final int BF_STEEL_IRON = 1, BF_STEEL_COAL = 3, BF_STEEL_TICKS = 200, BF_SMELT_PER_COAL = 8, BF_BLOWER_FE = 40, BF_BLOWER_SPEED = 2;
@@ -268,6 +285,9 @@ public final class Balance {
 
     public static final int BAY_ROLL_CLEAN_TICKS = 60, BAY_CLEAN_TICKS = 400, BAY_ROLL_PAINT_TICKS = 60, BAY_PAINT_TICKS = 700,
             BAY_ROLL_CRYO_TICKS = 60, BAY_CRYO_TICKS = 640, BAY_RETURN_PER_STATION = 120;
+
+    public static final int BAY_AIR_YIELD = 2;
+    public static final double BAY_AIR_TIME = 0.6;
     public static final int[] BAY_STATION_TICKS = { BAY_ROLL_CLEAN_TICKS + BAY_CLEAN_TICKS, BAY_ROLL_PAINT_TICKS + BAY_PAINT_TICKS, BAY_ROLL_CRYO_TICKS + BAY_CRYO_TICKS };
 
     public static int bayRunTicks(int stations) {
@@ -442,8 +462,8 @@ public final class Balance {
     public static final int RACK_LOAD = 4, BAY_ROWS = 3, BAY_LOAD = 3, RACK_FE = 1_000, BAY_FE = 2_000, RACK_IDLE = 25, BAY_IDLE = 100,
             SALVO_PULSE = 5, SALVO_GAP = 4, BAY_DOOR_TICKS = 20, BAY_DOOR_HOLD = 60;
 
-    public static final double BOMB_G = 0.08, BOMB_DRAG = 0.995, IRON_SCATTER = 0.03, IRON_SCATTER_MAX = 12.0, LGB_RANGE = 200.0, LGB_STEER = 0.06,
-            GLIDE_SPEED = 1.6, GLIDE_RANGE = 500.0, GLIDE_SCATTER = 8.0, GLIDE_SINK = 0.25, CARPET_OPEN_UP = 40.0, CARPET_DUD = 0.10, DUD_POWER = 2.5,
+    public static final double BOMB_G = 0.08, BOMB_DRAG = 0.995, IRON_SCATTER = 0.03, IRON_SCATTER_MAX = 12.0, LGB_RANGE = 300.0, LGB_STEER = 0.06,
+            GLIDE_SPEED = 1.6, GLIDE_RANGE = 1_000.0, GLIDE_SCATTER = 8.0, GLIDE_SINK = 0.25, CARPET_OPEN_UP = 40.0, CARPET_DUD = 0.10, DUD_POWER = 2.5,
             HEAVY_GLASS = 60.0;
     public static final int GLIDE_WINGS = 6, CARPET_BOMBLETS = 40;
 
@@ -541,6 +561,9 @@ public final class Balance {
     public static final int HOWITZER_RANGE = 2_000, HOWITZER_MIN = 100, HOWITZER_RELOAD_TICKS = 120, HOWITZER_LAY_TICKS = 60, HOWITZER_FE_PER_TICK = 200,
             HOWITZER_CHARGES = 5, HOWITZER_MAGAZINE = 8, HOWITZER_CHARGE_SLOT = 32;
     public static final int SHELL_PRESS_FE_PER_TICK = 400, SHELL_PRESS_TICKS = 200;
+
+    public static final double GUNSHIP_HE_RADIUS = 6.0, GUNSHIP_HE_REACH = 3.5, GUNSHIP_HE_LETHAL = 0.6, GUNSHIP_HE_DMG = 1.0, GUNSHIP_HE_SHIP_POWER = 6.0,
+            GUNSHIP_HE_FX = 2.2;
     public static final double ART_GRAVITY = 0.05, ART_SPREAD_PER_KM = 12.0, ART_MIN_SPREAD = 1.5, ART_SPOT_FACTOR = 0.35, MORTAR_HE_RADIUS = 2.0, HOWITZER_HE_RADIUS = 3.0;
     public static final int ART_SPOT_MINUTES = 10, ART_SPOT_RADIUS = 48, ART_SMOKE_SECONDS = 45, ART_ILLUM_SECONDS = 40, ART_CLUSTER_BOMBLETS = 7, ART_MAX_SHELLS = 256;
 
@@ -579,6 +602,8 @@ public final class Balance {
     public static final double SABLE_LARGE_SHIP_MIN_MASS = 400.0;
 
     public static final int RADAR_MAX_SHIP_CONTACTS = 8, RADAR_MAX_SHIP_LOCKS = 2;
+
+    public static final double CC_NAVAL_RANGE = 200.0;
     public static final int AIRSHIP_FORGET_TICKS = 6_000, AIRSHIP_WARN_PER_MIN = 4, AIRSHIP_REFRESH_TICKS = 60, AIRSHIP_HEADING_SECONDS = 30;
 
     public static final float FUSION_ARC_DAMAGE = 4.0f, FUSION_ARC_KNOCKBACK = 0.6f;
@@ -858,7 +883,7 @@ public final class Balance {
     public static final int SONAR_DOME_FE = 400, SONAR_ARRAY_FE = 600, SONAR_CONSOLE_FE = 100, SONAR_SCAN_TICKS = 20, SONAR_PING_FE = 100_000, SONAR_PING_COOLDOWN = 200,
             SONAR_PING_SHOW = 600, SONAR_PING_TICKS = 40, SHIP_NOISE_TICKS = 20, SONAR_WATERFALL_ROWS = 40, SONAR_KEEP = 24;
 
-    public static final int SONAR_HULL_TICKS = 40, SONAR_HULL_LEAKS = 4;
+    public static final int SONAR_HULL_TICKS = 200, SONAR_HULL_LEAKS = 4;
 
     public static final int HULL_SCAN_MAX = 250_000, HULL_SCAN_CELLS = 20_000, HULL_HOLE_JOIN = 3;
     public static final double SONAR_HULL_WARN = 0.9;
@@ -977,6 +1002,13 @@ public final class Balance {
 
     public static final int PERI_FE = 20, PERI_RAISE_TICKS = 40, MAST_BEAT = 20, MAST_TTL = 60;
     public static final float PERI_STAGE_PX = 28.0F;
+
+    public static final double PERI_AIR_RANGE = 300.0;
+
+    public static final double STORE_DROP_KICK = 0.15;
+
+    public static final int ATORP_CHUTE_DELAY = 10, ATORP_MAX_AIR_TICKS = 2400;
+    public static final double ATORP_CHUTE_FALL = 0.5, ATORP_CHUTE_DRIFT = 0.1;
     public static final double PERI_HEAD_UP = 3.6, PERI_ZOOM_LOW = 1.5, PERI_ZOOM_HIGH = 6.0, PERI_REACH = 3.0, PERI_WAKE_SPEED = 0.08;
 
     public static final double PERI_EYE_AHEAD = 0.3;
@@ -991,6 +1023,545 @@ public final class Balance {
     public static final int POD_SEATS = 4, POD_FE = 5, POD_CHECK_TICKS = 10, POD_FLOAT_TICKS = 6_000;
     public static final double POD_REACH = 3.0, POD_RISE = 0.35, POD_FALL = 0.12, POD_DRAFT = 1.6, POD_HEIGHT = 2.8;
 
+    public static final double[] PROP_STEP_FRAC = { -0.6, -0.4, -0.2, 0.0, 0.25, 0.5, 0.8, 1.0 };
+    public static final int PROP_STEP_STOP = 3, PROP_BEAT = 20, PROP_INPUT_TTL = 60, PROP_REPLY_DELAY = 16;
+    public static final double PROP_RUDDER_MAX = 35.0, PROP_PLANES_MAX = 25.0, PROP_SURFACE_RATE = 20.0, PROP_RUDDER_WASH = 0.35, PROP_RUDDER_SPEED = 2.0,
+            PROP_PLANES_WASH = 0.30, PROP_PLANES_SPEED = 1.5;
+
+    public static final double SCREW_THRUST = 150.0, SCREW_PITCH_MAX = 32.0, SCREW_PITCH_MIN = -24.0, SCREW_PITCH_RATE = 15.0,
+            SCREW_DB_IDLE = 70.0, SCREW_DB_LOAD = 30.0, SCREW_DB_CAV = 15.0, SCREW_SU_PER_FE = 16.0;
+    public static final int SCREW_FE = 20, SCREW_FE_LOAD = 230, SCREW_SPOOL_UP = 60, SCREW_SPOOL_DOWN = 80, SCREW_DECLUTCH = 200;
+
+    public static final double AIR_PRESSURE_K = 0.004, AIR_PRESSURE_MAX = 1.2, AIR_TOP_FADE = 40.0;
+
+    public static final int AIR_CEILING_DEFAULT = 1100;
+    public static final double AIR_K_REF = 0.0015, AIR_MAX_P = 1.5, AIR_CEIL_FADE = 60.0, JET_AIR_EXP = 1.25;
+
+    public static final double AIR_SEA_BRIDGE = 50.0;
+
+    public static final double CIWS_JET_RANGE = 600.0, AIRGUN_SIZE_MIN = 0.4, AIRGUN_SIZE_MAX = 1.5, AIRGUN_SPEED_REF = 30.0, AIRGUN_SPEED_MIN = 0.25,
+            AIRGUN_CHEW_PAST = 12.0;
+    public static final int CIWS_JET_ROUNDS = 20, CIWS_JET_BURST_TICKS = 4, CIWS_JET_MAX_BLOCKS = 4;
+
+    public static final double FLAK_JET_REACH = 20.0;
+    public static final int FLAK_JET_FRAGS = 12, FLAK_JET_MAX_BLOCKS = 3;
+
+    public static final double FC_REACH = 64.0, FC_GRAVITY = 9.81, FC_LIFT_K = 3.5, FC_CRUISE_AOA = 10.0, FC_CRUISE_SHARE = 0.8, FC_TW_MIN = 0.25, FC_TW_GOOD = 0.5,
+            FC_FUEL_WARN_S = 120.0;
+    public static final int FC_REFRESH_TICKS = 20;
+
+    public static final int REC_MAX_BLOCKS = 32_768, REC_REFRESH_TICKS = 40, REC_RELINK_SAMPLE = 400, REC_SHOW_MAX = 2_000, REC_SHOW_TICKS = 600;
+    public static final double REC_RELINK_MATCH = 0.6;
+
+    public static final int CRAFT_SCAN_MAX = 2_000_000, REC_ADDED_CACHE = 100, SCREEN_ASK_TICKS = 4;
+
+    public static final double SCANNER_RANGE = 24.0, SCANNER_PARKED = 0.2, SCANNER_DOOR_OPEN = 100.0, SCANNER_ARM_DOWN = -90.0, SCANNER_YAW_DEG_PER_TICK = 6.0,
+            SCANNER_FAN_LEN = 6.0, SCANNER_FAN_DEG = 50.0;
+    public static final int SCANNER_FE = 40, SCANNER_CYCLE = 120, SCANNER_DOORS = 10, SCANNER_ARM = 30, SCANNER_RESULT_AT = 90, SCANNER_RESCAN_TICKS = 1200;
+
+    public static final int GANTRY_FE = 800, GANTRY_LEN_MIN = 3, GANTRY_LEN_MAX = 64, GANTRY_SPAN_MIN = 5, GANTRY_SPAN_MAX = 50, GANTRY_RAIL_UP = 17,
+            GANTRY_REFRESH = 100, GANTRY_WELD_TICKS = 24, GANTRY_ENGINE_TICKS = 60, GANTRY_RELOAD_TICKS = 30, GANTRY_TOTE = 8, GANTRY_FESTOONS = 6;
+    public static final double GANTRY_PARKED = 0.2, GANTRY_BRIDGE_SPEED = 0.12, GANTRY_TROLLEY_SPEED = 0.15, GANTRY_DOOR_OPEN = 100.0, GANTRY_HATCH_OPEN = 100.0;
+    public static final float GANTRY_MAST_SPEED = 0.15F, GANTRY_ARM_SPEED = 4.0F, GANTRY_MAST_MAX = 180.0F;
+
+    public static final double GANTRY_HANDOVER_OUT = 0.6;
+
+    public static final int WELD_FX_HOLD = 3, WELD_FX_AFTERGLOW = 20, WELD_FX_SPARKS = 3;
+    public static final double WELD_FX_RANGE = 96.0;
+
+    public static final int GPOD_ROUNDS = 2_000, GPOD_BOX = 100,
+            GPOD_FE = 40, GPOD_SPIN_UP = 8, GPOD_ROUNDS_PER_BURST = 6, GPOD_BURST_TICKS = 2, GPOD_MAX_BLOCKS = 3,
+            GPOD_SOUND_TICKS = 8, GPOD_HATCH_TICKS = 30, GPOD_HOLD_MAX = 10;
+    public static final double GPOD_RANGE = 600.0, GPOD_CONE = 1.5, GPOD_BARREL_RATE = 1.6;
+
+    public static final int RPOD_TUBES = 7, AIR_ROCKET_CRAFT = 4, RPOD_RIPPLE_TICKS = 3, RPOD_FE = 200, RPOD_OPEN_TICKS = 8, RPOD_CLOSE_TICKS = 60,
+            RPOD_LOAD_TICKS = 6, RPOD_BOOST = 6, RPOD_BURN = 24, RPOD_LIFE = 180, RPOD_MAX_PER_OWNER = 48, RPOD_MAX_PER_DIM = 160, RPOD_HOLD_TICKS = 6;
+    public static final double RPOD_KICK = 1.5, RPOD_SPEED = 7.0, RPOD_DRAG = 0.015, RPOD_G_BURN = 0.012, RPOD_SPREAD = 0.8, RPOD_ARM = 15.0,
+            RPOD_RANGE_MIN = 40.0, RPOD_RANGE_MAX = 700.0;
+
+    public static final int RPOD_LAUNCH_SMOKE = 1;
+
+    public static final int RPOD_CHUNK_LOADS = 6;
+    public static final double RPOD_AIR_CLEAR = 24.0;
+    public static final double RPOD_LAUNCH_SMOKE_SIZE = 0.3, RPOD_TRAIL_SIZE = 0.45;
+    public static final double AIRCRAFT_MAX_SPEED = clampFlag("wmd.aircraftMaxSpeed", 90.0, 20.0, 400.0), AIRCRAFT_CAP_FADE = 10.0;
+
+    static double clampFlag(String key, double def, double lo, double hi) {
+        try {
+            String s = System.getProperty(key);
+            double v = s == null ? def : Double.parseDouble(s.trim());
+            return Double.isFinite(v) ? Math.max(lo, Math.min(hi, v)) : def;
+        } catch (RuntimeException e) {
+            return def;
+        }
+    }
+    public static final double EDF_THRUST = 1_200.0, EDF_AIRFLOW = 40.0, EDF_VANE_MAX = 25.0, EDF_VANE_ROLL = 18.0, EDF_VANE_RATE = 100.0, EDF_VANE_SIDE = 0.3;
+    public static final int EDF_FE = 15, EDF_FE_LOAD = 185, EDF_SPOOL_UP = 30, EDF_SPOOL_DOWN = 50, EDF_COAST = 80;
+    public static final double TF_THRUST = 3_600.0, TF_AIRFLOW = 90.0, TF_IDLE_N1 = 0.2, TF_FUEL_IDLE = 0.08, TF_FUEL_FULL = 0.42, TF_NOZZLE_MAX = 10.0, TF_NOZZLE_RATE = 33.0;
+    public static final int TF_STARTER_FE = 400, TF_START_TICKS = 40, TF_SPOOL_UP = 60, TF_SPOOL_DOWN = 100, TF_SHUTDOWN = 200, TF_TANK = 4000;
+
+    public static final double JET1_THRUST = 2_400.0, JET1_AB = 4_800.0, JET2_THRUST = 4_800.0, JET2_AB = 9_600.0, JETS_THRUST = 4_000.0;
+    public static final double JET_FUEL_PER_KT = 0.42 / 3.6, JET_FUEL_IDLE_SHARE = 0.2, JET_AB_FUEL = 3.0, JET_AIRFLOW = 95.0, JET_FLOW_EXP = 3.0, JET_DIAMOND_START = 0.35, JET_DIAMOND_GAP = 0.5, JET_DIAMOND_R = 0.2, JET_VEC_MAX = 15.0,
+            JET_VFLAP_MAX = 8.0, JET_NOZZLE_RATE = 40.0, JETS_HEAT = 0.5;
+    public static final int JET_STARTER_FE = 300, JET_START_TICKS = 40, JET_SPOOL_UP = 50, JET_SPOOL_DOWN = 90;
+
+    public static final int ENGINE_HP = 100;
+    public static final double ENGINE_SMOKE = 0.6, ENGINE_FIRE = 0.3, ENGINE_SMOKE_THRUST = 0.85, ENGINE_FIRE_THRUST = 0.5, ENGINE_REPAIR_SPEED = 1.0,
+            ENGINE_BLAST_DMG = 15.0, ENGINE_BLAST_PAD = 2.0, ENGINE_RAY_DMG = 6.0, ENGINE_RAY_REACH = 1.0, CONTRAIL_Y = 180.0, CONTRAIL_SPEED = 30.0,
+            CONTRAIL_AB_SIZE = 1.3, CONTRAIL_BACK = 7.0, ENGINE_SMOKE_SIZE = 0.25, ENGINE_FIRE_SMOKE_SIZE = 0.4;
+
+    public static final double BELLY_MAX = 20.0, BELLY_FADE = 5.0, BELLY_GAP = 1.2;
+
+    public static final double CRASH_TRIGGER = 8.0, CRASH_MIN = 15.0, CRASH_R_MIN = 1.0, CRASH_R_PER = 0.08, CRASH_R_MAX = 4.5, CRASH_ENGINE_DMG = 2.0,
+            CRASH_HURT_PER = 0.5, CRASH_HURT_MIN = 0.0, GEAR_SINK_MAX = 12.0;
+    public static final int CRASH_COOLDOWN = 10, CRASH_MAX_BLOCKS = 80, CRASH_SCAN_MAX = 200_000;
+
+    public static final double CRASH_TOUCH = 1.5;
+    public static final int BELLY_CHECK = 10;
+    public static final int CONTRAIL_EVERY = 2;
+
+    public static final double LIFT_THRUST = 6_000.0, LIFT_ENGINE_SHARE = 0.7, LIFT_LEVEL_K = 8.0, LIFT_LEVEL_D = 4.0, LIFT_LEVEL_MAX = 10.0,
+            LIFT_LOUVRE_TILT = 20.0, LIFT_LOUVRE_RATE = 60.0, LIFT_LOUVRE_SIDE = 1.0, LIFT_LOUVRE_OPEN = 80.0;
+    public static final int LIFT_SPOOL_UP = 40, LIFT_SPOOL_DOWN = 60;
+    public static final double CHUTE_MIN_SPEED = 6.0, CHUTE_DRAG_K = 0.012, CHUTE_MAX_DECEL = 14.0, CHUTE_RELEASE_SPEED = 2.0, CHUTE_SCALE = 1.4,
+            CHUTE_TRAIL = 7.0, CHUTE_LID_OPEN = -110.0;
+    public static final int CHUTE_REQUEST_TICKS = 40, CHUTE_MAX_TICKS = 400, CHUTE_OPEN_TICKS = 12;
+
+    public static final double CHUTE_RIP_SPEED = 50.0;
+
+    public static final double[] HELI_LIFT = { 4_000.0, 7_000.0, 10_000.0 };
+
+    public static final double HELI_LEVEL_K = 8.0, HELI_LEVEL_D = 4.0, HELI_LEVEL_MAX = 10.0;
+
+    public static final double HELI_LEVEL_I = 0.02, HELI_LEVEL_IMAX = 5.0, HELI_UPSET_DEG = 60.0;
+
+    public static final double LIFT_LEVEL_I = 0.02, LIFT_LEVEL_IMAX = 5.0;
+
+    public static final double HELI_TILT_FWD = 35.0;
+
+    public static final double HELI_YAW_DEAD = 1.5;
+
+    public static final double HELI_VY_I = 0.004, HELI_TRIM_DOWN = 0.5, HELI_TRIM_UP = 3.0;
+    public static final double HELI_COLL_DEAD = 0.05, HELI_CLIMB = 10.0, HELI_VY_K = 0.12, HELI_YAW_RATE = 40.0, HELI_YAW_K = 1.0 / 30.0, HELI_TAIL_PER_MASS = 12.0;
+    public static final double HELI_TILT = 20.0, HELI_HOLD = 400.0, HELI_HOLD_MAX = 0.5, HELI_TANDEM_YAW = 0.15, HELI_TAIL_THRUST = 4_000.0, HELI_PITCH_SHOW = 10.0;
+    public static final int HELI_SPOOL_UP = 80, HELI_SPOOL_DOWN = 120, TURBO_SPOOL_UP = 60, TURBO_SPOOL_DOWN = 100, TURBO_FE = 30;
+
+    public static final double TP_THRUST = 2_000.0, TP_AIRFLOW = 45.0, TP_CONTRA = 1.25, TP_CONTRA_FE = 1.5;
+    public static final int[] TP_BLADES = { 3, 4, 6 };
+    public static final double[] TP_BLADE_SHARE = { 0.9, 1.0, 1.1 };
+    public static final int TP_FE = 20, TP_SPOOL_UP = 60, TP_SPOOL_DOWN = 100;
+    public static final double TR_THRUST = 3_000.0, TR_AIRFLOW = 55.0, TR_HOVER_DEG = 45.0;
+    public static final int TR_FE = 25, TR_TILT_TICKS = 80, TR_SPOOL_UP = 80, TR_SPOOL_DOWN = 120;
+    public static final double GT_FUEL_IDLE = 0.1, GT_FUEL_FULL = 0.6;
+    public static final int GT_TANK = 8_000, GT_START_FE = 200, GT_START_TICKS = 100, GT_SPOOL_UP = 100, GT_SPOOL_DOWN = 160;
+    public static final double WJ_THRUST = 220.0, WJ_ASTERN_SHARE = 0.45, WJ_STEER_MAX = 25.0, WJ_STEER_RATE = 40.0;
+    public static final double AZ_THRUST = 260.0, AZ_STEER_MAX = 45.0, AZ_SLEW = 30.0;
+    public static final int AZ_FE = 30, AZ_FE_LOAD = 300;
+    public static final double BOW_THRUST = 60.0;
+
+    public static final int DOWNWASH_RANGE = 14, STROBE_PERIOD = 24, STROBE_ON = 2, NAV_SCAN = 100;
+    public static final double VAPOUR_ACCEL = 28.0, VAPOUR_SPEED = 35.0, TYRE_SMOKE_SPEED = 12.0;
+
+    public static final double TRAIL_G0 = 1.6, TRAIL_G_SPAN = 2.4, TRAIL_SPEED = 30.0, TRAIL_W0 = 0.05, TRAIL_W1 = 0.18, TRAIL_ALPHA = 0.55, TRAIL_RANGE = 320.0;
+    public static final int TRAIL_LIFE = 60, TRAIL_FORGET = 40;
+
+    public static final int NL_STROBE_PERIOD = 24, NL_BEACON_PERIOD = 20, NL_SCAN = 20, NL_VIEW = 256, NL_PRESS_GAP = 3;
+    public static final float NL_POOL_R = 2.5F, NL_POOL_B = 0.5F, NL_STROBE_R = 9.0F, NL_STROBE_B = 2.5F, NL_BEACON_R = 6.0F, NL_BEACON_B = 1.5F,
+            NL_SPOT_ANGLE = 17.0F, NL_SPOT_DIST = 24.0F, NL_SPOT_B = 1.6F, NL_GLINT_FROM = 24.0F, NL_GLINT_FADE = 16.0F, NL_GLINT_PX = 0.0022F,
+            NL_GLINT_FLASH = 2.5F, NL_REACH = 8.0F;
+    public static final float[] NL_BRIGHT = { 0.5F, 1.0F, 1.6F };
+
+    public static final double[] HOOK_LEN = { 16.0, 32.0 }, HOOK_LIFT = { 4_000.0, 20_000.0 };
+    public static final double HOOK_REEL = 4.0, HOOK_MIN_LOADED = 2.5, HOOK_BETA = 0.2, HOOK_G = 9.81, HOOK_MOB_MASS = 80.0, HOOK_CATCH = 1.3;
+
+    public static final double HOOK_BIAS_MAX = 2.0, HOOK_MAX_DV = 1.5;
+
+    public static final double HOOK_SPRING_W = 4.0, HOOK_DAMP = 0.9;
+
+    public static final double HOOK_ENTITY_MAX = 4.0, HOOK_PART = 8.0;
+    public static final int HOOK_SCAN = 5;
+
+    public static final double HOSE_LEN = 32.0, HOSE_REEL = 3.0, HOSE_SAG = 0.12, DROGUE_CATCH = 1.2, DROGUE_BREAK = 2.6;
+    public static final int REFUEL_RATE = 10, PROBE_TICKS = 30, DROGUE_RED_TICKS = 60;
+
+    public static final int FUEL_TANK_MB = 4_000, DROP_TANK_MB = 12_000, TANK_FEED_MB = 200, DROP_TANK_MAX_TICKS = 600;
+    public static final double DROP_TANK_G = 0.04, DROP_TANK_DRAG = 0.98;
+
+    public static final int SA_JET_MB = 16_000, SA_DIESEL_MB = 8_000, SA_FUEL_RATE = 25, SA_GROUND_FE = 2_000, SA_FE_MOVE = 400, SA_FE_PUMP = 100,
+            SA_BUFFER_FE = 400_000, SA_RECEIVE_FE = 4_000, SA_PARK_TICKS = 60, SA_SCAN_TICKS = 20, SA_BREAK_COOLDOWN = 100, SA_FULL_TICKS = 40;
+    public static final double SA_REACH = 15.0, SA_PARK_MOVE = 0.6, SA_BREAK_DIST = 1.5, SA_BREAK_STEP = 0.4;
+
+    public static final float SA_SLEW = 1.5F, SA_LUFF = 1.125F, SA_KNUCKLE = 2.25F, SA_TELE = 2.25F, SA_WRIST = 3.0F, SA_LID = 0.0225F;
+
+    public static final double SA_BLEND = 0.7;
+
+    public static final double SA_BLEND_PIT = 0.85;
+
+    public static final double SA_FOLLOW = 20.0;
+    public static final int BOW_FE = 10, BOW_FE_LOAD = 120, BOW_SPOOL = 30;
+    public static final double JATO_THRUST = 14_400.0, JATO_GIMBAL = 8.0, JATO_GIMBAL_RATE = 53.0, JATO_KICK = 0.1;
+    public static final int JATO_BURN = 200, JATO_RELEASE_DELAY = 8, JATO_PROP_LIFE = 600;
+    public static final float JATO_TUMBLE_DEG = 90.0F;
+
+    public static final double PJ_THRUST = 240.0, PJ_ASTERN_SHARE = 0.4, PJ_VANE_AHEAD = 14.0, PJ_VANE_ASTERN = -22.0, PJ_VANE_RATE = 18.0, PJ_FLAP_MAX = 25.0,
+            PJ_VEC_MAX = 7.0, PJ_VEC_RATE = 12.0, PJ_VEC_SIDE = 1.0, PJ_DB_IDLE = 50.0, PJ_DB_LOAD = 25.0;
+    public static final int PJ_FE = 30, PJ_FE_LOAD = 1_000, PJ_SPOOL_UP = 80, PJ_SPOOL_DOWN = 120, PJ_DECLUTCH = 200;
+
+    public static final int SD_FE_PER_TICK = 500, SD_FE_PER_MB = 5_000, SD_TANK_MB = 8_000, SD_BUFFER_FE = 200_000, SD_OUT_PER_TICK = 2_000, SD_CRANK_TICKS = 40,
+            SD_STALL_TICKS = 60;
+    public static final double SD_AUTO_LOW = 0.5, SD_AUTO_HIGH = 0.95, SD_DB = 118.0;
+
+    public static final int SN_FE = 15, SN_RAISE_TICKS = 90, SN_SLAM_TICKS = 12, SN_AUTO_DOWN_TICKS = 100, SN_DEEP_TICKS = 40, SN_AIR_TTL = 4;
+    public static final float SN_STAGE1_PX = 26.0F, SN_STAGE2_PX = 22.0F;
+    public static final double SN_HEAD_UP = 2.9, SN_AWASH = 0.5, SN_SLAM_CHANCE = 0.25, SN_WAKE_SPEED = 0.08;
+
+    public static final int HELM_FE = 10, HELM_HUD_TICKS = 4, HELM_BALLAST_TICKS = 10;
+    public static final double HELM_BALLAST_RATE = 0.05;
+
+    public static final int COCKPIT_FE = 8;
+
+    public static final int COCKPIT_HUD_TICKS = 2, COCKPIT_AXIS_TICKS = 6;
+
+    public static final double COCKPIT_THROTTLE_RATE = 0.5;
+    public static final int COCKPIT_AB_HOLD = 10;
+
+    public static final double COCKPIT_LOCK_CONE = 30.0, COCKPIT_LOCK_KEEP = 45.0;
+
+    public static final int COCKPIT_GUN_RETRIGGER = 4, COCKPIT_GUN_HOLD = 6;
+    public static final int COCKPIT_RADAR_TICKS = 10;
+
+    public static final double COCKPIT_LEAVE_SPEED = 2.0;
+
+    public static final float COCKPIT_PULLUP_AGL = 60.0F, COCKPIT_PULLUP_TTI = 4.0F;
+
+    public static final int EJECT_HOLD_TICKS = 20, EJECT_ROCKET_TICKS = 6, EJECT_CHUTE_OPEN_TICKS = 16, EJECT_PROP_TICKS = 600, EJECT_MAX_TICKS = 2400;
+    public static final double EJECT_KICK = 0.75, EJECT_ROCKET_ACC = 0.11, EJECT_GRAVITY = 0.06, EJECT_CHUTE_FALL = 0.12, EJECT_CANOPY_KICK = 0.9;
+
+    public static final double AP_BANK_MAX = 30.0, AP_ORBIT_BANK_MAX = 50.0, AP_PITCH_MAX = 15.0, AP_LOOKAHEAD = 4.0, AP_MIN_SPEED_K = 1.35,
+            AP_MIN_SPEED_FALLBACK = 35.0, AP_STALL_LETGO = 1.05, AP_WP_REACH = 32.0, AP_WP_REACH_S = 1.2, AP_ORBIT_R_MIN = 48.0, AP_ORBIT_R_MAX = 400.0,
+            AP_ORBIT_R_DEF = 120.0, AP_ROUTE_RANGE = 4000.0;
+
+    public static final double AP_ORBIT_R_MARGIN = 1.1;
+
+    public static final int AP_LAUNCH_GRACE = 100;
+    public static final double AP_LAUNCH_BANK = 15.0;
+    public static final float AP_FUEL_MIN = 0.08F;
+    public static final int AP_FLOOR = 24, AP_FLOOR_MIN = 12, AP_FLOOR_MAX = 64, AP_WP_MAX = 12, AP_EMPTY_TICKS = 200, AP_OWN_DROP_TICKS = 60,
+            AP_STALL_REFRESH = 200, AP_REASON_TICKS = 60, AP_PAN_TICKS = 8, AP_PAN_BACK = 6, AP_QUICK_HOLD = 12, AP_ASK_GAP = 4;
+    public static final double AP_K_HDG = 1.5, AP_K_ROLL = 0.05, AP_K_ROLL_D = 0.4, AP_K_YAW = 0.02, AP_YAW_MAX = 0.3, AP_K_HDG_D = 0.5, AP_K_SLIP = 0.015, AP_K_SLIP_D = 0.004, AP_TRACK_MIN_SPEED = 5.0, AP_K_ALT = 0.2, AP_K_PITCH = 0.06,
+            AP_K_PITCH_D = 0.3, AP_K_SPD = 0.03, AP_K_SPD_I = 0.002, AP_K_ORBIT = 60.0;
+
+    public static final int AL_RESCAN_TICKS = 100;
+    public static final double AP_K_PITCH_I = 0.0015, AP_PITCH_TRIM_MAX = 0.95;
+
+    public static final double AP_PITCH_I_BAND = 15.0, AP_PULLUP_AGL = 25.0, AP_PULLUP_SINK = 4.0, AP_E_BAND = 2.0, AP_K_THR_G = 0.12, AP_K_PITCH_UNWIND = 3.0, AP_STICK_LIMIT = 0.9, AP_STICK_EASE = 0.7, AP_STICK_SHORT = 1.0, AP_STICK_SHORT_MAX = 8.0, AP_STICK_STEADY = 0.05, AP_STICK_MAX_K = 2.2, AP_STICK_ROLL = 35.0, AP_STICK_SPD_ADD = 4.0, AP_STICK_SPD_DECAY = 0.01, AL_GS_UP = 1.0, AL_GS_THR_DEAD = 1.5, AL_K_GS_THR = 0.06, AL_GATE_SPD_FAST = 0.35, AL_GATE_SPD_SLOW = 0.10,
+            AL_APPROACH_MAX = 100.0, AL_TERRAIN_R = 600.0, AL_TERRAIN_MARGIN = 30.0, AL_FINAL_MAX = 1200.0, AL_GLIDE_CLEAR = 10.0, AL_GLIDE_CLEAR_D = 300.0, AL_XT_V = 48.0, AL_SCAN_KNOWN = 0.5, AL_STOP_MARGIN = 1.15, AL_STOP_PLAN_SLACK = 1.1, AP_BANK_LIFT_K = 1.1, AP_BANK_LIFT_MIN = 10.0, AP_LETGO_LIFT_K = 0.9, AL_APPROACH_HARD = 300.0, AL_PATH_STEP = 32.0, AL_SLOPE_MAX = 7.0, AP_VS_DOWN = 8.0, AP_VS_UP = 12.0, AP_PROTECT_ALT = 25.0, AP_PROTECT_SINK = 12.0, AP_BANK_SAFE = 15.0;
+
+    public static final int AP_LOG_EVERY = 40;
+    public static final double AL_PATTERN = 30.0, AL_SLOPE = Balance.BEACON_SLOPE, AL_DH = 15.0, AL_FLARE = 6.0, AL_RETARD = 2.0, AL_VREF = 1.4, AL_SINK_MAX = 1.5,
+            AL_BANK_MAX = 15.0, AL_K_XT = 1.0, AL_K_XTA = 0.8, AL_XT_MAX = 30.0, AL_PLAN_BANK = 30.0, AL_PLAN_V_PAD = 1.05, AL_PLAN_SHRINK = 1.3, AL_ENTRY_K_MAX = 2.4, AL_PLAN_R_MARGIN = 1.15, AL_TURN_BANK = 35.0, AL_DIRECT_SIDE = 25.0, AL_DIRECT_HDG = 20.0, AL_DIRECT_SPD = 1.3, AL_PLAN_V_MAX = 1.4, AL_FINAL_OVERSPEED = 1.4, AL_FINAL_CLEAR = 8.0, AL_FINAL_CLEAR_FROM = 60.0, AL_K_GS = 0.4, AL_GATE_SIDE = 3.0, AL_GATE_HDG = 10.0, AL_GATE_GS = 1.0, AL_GATE_SPD = 0.15, AL_GA_CLIMB = 8.0,
+            AL_CIRCUIT_OUT = 120.0, AL_CIRCUIT_SIDE = 140.0, AL_LEG_REACH = 20.0, AL_K_ROLLOUT_H = 0.05, AL_K_ROLLOUT_X = 0.15, AL_STOP_SPEED = 0.6,
+            AL_CLEAR_W = 4.0, AL_BEACON_ROLL = 60.0, AL_ROLL_START_SPEED = 2.0, AL_LIFTOFF_SPEED = 15.0, AL_STRIP_MIN = 40.0, AL_STRIP_MAX = 2_000.0, AL_STRIP_HERE = 200.0, AL_TD_IN = 10.0,
+            AL_BEACON_NEAR = 150.0, AL_EYE_DEF = 2.5, AL_BINGO_MARGIN = 0.15;
+    public static final int AL_GA_MAX = 2, AL_BRAKE_DELAY = 10, AL_BOLTER_TICKS = 40;
+
+    public static final int FDK_FE = 12, FDK_BELL_TICKS = 20;
+    public static final float FDK_SEAT_BACK = 5.0F;
+
+    public static final int RF_SEND_FE = 100_000, RF_OUT_FE = 80_000, RF_EFFICIENCY = 80, RF_BUFFER_FE = 1_000_000, RF_RANGE = 1024,
+            RF_LINK_HOLD = 20, RF_REG_TICKS = 20, RF_JAM_TICKS = 20;
+    public static final float RF_AIM_EASE = 0.12F;
+
+    public static final double CABIN_RANGE = 24.0, CABIN_DIST = 2.5;
     public static final float SND_AMBIENT = 0.12F, SND_SMALL = 0.35F, SND_MACHINE = 0.6F, SND_HEAVY = 0.9F, SND_GIANT = 1.5F, SND_SHOWPIECE = 2.5F;
     public static final float SND_CLICK = 0.6F, SND_MECH = 1.0F, SND_RELEASE = 2.0F, SND_ALARM = 4.0F;
+
+    public static final int AIR_SCAN_TICKS = 20, AIR_PICTURE_MAX = 256;
+    public static final double AIR_MIN_AGL = 6.0, AIR_MIN_SPEED = 8.0, AIR_SIZE_REF = 400.0, AIR_SIZE_MIN = 0.6, AIR_SIZE_MAX = 1.5, AIR_DETECT_BASE = 1_500.0,
+            AIR_NOSE_LOCK_RANGE = 2_000.0, AIR_NOSE_GIMBAL = 60.0;
+
+    public static final double[] AAM_SPEED = { 7.0, 9.0, 8.0, 6.0 }, AAM_RANGE = { 800.0, 2_000.0, 2_500.0, 2_500.0 }, AAM_LAT = { 1.6, 1.0, 0.5, 0.6 },
+            AAM_FUZE = { 4.0, 6.0, 0.0, 0.0 }, AAM_DECAY = { 0.015, 0.01, 0.01, 0.01 };
+    public static final int[] AAM_BURN = { 70, 170, 240, 350 };
+
+    public static final double TPOD_RANGE = 3_000.0, TPOD_GIMBAL_UP = 30.0;
+
+    public static final int TPOD_RAY_LOADS = 24;
+
+    public static final int TPOD_MEM_TICKS = 600, TPOD_SLEW_LOADS = 4;
+    public static final double TPOD_TRACK_DEG = 1.0;
+    public static final double TPOD_RAY_AIR = 48.0;
+
+    public static final double TPOD_TRACK_R = 1.5;
+
+    public static final double GUNNER_CAM_AHEAD_TURRET = 2.0, GUNNER_CAM_AHEAD_HEAVY = 5.0;
+
+    public static final double GUNNER_FIELD_MARGIN = 1.0;
+
+    public static final int JET_WEAPON_ENTRIES = 8;
+
+    public static final double TPOD_CAM_AZ = 40.0, TPOD_CAM_EL_MIN = 0.0, TPOD_CAM_EL_MAX = 85.0, TPOD_CAM_EL_DEF = 25.0;
+
+    public static final double TPOD_THERMAL_RANGE = 256.0;
+    public static final int TPOD_THERMAL_MAX = 48;
+    public static final int TPOD_TRANS_TICKS = 7;
+    public static final int TPOD_FE = 40, TPOD_LOS_TICKS = 10;
+
+    public static final double[] TPOD_ZOOMS = { 2.0, 4.0, 8.0, 16.0 };
+    public static final double TPOD_AIM_REACH = 24.0;
+
+    public static final int GEAR_CYCLE_TICKS = 60;
+
+    public static final float GEAR_LEG_TRAVEL = 6.2F, GEAR_OLEO_TRAVEL = 6.2F;
+    public static final double GEAR_STRUT = 0.535, GEAR_WHEEL_R = 0.19, GEAR_STROKE = 0.25, GEAR_REST_COMP = 0.12, GEAR_G = 9.81, GEAR_ZETA = 0.6, GEAR_MAX_G = 4.0,
+            GEAR_SIDE_GRIP = 6.0, GEAR_ROLL = 0.05, GEAR_BRAKE = 2.0, GEAR_BRAKE_MU = 0.6, GEAR_MU = 0.9, GEAR_PARK_SPEED = 3.0, GEAR_STEER_DEG = 35.0;
+
+    public static final float GEAR_STEER_SENSE = -1.0F;
+
+    public static final int JET_DIAMONDS = 4;
+
+    public static final double JET_PLUME_LEN_DRY = 1.0, JET_PLUME_LEN_AB = 4.0, JET_PLUME_R = 0.3, JET_PLUME_FLARE = 0.6, JET_CORE_SHARE = 0.35;
+    public static final int WING_ROW_MAX = 32;
+
+    public static final float WING_LIFT_SCALAR = 0.0F, WING_PLATE_SCALAR = 3.5F;
+    public static final double GEAR_STICK = 0.5;
+    public static final int GEAR_AIR_TICKS = 10;
+
+    public static final double TOW_LEN_MIN = 1.9, TOW_LEN_MAX = 4.5, TOW_SPEED_MAX = 3.0, TOW_GAIN = 2.0, TOW_TAU = 0.25, TOW_ACCEL = 2.0, TOW_STEER_DEG = 80.0,
+            TOW_SNAP = 2.5, TOW_WALK = 0.7, REVERSE_SPEED = 2.5, REVERSE_ACCEL = 1.5;
+    public static final int TOW_AIR_TICKS = 20;
+
+    public static final double TOW_HAND_Y = 0.9;
+    public static final float TOW_BAR_PX0 = 30.0F, TOW_STAGE_PX = 16.0F;
+
+    public static final float[] GEAR_AXLE_PX = { 8.6F, 8.9F, 10.7F, 10.7F }, GEAR_R_PX = { 3.0F, 4.5F, 6.5F, 6.5F }, GEAR_CANT_PIVOT_PX = { 1.8F, 0.5F, 0.0F, 0.0F }, GEAR_SIDE_PX = { 0.0F, 0.0F, -6.0F, 0.0F };
+    public static final float GEAR_M_STAGE = 3.5F, GEAR_CANT_DEG = 35.0F;
+
+    public static final float[] GEAR_AFT_PX = { 0.0F, 0.0F, 0.0F, 8.0F }, GEAR_LOAD_PER_TYRE = { 1.0F, 1.5F, 3.0F, 3.0F };
+    public static final double[] GEAR_SINK_BY_SIZE = { 12.0, 12.0, 14.0, 16.0 };
+    public static final float GEAR_BOGIE_STAGE = 6.0F, GEAR_BOGIE_TILT = 8.0F;
+
+    public static final int HOOK_TICKS = 20, WIRE_SPAN = 22,
+            WIRE_MAX_TICKS = 160, WIRE_RESET_TICKS = 60, WIRE_FE = 20_000;
+
+    public static final double HOOK_DROP = 1.16, HOOK_AFT = -0.15, WIRE_UP = 0.18, WIRE_CATCH_LOW = 1.2, WIRE_CATCH_HIGH = 0.35, WIRE_RUNOUT = 4.0, WIRE_STOP_SPEED = 0.6;
+    public static final int CAT_MIN = 4, CAT_MAX = 16, CAT_FE = 50_000, CAT_BUFFER = 20_000, CAT_RECEIVE = 500, CAT_SPOOL_TICKS = 40, CAT_MAX_TICKS = 60, CAT_RETURN_TICKS = 50;
+    public static final double CAT_END_SPEED = 45.0, CAT_HOOK_R = 0.8, BEACON_SLOPE = 3.5, BEACON_RANGE = 600.0, BEACON_CONE = 20.0;
+
+    public static final int LIFT_MIN = 5, LIFT_MAX = 48, LIFT_MAX_DROP = 16, LIFT_FE = 8, LIFT_BUFFER = 300_000, LIFT_RECEIVE = 2_000, LIFT_BASE_TICKS = 40,
+            LIFT_AREA_REF = 1_024, LIFT_SCAN_TICKS = 100, LIFT_POST_EVERY = 8;
+    public static final double LIFT_TICKS_PER_BLOCK = 10.0;
+
+    public static final double TT_HOLD_HZ = 1.5, TT_HOLD_MAX = 1.0;
+    public static final int TT_MIN = 7, TT_MAX = 31, TT_TICKS_90 = 80, TT_FE = 40, TT_BUFFER = 300_000, TT_RECEIVE = 2_000, TT_SCAN_TICKS = 100, TT_CHECK_TICKS = 5;
+    public static final double TT_R_REF = 5.0, TT_LAG_DEG = 10.0, TT_EDGE = 0.25, TT_CLEAR_R = 28.0, TT_MENU_REACH = 48.0;
+
+    public static final double AGM_CONE = 30.0;
+
+    public static final double AGM_GPS_MISS = 8.0, AGM_INS_MISS = 20.0;
+
+    public static final double ASHM_SPEED = 3.0, ASHM_RANGE = 3_000.0, ASHM_MIN_RANGE = 150.0, ASHM_DROP = 4.0, ASHM_DESCENT_DEG = 20.0, ASHM_TERMINAL = 16.0,
+            ASHM_RADAR_RANGE = 450.0, ASHM_SEEKER_ON = 600.0, ASHM_WINDOW = 150.0, ASHM_CHAFF_REACH = 250.0, ASHM_CHAFF_OFFSET = 30.0;
+    public static final int ASHM_MAX_PER_OWNER = 6, ASHM_BAY_YIELD = 1;
+
+    public static final float AAM_BURST_VOLUME = 6.0F;
+
+    public static final float AAM_FAR_VOLUME = 12.0F;
+    public static final int AAM_BOOST_TICKS = 10, AAM_MAX_TICKS = 600, AAM_MAX_PER_OWNER = 16, AAM_MAX_PER_DIM = 64;
+    public static final double AAM_LAUNCH_SPEED = 1.5, AAM_MIN_SPEED = 2.0, AAM_REACH_SPARE = 1.25, AAM_PN = 3.0, AAM_PURSUIT_DEG = 60.0, AAM_SEEKER_GIMBAL = 60.0,
+            AAM_CONTACT = 1.5, AAM_HEAT_LOCK_RANGE = 700.0, AAM_HEAT_CONE = 25.0, AAM_PITBULL = 250.0, AAM_FX_RANGE = 1_024.0, AAM_DEV_PICK_DEG = 10.0;
+
+    public static final double AAM_DECOY_REACH = 300.0;
+
+    public static final int AAM_LAUNCH_SMOKE = 4;
+    public static final double AAM_LAUNCH_SMOKE_SIZE = 0.35;
+
+    public static final double HEAT_SIG_COLD = 0.5, HEAT_SIG_TURBOFAN = 1.0, HEAT_SIG_HOT = 1.5;
+
+    public static final double HEAT_REAR_HALF_ANGLE = 60.0, HEAT_REAR_HOT_BONUS = 20.0, HEAT_REAR_MIN_SPEED = 0.05;
+
+    public static final double AIR_NOISE_AGL = 20.0, AIR_NOISE_DB_FAN = 100.0, AIR_NOISE_DB_TURBOFAN = 118.0, AIR_NOISE_DB_JATO = 125.0;
+    public static final int AAM_DECOY_TICKS = 60, AAM_DECOY_COOLDOWN = 20, AAM_DISPENSER_FLARES = 30, AAM_DISPENSER_CHAFF = 30;
+
+    public static final int FLARE_FX_PAIRS = 4, FLARE_FX_GAP = 3, FLARE_FX_BURN = 80, FLARE_FX_FADE = 20, FLARE_FX_TRAIL = 300, FLARE_FX_MAX = 64;
+    public static final double FLARE_FX_KEEP = 0.85, FLARE_FX_EJECT = 0.45, FLARE_FX_DRAG = 0.93, FLARE_FX_GRAV = 0.035, FLARE_FX_WIND = 0.012, FLARE_FX_SINK = 0.006,
+            FLARE_FX_CORE = 0.35, FLARE_FX_HALO = 3.0, FLARE_FX_NEAR = 60.0, FLARE_FX_RANGE = 1_024.0, FLARE_FX_TRAIL_W0 = 0.10, FLARE_FX_TRAIL_GROW = 0.006,
+            FLARE_FX_TRAIL_ALPHA = 0.8;
+
+    public static final double[] AAM_FRAG_RADIUS = { 6.0, 8.0, 5.0, 5.0 }, AAM_FRAG_POWER = { 3.0, 4.0, 4.5, 4.5 }, AAM_FRAG_DAMAGE = { 18.0, 22.0, 24.0, 24.0 };
+    public static final int AAM_FRAG_RAYS = 6, AAM_FRAG_BLOCKS = 2;
+    public static final double AAM_FRAG_CONE = 35.0, AAM_FRAG_DEPTH = 3.0;
+
+    public static final double AAM_REFINED_BONUS = 0.20;
+
+    public static final int RWR_SEARCH_TTL = 60, RWR_LOCK_TTL = 30, RWR_LAUNCH_TTL = 40, RWR_MAX_EVENTS = 12, RWR_MAX_AIRCRAFT = 256, RWR_SYNC_TICKS = 10;
+
+    public static final int ASR_FE = 1_000, ASR_SWEEP_TICKS = 40, ASR_MAX_CONTACTS = 16, ASR_SPIN_UP = 60, ASR_SPIN_DOWN = 80;
+    public static final double ASR_RANGE = 2_500.0, ASR_CLUTTER_RANGE = 300.0, ASR_CLUTTER_AGL = 20.0, ASR_MASK_STEP = 16.0;
+
+    public static final int CORE_BUFFER_FE = 2_500_000, CORE_RECEIVE_FE = 2_000, CORE_APU_FE = 1_500, CORE_APU_TICKS_PER_MB = 2, CORE_TANK_MB = 16_000,
+            CORE_DRIVE_FE = 400, CORE_SHIP_TICKS = 20;
+    public static final double CORE_APU_START = 0.9;
+    public static final float CORE_LOW = 0.10F;
+
+    public static final int STATION_LAUNCH_FE = 1_000, STATION_COOLDOWN = 10, STATION_SHIP_TICKS = 20, STATION_DROP_TICKS = 4, STATION_SLIDE_TICKS = 4;
+
+    public static final double STATION_PYLON_MAX_G = 4.0, STATION_PYLON_MIN_G = 0.0, STATION_DROP_G = 0.0275, RAIL_KICK = 1.0;
+    public static final int RAIL_TWIN = 2;
+    public static final float RAIL_TWIN_DX_PX = 3.5F;
+
+    public static final int NOSE_FE = 150, NOSE_SCAN_TICKS = 10;
+    public static final double NOSE_RANGE = 2_000.0, NOSE_SEARCH_CONE = 60.0;
+    public static final float NOSE_ARRAY_DEG = 30.0F;
+
+    public static final int DISP_PER_ITEM = 10, DISP_HATCH_TICKS = 10;
+
+    public static final float WING_CS_MAX = 20.0F, WING_CS_RUDDER_MAX = 30.0F, WING_CS_FLAP_MAX = 30.0F, WING_CS_RATE = 60.0F;
+    public static final int WING_CS_SHIP_TICKS = 40;
+    public static final double WING_CS_SIGN = 1.0;
+
+    public static final int WBAY_GROUP_MAX = 4, WBAY_RUN_SCAN = 16, WBAY_DOOR_TICKS = 6, WBAY_TRAP_AT = 5, WBAY_TRAP_TICKS = 4, WBAY_LAUNCH_DELAY = 9,
+            WBAY_TRAP_BACK_TICKS = 6, WBAY_DOOR_HOLD = 10, WBAY_DOOR_CLOSE_TICKS = 10;
+
+    public static final double AAM_ARM_CONE = 30.0, AAM_STORE_SHOT_OFF = 0.5;
+
+    public static final double SAM_REFIRE_CLIMB = 1.0;
+
+    public static final double WRECK_NEAR = 12.0;
+    public static final int SAM_CLAIM_TICKS = 40;
+    public static final double SAM_RANGE = 2_000.0, SAM_MIN_RANGE = 40.0, SAM_SLEW_DEG = 3.0, SAM_RAISE_DEG = 2.0, SAM_LOFT = 20.0, SAM_EL_MIN = 30.0, SAM_EL_MAX = 60.0,
+            SAM_AIM_TOL = 2.0, SAM_BOOST = 1.5, SAM_GUIDE_SPARE = 1.15;
+    public static final int SAM_FE = 120, SAM_BUFFER_FE = 120_000, SAM_RECEIVE_FE = 2_000, SAM_SHOT_FE = 20_000, SAM_SCAN_TICKS = 10, SAM_SALVO_GAP = 15,
+            SAM_RELOOK = 100, SAM_GUIDE_HOLD = 10, SAM_STOW_DELAY = 160, SAM_HATCH_TICKS = 10;
+    public static final float SAM_LAUNCH_VOLUME = 12.0F;
+
+    public static final double AIRJAM_LOCK_FACTOR = 0.5;
+    public static final int AIRJAM_HOLD = 10;
+
+    public static final int JAM_POD_FE = 60;
+    public static final float JAM_POD_FAN_GAIN = 0.8F, JAM_POD_FAN_MAX = 2.5F;
+
+    public static final int AD_SLOTS = 54, AD_MAX_LOADERS = 8, AD_FE = 10, AD_BUFFER = 4_000, AD_RECEIVE = 200, AD_DOOR_TICKS = 20, AD_DOOR_HOLD = 60;
+    public static final double AD_RANGE = 48.0, AD_RANGE_Y = 24.0;
+
+    public static final double AD_LIST_NO_LOADER = 16.0;
+    public static final float AD_FAN_RAD = 0.35F;
+
+    public static final int AD_ORDER_TICKS = 6_000, AD_ORDER_IDLE = 200, AD_SCAN_TICKS = 40;
+
+    public static final int LO_PRESETS = 8, LO_GROUP_MAX = 16, LO_REFRESH_TICKS = 20, LO_VIEW_MAX = 128;
+    public static final double LO_REACH = 12.0;
+
+    public static final int FG_RIPPLE_GAP = 6, FG_HOLD_TICKS = 10;
+
+    public static final int LOADER_FE = 120, HEAVY_LOADER_FE = 240, LOADER_BUFFER = 20_000, LOADER_RECEIVE = 1_000, LOADER_RACK = 4, LOADER_SUPPLY_BASE = 20;
+    public static final double LOADER_REACH = 9.4, HEAVY_LOADER_REACH = 13.0, LOADER_SUPPLY_SPEED = 0.2;
+
+    public static final double LOADER_E_MIN = -15.0;
+
+    public static final int LOADER_POLL = 20;
+    public static final double LOADER_PARKED = 0.5;
+
+    public static final int LD_HATCH = 12, LD_TABLE = 16, LD_HOIST = 16, LD_SWING = 20, LD_GRIP = 6, LD_LIFT = 12, LD_CARRY = 24, LD_PUSH = 10, LD_RELEASE = 8, LD_RETURN = 20;
+    public static final float LOADER_HEAVY_SLOW = 1.5F;
+
+    public static final int LOADER_TRACK_MAX = 48;
+    public static final double LOADER_TRACK_SPEED = 0.15;
+
+    public static final int GTUR_ROUNDS = 2_000, GTUR_BOX = 50,
+            GTUR_SHOT_TICKS = 2, GTUR_SOUND_TICKS = 4;
+
+    public static final double GTUR_RATE = 30.0;
+    public static final double GTUR_RANGE = 500.0, GTUR_SPREAD = 0.5, GTUR_AIR_CONE = 1.5, GTUR_CHEW_CHANCE = 0.25;
+
+    public static final double GUN_GROUND_CHEW = 0.25;
+    public static final float GTUR_DMG = 8.0F;
+
+    public static final double GTUR_YAW_RATE = 6.0, GTUR_ELEV_RATE = 4.5, GTUR_ALIGN_DEG = 3.0, GTUR_ELEV_MAX = 90.0;
+
+    public static final double GTUR_ELEV_MIN = 30.0;
+
+    public static final int MESH_MIP_LEVELS = 3;
+
+    public static final int GHOST_MODEL_ALPHA = 90;
+
+    public static final double GHOST_MODEL_CLEAR = 1.5;
+
+    public static final int GTUR_DEPLOY_TICKS = 24, GTUR_CLAIM_TICKS = 30, GTUR_STOW_DELAY = 200, GTUR_FE_MOVE = 20, GTUR_FE_FIRE = 60;
+
+    public static final int GTUR_ARC_STEP = 4, GTUR_ARC_COLS = 10, GTUR_ARC_REFRESH = 100;
+    public static final double GTUR_ARC_REACH = 48.0;
+
+    public static final int GTUR_SYNC_TICKS = 3;
+    public static final double GTUR_SYNC_RANGE = 160.0;
+
+    public static final int GUNNER_INPUT_GAP = 1, GUNNER_HUD_TICKS = 5, GUNNER_HELMET_RAY = 4;
+    public static final double GUNNER_AIM_SLACK = 16.0;
+    public static final double[] GUNNER_ZOOMS = { 1.0, 2.0, 4.0, 8.0 };
+
+    public static final int HGUN_RACK = 12, HGUN_RELOAD_TICKS = 40, HGUN_HAND_TICKS = 20, HGUN_DOOR_TICKS = 20, HGUN_RUN_TICKS = 16, HGUN_TRAY_TICKS = 12,
+            HGUN_RAM_TICKS = 8, HGUN_FE_LAY = 20, HGUN_FE_SHOT = 400;
+    public static final double HGUN_SPEED = 25.0, HGUN_RANGE_MIN = 16.0, HGUN_RANGE = 600.0, HGUN_YAW_MAX = 60.0, HGUN_ELEV_UP = 10.0, HGUN_ELEV_DOWN = 50.0,
+            HGUN_YAW_RATE = 3.0, HGUN_ELEV_RATE = 3.0, HGUN_ALIGN_DEG = 1.5;
+
+    public static final int RAMP_W_MIN = 2, RAMP_W_MAX = 7, RAMP_H_MIN = 2, RAMP_H_MAX = 6, RAMP_ROWS_MIN = 2, RAMP_ROWS_MAX = 4, RAMP_ROWS_DEF = 3;
+    public static final int RAMP_FE_PER_TILE = 100, RAMP_BUFFER = 40_000, RAMP_RECEIVE = 2_000;
+
+    public static final int RAMP_CORE_CHARGE = 20_000, RAMP_CORE_CHARGE_TICKS = 20;
+
+    public static final double RAMP_WALK_SNAP = 0.8;
+
+    public static final double LIFT_WALK_SNAP = 1.2;
+
+    public static final double STATIC_CABLE_MAX = 12.0, STATIC_CABLE_DROP = 0.62, STATIC_DOOR_R = 4.0, STATIC_SEARCH_R = 24.0;
+    public static final int STATIC_TAUT_TICKS = 24, STATIC_SPENT_MAX = 8;
+    public static final int RAMP_TOE_TICKS = 10, RAMP_LOCK_TICKS = 14, RAMP_SCAN_TICKS = 40, RAMP_LANE = 24, RAMP_ACT_GAP = 4;
+    public static final double RAMP_LEAF_RATE = 1.5, RAMP_DOOR_RATE = 3.75, RAMP_GROUND_MAX = 40.0, RAMP_CARRY_SPEED = 2.0;
+
+    public static final int[] PALLET_SLOTS = { 27, 108 };
+    public static final double[] PALLET_ROLL_ACC = { 0.00625, 0.0125 }, PALLET_ROLL_MAX = { 0.15, 0.25 };
+    public static final int PALLET_GAP_TICKS = 10, PALLET_CHUTE_DELAY = 10, PALLET_CHUTE_OPEN_TICKS = 16, PALLET_SMOKE_TICKS = 1200, PALLET_FLAT_TICKS = 600,
+            PALLET_MAX_ROLL_TICKS = 400, STATIC_LINE_TICKS = 60, RAMP_STICK_HOLD = 20;
+    public static final double PALLET_FALL = 0.3, PALLET_GRAVITY = 0.06, PALLET_DRAG = 0.05, PALLET_MIN_CHUTE = 6.0, STATIC_LINE_MIN = 20.0;
+
+    public static final int RAMP_ROLLER_TICKS = 160;
+
+    public static final int PALLET_FAR_TICKS = 5;
+    public static final double PALLET_FAR_NEAR = 200.0, PALLET_FAR_RANGE = 2_000.0;
+    public static final double[] PALLET_MASS = { 200.0, 800.0 };
+    public static final double PALLET_MASS_STACK = 10.0;
+
+    public static final int HDOOR_W_MIN = 3, HDOOR_W_MAX = 45, HDOOR_STEP_MAX = 16, HDOOR_DROP_MAX = 16, HDOOR_TICKS_PER_ROW = 10;
+    public static final int HDOOR_FE_PER_CELL = 100, HDOOR_BUFFER = 20_000, HDOOR_RECEIVE = 2_000;
+    public static final int HDOOR_SCAN_TICKS = 20, HDOOR_BLOCKED_RECHECK = 5, HDOOR_CLICK_GAP = 6, HDOOR_HEAVY_FROM = 10;
+
+    public static final double FDC_RANGE = 64.0, FDC_RANGE_Y = 32.0, FDC_REACH = 8.0;
+    public static final int FDC_FE = 20, FDC_SCAN_TICKS = 40, FDC_FOLD_TICKS = 200, FDC_MAX_CRAFT = 12, FDC_MAX_LIGHTS = 96, FDC_MAX_EACH = 16, FDC_PRESS_GAP = 10,
+            FDC_CONFIRM_TICKS = 40, FDC_LID_TICKS = 26;
+
+    public static final int NGUN_RACK = 12, NGUN_RELOAD_TICKS = 60, NGUN_HOIST_TICKS = 24, NGUN_FE_LAY = 20, NGUN_FE_SHOT = 400, NGUN_ORDER_TICKS = 200,
+            NGUN_CRANE_STACK = 12;
+    public static final double NGUN_EYE_SPEED = 25.0, NGUN_EYE_MIN = 16.0, NGUN_EYE_RANGE = 600.0, NGUN_CON_RANGE = 1_500.0, NGUN_TRAIN_MAX = 150.0,
+            NGUN_ELEV_UP = 70.0, NGUN_ELEV_DOWN = 5.0, NGUN_TRAIN_RATE = 3.0, NGUN_ELEV_RATE = 2.5, NGUN_ALIGN_DEG = 1.0;
+
+    public static final int XGUN_RACK = 18, XGUN_CHARGES = 12, XGUN_RELOAD_TICKS = 160, XGUN_HEAVY_RELOAD_TICKS = 1_800, XGUN_RIPPLE_TICKS = 3, XGUN_HOIST_TICKS = 40,
+            XGUN_FE_LAY = 60, XGUN_FE_SALVO = 1_200, XGUN_HEAVY_CHARGES_MAX = 4, XGUN_CRANE_STACK = 16;
+    public static final double XGUN_EYE_SPEED = 20.0, XGUN_EYE_MIN = 24.0, XGUN_EYE_RANGE = 800.0, XGUN_CON_RANGE = 2_500.0, XGUN_HEAVY_MIN = 400.0,
+            XGUN_TRAIN_MAX = 150.0, XGUN_ELEV_UP = 45.0, XGUN_ELEV_DOWN = 2.0, XGUN_TRAIN_RATE = 1.0, XGUN_ELEV_RATE = 0.8, XGUN_ALIGN_DEG = 0.8;
+    public static final double GUNNER_EYE_MAX = 800.0;
+
+    public static final int ANCHOR_WATER_MAX = 64, ANCHOR_AIR_MAX = 16, ANCHOR_PIPES_MAX = 16, ANCHOR_CHAIN_MAX = 96, ANCHOR_FE_WEIGH = 40, ANCHOR_DIG_TICKS = 20,
+            ANCHOR_REJOIN_TICKS = 20, ANCHOR_BEAT = 10, ANCHOR_TTL = 40, ANCHOR_PRESS_GAP = 10, ANCHOR_BUFFER = 8_000;
+    public static final double ANCHOR_DROP_SPEED = 4.0, ANCHOR_WEIGH_SPEED = 2.0, ANCHOR_DIG_SPEED = 1.5, ANCHOR_SWING_R = 2.0, ANCHOR_SLIP = 2.0,
+            ANCHOR_SETTLE_S = 6.0, ANCHOR_ZETA = 1.0, ANCHOR_HOLD_G = 0.6, ANCHOR_DRAG_G = 0.15, ANCHOR_YAW_DAMP = 1.0, ANCHOR_DRAG_THROTTLE = 0.5,
+            ANCHOR_PARKED = 0.5, ANCHOR_REACH = 8.0;
+
+    public static final int SP_WP_MAX = 8, SP_STATION_R_DEF = 8, SP_STATION_R_MIN = 4, SP_STATION_R_MAX = 32, SP_MARGIN_SUB = 6, SP_MARGIN_SHIP = 3,
+            SP_MARGIN_MIN = 3, SP_MARGIN_MAX = 16, SP_GROUND_TICKS = 100, SP_GROUND_GRACE = 100, SP_EMPTY_TICKS = 200, SP_TRACK_TICKS = 100, SP_TRACK_MAX = 256,
+            SP_REASON_TICKS = 80, SP_DEPTH_MAX = 400, SP_HUD_TICKS = 10, SP_STATE_GAP = 10, SP_PRESS_GAP = 4, SP_TILE_GAP = 8;
+    public static final double SP_WP_REACH = 24.0, SP_LOOKAHEAD_S = 8.0, SP_LOOKAHEAD_MIN = 16.0, SP_CRUSH_CAP = 0.90, SP_CRUSH_WARN = 0.80,
+            SP_RUDDER_DEG = 25.0, SP_RUDDER_DAMP = 0.08, SP_DEPTH_FULL = 6.0, SP_DEPTH_DAMP = 0.15, SP_GROUND_SPEED = 0.3, SP_ROUTE_RANGE = 2_048.0;
+
+    public static final int CHART_FE = 20, CHART_GLASS_W = 42, CHART_GLASS_D = 18, CHART_SYNC_TICKS = 20, CHART_PAGE_W = 840, CHART_PAGE_D = 360;
+    public static final double CHART_REACH = 8.0, CHART_PAGE_EDGE = 0.40, CHART_RANGE = 2_048.0;
 }

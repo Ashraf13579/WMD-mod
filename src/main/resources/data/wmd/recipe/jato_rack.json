@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "HRH"
+  ],
+  "key": {
+    "P": { "tag": "c:plates/steel" },
+    "H": { "item": "minecraft:tripwire_hook" },
+    "R": { "item": "minecraft:redstone" }
+  },
+  "result": { "id": "wmd:jato_rack", "count": 1 }
+}

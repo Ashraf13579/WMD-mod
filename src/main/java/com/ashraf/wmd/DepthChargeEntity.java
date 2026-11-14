@@ -53,9 +53,12 @@ public class DepthChargeEntity extends Entity {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {}
 
+    private long[] held;
+
     @Override
     public void tick() {
         super.tick();
+        if (level() instanceof ServerLevel sr && !isRemoved()) held = RunnerChunks.follow(sr, getUUID(), position(), getDeltaMovement(), held);
         Level l = level();
         Vec3 pos = position();
         boolean wet = l.getFluidState(BlockPos.containing(pos)).is(FluidTags.WATER);
@@ -114,4 +117,10 @@ public class DepthChargeEntity extends Entity {
     @Override public boolean shouldRenderAtSqrDistance(double d) { return d < 128.0 * 128.0; }
     @Override protected void readAdditionalSaveData(CompoundTag tag) {}
     @Override protected void addAdditionalSaveData(CompoundTag tag) {}
+
+    @Override
+    public void remove(RemovalReason reason) {
+        if (level() instanceof ServerLevel sr) held = RunnerChunks.release(sr, getUUID(), held);
+        super.remove(reason);
+    }
 }

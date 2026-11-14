@@ -26,7 +26,7 @@ public final class WmdHelp {
 
     private static final Map<String, String> BLOCK_PAGE = Map.ofEntries(
 
-            Map.entry("pumpjack", "oil"), Map.entry("feed_pump", "oil"), Map.entry("desalter", "oil"), Map.entry("crude_tank", "oil"), Map.entry("storage_tank", "oil"),
+            Map.entry("pumpjack", "oil"), Map.entry("feed_pump", "oil"), Map.entry("desalter", "oil"), Map.entry("storage_tank", "oil"),
             Map.entry("oil_detector", "oil"),
             Map.entry("furnace", "refinery"), Map.entry("atmospheric_column", "refinery"), Map.entry("vacuum_column", "refinery"), Map.entry("coker", "refinery"),
             Map.entry("reformer", "oil_upgrades"), Map.entry("fcc", "oil_upgrades"), Map.entry("hydrotreater", "oil_upgrades"), Map.entry("flare_stack", "oil_upgrades"),
@@ -68,6 +68,20 @@ public final class WmdHelp {
             Map.entry("anechoic_tile", "anechoic"), Map.entry("deep_sonar_upgrade", "deep_sonar"),
             Map.entry("towed_array_winch", "towed_array_winch"), Map.entry("listening_node", "listening_node"), Map.entry("coastal_battery", "coastal_battery"), Map.entry("dock_crane", "dock_crane"),
             Map.entry("torpedo_tube", "torpedo_tube"), Map.entry("torpedo_line_shop", "torpedo_line"), Map.entry("torpedo_line_fitout", "torpedo_line"), Map.entry("torpedo_line_test", "torpedo_line"), Map.entry("torpedo_launcher_deck", "torpedo_launcher_deck"), Map.entry("torpedo_rack", "torpedo_rack"), Map.entry("fire_control_console", "fire_control_console"), Map.entry("depth_charge_rack", "depth_charge"), Map.entry("launch_cell", "launch_cell"),
+            Map.entry("screw_propeller", "screw_propeller"), Map.entry("engine_telegraph", "engine_telegraph"), Map.entry("helm_station", "helm_station"),
+            Map.entry("pump_jet", "pump_jet"), Map.entry("sub_diesel", "sub_diesel"), Map.entry("snorkel_mast", "snorkel_mast"),
+            Map.entry("ducted_fan", "ducted_fan"), Map.entry("turbofan", "turbofan"), Map.entry("jato_rack", "jato_rack"), Map.entry("jato_booster", "jato_rack"),
+            Map.entry("single_jet", "jet_engines"), Map.entry("twin_jet", "jet_engines"), Map.entry("stealth_jet", "jet_engines"),
+            Map.entry("air_search_radar", "air_search_radar"), Map.entry("sam_site", "sam_site"), Map.entry("ammo_depot", "loadout"), Map.entry("ordnance_loader", "loadout"), Map.entry("heavy_loader", "loadout"), Map.entry("loader_track", "loadout"), Map.entry("jet_power_core", "jet_power_core"), Map.entry("pylon", "air_stations"), Map.entry("launch_rail", "air_stations"), Map.entry("countermeasure_dispenser", "countermeasure_dispenser"), Map.entry("wing_section", "wing"), Map.entry("control_surface", "wing"), Map.entry("jet_cockpit", "jet_cockpit"), Map.entry("jet_cockpit_tandem", "jet_cockpit"), Map.entry("flight_deck", "flight_deck"), Map.entry("nose_radar", "nose_radar"), Map.entry("weapons_bay", "weapons_bay"), Map.entry("jammer_pod", "jammer_pod"),
+            Map.entry("service_arm", "service_arm"), Map.entry("service_receptacle", "service_arm"),
+            Map.entry("deck_console", "deck_console"),
+            Map.entry("turntable", "turntable"),
+            Map.entry("rf_sender", "rf_power"), Map.entry("rf_receiver", "rf_power"),
+            Map.entry("anchor_windlass", "anchor_windlass"), Map.entry("hawse_pipe", "anchor_windlass"),
+            Map.entry("chart_table", "chart_table"),
+            Map.entry("cargo_ramp", "cargo_ramp"), Map.entry("cargo_pallet", "cargo_ramp"), Map.entry("cargo_pallet_heavy", "cargo_ramp"),
+            Map.entry("cargo_hook_light", "cargo_hook"),Map.entry("cargo_hook_heavy", "cargo_hook"), Map.entry("drogue_pod", "refuel"), Map.entry("refuel_probe", "refuel"), Map.entry("nav_light", "aircraft_light"),
+            Map.entry("turboprop", "turboprop"), Map.entry("tiltrotor", "turboprop"), Map.entry("ship_turbine", "ship_drives"), Map.entry("waterjet", "ship_drives"), Map.entry("azimuth_pod", "ship_drives"), Map.entry("bow_thruster", "ship_drives"),
             Map.entry("naval_reactor", "naval_reactor"), Map.entry("periscope", "periscope"), Map.entry("comms_buoy", "comms_buoy"), Map.entry("escape_pod", "escape_pod"), Map.entry("noisemaker_launcher", "noisemaker_launcher"),
             Map.entry("depth_charge_thrower", "kgun"), Map.entry("mine_influence", "mine_influence"), Map.entry("mine_bottom", "mine_bottom"), Map.entry("mine_captor", "mine_captor"));
 
@@ -95,7 +109,7 @@ public final class WmdHelp {
             if (s instanceof SonarScreen && SonarScreen.hullView()) page = "sub_hull";
         } else if (s instanceof LauncherScreen ls) page = pageAt(ls.getMenu().getPos());
         else if (s instanceof TerminalScreen ts) page = ts.getMenu().getTier() >= 4 ? "t4_rocket" : "launch";
-        else if (s instanceof BayScreen) page = "bay";
+        else if (s instanceof BayScreen bs) page = AirGate.AVAILABLE && bs.getMenu().mode() == BayModuleBlockEntity.MODE_AIR ? "bay_air" : "bay";
         else if (s instanceof LabScreen) page = "lab";
         else if (s instanceof DroneScreen) page = "drone_line";
         else if (s instanceof BombLineScreen) page = "bomb_line";
@@ -122,6 +136,16 @@ public final class WmdHelp {
         else if (s instanceof LaserTabletScreen) page = "laser";
         else if (s instanceof AreaViewScreen) page = "designator";
         else if (s instanceof SecurityMonitorScreen) page = "cctv";
+        else if (s instanceof FlightCheckScreen) page = "flight_check";
+        else if (s instanceof AirframeScreen) page = "airframe";
+        else if (s instanceof AutopilotScreen) page = "autopilot";
+        else if (s instanceof GantryScreen) page = "gantry";
+        else if (s instanceof DeckConsoleScreen) page = "deck_console";
+        else if (s instanceof AnchorScreen) page = "anchor_windlass";
+        else if (s instanceof NavLightScreen) page = "aircraft_light";
+        else if (s instanceof ChartScreen) page = "chart_table";
+        else if (s instanceof LoadoutScreen || s instanceof AmmoDepotScreen) page = "loadout";
+        else if (s instanceof StoresScreen) page = "loadout_screen";
         else if (s instanceof SeaMineScreen sm) page = sm.page();
         else return null;
         return page != null ? page : "contents";

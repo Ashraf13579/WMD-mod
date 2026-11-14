@@ -30,8 +30,8 @@ public final class SeaMinePayloads {
 
         public static void handle(Act p, IPayloadContext context) {
             context.enqueueWork(() -> {
-                if (!(context.player() instanceof ServerPlayer sp) || !(sp.level().getBlockEntity(p.pos()) instanceof SeaMineBlockEntity be) || be.isRemoved()
-                        || !Reach.within(sp, p.pos(), 8.0) || !Access.mayUse(be, sp)) return;
+                if (!(context.player() instanceof ServerPlayer sp) || !Reach.within(sp, p.pos(), 8.0)
+                        || !(sp.level().getBlockEntity(p.pos()) instanceof SeaMineBlockEntity be) || be.isRemoved() || !Access.mayUse(be, sp)) return;
                 be.act(sp, p.action(), p.value());
             });
         }

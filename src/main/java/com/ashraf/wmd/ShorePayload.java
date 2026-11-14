@@ -41,6 +41,15 @@ public record ShorePayload(BlockPos pos, int action, int[] data) implements Cust
             else if (menu.machine() instanceof DockCraneBlockEntity c && c.getBlockPos().equals(p.pos()) && !c.isRemoved() && Access.mayUse(c, context.player())
                     && p.action() == DockCraneBlockEntity.A_TOGGLE)
                 c.act(p.action(), p.data(), context.player());
+            else if (menu.machine() instanceof ServiceArmBlockEntity s && s.getBlockPos().equals(p.pos()) && !s.isRemoved() && Access.mayUse(s, context.player())
+                    && p.action() >= ServiceArmBlockEntity.A_MODE && p.action() <= ServiceArmBlockEntity.A_LAST)
+                s.act(p.action(), p.data(), context.player());
+            else if (menu.machine() instanceof CargoRampBlockEntity r && r.getBlockPos().equals(p.pos()) && !r.isRemoved() && Access.mayUse(r, context.player())
+                    && p.action() >= CargoRampBlockEntity.A_FIRST && p.action() <= CargoRampBlockEntity.A_LAST)
+                r.act(p.action(), p.data(), context.player());
+            else if (menu.machine() instanceof TurntableBlockEntity t && t.getBlockPos().equals(p.pos()) && !t.isRemoved() && Access.mayUse(t, context.player())
+                    && p.action() >= TurntableBlockEntity.A_FIRST && p.action() <= TurntableBlockEntity.A_LAST)
+                context.player().displayClientMessage(t.answer(t.order(p.action())), true);
         });
     }
 }

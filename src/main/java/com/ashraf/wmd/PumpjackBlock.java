@@ -6,7 +6,9 @@ import java.util.List;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -25,7 +27,36 @@ public class PumpjackBlock extends MachineBlock {
         for (int x = -1; x <= 1; x++) for (int z = 0; z <= 7; z++) FOOTPRINT.add(new BlockPos(x, 0, z));
     }
 
+    private static final List<BlockPos> FRONT_3X3 = new ArrayList<>();
+
+    static {
+        FRONT_3X3.add(BlockPos.ZERO);
+        for (int z = 0; z <= 2; z++) for (int x = -1; x <= 1; x++) if (x != 0 || z != 0) FRONT_3X3.add(new BlockPos(x, 0, z));
+    }
+
+    public static List<BlockPos> frontCells(BlockPos well, Direction facing, Direction mount) {
+        List<BlockPos> out = new ArrayList<>(9);
+        for (BlockPos l : FRONT_3X3) out.add(Machines.toWorld(well, facing, mount, l.getX(), l.getY(), l.getZ()));
+        return out;
+    }
+
+    public static List<BlockPos> fieldUnder(Level level, BlockPos well, BlockState state) {
+        return OilFields.clusterUnder(level, frontCells(well, state.getValue(FACING), Machines.mount(state)));
+    }
+
     public PumpjackBlock(Properties properties) { super(properties); }
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        BlockState st = super.getStateForPlacement(context);
+        if (st == null) return null;
+        if (fieldUnder(context.getLevel(), context.getClickedPos(), st).isEmpty()) {
+            if (!context.getLevel().isClientSide && context.getPlayer() != null)
+                context.getPlayer().displayClientMessage(Component.translatable("message.wmd.pumpjack.no_oil_place"), true);
+            return null;
+        }
+        return st;
+    }
 
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
@@ -47,7 +78,7 @@ public class PumpjackBlock extends MachineBlock {
     public void interact(Level level, BlockPos controller, Player player) {
         if (!player.isShiftKeyDown()) { MachineMenu.open(player, level.getBlockEntity(controller)); return; }
         if (!(level.getBlockEntity(controller) instanceof PumpjackBlockEntity be) || !(level instanceof ServerLevel sl)) return;
-        List<BlockPos> cluster = OilFields.clusterBelow(sl, controller);
+        List<BlockPos> cluster = fieldUnder(sl, controller, sl.getBlockState(controller));
         if (cluster.isEmpty()) {
             player.displayClientMessage(Component.translatable("message.wmd.pumpjack.no_oil"), true);
             return;

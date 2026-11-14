@@ -1,10 +1,16 @@
 {
   "variants": {
-    "lit=false": {
+    "lit=false,skinned=false": {
       "model": "wmd:block/hull_penetrator"
     },
-    "lit=true": {
+    "lit=true,skinned=false": {
       "model": "wmd:block/hull_penetrator_lit"
+    },
+    "lit=false,skinned=true": {
+      "model": "wmd:block/invisible"
+    },
+    "lit=true,skinned=true": {
+      "model": "wmd:block/invisible"
     }
   }
 }

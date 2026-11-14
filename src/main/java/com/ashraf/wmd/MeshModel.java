@@ -99,6 +99,7 @@ public final class MeshModel {
     }
 
     public boolean drawCached(String bone, PoseStack.Pose pose, int light, int overlay) {
+        if (ghostAlpha > 0) return false;
         if (!gpu || !inLevel) return false;
         Map<String, List<Part>> p = load();
         if (p == null) return false;
@@ -172,7 +173,18 @@ public final class MeshModel {
         }
     }
 
+    static int ghostAlpha, ghostRgb = 0xA0C8FF;
+    static final java.util.Set<RenderType> GHOST_TYPES = new java.util.HashSet<>();
+    private static final net.minecraft.resources.ResourceLocation GHOST_TEX = net.minecraft.resources.ResourceLocation.withDefaultNamespace("textures/block/white_concrete.png");
+
+    private RenderType type(int cur, boolean translucent) {
+
+        if (ghostAlpha > 0) { RenderType t = RenderType.entityTranslucent(GHOST_TEX); GHOST_TYPES.add(t); return t; }
+        return translucent ? RenderType.entityTranslucent(atlas(cur)) : RenderType.entityCutoutNoCull(atlas(cur));
+    }
+
     private void emit(VertexConsumer vc, PoseStack.Pose pose, Part part, int count, int cr, int cg, int cb, int ca, int overlay, int light) {
+        if (ghostAlpha > 0) { cr = cr * ((ghostRgb >> 16) & 255) / 255; cg = cg * ((ghostRgb >> 8) & 255) / 255; cb = cb * (ghostRgb & 255) / 255; ca = ghostAlpha; }
         long t0 = System.nanoTime();
         float[] v = part.v();
         if (!fast) {
@@ -222,12 +234,24 @@ public final class MeshModel {
 
     private ResourceLocation[] atlases;
     private Map<String, List<Part>> parts;
-    private boolean tried;
+
+    private volatile Map<String, List<Part>> partsReady;
+    private volatile boolean tried;
 
     private ResourceLocation atlas(int k) {
         ResourceLocation[] a = atlases;
-        if (k == 0 || a == null) return atlas;
-        return k < a.length ? a[k] : atlas;
+        if (k == 0 || a == null) return mipped(atlas);
+        return mipped(k < a.length ? a[k] : atlas);
+    }
+
+    private static final java.util.Set<ResourceLocation> MIPPED = Statics.client(new java.util.HashSet<>());
+
+    static ResourceLocation mipped(ResourceLocation loc) {
+        if (MIPPED.add(loc)) {
+            try { Minecraft.getInstance().getTextureManager().register(loc, new MeshMipTexture(loc)); }
+            catch (Throwable t) { Wmd.LOGGER.warn("Mesh atlas {} could not be mipmapped, plain texture", loc, t); }
+        }
+        return loc;
     }
 
     private MeshModel(String name) {
@@ -255,13 +279,22 @@ public final class MeshModel {
     @SubscribeEvent
     static void onReload(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener((net.minecraft.server.packs.resources.ResourceManagerReloadListener) manager -> {
-            synchronized (ALL) { for (MeshModel m : ALL) { m.parts = null; m.tried = false; m.closeCache(); } }
+            synchronized (ALL) { for (MeshModel m : ALL) { synchronized (m) { m.tried = false; m.parts = null; m.partsReady = null; } m.closeCache(); } }
         });
     }
 
     private Map<String, List<Part>> load() {
-        if (tried) return parts;
-        tried = true;
+        if (tried) return partsReady;
+        synchronized (this) {
+            if (tried) return partsReady;
+            Map<String, List<Part>> p = readMesh();
+            partsReady = p;
+            tried = true;
+            return p;
+        }
+    }
+
+    private Map<String, List<Part>> readMesh() {
         try {
             Resource res = Minecraft.getInstance().getResourceManager().getResource(file).orElse(null);
             if (res == null) return parts = null;
@@ -349,6 +382,7 @@ public final class MeshModel {
     static void onStage(net.neoforged.neoforge.client.event.RenderLevelStageEvent event) {
         if (event.getStage() == net.neoforged.neoforge.client.event.RenderLevelStageEvent.Stage.AFTER_SKY) {
             inLevel = true;
+            VeilBridge.frameStart();
             frustum = event.getFrustum();
             camPos = event.getCamera().getPosition();
             Minecraft mc = Minecraft.getInstance();
@@ -395,10 +429,24 @@ public final class MeshModel {
             boolean paint = part.kind() == 2;
             if (paintOnly && !paint) continue;
             if (hidden(pose, part)) continue;
-            if (vc == null || part.atlas() != cur) { cur = part.atlas(); vc = buffers.getBuffer(alpha < 255 ? RenderType.entityTranslucent(atlas(cur)) : RenderType.entityCutoutNoCull(atlas(cur))); }
+            if (vc == null || part.atlas() != cur) { cur = part.atlas(); vc = buffers.getBuffer(type(cur, alpha < 255)); }
             int l = part.glow() && !dark ? LightTexture.FULL_BRIGHT : light;
             int cr = paint ? tr : 255, cg = paint ? tg : 255, cb = paint ? tb : 255;
             emit(vc, pose, part, (noLod ? part.quads() : lodCount(pose, part)), cr, cg, cb, alpha, overlay, l);
+        }
+    }
+
+    public void drawGlass(String bone, PoseStack.Pose pose, MultiBufferSource buffers, int light, int overlay, int alpha) {
+        Map<String, List<Part>> p = load();
+        if (p == null) return;
+        List<Part> list = p.get(bone);
+        if (list == null) return;
+        VertexConsumer vc = null;
+        int cur = -1;
+        for (Part part : list) {
+            if (hidden(pose, part)) continue;
+            if (vc == null || part.atlas() != cur) { cur = part.atlas(); vc = buffers.getBuffer(WmdRenderTypes.glassNoDepth(atlas(cur))); }
+            emit(vc, pose, part, part.quads(), 255, 255, 255, alpha, overlay, light);
         }
     }
 
@@ -411,7 +459,7 @@ public final class MeshModel {
         VertexConsumer vc = null;
         int cur = -1;
         for (Part part : list) {
-            if (vc == null || part.atlas() != cur) { cur = part.atlas(); vc = buffers.getBuffer(RenderType.entityCutoutNoCull(atlas(cur))); }
+            if (vc == null || part.atlas() != cur) { cur = part.atlas(); vc = buffers.getBuffer(type(cur, false)); }
             boolean paint = part.kind() == 2;
             int l = part.glow() && !dark ? LightTexture.FULL_BRIGHT : light;
             int cr = paint ? tr : 255, cg = paint ? tg : 255, cb = paint ? tb : 255;
@@ -436,10 +484,28 @@ public final class MeshModel {
         int cur = -1;
         for (Part part : list) {
             if (hidden(pose, part)) continue;
-            if (vc == null || part.atlas() != cur) { cur = part.atlas(); vc = buffers.getBuffer(RenderType.entityCutoutNoCull(atlas(cur))); }
+            if (vc == null || part.atlas() != cur) { cur = part.atlas(); vc = buffers.getBuffer(type(cur, false)); }
             int l = part.glow() && !dark ? LightTexture.FULL_BRIGHT : light;
             emit(vc, pose, part, (noLod ? part.quads() : lodCount(pose, part)), r, g, b, 255, overlay, l);
         }
+    }
+
+    public interface QuadSink { void quad(float[] v, int i); }
+
+    public VertexConsumer buffer(MultiBufferSource buffers) {
+        Map<String, List<Part>> p = load();
+        if (p == null) return null;
+        for (List<Part> l : p.values()) if (!l.isEmpty()) return buffers.getBuffer(type(l.get(0).atlas(), false));
+        return null;
+    }
+
+    public void forEachQuad(String bone, QuadSink sink) {
+        Map<String, List<Part>> p = load();
+        if (p == null) return;
+        List<Part> list = p.get(bone);
+        if (list == null) return;
+        for (Part part : list)
+            for (int q = 0; q < part.quads(); q++) sink.quad(part.v(), q * 32);
     }
 
     public void draw(String bone, PoseStack.Pose pose, MultiBufferSource buffers, int light, int overlay) { draw(bone, pose, buffers, light, overlay, null); }
@@ -456,7 +522,7 @@ public final class MeshModel {
         for (Part part : list) {
             if (visible != null && part.bb() != null && !visible.test(part.bb())) continue;
             if (hidden(pose, part)) continue;
-            if (vc == null || part.atlas() != cur) { cur = part.atlas(); vc = buffers.getBuffer(RenderType.entityCutoutNoCull(atlas(cur))); }
+            if (vc == null || part.atlas() != cur) { cur = part.atlas(); vc = buffers.getBuffer(type(cur, false)); }
             int l = part.glow() && !dark ? LightTexture.FULL_BRIGHT : light;
             emit(vc, pose, part, (noLod ? part.quads() : lodCount(pose, part)), 255, 255, 255, 255, overlay, l);
         }

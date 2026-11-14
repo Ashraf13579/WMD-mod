@@ -104,6 +104,8 @@ if (wmdCreateJar.exists() && wmdCreateLibs.exists()) {
     }
 }
 
+sourceSets.main.java.srcDir 'src/sable/java'
+
 configurations {
     runtimeClasspath.extendsFrom localRuntime
 }
@@ -143,6 +145,8 @@ dependencies {
     if (project.findProperty('dev_sable') != 'false') {
         localRuntime("dev.ryanhcode.sable:sable-neoforge-1.21.1:2.0.6") { transitive = false }
     }
+
+
 
 
 

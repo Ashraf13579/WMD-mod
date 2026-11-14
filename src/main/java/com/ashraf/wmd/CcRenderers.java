@@ -573,6 +573,7 @@ public final class CcRenderers {
             Minecraft mc = Minecraft.getInstance();
             if (mc.player == null || mc.screen instanceof ReconMapScreen || mc.player.blockPosition().distSqr(be.getBlockPos()) > ReconPayload.WALL_VIEW_RANGE * ReconPayload.WALL_VIEW_RANGE) return;
             long t = be.getLevel().getGameTime();
+            if (t < lastDots || t < lastMap || t < lastBda) { lastDots = lastMap = lastBda = -1000L; }
             if (t - lastDots >= Math.max(10, Balance.RECON_DOT_REFRESH_TICKS)) {
                 lastDots = t;
                 net.neoforged.neoforge.network.PacketDistributor.sendToServer(new ReconPayload(be.getBlockPos(), ReconPayload.DOTS, 0, 0));

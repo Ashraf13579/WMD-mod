@@ -71,6 +71,12 @@ public final class WarheadFx {
         }
     }
 
+    public static void tankTask(ServerLevel level, boolean gas, double x, double y, double z, double r, int ticks) {
+        FlightManager mgr = FlightManager.get(level);
+        mgr.tasks.add(task(gas ? GAS : IGNITE, x, y + (gas ? 1.0 : 0.0), z, r, ticks, gas ? WarheadType.CHEMICAL : WarheadType.INCENDIARY, 1));
+        mgr.setDirty();
+    }
+
     private static Task task(int kind, double x, double y, double z, double r, int ticks, WarheadType t, int tier) {
         Task k = new Task();
         k.kind = kind; k.x = x; k.y = y; k.z = z; k.r = r; k.ticks = ticks; k.total = ticks; k.type = t.ordinal(); k.tier = tier;
@@ -845,8 +851,8 @@ public final class WarheadFx {
                 case FISSURE -> fissureStep(level, k, age);
                 case HEMP_FIELD -> {
                     if (age < HEMP_WAVES_END && age % 12 == 0) hempArcs(level, k, age);
+                    if (age % 40 == 0) hempDrain(level, k, age);
                     if (age % 5 == 0) {
-                        hempDrain(level, k, age);
                         mgr.shots.removeIf(sh -> { double dx = sh.from().x - k.x, dz = sh.from().z - k.z; return dx * dx + dz * dz <= k.r * k.r; });
                         hempKillFlights(level, mgr, k);
                     }
@@ -1263,12 +1269,18 @@ public final class WarheadFx {
         if (!Config.shockwaveBreaksGlass()) return;
         int R = (int) Math.ceil(reach), breaks = 0;
         BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
+        long lastKey = Long.MIN_VALUE;
+        net.minecraft.world.level.chunk.LevelChunk lastChunk = null;
         for (int dx = -R; dx <= R; dx++) for (int dz = -R; dz <= R; dz++) for (int dy = -Math.min(R, 8); dy <= Math.min(R, 16); dy++) {
             double d2 = dx * dx + dy * dy + dz * dz;
             if (d2 > reach * reach) continue;
             p.set((int) Math.floor(c.x) + dx, (int) Math.floor(c.y) + dy, (int) Math.floor(c.z) + dz);
-            if (!level.hasChunkAt(p)) continue;
-            BlockState s = level.getBlockState(p);
+
+            long ck = net.minecraft.world.level.ChunkPos.asLong(p.getX() >> 4, p.getZ() >> 4);
+            if (ck != lastKey) { lastKey = ck; lastChunk = level.getChunkSource().getChunkNow(p.getX() >> 4, p.getZ() >> 4); }
+            if (lastChunk == null) continue;
+            BlockState s = lastChunk.getBlockState(p);
+            if (s.isAir()) continue;
             if (!(s.is(net.neoforged.neoforge.common.Tags.Blocks.GLASS_BLOCKS) || s.is(net.neoforged.neoforge.common.Tags.Blocks.GLASS_PANES) || s.is(net.minecraft.tags.BlockTags.FLOWER_POTS))) continue;
             BlockPos hit = p.immutable();
             net.minecraft.world.phys.BlockHitResult ray = level.clip(new net.minecraft.world.level.ClipContext(c, Vec3.atCenterOf(hit),

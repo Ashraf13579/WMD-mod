@@ -68,6 +68,15 @@ public final class NoiseNet {
         return out;
     }
 
+    public static double loudestAboard(ServerLevel level, UUID ship) {
+        LinkedHashMap<Object, Source> m = SOURCES.get(level);
+        if (m == null || ship == null) return 0.0;
+        long now = level.getGameTime();
+        double best = 0.0;
+        for (Source s : m.values()) if (s.until() >= now && ship.equals(s.ship())) best = Math.max(best, s.db());
+        return best;
+    }
+
     public static int count(ServerLevel level) {
         Map<Object, Source> m = SOURCES.get(level);
         return m == null ? 0 : m.size();

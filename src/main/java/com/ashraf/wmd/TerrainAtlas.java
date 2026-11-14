@@ -13,6 +13,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.QuartPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.LongArrayTag;
 import net.minecraft.server.level.ServerChunkCache;
@@ -22,6 +23,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -49,6 +51,10 @@ public final class TerrainAtlas extends SavedData {
     private static final int CHART_RANGE = 2048;
 
     private record Sample(ServerLevel level, long chunk, int[] packed) {}
+
+    private final Long2ObjectOpenHashMap<byte[]> floors = new Long2ObjectOpenHashMap<>();
+    private record Floor(ServerLevel level, long chunk, byte[] depths) {}
+    private static final ConcurrentLinkedQueue<Floor> FLOOR_QUEUE = Statics.server(new ConcurrentLinkedQueue<>());
     private static final ConcurrentLinkedQueue<Sample> QUEUE = Statics.server(new ConcurrentLinkedQueue<>());
     private static final Map<UUID, Long> LAST_ASK = Statics.server(new ConcurrentHashMap<>());
 
@@ -61,6 +67,21 @@ public final class TerrainAtlas extends SavedData {
         if (!(event.getLevel() instanceof ServerLevel level) || !(event.getChunk() instanceof LevelChunk chunk)) return;
         int[] p = sample(chunk);
         if (p != null) QUEUE.add(new Sample(level, chunk.getPos().toLong(), p));
+        FLOOR_QUEUE.add(new Floor(level, chunk.getPos().toLong(), sampleFloor(chunk)));
+    }
+
+    private static byte[] sampleFloor(ChunkAccess chunk) {
+        ChunkPos cp = chunk.getPos();
+        byte[] out = new byte[16];
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        for (int j = 0; j < 4; j++) for (int i = 0; i < 4; i++) {
+            int lx = 2 + 4 * i, lz = 2 + 4 * j;
+            int h = chunk.getHeight(Heightmap.Types.WORLD_SURFACE, lx, lz), f = chunk.getHeight(Heightmap.Types.OCEAN_FLOOR, lx, lz);
+            pos.set(cp.getMinBlockX() + lx, h, cp.getMinBlockZ() + lz);
+            if (h <= f || !chunk.getFluidState(pos).is(FluidTags.WATER)) continue;
+            out[j * 4 + i] = (byte) Math.max(1, Math.min(255, h - f));
+        }
+        return out;
     }
 
     private static int[] sample(ChunkAccess chunk) {
@@ -89,6 +110,13 @@ public final class TerrainAtlas extends SavedData {
             if (s == null) break;
             TerrainAtlas a = get(s.level());
             a.cells.put(s.chunk(), s.packed());
+            a.setDirty();
+        }
+        for (int n = 0; n < 4096; n++) {
+            Floor f = FLOOR_QUEUE.poll();
+            if (f == null) break;
+            TerrainAtlas a = get(f.level());
+            a.floors.put(f.chunk(), f.depths());
             a.setDirty();
         }
         long until = System.nanoTime() + PREDICT_NANOS;
@@ -150,6 +178,13 @@ public final class TerrainAtlas extends SavedData {
         PacketDistributor.sendToPlayer(player, new ChartTerrainPayload(x0, z0, cell, w, h, pending, out));
     }
 
+    static int depthAt(ServerLevel level, int bx, int bz) {
+        byte[] d = get(level).floors.get(ChunkPos.asLong(bx >> 4, bz >> 4));
+        return d == null ? -1 : d[((bz & 15) >> 2) * 4 + ((bx & 15) >> 2)] & 0xFF;
+    }
+
+    static int exploredAt(ServerLevel level, int bx, int bz) { return get(level).explored(bx, bz); }
+
     private int explored(int bx, int bz) {
         int[] s = cells.get(ChunkPos.asLong(bx >> 4, bz >> 4));
         if (s == null) return 0;
@@ -169,6 +204,9 @@ public final class TerrainAtlas extends SavedData {
             else { if (i >= v.length) break; java.util.Arrays.fill(s, v[i]); }
             a.cells.put(k[i], s);
         }
+        long[] fk = tag.getLongArray("fk");
+        byte[] fv = tag.getByteArray("fv");
+        for (int i = 0; i < fk.length && (i + 1) * 16 <= fv.length; i++) a.floors.put(fk[i], java.util.Arrays.copyOfRange(fv, i * 16, i * 16 + 16));
         return a;
     }
 
@@ -180,6 +218,12 @@ public final class TerrainAtlas extends SavedData {
         for (var e : cells.long2ObjectEntrySet()) { k[i] = e.getLongKey(); System.arraycopy(e.getValue(), 0, v, i * 16, 16); i++; }
         tag.put("k", new LongArrayTag(k));
         tag.put("s", new IntArrayTag(v));
+        long[] fk = new long[floors.size()];
+        byte[] fv = new byte[floors.size() * 16];
+        int j = 0;
+        for (var e : floors.long2ObjectEntrySet()) { fk[j] = e.getLongKey(); System.arraycopy(e.getValue(), 0, fv, j * 16, 16); j++; }
+        tag.put("fk", new LongArrayTag(fk));
+        tag.put("fv", new ByteArrayTag(fv));
         return tag;
     }
 }

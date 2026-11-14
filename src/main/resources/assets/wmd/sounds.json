@@ -4262,5 +4262,1814 @@
         "stream": false
       }
     ]
+  },
+  "screw_loop": {
+    "subtitle": "subtitles.wmd.screw_loop",
+    "sounds": [
+      {
+        "name": "wmd:screw_loop",
+        "stream": false
+      }
+    ]
+  },
+  "screw_start": {
+    "subtitle": "subtitles.wmd.screw_start",
+    "sounds": [
+      {
+        "name": "wmd:screw_start",
+        "stream": false
+      }
+    ]
+  },
+  "screw_stop": {
+    "subtitle": "subtitles.wmd.screw_stop",
+    "sounds": [
+      {
+        "name": "wmd:screw_stop",
+        "stream": false
+      }
+    ]
+  },
+  "screw_cavitate": {
+    "subtitle": "subtitles.wmd.screw_cavitate",
+    "sounds": [
+      {
+        "name": "wmd:screw_cavitate",
+        "stream": false
+      }
+    ]
+  },
+  "screw_servo": {
+    "subtitle": "subtitles.wmd.screw_servo",
+    "sounds": [
+      {
+        "name": "wmd:screw_servo",
+        "stream": false
+      }
+    ]
+  },
+  "telegraph_lever": {
+    "subtitle": "subtitles.wmd.telegraph_lever",
+    "sounds": [
+      {
+        "name": "wmd:telegraph_lever",
+        "stream": false
+      }
+    ]
+  },
+  "telegraph_bell": {
+    "subtitle": "subtitles.wmd.telegraph_bell",
+    "sounds": [
+      {
+        "name": "wmd:telegraph_bell",
+        "stream": false
+      }
+    ]
+  },
+  "telegraph_wheel": {
+    "subtitle": "subtitles.wmd.telegraph_wheel",
+    "sounds": [
+      {
+        "name": "wmd:telegraph_wheel",
+        "stream": false
+      }
+    ]
+  },
+  "helm_seat_in": {
+    "subtitle": "subtitles.wmd.helm_seat_in",
+    "sounds": [
+      {
+        "name": "wmd:helm_seat_in",
+        "stream": false
+      }
+    ]
+  },
+  "helm_seat_out": {
+    "subtitle": "subtitles.wmd.helm_seat_out",
+    "sounds": [
+      {
+        "name": "wmd:helm_seat_out",
+        "stream": false
+      }
+    ]
+  },
+  "helm_step": {
+    "subtitle": "subtitles.wmd.helm_step",
+    "sounds": [
+      {
+        "name": "wmd:helm_step",
+        "stream": false
+      }
+    ]
+  },
+  "helm_boot": {
+    "subtitle": "subtitles.wmd.helm_boot",
+    "sounds": [
+      {
+        "name": "wmd:helm_boot",
+        "stream": false
+      }
+    ]
+  },
+  "ducted_fan_loop": {
+    "subtitle": "subtitles.wmd.ducted_fan_loop",
+    "sounds": [
+      {
+        "name": "wmd:ducted_fan_loop",
+        "stream": false
+      }
+    ]
+  },
+  "ducted_fan_start": {
+    "subtitle": "subtitles.wmd.ducted_fan_start",
+    "sounds": [
+      {
+        "name": "wmd:ducted_fan_start",
+        "stream": false
+      }
+    ]
+  },
+  "turbofan_loop": {
+    "subtitle": "subtitles.wmd.turbofan_loop",
+    "sounds": [
+      {
+        "name": "wmd:turbofan_loop",
+        "stream": false
+      }
+    ]
+  },
+  "turbofan_start": {
+    "subtitle": "subtitles.wmd.turbofan_start",
+    "sounds": [
+      {
+        "name": "wmd:turbofan_start",
+        "stream": false
+      }
+    ]
+  },
+  "turbofan_spool_up": {
+    "subtitle": "subtitles.wmd.turbofan_spool_up",
+    "sounds": [
+      {
+        "name": "wmd:turbofan_spool_up",
+        "stream": false
+      }
+    ]
+  },
+  "turbofan_spool_down": {
+    "subtitle": "subtitles.wmd.turbofan_spool_down",
+    "sounds": [
+      {
+        "name": "wmd:turbofan_spool_down",
+        "stream": false
+      }
+    ]
+  },
+  "jato_ignite": {
+    "subtitle": "subtitles.wmd.jato_ignite",
+    "sounds": [
+      {
+        "name": "wmd:jato_ignite",
+        "stream": false
+      }
+    ]
+  },
+  "jato_loop": {
+    "subtitle": "subtitles.wmd.jato_loop",
+    "sounds": [
+      {
+        "name": "wmd:jato_loop",
+        "stream": false
+      }
+    ]
+  },
+  "jato_burnout": {
+    "subtitle": "subtitles.wmd.jato_burnout",
+    "sounds": [
+      {
+        "name": "wmd:jato_burnout",
+        "stream": false
+      }
+    ]
+  },
+  "jato_release": {
+    "subtitle": "subtitles.wmd.jato_release",
+    "sounds": [
+      {
+        "name": "wmd:jato_release",
+        "stream": false
+      }
+    ]
+  },
+  "jato_bottle_land": {
+    "subtitle": "subtitles.wmd.jato_bottle_land",
+    "sounds": [
+      {
+        "name": "wmd:jato_bottle_land",
+        "stream": false
+      }
+    ]
+  },
+  "pump_jet_loop": {
+    "subtitle": "subtitles.wmd.pump_jet_loop",
+    "sounds": [
+      {
+        "name": "wmd:pump_jet_loop",
+        "stream": false
+      }
+    ]
+  },
+  "pump_jet_start": {
+    "subtitle": "subtitles.wmd.pump_jet_start",
+    "sounds": [
+      {
+        "name": "wmd:pump_jet_start",
+        "stream": false
+      }
+    ]
+  },
+  "pump_jet_stop": {
+    "subtitle": "subtitles.wmd.pump_jet_stop",
+    "sounds": [
+      {
+        "name": "wmd:pump_jet_stop",
+        "stream": false
+      }
+    ]
+  },
+  "pump_jet_servo": {
+    "subtitle": "subtitles.wmd.pump_jet_servo",
+    "sounds": [
+      {
+        "name": "wmd:pump_jet_servo",
+        "stream": false
+      }
+    ]
+  },
+  "diesel_start": {
+    "subtitle": "subtitles.wmd.diesel_start",
+    "sounds": [
+      {
+        "name": "wmd:diesel_start",
+        "stream": false
+      }
+    ]
+  },
+  "diesel_loop": {
+    "subtitle": "subtitles.wmd.diesel_loop",
+    "sounds": [
+      {
+        "name": "wmd:diesel_loop",
+        "stream": false
+      }
+    ]
+  },
+  "diesel_stop": {
+    "subtitle": "subtitles.wmd.diesel_stop",
+    "sounds": [
+      {
+        "name": "wmd:diesel_stop",
+        "stream": false
+      }
+    ]
+  },
+  "snorkel_hatch": {
+    "subtitle": "subtitles.wmd.snorkel_hatch",
+    "sounds": [
+      {
+        "name": "wmd:snorkel_hatch",
+        "stream": false
+      }
+    ]
+  },
+  "snorkel_hoist": {
+    "subtitle": "subtitles.wmd.snorkel_hoist",
+    "sounds": [
+      {
+        "name": "wmd:snorkel_hoist",
+        "stream": false
+      }
+    ]
+  },
+  "snorkel_slam": {
+    "subtitle": "subtitles.wmd.snorkel_slam",
+    "sounds": [
+      {
+        "name": "wmd:snorkel_slam",
+        "stream": false
+      }
+    ]
+  },
+  "snorkel_air": {
+    "subtitle": "subtitles.wmd.snorkel_air",
+    "sounds": [
+      {
+        "name": "wmd:snorkel_air",
+        "stream": false
+      }
+    ]
+  },
+  "diesel_fire": {
+    "subtitle": "subtitles.wmd.diesel_fire",
+    "sounds": [
+      {
+        "name": "wmd:diesel_fire",
+        "stream": false
+      }
+    ]
+  },
+  "diesel_cough": {
+    "subtitle": "subtitles.wmd.diesel_cough",
+    "sounds": [
+      {
+        "name": "wmd:diesel_cough",
+        "stream": false
+      }
+    ]
+  },
+  "cockpit_hum": {
+    "subtitle": "subtitles.wmd.cockpit_hum",
+    "sounds": [
+      {
+        "name": "wmd:cockpit_hum",
+        "stream": false
+      }
+    ]
+  },
+  "canopy_open": {
+    "subtitle": "subtitles.wmd.canopy_open",
+    "sounds": [
+      {
+        "name": "wmd:canopy_open",
+        "stream": false
+      }
+    ]
+  },
+  "canopy_close": {
+    "subtitle": "subtitles.wmd.canopy_close",
+    "sounds": [
+      {
+        "name": "wmd:canopy_close",
+        "stream": false
+      }
+    ]
+  },
+  "cockpit_harness": {
+    "subtitle": "subtitles.wmd.cockpit_harness",
+    "sounds": [
+      {
+        "name": "wmd:cockpit_harness",
+        "stream": false
+      }
+    ]
+  },
+  "cockpit_switch": {
+    "subtitle": "subtitles.wmd.cockpit_switch",
+    "sounds": [
+      {
+        "name": "wmd:cockpit_switch",
+        "stream": false
+      }
+    ]
+  },
+  "rwr_search": {
+    "subtitle": "subtitles.wmd.rwr_search",
+    "sounds": [
+      {
+        "name": "wmd:rwr_search",
+        "stream": false
+      }
+    ]
+  },
+  "rwr_lock": {
+    "subtitle": "subtitles.wmd.rwr_lock",
+    "sounds": [
+      {
+        "name": "wmd:rwr_lock",
+        "stream": false
+      }
+    ]
+  },
+  "rwr_launch": {
+    "subtitle": "subtitles.wmd.rwr_launch",
+    "sounds": [
+      {
+        "name": "wmd:rwr_launch",
+        "stream": false
+      }
+    ]
+  },
+  "msl_growl": {
+    "subtitle": "subtitles.wmd.msl_growl",
+    "sounds": [
+      {
+        "name": "wmd:msl_growl",
+        "stream": false
+      }
+    ]
+  },
+  "msl_tone": {
+    "subtitle": "subtitles.wmd.msl_tone",
+    "sounds": [
+      {
+        "name": "wmd:msl_tone",
+        "stream": false
+      }
+    ]
+  },
+  "voice_pull_up": {
+    "subtitle": "subtitles.wmd.voice_pull_up",
+    "sounds": [
+      {
+        "name": "wmd:voice_pull_up",
+        "stream": false
+      }
+    ]
+  },
+  "voice_missile": {
+    "subtitle": "subtitles.wmd.voice_missile",
+    "sounds": [
+      {
+        "name": "wmd:voice_missile",
+        "stream": false
+      }
+    ]
+  },
+  "voice_bingo": {
+    "subtitle": "subtitles.wmd.voice_bingo",
+    "sounds": [
+      {
+        "name": "wmd:voice_bingo",
+        "stream": false
+      }
+    ]
+  },
+  "eject_blast": {
+    "subtitle": "subtitles.wmd.eject_blast",
+    "sounds": [
+      {
+        "name": "wmd:eject_blast",
+        "stream": false
+      }
+    ]
+  },
+  "chute_open": {
+    "subtitle": "subtitles.wmd.chute_open",
+    "sounds": [
+      {
+        "name": "wmd:chute_open",
+        "stream": false
+      }
+    ]
+  },
+  "asr_run": {
+    "subtitle": "subtitles.wmd.asr_run",
+    "sounds": [
+      {
+        "name": "wmd:asr_run",
+        "stream": false
+      }
+    ]
+  },
+  "asr_spin_up": {
+    "subtitle": "subtitles.wmd.asr_spin_up",
+    "sounds": [
+      {
+        "name": "wmd:asr_spin_up",
+        "stream": false
+      }
+    ]
+  },
+  "asr_spin_down": {
+    "subtitle": "subtitles.wmd.asr_spin_down",
+    "sounds": [
+      {
+        "name": "wmd:asr_spin_down",
+        "stream": false
+      }
+    ]
+  },
+  "asr_switch": {
+    "subtitle": "subtitles.wmd.asr_switch",
+    "sounds": [
+      {
+        "name": "wmd:asr_switch",
+        "stream": false
+      }
+    ]
+  },
+  "core_hum": {
+    "subtitle": "subtitles.wmd.core_hum",
+    "sounds": [
+      {
+        "name": "wmd:core_hum",
+        "stream": false
+      }
+    ]
+  },
+  "core_apu": {
+    "subtitle": "subtitles.wmd.core_apu",
+    "sounds": [
+      {
+        "name": "wmd:core_apu",
+        "stream": false
+      }
+    ]
+  },
+  "core_apu_start": {
+    "subtitle": "subtitles.wmd.core_apu_start",
+    "sounds": [
+      {
+        "name": "wmd:core_apu_start",
+        "stream": false
+      }
+    ]
+  },
+  "station_load": {
+    "subtitle": "subtitles.wmd.station_load",
+    "sounds": [
+      {
+        "name": "wmd:station_load",
+        "stream": false
+      }
+    ]
+  },
+  "pylon_eject": {
+    "subtitle": "subtitles.wmd.pylon_eject",
+    "sounds": [
+      {
+        "name": "wmd:pylon_eject",
+        "stream": false
+      }
+    ]
+  },
+  "bay_door_open": {
+    "subtitle": "subtitles.wmd.bay_door_open",
+    "sounds": [
+      {
+        "name": "wmd:bay_door_open",
+        "stream": false
+      }
+    ]
+  },
+  "bay_door_close": {
+    "subtitle": "subtitles.wmd.bay_door_close",
+    "sounds": [
+      {
+        "name": "wmd:bay_door_close",
+        "stream": false
+      }
+    ]
+  },
+  "jammer_loop": {
+    "subtitle": "subtitles.wmd.jammer_loop",
+    "sounds": [
+      {
+        "name": "wmd:jammer_loop",
+        "stream": false
+      }
+    ]
+  },
+  "jammer_switch": {
+    "subtitle": "subtitles.wmd.jammer_switch",
+    "sounds": [
+      {
+        "name": "wmd:jammer_switch",
+        "stream": false
+      }
+    ]
+  },
+  "sam_slew": {
+    "subtitle": "subtitles.wmd.sam_slew",
+    "sounds": [
+      {
+        "name": "wmd:sam_slew",
+        "stream": false
+      }
+    ]
+  },
+  "sam_lock": {
+    "subtitle": "subtitles.wmd.sam_lock",
+    "sounds": [
+      {
+        "name": "wmd:sam_lock",
+        "stream": false
+      }
+    ]
+  },
+  "sam_hatch": {
+    "subtitle": "subtitles.wmd.sam_hatch",
+    "sounds": [
+      {
+        "name": "wmd:sam_hatch",
+        "stream": false
+      }
+    ]
+  },
+  "sam_chirp": {
+    "subtitle": "subtitles.wmd.sam_chirp",
+    "sounds": [
+      {
+        "name": "wmd:sam_chirp",
+        "stream": false
+      }
+    ]
+  },
+  "sam_launch": {
+    "subtitle": "subtitles.wmd.sam_launch",
+    "sounds": [
+      {
+        "name": "wmd:sam_launch",
+        "stream": false
+      }
+    ]
+  },
+  "gpod_spin_loop": {
+    "subtitle": "subtitles.wmd.gpod_spin_loop",
+    "sounds": [
+      {
+        "name": "wmd:gpod_spin_loop",
+        "stream": false
+      }
+    ]
+  },
+  "gpod_burst": {
+    "subtitle": "subtitles.wmd.gpod_burst",
+    "sounds": [
+      {
+        "name": "wmd:gpod_burst",
+        "stream": false
+      }
+    ]
+  },
+  "gpod_reload": {
+    "subtitle": "subtitles.wmd.gpod_reload",
+    "sounds": [
+      {
+        "name": "wmd:gpod_reload",
+        "stream": false
+      }
+    ]
+  },
+  "gear_cycle": {
+    "subtitle": "subtitles.wmd.gear_cycle",
+    "sounds": [
+      {
+        "name": "wmd:gear_cycle",
+        "stream": false
+      }
+    ]
+  },
+  "gear_lock": {
+    "subtitle": "subtitles.wmd.gear_lock",
+    "sounds": [
+      {
+        "name": "wmd:gear_lock",
+        "stream": false
+      }
+    ]
+  },
+  "gear_touchdown": {
+    "subtitle": "subtitles.wmd.gear_touchdown",
+    "sounds": [
+      {
+        "name": "wmd:gear_touchdown",
+        "stream": false
+      }
+    ]
+  },
+  "tow_couple": {
+    "subtitle": "subtitles.wmd.tow_couple",
+    "sounds": [
+      {
+        "name": "wmd:tow_couple",
+        "stream": false
+      }
+    ]
+  },
+  "tow_roll": {
+    "subtitle": "subtitles.wmd.tow_roll",
+    "sounds": [
+      {
+        "name": "wmd:tow_roll",
+        "stream": false
+      }
+    ]
+  },
+  "nose_drive": {
+    "subtitle": "subtitles.wmd.nose_drive",
+    "sounds": [
+      {
+        "name": "wmd:nose_drive",
+        "stream": false
+      }
+    ]
+  },
+  "hook_move": {
+    "subtitle": "subtitles.wmd.hook_move",
+    "sounds": [
+      {
+        "name": "wmd:hook_move",
+        "stream": false
+      }
+    ]
+  },
+  "wire_catch": {
+    "subtitle": "subtitles.wmd.wire_catch",
+    "sounds": [
+      {
+        "name": "wmd:wire_catch",
+        "stream": false
+      }
+    ]
+  },
+  "wire_reset": {
+    "subtitle": "subtitles.wmd.wire_reset",
+    "sounds": [
+      {
+        "name": "wmd:wire_reset",
+        "stream": false
+      }
+    ]
+  },
+  "cat_hook": {
+    "subtitle": "subtitles.wmd.cat_hook",
+    "sounds": [
+      {
+        "name": "wmd:cat_hook",
+        "stream": false
+      }
+    ]
+  },
+  "cat_shot": {
+    "subtitle": "subtitles.wmd.cat_shot",
+    "sounds": [
+      {
+        "name": "wmd:cat_shot",
+        "stream": false
+      }
+    ]
+  },
+  "cat_return": {
+    "subtitle": "subtitles.wmd.cat_return",
+    "sounds": [
+      {
+        "name": "wmd:cat_return",
+        "stream": false
+      }
+    ]
+  },
+  "tpod_click": {
+    "subtitle": "subtitles.wmd.tpod_click",
+    "sounds": [
+      {
+        "name": "wmd:tpod_click",
+        "stream": false
+      }
+    ]
+  },
+  "tpod_slew": {
+    "subtitle": "subtitles.wmd.tpod_slew",
+    "sounds": [
+      {
+        "name": "wmd:tpod_slew",
+        "stream": false
+      }
+    ]
+  },
+  "aam_launch": {
+    "subtitle": "subtitles.wmd.aam_launch",
+    "sounds": [
+      {
+        "name": "wmd:aam_launch",
+        "stream": false
+      }
+    ]
+  },
+  "aam_launch_far": {
+    "subtitle": "subtitles.wmd.aam_launch_far",
+    "sounds": [
+      {
+        "name": "wmd:aam_launch_far",
+        "stream": false
+      }
+    ]
+  },
+  "aam_flight_loop": {
+    "subtitle": "subtitles.wmd.aam_flight_loop",
+    "sounds": [
+      {
+        "name": "wmd:aam_flight_loop",
+        "stream": false
+      }
+    ]
+  },
+  "aam_burst": {
+    "subtitle": "subtitles.wmd.aam_burst",
+    "sounds": [
+      {
+        "name": "wmd:aam_burst",
+        "stream": false
+      }
+    ]
+  },
+  "aam_burst_far": {
+    "subtitle": "subtitles.wmd.aam_burst_far",
+    "sounds": [
+      {
+        "name": "wmd:aam_burst_far",
+        "stream": false
+      }
+    ]
+  },
+  "aam_fizzle": {
+    "subtitle": "subtitles.wmd.aam_fizzle",
+    "sounds": [
+      {
+        "name": "wmd:aam_fizzle",
+        "stream": false
+      }
+    ]
+  },
+  "flare_pop": {
+    "subtitle": "subtitles.wmd.flare_pop",
+    "sounds": [
+      {
+        "name": "wmd:flare_pop",
+        "stream": false
+      }
+    ]
+  },
+  "chaff_pop": {
+    "subtitle": "subtitles.wmd.chaff_pop",
+    "sounds": [
+      {
+        "name": "wmd:chaff_pop",
+        "stream": false
+      }
+    ]
+  },
+  "disp_reload": {
+    "subtitle": "subtitles.wmd.disp_reload",
+    "sounds": [
+      {
+        "name": "wmd:disp_reload",
+        "stream": false
+      }
+    ]
+  },
+  "jato_latch": {
+    "subtitle": "subtitles.wmd.jato_latch",
+    "sounds": [
+      {
+        "name": "wmd:jato_latch",
+        "stream": false
+      }
+    ]
+  },
+  "seat_rocket": {
+    "subtitle": "subtitles.wmd.seat_rocket",
+    "sounds": [
+      {
+        "name": "wmd:seat_rocket",
+        "stream": false
+      }
+    ]
+  },
+  "lift_loop": {
+    "subtitle": "subtitles.wmd.lift_loop",
+    "sounds": [
+      {
+        "name": "wmd:lift_loop",
+        "stream": false
+      }
+    ]
+  },
+  "lift_clunk": {
+    "subtitle": "subtitles.wmd.lift_clunk",
+    "sounds": [
+      {
+        "name": "wmd:lift_clunk",
+        "stream": false
+      }
+    ]
+  },
+  "lift_rail": {
+    "subtitle": "subtitles.wmd.lift_rail",
+    "sounds": [
+      {
+        "name": "wmd:lift_rail",
+        "stream": false
+      }
+    ]
+  },
+  "jet1_loop": {
+    "subtitle": "subtitles.wmd.jet1_loop",
+    "sounds": [
+      {
+        "name": "wmd:jet1_loop",
+        "stream": false
+      }
+    ]
+  },
+  "jet2_loop": {
+    "subtitle": "subtitles.wmd.jet2_loop",
+    "sounds": [
+      {
+        "name": "wmd:jet2_loop",
+        "stream": false
+      }
+    ]
+  },
+  "jets_loop": {
+    "subtitle": "subtitles.wmd.jets_loop",
+    "sounds": [
+      {
+        "name": "wmd:jets_loop",
+        "stream": false
+      }
+    ]
+  },
+  "jet_ab_loop": {
+    "subtitle": "subtitles.wmd.jet_ab_loop",
+    "sounds": [
+      {
+        "name": "wmd:jet_ab_loop",
+        "stream": false
+      }
+    ]
+  },
+  "jet_start": {
+    "subtitle": "subtitles.wmd.jet_start",
+    "sounds": [
+      {
+        "name": "wmd:jet_start",
+        "stream": false
+      }
+    ]
+  },
+  "jet_ab_light": {
+    "subtitle": "subtitles.wmd.jet_ab_light",
+    "sounds": [
+      {
+        "name": "wmd:jet_ab_light",
+        "stream": false
+      }
+    ]
+  },
+  "jet_spool_up": {
+    "subtitle": "subtitles.wmd.jet_spool_up",
+    "sounds": [
+      {
+        "name": "wmd:jet_spool_up",
+        "stream": false
+      }
+    ]
+  },
+  "jet_shutdown": {
+    "subtitle": "subtitles.wmd.jet_shutdown",
+    "sounds": [
+      {
+        "name": "wmd:jet_shutdown",
+        "stream": false
+      }
+    ]
+  },
+  "lift_fan_loop": {
+    "subtitle": "subtitles.wmd.lift_fan_loop",
+    "sounds": [
+      {
+        "name": "wmd:lift_fan_loop",
+        "stream": false
+      }
+    ]
+  },
+  "rotor_loop": {
+    "subtitle": "subtitles.wmd.rotor_loop",
+    "sounds": [
+      {
+        "name": "wmd:rotor_loop",
+        "stream": false
+      }
+    ]
+  },
+  "turboshaft_loop": {
+    "subtitle": "subtitles.wmd.turboshaft_loop",
+    "sounds": [
+      {
+        "name": "wmd:turboshaft_loop",
+        "stream": false
+      }
+    ]
+  },
+  "turboprop_loop": {
+    "subtitle": "subtitles.wmd.turboprop_loop",
+    "sounds": [
+      {
+        "name": "wmd:turboprop_loop",
+        "stream": false
+      }
+    ]
+  },
+  "tiltrotor_loop": {
+    "subtitle": "subtitles.wmd.tiltrotor_loop",
+    "sounds": [
+      {
+        "name": "wmd:tiltrotor_loop",
+        "stream": false
+      }
+    ]
+  },
+  "gas_turbine_loop": {
+    "subtitle": "subtitles.wmd.gas_turbine_loop",
+    "sounds": [
+      {
+        "name": "wmd:gas_turbine_loop",
+        "stream": false
+      }
+    ]
+  },
+  "waterjet_loop": {
+    "subtitle": "subtitles.wmd.waterjet_loop",
+    "sounds": [
+      {
+        "name": "wmd:waterjet_loop",
+        "stream": false
+      }
+    ]
+  },
+  "azimuth_loop": {
+    "subtitle": "subtitles.wmd.azimuth_loop",
+    "sounds": [
+      {
+        "name": "wmd:azimuth_loop",
+        "stream": false
+      }
+    ]
+  },
+  "bow_thruster_loop": {
+    "subtitle": "subtitles.wmd.bow_thruster_loop",
+    "sounds": [
+      {
+        "name": "wmd:bow_thruster_loop",
+        "stream": false
+      }
+    ]
+  },
+  "winch_loop": {
+    "subtitle": "subtitles.wmd.winch_loop",
+    "sounds": [
+      {
+        "name": "wmd:winch_loop",
+        "stream": false
+      }
+    ]
+  },
+  "hook_latch": {
+    "subtitle": "subtitles.wmd.hook_latch",
+    "sounds": [
+      {
+        "name": "wmd:hook_latch",
+        "stream": false
+      }
+    ]
+  },
+  "anchor_chain_out": {
+    "subtitle": "subtitles.wmd.anchor_chain_out",
+    "sounds": [
+      {
+        "name": "wmd:anchor_chain_out",
+        "stream": false
+      }
+    ]
+  },
+  "anchor_weigh": {
+    "subtitle": "subtitles.wmd.anchor_weigh",
+    "sounds": [
+      {
+        "name": "wmd:anchor_weigh",
+        "stream": false
+      }
+    ]
+  },
+  "anchor_drag": {
+    "subtitle": "subtitles.wmd.anchor_drag",
+    "sounds": [
+      {
+        "name": "wmd:anchor_drag",
+        "stream": false
+      }
+    ]
+  },
+  "anchor_brake": {
+    "subtitle": "subtitles.wmd.anchor_brake",
+    "sounds": [
+      {
+        "name": "wmd:anchor_brake",
+        "stream": false
+      }
+    ]
+  },
+  "anchor_splash": {
+    "subtitle": "subtitles.wmd.anchor_splash",
+    "sounds": [
+      {
+        "name": "wmd:anchor_splash",
+        "stream": false
+      }
+    ]
+  },
+  "anchor_home": {
+    "subtitle": "subtitles.wmd.anchor_home",
+    "sounds": [
+      {
+        "name": "wmd:anchor_home",
+        "stream": false
+      }
+    ]
+  },
+  "hook_release": {
+    "subtitle": "subtitles.wmd.hook_release",
+    "sounds": [
+      {
+        "name": "wmd:hook_release",
+        "stream": false
+      }
+    ]
+  },
+  "hose_reel_loop": {
+    "subtitle": "subtitles.wmd.hose_reel_loop",
+    "sounds": [
+      {
+        "name": "wmd:hose_reel_loop",
+        "stream": false
+      }
+    ]
+  },
+  "refuel_contact": {
+    "subtitle": "subtitles.wmd.refuel_contact",
+    "sounds": [
+      {
+        "name": "wmd:refuel_contact",
+        "stream": false
+      }
+    ]
+  },
+  "fuel_flow_loop": {
+    "subtitle": "subtitles.wmd.fuel_flow_loop",
+    "sounds": [
+      {
+        "name": "wmd:fuel_flow_loop",
+        "stream": false
+      }
+    ]
+  },
+  "probe_slide": {
+    "subtitle": "subtitles.wmd.probe_slide",
+    "sounds": [
+      {
+        "name": "wmd:probe_slide",
+        "stream": false
+      }
+    ]
+  },
+  "tank_jettison": {
+    "subtitle": "subtitles.wmd.tank_jettison",
+    "sounds": [
+      {
+        "name": "wmd:tank_jettison",
+        "stream": false
+      }
+    ]
+  },
+  "tank_impact": {
+    "subtitle": "subtitles.wmd.tank_impact",
+    "sounds": [
+      {
+        "name": "wmd:tank_impact",
+        "stream": false
+      }
+    ]
+  },
+  "tail_rotor_loop": {
+    "subtitle": "subtitles.wmd.tail_rotor_loop",
+    "sounds": [
+      {
+        "name": "wmd:tail_rotor_loop",
+        "stream": false
+      }
+    ]
+  },
+  "sa_hydraulic_loop": {
+    "subtitle": "subtitles.wmd.sa_hydraulic_loop",
+    "sounds": [
+      {
+        "name": "wmd:sa_hydraulic_loop",
+        "stream": false
+      }
+    ]
+  },
+  "sa_lid": {
+    "subtitle": "subtitles.wmd.sa_lid",
+    "sounds": [
+      {
+        "name": "wmd:sa_lid",
+        "stream": false
+      }
+    ]
+  },
+  "sa_couple": {
+    "subtitle": "subtitles.wmd.sa_couple",
+    "sounds": [
+      {
+        "name": "wmd:sa_couple",
+        "stream": false
+      }
+    ]
+  },
+  "sa_breakaway": {
+    "subtitle": "subtitles.wmd.sa_breakaway",
+    "sounds": [
+      {
+        "name": "wmd:sa_breakaway",
+        "stream": false
+      }
+    ]
+  },
+  "sa_done": {
+    "subtitle": "subtitles.wmd.sa_done",
+    "sounds": [
+      {
+        "name": "wmd:sa_done",
+        "stream": false
+      }
+    ]
+  },
+  "sa_door": {
+    "subtitle": "subtitles.wmd.sa_door",
+    "sounds": [
+      {
+        "name": "wmd:sa_door",
+        "stream": false
+      }
+    ]
+  },
+  "ad_vent_loop": {
+    "subtitle": "subtitles.wmd.ad_vent_loop",
+    "sounds": [
+      {
+        "name": "wmd:ad_vent_loop",
+        "stream": false
+      }
+    ]
+  },
+  "ad_doors_open": {
+    "subtitle": "subtitles.wmd.ad_doors_open",
+    "sounds": [
+      {
+        "name": "wmd:ad_doors_open",
+        "stream": false
+      }
+    ]
+  },
+  "ad_doors_close": {
+    "subtitle": "subtitles.wmd.ad_doors_close",
+    "sounds": [
+      {
+        "name": "wmd:ad_doors_close",
+        "stream": false
+      }
+    ]
+  },
+  "ad_stow": {
+    "subtitle": "subtitles.wmd.ad_stow",
+    "sounds": [
+      {
+        "name": "wmd:ad_stow",
+        "stream": false
+      }
+    ]
+  },
+  "ol_hyd_loop": {
+    "subtitle": "subtitles.wmd.ol_hyd_loop",
+    "sounds": [
+      {
+        "name": "wmd:ol_hyd_loop",
+        "stream": false
+      }
+    ]
+  },
+  "ol_hatch": {
+    "subtitle": "subtitles.wmd.ol_hatch",
+    "sounds": [
+      {
+        "name": "wmd:ol_hatch",
+        "stream": false
+      }
+    ]
+  },
+  "ol_table": {
+    "subtitle": "subtitles.wmd.ol_table",
+    "sounds": [
+      {
+        "name": "wmd:ol_table",
+        "stream": false
+      }
+    ]
+  },
+  "ol_hoist": {
+    "subtitle": "subtitles.wmd.ol_hoist",
+    "sounds": [
+      {
+        "name": "wmd:ol_hoist",
+        "stream": false
+      }
+    ]
+  },
+  "ol_latch": {
+    "subtitle": "subtitles.wmd.ol_latch",
+    "sounds": [
+      {
+        "name": "wmd:ol_latch",
+        "stream": false
+      }
+    ]
+  },
+  "ol_ram": {
+    "subtitle": "subtitles.wmd.ol_ram",
+    "sounds": [
+      {
+        "name": "wmd:ol_ram",
+        "stream": false
+      }
+    ]
+  },
+  "rp_fire": {
+    "subtitle": "subtitles.wmd.rp_fire",
+    "sounds": [
+      {
+        "name": "wmd:rp_fire",
+        "stream": false
+      }
+    ]
+  },
+  "rp_ripple": {
+    "subtitle": "subtitles.wmd.rp_ripple",
+    "sounds": [
+      {
+        "name": "wmd:rp_ripple",
+        "stream": false
+      }
+    ]
+  },
+  "rp_flight_loop": {
+    "subtitle": "subtitles.wmd.rp_flight_loop",
+    "sounds": [
+      {
+        "name": "wmd:rp_flight_loop",
+        "stream": false
+      }
+    ]
+  },
+  "rp_petals_open": {
+    "subtitle": "subtitles.wmd.rp_petals_open",
+    "sounds": [
+      {
+        "name": "wmd:rp_petals_open",
+        "stream": false
+      }
+    ]
+  },
+  "rp_petals_close": {
+    "subtitle": "subtitles.wmd.rp_petals_close",
+    "sounds": [
+      {
+        "name": "wmd:rp_petals_close",
+        "stream": false
+      }
+    ]
+  },
+  "rp_tray_down": {
+    "subtitle": "subtitles.wmd.rp_tray_down",
+    "sounds": [
+      {
+        "name": "wmd:rp_tray_down",
+        "stream": false
+      }
+    ]
+  },
+  "rp_tray_up": {
+    "subtitle": "subtitles.wmd.rp_tray_up",
+    "sounds": [
+      {
+        "name": "wmd:rp_tray_up",
+        "stream": false
+      }
+    ]
+  },
+  "rp_load": {
+    "subtitle": "subtitles.wmd.rp_load",
+    "sounds": [
+      {
+        "name": "wmd:rp_load",
+        "stream": false
+      }
+    ]
+  },
+  "ashm_ignite": {
+    "subtitle": "subtitles.wmd.ashm_ignite",
+    "sounds": [
+      {
+        "name": "wmd:aam_launch",
+        "stream": false
+      }
+    ]
+  },
+  "ramp_loop": {
+    "subtitle": "subtitles.wmd.ramp_loop",
+    "sounds": [
+      {
+        "name": "wmd:ramp_loop",
+        "stream": false
+      }
+    ]
+  },
+  "ramp_clunk": {
+    "subtitle": "subtitles.wmd.ramp_clunk",
+    "sounds": [
+      {
+        "name": "wmd:ramp_clunk",
+        "stream": false
+      }
+    ]
+  },
+  "ramp_lock": {
+    "subtitle": "subtitles.wmd.ramp_lock",
+    "sounds": [
+      {
+        "name": "wmd:ramp_lock",
+        "stream": false
+      }
+    ]
+  },
+  "ramp_toes": {
+    "subtitle": "subtitles.wmd.ramp_toes",
+    "sounds": [
+      {
+        "name": "wmd:ramp_toes",
+        "stream": false
+      }
+    ]
+  },
+  "ramp_wind": {
+    "subtitle": "subtitles.wmd.ramp_wind",
+    "sounds": [
+      {
+        "name": "wmd:ramp_wind",
+        "stream": false
+      }
+    ]
+  },
+  "pallet_roll": {
+    "subtitle": "subtitles.wmd.pallet_roll",
+    "sounds": [
+      {
+        "name": "wmd:pallet_roll",
+        "stream": false
+      }
+    ]
+  },
+  "pallet_chute": {
+    "subtitle": "subtitles.wmd.pallet_chute",
+    "sounds": [
+      {
+        "name": "wmd:pallet_chute",
+        "stream": false
+      }
+    ]
+  },
+  "pallet_land": {
+    "subtitle": "subtitles.wmd.pallet_land",
+    "sounds": [
+      {
+        "name": "wmd:pallet_land",
+        "stream": false
+      }
+    ]
+  },
+  "pallet_smoke": {
+    "subtitle": "subtitles.wmd.pallet_smoke",
+    "sounds": [
+      {
+        "name": "wmd:pallet_smoke",
+        "stream": false
+      }
+    ]
+  },
+  "gt_drive_loop": {
+    "subtitle": "subtitles.wmd.gt_drive_loop",
+    "sounds": [
+      {
+        "name": "wmd:gt_drive_loop",
+        "stream": false
+      }
+    ]
+  },
+  "gt_shot": {
+    "subtitle": "subtitles.wmd.gt_shot",
+    "sounds": [
+      {
+        "name": "wmd:gt_shot",
+        "stream": false
+      }
+    ]
+  },
+  "gt_shot_far": {
+    "subtitle": "subtitles.wmd.gt_shot_far",
+    "sounds": [
+      {
+        "name": "wmd:gt_shot_far",
+        "stream": false
+      }
+    ]
+  },
+  "gt_deploy": {
+    "subtitle": "subtitles.wmd.gt_deploy",
+    "sounds": [
+      {
+        "name": "wmd:gt_deploy",
+        "stream": false
+      }
+    ]
+  },
+  "gt_stow": {
+    "subtitle": "subtitles.wmd.gt_stow",
+    "sounds": [
+      {
+        "name": "wmd:gt_stow",
+        "stream": false
+      }
+    ]
+  },
+  "gn_beep": {
+    "subtitle": "subtitles.wmd.gn_beep",
+    "sounds": [
+      {
+        "name": "wmd:gn_beep",
+        "stream": false
+      }
+    ]
+  },
+  "hg_shot": {
+    "subtitle": "subtitles.wmd.hg_shot",
+    "sounds": [
+      {
+        "name": "wmd:hg_shot",
+        "stream": false
+      }
+    ]
+  },
+  "hg_shot_far": {
+    "subtitle": "subtitles.wmd.hg_shot_far",
+    "sounds": [
+      {
+        "name": "wmd:hg_shot_far",
+        "stream": false
+      }
+    ]
+  },
+  "hg_breech": {
+    "subtitle": "subtitles.wmd.hg_breech",
+    "sounds": [
+      {
+        "name": "wmd:hg_breech",
+        "stream": false
+      }
+    ]
+  },
+  "hg_port": {
+    "subtitle": "subtitles.wmd.hg_port",
+    "sounds": [
+      {
+        "name": "wmd:hg_port",
+        "stream": false
+      }
+    ]
+  },
+  "hd_loop": {
+    "subtitle": "subtitles.wmd.hd_loop",
+    "sounds": [
+      {
+        "name": "wmd:hd_loop",
+        "stream": false
+      }
+    ]
+  },
+  "hd_loop_heavy": {
+    "subtitle": "subtitles.wmd.hd_loop_heavy",
+    "sounds": [
+      {
+        "name": "wmd:hd_loop_heavy",
+        "stream": false
+      }
+    ]
+  },
+  "hd_start": {
+    "subtitle": "subtitles.wmd.hd_start",
+    "sounds": [
+      {
+        "name": "wmd:hd_start",
+        "stream": false
+      }
+    ]
+  },
+  "hd_stop_floor": {
+    "subtitle": "subtitles.wmd.hd_stop_floor",
+    "sounds": [
+      {
+        "name": "wmd:hd_stop_floor",
+        "stream": false
+      }
+    ]
+  },
+  "hd_stop_top": {
+    "subtitle": "subtitles.wmd.hd_stop_top",
+    "sounds": [
+      {
+        "name": "wmd:hd_stop_top",
+        "stream": false
+      }
+    ]
+  },
+  "hd_latch": {
+    "subtitle": "subtitles.wmd.hd_latch",
+    "sounds": [
+      {
+        "name": "wmd:hd_latch",
+        "stream": false
+      }
+    ]
+  },
+  "hd_safety": {
+    "subtitle": "subtitles.wmd.hd_safety",
+    "sounds": [
+      {
+        "name": "wmd:hd_safety",
+        "stream": false
+      }
+    ]
+  },
+  "ap_engage": {
+    "subtitle": "subtitles.wmd.ap_engage",
+    "sounds": [
+      {
+        "name": "wmd:ap_engage",
+        "stream": false
+      }
+    ]
+  },
+  "ap_disconnect": {
+    "subtitle": "subtitles.wmd.ap_disconnect",
+    "sounds": [
+      {
+        "name": "wmd:ap_disconnect",
+        "stream": false
+      }
+    ]
+  },
+  "bailout_bell": {
+    "subtitle": "subtitles.wmd.bailout_bell",
+    "sounds": [
+      {
+        "name": "wmd:bailout_bell",
+        "stream": false
+      }
+    ]
+  },
+  "fdk_seat_slide": {
+    "subtitle": "subtitles.wmd.fdk_seat_slide",
+    "sounds": [
+      {
+        "name": "wmd:fdk_seat_slide",
+        "stream": false
+      }
+    ]
+  },
+  "ct_page": {
+    "subtitle": "subtitles.wmd.ct_page",
+    "sounds": [
+      {
+        "name": "wmd:ct_page",
+        "stream": false
+      }
+    ]
+  },
+  "ct_lamp": {
+    "subtitle": "subtitles.wmd.ct_lamp",
+    "sounds": [
+      {
+        "name": "wmd:ct_lamp",
+        "stream": false
+      }
+    ]
+  },
+  "ct_wake": {
+    "subtitle": "subtitles.wmd.ct_wake",
+    "sounds": [
+      {
+        "name": "wmd:ct_wake",
+        "stream": false
+      }
+    ]
+  },
+  "dg_drive_loop": {
+    "subtitle": "subtitles.wmd.dg_drive_loop",
+    "sounds": [
+      {
+        "name": "wmd:dg_drive_loop",
+        "stream": false
+      }
+    ]
+  },
+  "dg_shot": {
+    "subtitle": "subtitles.wmd.dg_shot",
+    "sounds": [
+      {
+        "name": "wmd:dg_shot",
+        "stream": false
+      }
+    ]
+  },
+  "dg_shot_far": {
+    "subtitle": "subtitles.wmd.dg_shot_far",
+    "sounds": [
+      {
+        "name": "wmd:dg_shot_far",
+        "stream": false
+      }
+    ]
+  },
+  "dg_breech": {
+    "subtitle": "subtitles.wmd.dg_breech",
+    "sounds": [
+      {
+        "name": "wmd:dg_breech",
+        "stream": false
+      }
+    ]
+  },
+  "dg_case": {
+    "subtitle": "subtitles.wmd.dg_case",
+    "sounds": [
+      {
+        "name": "wmd:dg_case",
+        "stream": false
+      }
+    ]
+  },
+  "xl_drive_loop": {
+    "subtitle": "subtitles.wmd.xl_drive_loop",
+    "sounds": [
+      {
+        "name": "wmd:xl_drive_loop",
+        "stream": false
+      }
+    ]
+  },
+  "xl_shot": {
+    "subtitle": "subtitles.wmd.xl_shot",
+    "sounds": [
+      {
+        "name": "wmd:xl_shot",
+        "stream": false
+      }
+    ]
+  },
+  "xl_shot_far": {
+    "subtitle": "subtitles.wmd.xl_shot_far",
+    "sounds": [
+      {
+        "name": "wmd:xl_shot_far",
+        "stream": false
+      }
+    ]
+  },
+  "xl_ram": {
+    "subtitle": "subtitles.wmd.xl_ram",
+    "sounds": [
+      {
+        "name": "wmd:xl_ram",
+        "stream": false
+      }
+    ]
+  },
+  "xl_breech": {
+    "subtitle": "subtitles.wmd.xl_breech",
+    "sounds": [
+      {
+        "name": "wmd:xl_breech",
+        "stream": false
+      }
+    ]
   }
 }

@@ -123,12 +123,20 @@ public abstract class MachineBlock extends BaseEntityBlock implements net.minecr
         return Machines.mountShape(machineShape(BlockPos.ZERO, state.getValue(FACING)), Machines.mount(state));
     }
 
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
+    public Direction[] placement(BlockPlaceContext context) {
         Direction[] mf = ShipPlace.place(context, anyFace());
         if (mf == null) return null;
         Direction mount = mf[0], facing = mf[1];
         if (faceAway() && mount == Direction.UP && facing.getAxis() != Direction.Axis.Y) facing = facing.getOpposite();
+        return new Direction[] { mount, facing };
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        Direction[] mf = PlaceTurn.choose(this, context, placement(context));
+        if (mf != null && !FACING.getPossibleValues().contains(mf[1])) mf = placement(context);
+        if (mf == null) return null;
+        Direction mount = mf[0], facing = mf[1];
         BlockPos origin = context.getClickedPos();
         java.util.List<BlockPos> cells = new java.util.ArrayList<>();
         for (BlockPos l : footprint()) {

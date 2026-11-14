@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:targeting_pod"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SLS",
+    "PCP",
+    "SGS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "L": {
+      "item": "wmd:laser_tripod"
+    },
+    "P": {
+      "item": "wmd:aluminium_plate"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "G": {
+      "tag": "c:glass_blocks"
+    }
+  },
+  "result": {
+    "id": "wmd:targeting_pod",
+    "count": 1
+  }
+}

@@ -23,7 +23,7 @@ public final class ShipBreakup {
 
     private record Check(ServerLevel level, UUID id, Vec3 at, float power, long due) {}
 
-    private record Mark(ServerLevel level, AABB box, long due) {}
+    private record Mark(ServerLevel level, AABB box, long due, UUID parent) {}
 
     private static final class Burn {
         final ServerLevel level;
@@ -68,6 +68,8 @@ public final class ShipBreakup {
             if (m.level != sl || now < m.due) continue;
             it.remove();
             for (SableBridge.ShipInfo s : SableBridge.shipsIntersecting(sl, m.box)) {
+
+                if (AirGate.on() && !s.id().equals(m.parent())) AirPicture.markWreck(s.id());
                 burn(sl, s.id(), now);
                 FRACTURED.putIfAbsent(s.id(), now);
                 FIRST.putIfAbsent(s.id(), Math.max(1, s.blockCount()));
@@ -88,7 +90,7 @@ public final class ShipBreakup {
         int cut = SableBridge.shipFracture(level, c.id, c.at);
         if (cut <= 0) return;
         FRACTURED.put(c.id, now);
-        MARKS.add(new Mark(level, info.worldBounds().inflate(2.0), now + Balance.SHIP_MARK_DELAY));
+        MARKS.add(new Mark(level, info.worldBounds().inflate(2.0), now + Balance.SHIP_MARK_DELAY, c.id));
         Wmd.LOGGER.info("[ship] {} fractured at {} {} {}: {} blocks cut (lost {} %, blast power {})", info.name(), (int) c.at.x, (int) c.at.y, (int) c.at.z, cut,
                 Math.round(lost * 100), Math.round(c.power));
     }

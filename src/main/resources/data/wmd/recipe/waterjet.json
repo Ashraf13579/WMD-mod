@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:waterjet"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PBP",
+    "PCP",
+    "PWP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "B": {
+      "item": "wmd:turbine_blades"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    }
+  },
+  "result": {
+    "id": "wmd:waterjet",
+    "count": 1
+  }
+}

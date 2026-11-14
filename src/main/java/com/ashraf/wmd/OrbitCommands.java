@@ -18,7 +18,7 @@ public final class OrbitCommands {
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("orbit")
+                .then(Commands.literal("orbit").requires(TestCmds::test)
                         .then(Commands.literal("go")
                                 .executes(c -> go(c.getSource(), false))
                                 .then(Commands.literal("platform").executes(c -> go(c.getSource(), true))))

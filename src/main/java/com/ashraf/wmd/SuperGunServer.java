@@ -30,11 +30,12 @@ public final class SuperGunServer {
 
     private static final Set<Long> HELD = new HashSet<>();
 
-    static void onFired(ServerLevel level, SuperGunBlockEntity gun) {
-        ArtShell s = newest(level, gun.getBlockPos());
+    static void onFired(ServerLevel level, SuperGunBlockEntity gun) { onFiredBy(level, gun.getBlockPos(), gun.getOwner(), gun.getOwnerName()); }
+
+    static void onFiredBy(ServerLevel level, BlockPos gunPos, UUID shooter, String shooterName) {
+        ArtShell s = newest(level, gunPos);
         if (s == null) return;
         MinecraftServer server = level.getServer();
-        UUID shooter = gun.getOwner();
         double r2 = (double) Balance.SUPER_GUN_WARN_RANGE * Balance.SUPER_GUN_WARN_RANGE;
         Set<UUID> owners = new LinkedHashSet<>();
         for (CcModuleBlockEntity m : CommandCenter.modules()) {
@@ -46,7 +47,7 @@ public final class SuperGunServer {
             double dg = sq(bx - s.ox()) + sq(bz - s.oz()), di = sq(bx - s.tx()) + sq(bz - s.tz());
             if (Math.min(dg, di) <= r2) owners.add(o);
         }
-        net.minecraft.world.phys.Vec3 gw = SableBridge.worldPos(level, gun.getBlockPos());
+        net.minecraft.world.phys.Vec3 gw = SableBridge.worldPos(level, gunPos);
         int gx = (int) Math.floor(gw.x), gz = (int) Math.floor(gw.z);
         int secs = Math.max(1, s.dur() / 20);
         for (UUID o : owners) {
@@ -58,7 +59,7 @@ public final class SuperGunServer {
                 p.displayClientMessage(Component.translatable("message.wmd.super_gun.bar", secs).withStyle(ChatFormatting.RED), true);
             }
         }
-        Wmd.LOGGER.info("Super gun of {} at {} fired shell #{} at {} {} ({} s); warned {} owner(s)", gun.getOwnerName(), gun.getBlockPos().toShortString(), s.id(),
+        Wmd.LOGGER.info("Super gun of {} at {} fired shell #{} at {} {} ({} s); warned {} owner(s)", shooterName, gunPos.toShortString(), s.id(),
                 Math.round(s.tx()), Math.round(s.tz()), secs, owners.size());
     }
 

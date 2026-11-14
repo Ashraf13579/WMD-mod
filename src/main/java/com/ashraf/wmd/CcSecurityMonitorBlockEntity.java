@@ -112,7 +112,7 @@ public class CcSecurityMonitorBlockEntity extends CcModuleBlockEntity implements
     public int screenAlert() { return screenAlert; }
 
     boolean mayWork(ServerPlayer p) {
-        return !isRemoved() && p.level() == level && p.position().distanceTo(centre()) <= REACH && Access.mayUse(this, p);
+        return !isRemoved() && p.level() == level && Reach.within(p, worldPosition, REACH) && Access.mayUse(this, p);
     }
 
     void open(ServerPlayer p) {

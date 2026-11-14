@@ -1,0 +1,166 @@
+{
+  "variants": {
+    "bottom=false,drawn=false,edge=0,facing=north": {
+      "model": "wmd:block/hangar_curtain"
+    },
+    "bottom=true,drawn=false,edge=0,facing=north": {
+      "model": "wmd:block/hangar_curtain_bottom"
+    },
+    "bottom=false,drawn=true,edge=0,facing=north": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=true,drawn=true,edge=0,facing=north": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=false,drawn=false,edge=1,facing=north": {
+      "model": "wmd:block/hangar_curtain_w"
+    },
+    "bottom=true,drawn=false,edge=1,facing=north": {
+      "model": "wmd:block/hangar_curtain_w_bottom"
+    },
+    "bottom=false,drawn=true,edge=1,facing=north": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=true,drawn=true,edge=1,facing=north": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=false,drawn=false,edge=2,facing=north": {
+      "model": "wmd:block/hangar_curtain_e"
+    },
+    "bottom=true,drawn=false,edge=2,facing=north": {
+      "model": "wmd:block/hangar_curtain_e_bottom"
+    },
+    "bottom=false,drawn=true,edge=2,facing=north": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=true,drawn=true,edge=2,facing=north": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=false,drawn=false,edge=0,facing=east": {
+      "model": "wmd:block/hangar_curtain",
+      "y": 90
+    },
+    "bottom=true,drawn=false,edge=0,facing=east": {
+      "model": "wmd:block/hangar_curtain_bottom",
+      "y": 90
+    },
+    "bottom=false,drawn=true,edge=0,facing=east": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=true,drawn=true,edge=0,facing=east": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=false,drawn=false,edge=1,facing=east": {
+      "model": "wmd:block/hangar_curtain_w",
+      "y": 90
+    },
+    "bottom=true,drawn=false,edge=1,facing=east": {
+      "model": "wmd:block/hangar_curtain_w_bottom",
+      "y": 90
+    },
+    "bottom=false,drawn=true,edge=1,facing=east": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=true,drawn=true,edge=1,facing=east": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=false,drawn=false,edge=2,facing=east": {
+      "model": "wmd:block/hangar_curtain_e",
+      "y": 90
+    },
+    "bottom=true,drawn=false,edge=2,facing=east": {
+      "model": "wmd:block/hangar_curtain_e_bottom",
+      "y": 90
+    },
+    "bottom=false,drawn=true,edge=2,facing=east": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=true,drawn=true,edge=2,facing=east": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=false,drawn=false,edge=0,facing=south": {
+      "model": "wmd:block/hangar_curtain",
+      "y": 180
+    },
+    "bottom=true,drawn=false,edge=0,facing=south": {
+      "model": "wmd:block/hangar_curtain_bottom",
+      "y": 180
+    },
+    "bottom=false,drawn=true,edge=0,facing=south": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=true,drawn=true,edge=0,facing=south": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=false,drawn=false,edge=1,facing=south": {
+      "model": "wmd:block/hangar_curtain_w",
+      "y": 180
+    },
+    "bottom=true,drawn=false,edge=1,facing=south": {
+      "model": "wmd:block/hangar_curtain_w_bottom",
+      "y": 180
+    },
+    "bottom=false,drawn=true,edge=1,facing=south": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=true,drawn=true,edge=1,facing=south": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=false,drawn=false,edge=2,facing=south": {
+      "model": "wmd:block/hangar_curtain_e",
+      "y": 180
+    },
+    "bottom=true,drawn=false,edge=2,facing=south": {
+      "model": "wmd:block/hangar_curtain_e_bottom",
+      "y": 180
+    },
+    "bottom=false,drawn=true,edge=2,facing=south": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=true,drawn=true,edge=2,facing=south": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=false,drawn=false,edge=0,facing=west": {
+      "model": "wmd:block/hangar_curtain",
+      "y": 270
+    },
+    "bottom=true,drawn=false,edge=0,facing=west": {
+      "model": "wmd:block/hangar_curtain_bottom",
+      "y": 270
+    },
+    "bottom=false,drawn=true,edge=0,facing=west": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=true,drawn=true,edge=0,facing=west": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=false,drawn=false,edge=1,facing=west": {
+      "model": "wmd:block/hangar_curtain_w",
+      "y": 270
+    },
+    "bottom=true,drawn=false,edge=1,facing=west": {
+      "model": "wmd:block/hangar_curtain_w_bottom",
+      "y": 270
+    },
+    "bottom=false,drawn=true,edge=1,facing=west": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=true,drawn=true,edge=1,facing=west": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=false,drawn=false,edge=2,facing=west": {
+      "model": "wmd:block/hangar_curtain_e",
+      "y": 270
+    },
+    "bottom=true,drawn=false,edge=2,facing=west": {
+      "model": "wmd:block/hangar_curtain_e_bottom",
+      "y": 270
+    },
+    "bottom=false,drawn=true,edge=2,facing=west": {
+      "model": "wmd:block/invisible"
+    },
+    "bottom=true,drawn=true,edge=2,facing=west": {
+      "model": "wmd:block/invisible"
+    }
+  }
+}

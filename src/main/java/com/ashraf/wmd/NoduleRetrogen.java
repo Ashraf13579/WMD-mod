@@ -64,6 +64,7 @@ public final class NoduleRetrogen {
         if (!(e.getLevel() instanceof ServerLevel sl) || !(e.getChunk() instanceof LevelChunk c)) return;
         if (e.isNewChunk()) { mark(c); return; }
         if (done(c)) return;
+        if (!Config.Server.noduleRetrogen() || !Config.oreGen("nodules")) return;
         queue(sl, c.getPos().toLong());
     }
 
@@ -109,7 +110,7 @@ public final class NoduleRetrogen {
     @SubscribeEvent
     static void commands(RegisterCommandsEvent e) {
         e.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("retrogen").then(Commands.literal("nodules")
+                .then(Commands.literal("retrogen").requires(TestCmds::test).then(Commands.literal("nodules")
                         .executes(c -> run(c.getSource(), 8))
                         .then(Commands.argument("radius", IntegerArgumentType.integer(1, 32))
                                 .executes(c -> run(c.getSource(), IntegerArgumentType.getInteger(c, "radius")))))));

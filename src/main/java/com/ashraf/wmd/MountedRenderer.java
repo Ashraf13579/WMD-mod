@@ -24,11 +24,33 @@ public final class MountedRenderer<T extends BlockEntity> implements BlockEntity
 
     @Override
     public void render(T be, float partialTick, PoseStack ps, MultiBufferSource buffers, int light, int overlay) {
-        if (Machines.mount(be.getBlockState()) == Direction.UP) { inner.render(be, partialTick, ps, buffers, light, overlay); return; }
+        float gap = wingGap(be);
+        if (Machines.mount(be.getBlockState()) == Direction.UP && gap == 0.0F) { inner.render(be, partialTick, ps, buffers, light, overlay); return; }
         ps.pushPose();
+        if (gap != 0.0F) {
+            Direction m = Machines.mount(be.getBlockState());
+            ps.translate(m.getStepX() * gap, m.getStepY() * gap, m.getStepZ() * gap);
+        }
         MountRender.apply(ps, be.getBlockState());
         inner.render(be, partialTick, ps, buffers, light, overlay);
         ps.popPose();
+    }
+
+    static float wingGap(BlockEntity be) {
+        if (be.getLevel() == null || be instanceof AirStationBlockEntity || be instanceof LandingGearBlockEntity) return 0.0F;
+        net.minecraft.world.level.block.state.BlockState st = be.getBlockState();
+        if (!st.hasProperty(MachineBlock.MOUNT)) return 0.0F;
+        Direction m = Machines.mount(st);
+        net.minecraft.core.BlockPos at = be.getBlockPos().relative(m);
+        net.minecraft.world.level.block.state.BlockState w = be.getLevel().getBlockState(at);
+        if (!(w.getBlock() instanceof WingSectionBlock)) return 0.0F;
+        AABB b = w.getShape(be.getLevel(), at).bounds();
+        double g = switch (m) {
+            case UP -> b.minY; case DOWN -> 1.0 - b.maxY;
+            case EAST -> b.minX; case WEST -> 1.0 - b.maxX;
+            case SOUTH -> b.minZ; default -> 1.0 - b.maxZ;
+        };
+        return g > 0.001 && g < 0.999 ? (float) g : 0.0F;
     }
 
     @Override public boolean shouldRenderOffScreen(T be) { return inner.shouldRenderOffScreen(be) || spansCells(getRenderBoundingBox(be)); }

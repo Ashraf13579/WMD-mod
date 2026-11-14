@@ -34,7 +34,7 @@ public final class TrackNet {
         return m;
     }
 
-    static void clearStatics() { TRACKS.clear(); BEATS.clear(); SEEKERS.clear(); RADARS.clear(); SHIP_TRACKS.clear(); }
+    static void clearStatics() { TRACKS.clear(); BEATS.clear(); SEEKERS.clear(); RADARS.clear(); SHIP_TRACKS.clear(); AIR_TRACKS.clear(); }
 
     private static String key(ServerLevel level, UUID owner, int frequency) { return level.dimension().location() + "|" + owner + "|" + frequency; }
 
@@ -161,6 +161,39 @@ public final class TrackNet {
         m.entrySet().removeIf(e -> e.getValue() < now);
         out.addAll(m.keySet());
         return out;
+    }
+
+    private static final Map<String, Map<UUID, Long>> AIR_TRACKS = new HashMap<>();
+
+    public static void reportAircraft(ServerLevel level, UUID owner, int frequency, UUID aircraftId, long now) {
+        if (!AirGate.on() || owner == null || aircraftId == null) return;
+        Map<UUID, Long> m = AIR_TRACKS.computeIfAbsent(key(level, owner, frequency), k -> new HashMap<>());
+        if (m.size() > 64) m.clear();
+        m.put(aircraftId, now + SHIP_TTL);
+    }
+
+    public static List<UUID> aircraftTracks(ServerLevel level, UUID owner, int frequency, long now) {
+        List<UUID> out = new ArrayList<>();
+        Map<UUID, Long> m = owner == null || !AirGate.on() ? null : AIR_TRACKS.get(key(level, owner, frequency));
+        if (m == null) return out;
+        m.entrySet().removeIf(e -> e.getValue() < now);
+        out.addAll(m.keySet());
+        return out;
+    }
+
+    private static final Map<String, Long> AIR_BEATS = Statics.server(new HashMap<>());
+
+    public static final int AIR_BEAT_TTL = 60;
+
+    public static void airBeat(ServerLevel level, UUID owner, int frequency, long now) {
+        if (!AirGate.on() || owner == null) return;
+        AIR_BEATS.put(key(level, owner, frequency), now);
+    }
+
+    public static boolean airRadarUp(ServerLevel level, UUID owner, int frequency, long now) {
+        if (!AirGate.on() || owner == null) return false;
+        Long t = AIR_BEATS.get(key(level, owner, frequency));
+        return t != null && now - t <= AIR_BEAT_TTL;
     }
 
     public static int linkState(ServerLevel level, UUID owner, int frequency, long now) {

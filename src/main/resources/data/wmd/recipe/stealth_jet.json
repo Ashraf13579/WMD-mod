@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:stealth_jet"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GTG",
+    "JCJ",
+    "PTP"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:iron_bars"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "J": {
+      "item": "wmd:jet_engine"
+    },
+    "P": {
+      "tag": "c:plates/titanium"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:stealth_jet",
+    "count": 1
+  }
+}

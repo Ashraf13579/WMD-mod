@@ -50,6 +50,12 @@ public class Config {
 
     public static boolean reactorMeltdown() { return !SPEC.isLoaded() || REACTOR_MELTDOWN.get(); }
 
+    public static final ModConfigSpec.BooleanValue COCKPIT_VOICE = AirGate.AVAILABLE ? BUILDER
+            .comment("Jet cockpit: spoken warnings (\"PULL UP\", \"MISSILE\") in your headset. false = warning tones only. Only this computer.")
+            .define("cockpitVoice", true) : null;
+
+    public static boolean cockpitVoice() { return COCKPIT_VOICE == null || !SPEC.isLoaded() || COCKPIT_VOICE.get(); }
+
     static final ModConfigSpec SPEC = BUILDER.build();
 
     public static double missRadius(int grade) {
@@ -90,6 +96,9 @@ public class Config {
         public static final ModConfigSpec.IntValue OFFLINE_GRACE = B
                 .comment("Minutes after the last member of a base's team logs out before offline protection starts (no logging out in the middle of an attack).")
                 .defineInRange("offlineProtectionGraceMinutes", 15, 0, 1440);
+        public static final ModConfigSpec.BooleanValue TANK_DAMAGE = B
+                .comment("Fluid tanks take damage: missiles, bullets and explosions crack the glass Storage Tank (it shatters when it fails) and dent the aircraft fuel tanks, drop tanks and the power core; a damaged tank leaks, burns if its contents burn, and finally explodes or bursts depending on the liquid (fuel fireballs, gas fireballs, oil fires, steam, poison clouds). Craters and fires follow explosionBlockDamage, spawn protection and claims. false = tanks are never damaged.")
+                .define("tankDamage", true);
 
         static { B.comment("EXPERIMENTAL explosion features (2-3 Nov 2026): damage rings, building collapse, the moving shockwave and the lingering aftermath. "
                 + "OFF by default outside the development game: set one to true to try it (they can be switched while the server runs). They change a lot of blocks "
@@ -187,6 +196,25 @@ public class Config {
         public static final ModConfigSpec.BooleanValue RELINK_ON_ASSEMBLY = B
                 .comment("Sable ships: when machines are assembled into a ship or a ship is disassembled, WMD moves their saved positions along (strike plans, multiblock parts, command center modules, network cards). false = links to moved machines break and must be re-bound by hand.")
                 .define("relinkOnAssembly", true);
+        public static final ModConfigSpec.IntValue AIR_CEILING = B
+                .comment("Sable air (overworld): the height where the air ends. Wings, flaps and jet engines work up to here and get weaker the higher they go; "
+                        + "aircraft with more thrust and more wing climb closer to it (default 1100: one jet reaches about 600, two big jets about 1000). "
+                        + "NOTE: this changes the air for EVERY Sable object, not only WMD aircraft: Create Aeronautics balloons, propellers and ships "
+                        + "can also go this high. 0 = leave Sable's own air (it ends at the build limit, y 320). A datapack with its own Sable "
+                        + "dimension_physics file for the overworld still wins. Takes effect on server start or /reload.")
+                .defineInRange("airCeiling", 1100, 0, 4000);
+        public static final ModConfigSpec.BooleanValue CRASH_DAMAGE = B
+                .comment("Aircraft crashes: hitting the ground, a building or another craft fast (about 15 b/s and more; a normal landing never counts) breaks blocks off the aircraft round the impact and damages its engines there, more the faster it hit. false = aircraft bounce off undamaged.")
+                .define("crashDamage", true);
+        public static final ModConfigSpec.BooleanValue CRASH_DAMAGES_WORLD = B
+                .comment("Aircraft crashes also break the blocks they hit (like an explosion: only where explosionBlockDamage, spawn protection and claims allow; never containers). false = buildings and ground stay untouched.")
+                .define("crashDamagesWorld", true);
+        public static final ModConfigSpec.BooleanValue CRASH_HURTS_CREW = B
+                .comment("Aircraft crashes hurt everyone aboard, more the faster the impact: a scrape stings, a full crash (about 55 b/s) kills. Ejecting first saves you. false = the crew is never hurt.")
+                .define("crashHurtsCrew", true);
+        public static final ModConfigSpec.BooleanValue HARD_LANDING_BREAKS_GEAR = B
+                .comment("Landing gear breaks off when an aircraft touches down sinking too fast (more than 12 b/s). false = gear never breaks.")
+                .define("hardLandingBreaksGear", true);
         public static final ModConfigSpec.BooleanValue SHIP_FRIENDLY_FIRE = B
                 .comment("Sable / Aeronautics ships: WMD missiles, shells, rockets and blasts also hit a ship that carries only your own or trusted machines and players (blast damage in reach and projectiles striking it in flight). false = such a ship is spared; a ship with no machines and no players aboard is always hit.")
                 .define("shipFriendlyFire", true);
@@ -241,6 +269,13 @@ public class Config {
         public static final ModConfigSpec.IntValue BLUEMAP_UPDATE_SECONDS = B
                 .comment("How often the BlueMap markers are refreshed (seconds). Machines are re-scanned over several ticks, never in one go.")
                 .defineInRange("blueMapUpdateSeconds", 3, 1, 60);
+        static { B.pop(); B.comment("Commands.").push("commands"); }
+
+        public static final ModConfigSpec.BooleanValue TEST_COMMANDS = B
+                .comment("Test commands for operators (/wmd art, cc, cruise, mlrs, sat add, station, orbit, reactor, salvage, missile, detonate, pad, enemy, dev probes ...): "
+                        + "they spawn machines, missiles, satellites and stations, fake enemy launches and skip timers. false = off (a normal server); true = a test server. "
+                        + "The server admin tools (/wmd admin ...) are always there. Players see a change after they log in again.")
+                .define("testCommands", false);
         static { B.pop(); }
 
         public static final ModConfigSpec SPEC = B.build();
@@ -297,6 +332,14 @@ public class Config {
 
         public static int largeShipMinBlocks() { return on() ? LARGE_SHIP_MIN_BLOCKS.get() : 350; }
         public static boolean relinkOnAssembly() { return !on() || RELINK_ON_ASSEMBLY.get(); }
+
+        public static boolean crashDamage() { return !on() || CRASH_DAMAGE.get(); }
+
+        public static boolean tankDamage() { return !on() || TANK_DAMAGE.get(); }
+        public static boolean crashDamagesWorld() { return !on() || CRASH_DAMAGES_WORLD.get(); }
+        public static boolean crashHurtsCrew() { return !on() || CRASH_HURTS_CREW.get(); }
+        public static boolean hardLandingBreaksGear() { return !on() || HARD_LANDING_BREAKS_GEAR.get(); }
+        public static int airCeiling() { return on() ? AIR_CEILING.get() : Balance.AIR_CEILING_DEFAULT; }
 
         public static boolean shipFriendlyFire() { return !on() || SHIP_FRIENDLY_FIRE.get(); }
 

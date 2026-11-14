@@ -230,8 +230,9 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
         if (m != null && !m.guiInfo().isEmpty()) tabs.add(new Tab("info", "icon_info", Component.translatable("gui.wmd.kit.tab.info"), null));
         if (m != null && m.guiUpgrades()) tabs.add(new Tab("upgrades", "icon_upgrades", Component.translatable("gui.wmd.kit.tab.upgrades"), null));
         if (m instanceof RadarLinked rl && m instanceof net.minecraft.world.level.block.entity.BlockEntity rbe)
-            addActionTab("icon_freq", Component.translatable("gui.wmd.kit.tab.freq"), () -> minecraft.setScreen(new FrequencyScreen(this, rl::getFrequency,
-                    f -> net.neoforged.neoforge.network.PacketDistributor.sendToServer(new SetMachineFrequencyPayload(rbe.getBlockPos(), f)))));
+            addActionTab("icon_freq", Component.translatable(m instanceof RfLinkBlockEntity ? "gui.wmd.rf.tab" : "gui.wmd.kit.tab.freq"), () -> minecraft.setScreen(new FrequencyScreen(this, rl::getFrequency,
+                    f -> net.neoforged.neoforge.network.PacketDistributor.sendToServer(new SetMachineFrequencyPayload(rbe.getBlockPos(), f)),
+                    m instanceof RfLinkBlockEntity ? "gui.wmd.rf.title" : "gui.wmd.frequency.title", m instanceof RfLinkBlockEntity ? "gui.wmd.rf.label" : "gui.wmd.frequency.label")));
         tab = tabs.stream().anyMatch(t -> t.id().equals(lastTab)) ? lastTab : "process";
         shownDrawer = tab;
         for (int i = 0; i < tankS.length; i++) if (tankS[i] == null) tankS[i] = new WmdUi.Smooth(8.0F);
@@ -315,17 +316,17 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
 
     private Component chipText(int st, boolean hinted) {
         if (GuiMachine.lowPower(st)) return Component.translatable("gui.wmd.kit.chip.low_power", GuiMachine.lowPowerPct(st));
-        String k = switch (st) { case 1 -> "running"; case 2 -> "no_power"; case 3 -> "full"; case 4 -> "needs"; case 5, 6, 7, 8, 9, 10, 11 -> "blocked"; default -> hinted ? "needs" : "idle"; };
+        String k = switch (st) { case 1 -> "running"; case 2 -> "no_power"; case 3 -> "full"; case 4 -> "needs"; case 5, 6, 7, 8, 9, 10, 11 -> "blocked"; case 13 -> "no_link"; case 14 -> "jammed"; default -> hinted ? "needs" : "idle"; };
         return Component.translatable("gui.wmd.kit.chip." + k);
     }
 
     private static int chipKind(int st, boolean hinted) {
         if (GuiMachine.lowPower(st)) return WmdUi.K_WARN;
-        return switch (st) { case 1 -> WmdUi.K_GOOD; case 2, 5, 6, 7, 8, 9, 10, 11, 12 -> WmdUi.K_BAD; case 3, 4 -> WmdUi.K_WARN; default -> hinted ? WmdUi.K_WARN : WmdUi.K_IDLE; };
+        return switch (st) { case 1 -> WmdUi.K_GOOD; case 2, 5, 6, 7, 8, 9, 10, 11, 12, 14 -> WmdUi.K_BAD; case 3, 4, 13 -> WmdUi.K_WARN; default -> hinted ? WmdUi.K_WARN : WmdUi.K_IDLE; };
     }
 
     private static String stateKey(int st) {
-        return switch (st) { case 1 -> "running"; case 2 -> "no_power"; case 3 -> "output_full"; case 4 -> "no_input"; case 5 -> "no_electrode"; case 6 -> "no_water"; case 7 -> "no_impeller"; case 8 -> "no_deposit"; case 9 -> "wrong_bit"; case 10 -> "no_bit"; case 11 -> "no_blades"; case 12 -> "field_down"; default -> "idle"; };
+        return switch (st) { case 1 -> "running"; case 2 -> "no_power"; case 3 -> "output_full"; case 4 -> "no_input"; case 5 -> "no_electrode"; case 6 -> "no_water"; case 7 -> "no_impeller"; case 8 -> "no_deposit"; case 9 -> "wrong_bit"; case 10 -> "no_bit"; case 11 -> "no_blades"; case 12 -> "field_down"; case 13 -> "no_link"; case 14 -> "jammed"; default -> "idle"; };
     }
 
     protected void drawSelectedTab(GuiGraphics g) {

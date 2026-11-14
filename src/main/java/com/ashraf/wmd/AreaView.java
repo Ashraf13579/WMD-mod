@@ -157,6 +157,11 @@ public final class AreaView {
         for (SableBridge.ShipInfo s : SableBridge.largeShipsNear(level, cx, cz, half * 1.5))
             l.add(new AreaMarkersPayload.Marker(AreaMarkersPayload.AIRSHIP, (float) s.worldCenter().x, (float) s.worldCenter().y, (float) s.worldCenter().z,
                     (float) Math.max(s.size().x, s.size().z) * 0.5F));
+        if (AirGate.on())
+            for (AirPicture.Aircraft a : AirPicture.all(level))
+                if (a.blocks() < Config.Server.largeShipMinBlocks() && in(a.pos().x, a.pos().z, cx, cz, half))
+                    l.add(new AreaMarkersPayload.Marker(AreaMarkersPayload.AIRSHIP, (float) a.pos().x, (float) a.pos().y, (float) a.pos().z,
+                            (float) Math.max(a.bounds().getXsize(), a.bounds().getZsize()) * 0.5F));
         for (Flight f : FlightManager.get(level).flights()) {
             if (now < f.start() || now >= f.endTime()) continue;
             Vec3 at = f.position(now);

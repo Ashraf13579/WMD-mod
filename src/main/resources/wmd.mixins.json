@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.ashraf.wmd.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [],
+  "client": [
+    "CreativeScreenMixin",
+    "GlowMixin",
+    "ItemPickerMenuAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

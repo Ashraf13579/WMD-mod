@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:weapons_bay"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "T T",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "T": {
+      "item": "minecraft:piston"
+    }
+  },
+  "result": {
+    "id": "wmd:weapons_bay",
+    "count": 1
+  }
+}

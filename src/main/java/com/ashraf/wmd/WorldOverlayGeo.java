@@ -25,12 +25,15 @@ final class WorldOverlayGeo {
 
     static BufferBuilder lines() { return Tesselator.getInstance().begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR); }
 
-    static void draw(RenderLevelStageEvent event, BufferBuilder bb, float lineWidth) {
+    static void draw(RenderLevelStageEvent event, BufferBuilder bb, float lineWidth) { draw(event, bb, lineWidth, null); }
+
+    static void draw(RenderLevelStageEvent event, BufferBuilder bb, float lineWidth, Matrix4f pre) {
         MeshData md = bb.build();
         if (md == null) return;
         Matrix4fStack mv = RenderSystem.getModelViewStack();
         mv.pushMatrix();
         mv.set(event.getModelViewMatrix());
+        if (pre != null) mv.mul(pre);
         RenderSystem.applyModelViewMatrix();
         RenderSystem.backupProjectionMatrix();
         RenderSystem.setProjectionMatrix(new Matrix4f(event.getProjectionMatrix()), VertexSorting.DISTANCE_TO_ORIGIN);

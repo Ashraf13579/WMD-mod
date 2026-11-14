@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:refuel_probe"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "  P",
+    "PBP",
+    "PC "
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "C": {
+      "item": "wmd:basic_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:refuel_probe",
+    "count": 1
+  }
+}

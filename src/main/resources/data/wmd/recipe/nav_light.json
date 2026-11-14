@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:nav_light"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " G ",
+    "PLP",
+    " P "
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "L": {
+      "item": "minecraft:redstone_lamp"
+    }
+  },
+  "result": {
+    "id": "wmd:nav_light",
+    "count": 1
+  }
+}

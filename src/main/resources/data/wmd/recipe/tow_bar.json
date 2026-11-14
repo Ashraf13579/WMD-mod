@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:tow_bar"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "  S",
+    " A ",
+    "I  "
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "A": {
+      "item": "wmd:aluminium_plate"
+    },
+    "I": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "result": {
+    "id": "wmd:tow_bar",
+    "count": 1
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:cargo_pallet"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WTW",
+    "SCS",
+    "PPP"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:white_wool"
+    },
+    "T": {
+      "item": "minecraft:string"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "S": {
+      "item": "minecraft:string"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "result": {
+    "id": "wmd:cargo_pallet",
+    "count": 1
+  }
+}

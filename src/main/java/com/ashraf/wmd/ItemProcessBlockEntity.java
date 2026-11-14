@@ -61,6 +61,10 @@ public abstract class ItemProcessBlockEntity extends ProcessUnitBlockEntity impl
 
     protected ItemProcessBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int fePerTick) { super(type, pos, state, fePerTick); }
 
+    protected ItemProcessBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int fePerTick, int bufferFe, int receivePerTick) {
+        super(type, pos, state, fePerTick, bufferFe, receivePerTick);
+    }
+
     protected static Item wmd(String id) { return BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, id)); }
     static net.minecraft.world.level.block.Block wmdBlock(String id) { return BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, id)); }
 

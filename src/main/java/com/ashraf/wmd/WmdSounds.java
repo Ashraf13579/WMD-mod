@@ -1006,4 +1006,563 @@ public final class WmdSounds {
             () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "uw_boil")));
     public static final DeferredHolder<SoundEvent, SoundEvent> UW_COLUMN = SOUNDS.register("uw_column",
             () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "uw_column")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SCREW_LOOP = SOUNDS.register("screw_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "screw_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SCREW_START = SOUNDS.register("screw_start",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "screw_start")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SCREW_STOP = SOUNDS.register("screw_stop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "screw_stop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SCREW_CAVITATE = SOUNDS.register("screw_cavitate",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "screw_cavitate")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SCREW_SERVO = SOUNDS.register("screw_servo",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "screw_servo")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> TELEGRAPH_LEVER = SOUNDS.register("telegraph_lever",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "telegraph_lever")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> TELEGRAPH_BELL = SOUNDS.register("telegraph_bell",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "telegraph_bell")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> DUCTED_FAN_LOOP = SOUNDS.register("ducted_fan_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ducted_fan_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> DUCTED_FAN_START = SOUNDS.register("ducted_fan_start",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ducted_fan_start")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> JET1_LOOP = SOUNDS.register("jet1_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "jet1_loop")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> JET2_LOOP = SOUNDS.register("jet2_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "jet2_loop")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> JETS_LOOP = SOUNDS.register("jets_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "jets_loop")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> JET_AB_LOOP = SOUNDS.register("jet_ab_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "jet_ab_loop")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> JET_START = SOUNDS.register("jet_start",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "jet_start")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> JET_AB_LIGHT = SOUNDS.register("jet_ab_light",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "jet_ab_light")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> JET_SPOOL_UP = SOUNDS.register("jet_spool_up",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "jet_spool_up")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> JET_SHUTDOWN = SOUNDS.register("jet_shutdown",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "jet_shutdown")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> TURBOFAN_LOOP = SOUNDS.register("turbofan_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "turbofan_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> TURBOFAN_START = SOUNDS.register("turbofan_start",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "turbofan_start")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> TURBOFAN_SPOOL_UP = SOUNDS.register("turbofan_spool_up",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "turbofan_spool_up")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> TURBOFAN_SPOOL_DOWN = SOUNDS.register("turbofan_spool_down",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "turbofan_spool_down")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> JATO_IGNITE = SOUNDS.register("jato_ignite",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "jato_ignite")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> JATO_LOOP = SOUNDS.register("jato_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "jato_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> JATO_BURNOUT = SOUNDS.register("jato_burnout",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "jato_burnout")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> JATO_RELEASE = SOUNDS.register("jato_release",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "jato_release")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> JATO_BOTTLE_LAND = SOUNDS.register("jato_bottle_land",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "jato_bottle_land")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> ASR_RUN = SOUNDS.register("asr_run",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "asr_run")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> ASR_SPIN_UP = SOUNDS.register("asr_spin_up",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "asr_spin_up")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> ASR_SPIN_DOWN = SOUNDS.register("asr_spin_down",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "asr_spin_down")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> ASR_SWITCH = SOUNDS.register("asr_switch",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "asr_switch")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> CORE_HUM = SOUNDS.register("core_hum",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "core_hum")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> CORE_APU = SOUNDS.register("core_apu",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "core_apu")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> CORE_APU_START = SOUNDS.register("core_apu_start",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "core_apu_start")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> STATION_LOAD = SOUNDS.register("station_load",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "station_load")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> PYLON_EJECT = SOUNDS.register("pylon_eject",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "pylon_eject")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> BAY_DOOR_OPEN = SOUNDS.register("bay_door_open",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "bay_door_open")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> BAY_DOOR_CLOSE = SOUNDS.register("bay_door_close",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "bay_door_close")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> JAMMER_LOOP = SOUNDS.register("jammer_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "jammer_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> GPOD_SPIN = SOUNDS.register("gpod_spin_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "gpod_spin_loop")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> GPOD_BURST = SOUNDS.register("gpod_burst",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "gpod_burst")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> GPOD_RELOAD = SOUNDS.register("gpod_reload",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "gpod_reload")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> TPOD_CLICK = SOUNDS.register("tpod_click",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "tpod_click")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> TPOD_SLEW = SOUNDS.register("tpod_slew",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "tpod_slew")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> GEAR_CYCLE = SOUNDS.register("gear_cycle",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "gear_cycle")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> GEAR_LOCK = SOUNDS.register("gear_lock",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "gear_lock")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> GEAR_TOUCHDOWN = SOUNDS.register("gear_touchdown",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "gear_touchdown")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> TOW_COUPLE = SOUNDS.register("tow_couple",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "tow_couple")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> TOW_ROLL = SOUNDS.register("tow_roll",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "tow_roll")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> NOSE_DRIVE = SOUNDS.register("nose_drive",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "nose_drive")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> HOOK_MOVE = SOUNDS.register("hook_move",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "hook_move")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> WIRE_CATCH = SOUNDS.register("wire_catch",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "wire_catch")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> WIRE_RESET = SOUNDS.register("wire_reset",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "wire_reset")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> CAT_HOOK = SOUNDS.register("cat_hook",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "cat_hook")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> CAT_SHOT = SOUNDS.register("cat_shot",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "cat_shot")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> CAT_RETURN = SOUNDS.register("cat_return",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "cat_return")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> LIFT_LOOP = SOUNDS.register("lift_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "lift_loop")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> LIFT_CLUNK = SOUNDS.register("lift_clunk",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "lift_clunk")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> LIFT_RAIL = SOUNDS.register("lift_rail",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "lift_rail")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> AAM_LAUNCH = SOUNDS.register("aam_launch",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "aam_launch")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> AAM_LAUNCH_FAR = SOUNDS.register("aam_launch_far",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "aam_launch_far")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> AAM_FLIGHT_LOOP = SOUNDS.register("aam_flight_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "aam_flight_loop")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> AAM_BURST = SOUNDS.register("aam_burst",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "aam_burst")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> AAM_BURST_FAR = SOUNDS.register("aam_burst_far",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "aam_burst_far")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> AAM_FIZZLE = SOUNDS.register("aam_fizzle",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "aam_fizzle")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> FLARE_POP = SOUNDS.register("flare_pop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "flare_pop")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> CHAFF_POP = SOUNDS.register("chaff_pop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "chaff_pop")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> DISP_RELOAD = SOUNDS.register("disp_reload",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "disp_reload")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> JATO_LATCH = SOUNDS.register("jato_latch",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "jato_latch")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> SEAT_ROCKET = SOUNDS.register("seat_rocket",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "seat_rocket")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> JAMMER_SWITCH = SOUNDS.register("jammer_switch",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "jammer_switch")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SAM_SLEW = SOUNDS.register("sam_slew",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "sam_slew")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SAM_LOCK = SOUNDS.register("sam_lock",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "sam_lock")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SAM_HATCH = SOUNDS.register("sam_hatch",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "sam_hatch")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SAM_CHIRP = SOUNDS.register("sam_chirp",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "sam_chirp")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SAM_LAUNCH = SOUNDS.register("sam_launch",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "sam_launch")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> TELEGRAPH_WHEEL = SOUNDS.register("telegraph_wheel",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "telegraph_wheel")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> HELM_SEAT_IN = SOUNDS.register("helm_seat_in",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "helm_seat_in")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> HELM_SEAT_OUT = SOUNDS.register("helm_seat_out",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "helm_seat_out")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> HELM_STEP = SOUNDS.register("helm_step",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "helm_step")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> HELM_BOOT = SOUNDS.register("helm_boot",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "helm_boot")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> COCKPIT_HUM = SOUNDS.register("cockpit_hum",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "cockpit_hum")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> CANOPY_OPEN = SOUNDS.register("canopy_open",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "canopy_open")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> CANOPY_CLOSE = SOUNDS.register("canopy_close",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "canopy_close")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> COCKPIT_HARNESS = SOUNDS.register("cockpit_harness",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "cockpit_harness")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> COCKPIT_SWITCH = SOUNDS.register("cockpit_switch",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "cockpit_switch")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> RWR_SEARCH = SOUNDS.register("rwr_search",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "rwr_search")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> RWR_LOCK = SOUNDS.register("rwr_lock",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "rwr_lock")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> RWR_LAUNCH = SOUNDS.register("rwr_launch",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "rwr_launch")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> MSL_GROWL = SOUNDS.register("msl_growl",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "msl_growl")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> MSL_TONE = SOUNDS.register("msl_tone",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "msl_tone")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> VOICE_PULL_UP = SOUNDS.register("voice_pull_up",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "voice_pull_up")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> VOICE_MISSILE = SOUNDS.register("voice_missile",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "voice_missile")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> VOICE_BINGO = SOUNDS.register("voice_bingo",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "voice_bingo")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> EJECT_BLAST = SOUNDS.register("eject_blast",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "eject_blast")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> CHUTE_OPEN = SOUNDS.register("chute_open",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "chute_open")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> PUMP_JET_LOOP = SOUNDS.register("pump_jet_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "pump_jet_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> PUMP_JET_START = SOUNDS.register("pump_jet_start",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "pump_jet_start")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> PUMP_JET_STOP = SOUNDS.register("pump_jet_stop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "pump_jet_stop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> PUMP_JET_SERVO = SOUNDS.register("pump_jet_servo",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "pump_jet_servo")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> DIESEL_START = SOUNDS.register("diesel_start",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "diesel_start")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> DIESEL_FIRE = SOUNDS.register("diesel_fire",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "diesel_fire")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> DIESEL_LOOP = SOUNDS.register("diesel_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "diesel_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> DIESEL_COUGH = SOUNDS.register("diesel_cough",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "diesel_cough")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> DIESEL_STOP = SOUNDS.register("diesel_stop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "diesel_stop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SNORKEL_HATCH = SOUNDS.register("snorkel_hatch",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "snorkel_hatch")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SNORKEL_HOIST = SOUNDS.register("snorkel_hoist",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "snorkel_hoist")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SNORKEL_SLAM = SOUNDS.register("snorkel_slam",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "snorkel_slam")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SNORKEL_AIR = SOUNDS.register("snorkel_air",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "snorkel_air")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> LIFT_FAN_LOOP = SOUNDS.register("lift_fan_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "lift_fan_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> ROTOR_LOOP = SOUNDS.register("rotor_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "rotor_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> TURBOSHAFT_LOOP = SOUNDS.register("turboshaft_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "turboshaft_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> TURBOPROP_LOOP = SOUNDS.register("turboprop_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "turboprop_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> TILTROTOR_LOOP = SOUNDS.register("tiltrotor_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "tiltrotor_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> GAS_TURBINE_LOOP = SOUNDS.register("gas_turbine_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "gas_turbine_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> WATERJET_LOOP = SOUNDS.register("waterjet_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "waterjet_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> AZIMUTH_LOOP = SOUNDS.register("azimuth_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "azimuth_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> BOW_THRUSTER_LOOP = SOUNDS.register("bow_thruster_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "bow_thruster_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> WINCH_LOOP = SOUNDS.register("winch_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "winch_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> HOOK_LATCH = SOUNDS.register("hook_latch",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "hook_latch")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> HOOK_RELEASE = SOUNDS.register("hook_release",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "hook_release")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> ANCHOR_CHAIN_OUT = SOUNDS.register("anchor_chain_out",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "anchor_chain_out")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> ANCHOR_WEIGH = SOUNDS.register("anchor_weigh",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "anchor_weigh")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> ANCHOR_DRAG = SOUNDS.register("anchor_drag",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "anchor_drag")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> ANCHOR_BRAKE = SOUNDS.register("anchor_brake",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "anchor_brake")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> ANCHOR_SPLASH = SOUNDS.register("anchor_splash",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "anchor_splash")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> ANCHOR_HOME = SOUNDS.register("anchor_home",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "anchor_home")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> HOSE_REEL_LOOP = SOUNDS.register("hose_reel_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "hose_reel_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> REFUEL_CONTACT = SOUNDS.register("refuel_contact",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "refuel_contact")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> FUEL_FLOW_LOOP = SOUNDS.register("fuel_flow_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "fuel_flow_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> PROBE_SLIDE = SOUNDS.register("probe_slide",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "probe_slide")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> TANK_JETTISON = SOUNDS.register("tank_jettison",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "tank_jettison")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> TAIL_ROTOR_LOOP = SOUNDS.register("tail_rotor_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "tail_rotor_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> TANK_IMPACT = SOUNDS.register("tank_impact",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "tank_impact")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SA_HYDRAULIC_LOOP = SOUNDS.register("sa_hydraulic_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "sa_hydraulic_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SA_LID = SOUNDS.register("sa_lid",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "sa_lid")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SA_COUPLE = SOUNDS.register("sa_couple",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "sa_couple")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SA_BREAKAWAY = SOUNDS.register("sa_breakaway",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "sa_breakaway")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SA_DONE = SOUNDS.register("sa_done",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "sa_done")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SA_DOOR = SOUNDS.register("sa_door",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "sa_door")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> AD_VENT_LOOP = SOUNDS.register("ad_vent_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ad_vent_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> AD_DOORS_OPEN = SOUNDS.register("ad_doors_open",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ad_doors_open")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> AD_DOORS_CLOSE = SOUNDS.register("ad_doors_close",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ad_doors_close")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> AD_STOW = SOUNDS.register("ad_stow",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ad_stow")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> OL_HYD_LOOP = SOUNDS.register("ol_hyd_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ol_hyd_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> OL_HATCH = SOUNDS.register("ol_hatch",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ol_hatch")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> OL_TABLE = SOUNDS.register("ol_table",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ol_table")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> OL_HOIST = SOUNDS.register("ol_hoist",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ol_hoist")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> OL_LATCH = SOUNDS.register("ol_latch",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ol_latch")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> OL_RAM = SOUNDS.register("ol_ram",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ol_ram")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> RP_FIRE = SOUNDS.register("rp_fire",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "rp_fire")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> RP_RIPPLE = SOUNDS.register("rp_ripple",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "rp_ripple")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> RP_FLIGHT_LOOP = SOUNDS.register("rp_flight_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "rp_flight_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> RP_PETALS_OPEN = SOUNDS.register("rp_petals_open",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "rp_petals_open")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> RP_PETALS_CLOSE = SOUNDS.register("rp_petals_close",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "rp_petals_close")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> RP_TRAY_DOWN = SOUNDS.register("rp_tray_down",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "rp_tray_down")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> RP_TRAY_UP = SOUNDS.register("rp_tray_up",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "rp_tray_up")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> RP_LOAD = SOUNDS.register("rp_load",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "rp_load")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> ASHM_IGNITE = SOUNDS.register("ashm_ignite",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ashm_ignite")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> RAMP_LOOP = SOUNDS.register("ramp_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ramp_loop")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> RAMP_CLUNK = SOUNDS.register("ramp_clunk",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ramp_clunk")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> RAMP_LOCK = SOUNDS.register("ramp_lock",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ramp_lock")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> RAMP_TOES = SOUNDS.register("ramp_toes",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ramp_toes")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> RAMP_WIND = SOUNDS.register("ramp_wind",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ramp_wind")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> PALLET_ROLL = SOUNDS.register("pallet_roll",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "pallet_roll")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> PALLET_CHUTE = SOUNDS.register("pallet_chute",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "pallet_chute")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> PALLET_LAND = SOUNDS.register("pallet_land",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "pallet_land")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> PALLET_SMOKE = SOUNDS.register("pallet_smoke",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "pallet_smoke")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> GT_DRIVE_LOOP = SOUNDS.register("gt_drive_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "gt_drive_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> GT_SHOT = SOUNDS.register("gt_shot",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "gt_shot")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> GT_SHOT_FAR = SOUNDS.register("gt_shot_far",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "gt_shot_far")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> GT_DEPLOY = SOUNDS.register("gt_deploy",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "gt_deploy")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> GT_STOW = SOUNDS.register("gt_stow",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "gt_stow")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> GN_BEEP = SOUNDS.register("gn_beep",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "gn_beep")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> HG_SHOT = SOUNDS.register("hg_shot",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "hg_shot")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> HG_SHOT_FAR = SOUNDS.register("hg_shot_far",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "hg_shot_far")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> HG_BREECH = SOUNDS.register("hg_breech",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "hg_breech")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> HG_PORT = SOUNDS.register("hg_port",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "hg_port")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> DG_DRIVE_LOOP = SOUNDS.register("dg_drive_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "dg_drive_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> DG_SHOT = SOUNDS.register("dg_shot",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "dg_shot")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> DG_SHOT_FAR = SOUNDS.register("dg_shot_far",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "dg_shot_far")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> DG_BREECH = SOUNDS.register("dg_breech",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "dg_breech")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> DG_CASE = SOUNDS.register("dg_case",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "dg_case")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> XL_DRIVE_LOOP = SOUNDS.register("xl_drive_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "xl_drive_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> XL_SHOT = SOUNDS.register("xl_shot",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "xl_shot")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> XL_SHOT_FAR = SOUNDS.register("xl_shot_far",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "xl_shot_far")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> XL_RAM = SOUNDS.register("xl_ram",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "xl_ram")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> XL_BREECH = SOUNDS.register("xl_breech",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "xl_breech")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> HD_LOOP = SOUNDS.register("hd_loop",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "hd_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> HD_LOOP_HEAVY = SOUNDS.register("hd_loop_heavy",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "hd_loop_heavy")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> HD_START = SOUNDS.register("hd_start",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "hd_start")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> HD_STOP_FLOOR = SOUNDS.register("hd_stop_floor",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "hd_stop_floor")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> HD_STOP_TOP = SOUNDS.register("hd_stop_top",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "hd_stop_top")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> HD_LATCH = SOUNDS.register("hd_latch",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "hd_latch")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> AP_ENGAGE = SOUNDS.register("ap_engage",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ap_engage")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> AP_DISCONNECT = SOUNDS.register("ap_disconnect",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ap_disconnect")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> BAILOUT_BELL = SOUNDS.register("bailout_bell",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "bailout_bell")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> FDK_SEAT_SLIDE = SOUNDS.register("fdk_seat_slide",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "fdk_seat_slide")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> HD_SAFETY = SOUNDS.register("hd_safety",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "hd_safety")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> CT_PAGE = SOUNDS.register("ct_page",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ct_page")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> CT_LAMP = SOUNDS.register("ct_lamp",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ct_lamp")));
+    public static final DeferredHolder<SoundEvent, SoundEvent> CT_WAKE = SOUNDS.register("ct_wake",
+            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "ct_wake")));
 }

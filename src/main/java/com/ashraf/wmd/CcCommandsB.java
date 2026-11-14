@@ -23,7 +23,7 @@ public final class CcCommandsB {
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("cc")
+                .then(Commands.literal("cc").requires(TestCmds::test)
                         .then(Commands.literal("strike")
                                 .then(Commands.literal("cancel").executes(c -> cancel(c.getSource().getPlayerOrException())))
                                 .then(Commands.argument("x", IntegerArgumentType.integer())

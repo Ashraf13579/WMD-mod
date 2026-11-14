@@ -26,7 +26,9 @@ public final class DeepHull {
 
     static final String[] FITTINGS = { "torpedo_tube", "launch_cell", "periscope", "escape_pod", "comms_buoy", "towed_array_winch", "sonar_dome",
             "hydrophone_array", "machine_part", "noisemaker_launcher",
-            "hull_penetrator" };
+            "hull_penetrator",
+            "screw_propeller",
+            "pump_jet", "snorkel_mast" };
 
     static int apply() {
         if (!Config.Server.deepHullRatings() || !DeepSeasBridge.active()) return 0;

@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.ashraf.wmd.Alkylate;
 import com.ashraf.wmd.Balance;
+import com.ashraf.wmd.BayModuleBlockEntity;
 import com.ashraf.wmd.BombLineRecipes;
 import com.ashraf.wmd.BombType;
 import com.ashraf.wmd.DroneRecipes;
@@ -356,6 +357,17 @@ public final class WmdRecipes {
                         any(parts(3, 1, 3, WmdRecipes::ground))),
                 List.of(item(new ItemStack(Wmd.CRUISE_MISSILE.get()))), bayTime(1), note("jei.wmd.bay.stations_range", 1, 2),
                 note("jei.wmd.bay.cruise", Balance.CRUISE_FUEL_CANISTERS)));
+
+        String[] aam = { "aam_heat", "aam_radar", "aam_arm", "aam_agm" }, seek = { "heat_seeker", "radar_seeker", "arm_seeker", "laser_seeker" };
+        for (int k = 0; k < 4; k++) {
+            ItemStack out = stack(aam[k], Balance.BAY_AIR_YIELD);
+            if (out.isEmpty() || stack(seek[k], 1).isEmpty()) continue;
+            int t = BayModuleBlockEntity.AIR_TIER[k];
+            boolean agm = k == 3;
+            l.add(p(List.of(any(parts(0, t, t, WmdRecipes::plain)), any(parts(1, t, t, WmdRecipes::plain)), any(parts(2, t, t, WmdRecipes::plain)),
+                            item(agm ? "warhead_he_t1" : "warhead_frag", 1), item(seek[k], 1)),
+                    List.of(item(out)), bayTime(t - 1), note("jei.wmd.bay.stations", t - 1), note("jei.wmd.bay.air")));
+        }
         List<ItemStack> cat = new ArrayList<>();
         for (String id : new String[] { "bay_core", "bay_weld", "bay_crane", "bay_warhead", "bay_clean", "bay_paint", "bay_cryo" }) { ItemStack s = stack(id, 1); if (!s.isEmpty()) cat.add(s); }
         def("assembly_bay", Component.translatable("jei.wmd.cat.bay"), stack("bay_core", 1), cat, l);

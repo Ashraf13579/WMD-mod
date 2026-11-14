@@ -24,6 +24,8 @@ public class RadarRenderer extends GeoBlockRenderer<RadarBlockEntity> {
 
     private static final class MeshPart extends GeoBlockRenderer<RadarBlockEntity> {
         private final String name;
+
+        private boolean followFacing = true;
         private final Map<String, Matrix4f> poses = new HashMap<>();
         private final Map<String, Matrix3f> normals = new HashMap<>();
 
@@ -36,6 +38,13 @@ public class RadarRenderer extends GeoBlockRenderer<RadarBlockEntity> {
                 }
             });
             this.name = name;
+        }
+
+        MeshPart compass() { followFacing = false; return this; }
+
+        @Override
+        protected void rotateBlock(net.minecraft.core.Direction facing, PoseStack poseStack) {
+            if (followFacing) super.rotateBlock(facing, poseStack);
         }
 
         @Override
@@ -69,7 +78,7 @@ public class RadarRenderer extends GeoBlockRenderer<RadarBlockEntity> {
     }
 
     private final MeshPart baseModel = new MeshPart("radar_base");
-    private final MeshPart turretModel = new MeshPart("radar_turret");
+    private final MeshPart turretModel = new MeshPart("radar_turret").compass();
 
     public RadarRenderer() {
         super(new DefaultedBlockGeoModel<>(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "radar_base")));

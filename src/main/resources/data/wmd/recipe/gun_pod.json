@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:gun_pod"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SBS",
+    "PCP",
+    "SAS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "B": {
+      "item": "wmd:ciws"
+    },
+    "P": {
+      "item": "wmd:aluminium_plate"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "A": {
+      "item": "wmd:ciws_ammo"
+    }
+  },
+  "result": {
+    "id": "wmd:gun_pod",
+    "count": 1
+  }
+}

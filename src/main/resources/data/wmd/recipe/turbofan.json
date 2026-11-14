@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CBC",
+    "BAB",
+    "CWC"
+  ],
+  "key": {
+    "C": { "item": "wmd:titanium_casing" },
+    "B": { "item": "wmd:turbine_blades" },
+    "A": { "item": "wmd:advanced_circuit" },
+    "W": { "item": "wmd:copper_wire" }
+  },
+  "result": { "id": "wmd:turbofan", "count": 1 }
+}

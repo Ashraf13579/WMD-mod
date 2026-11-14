@@ -25,7 +25,7 @@ public final class S53Commands {
     @SubscribeEvent
     static void register(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("wmd").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("mlrs")
+                .then(Commands.literal("mlrs").requires(TestCmds::test)
                         .then(Commands.literal("give").executes(c -> giveMlrs(c.getSource())))
                         .then(Commands.literal("state").executes(c -> state(c.getSource())))
                         .then(Commands.literal("fire")
@@ -37,7 +37,7 @@ public final class S53Commands {
                                                         .executes(c -> fire(c, StringArgumentType.getString(c, "type"), 12))
                                                         .then(Commands.argument("rockets", IntegerArgumentType.integer(1, 64))
                                                                 .executes(c -> fire(c, StringArgumentType.getString(c, "type"), IntegerArgumentType.getInteger(c, "rockets")))))))))
-                .then(Commands.literal("camo")
+                .then(Commands.literal("camo").requires(TestCmds::test)
                         .then(Commands.literal("give").executes(c -> giveCamo(c.getSource())))
                         .then(Commands.literal("list").executes(c -> list(c.getSource())))
                         .then(Commands.literal("blast")
