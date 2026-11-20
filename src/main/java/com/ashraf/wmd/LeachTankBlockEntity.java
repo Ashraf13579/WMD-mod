@@ -70,7 +70,7 @@ public class LeachTankBlockEntity extends ItemProcessBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.LEACH_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.LEACH_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.leach_tank", Balance.LEACH_CONC, Balance.LEACH_CAUSTIC, Balance.LEACH_WATER_MB, Balance.LEACH_YELLOWCAKE, Balance.LEACH_CYCLE_TICKS / 20),
                 Component.translatable("gui.wmd.info.items_hint"));
     }

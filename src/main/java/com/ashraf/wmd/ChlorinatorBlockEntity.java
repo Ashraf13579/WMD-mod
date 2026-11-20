@@ -67,7 +67,7 @@ public class ChlorinatorBlockEntity extends ItemProcessBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.CHLOR_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.CHLOR_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.chlorinator", Balance.CHLOR_CONC, Balance.CHLOR_COKE, Balance.CHLOR_CL_MB, Balance.CHLOR_TICL_MB, Balance.CHLOR_CYCLE_TICKS / 20));
     }
 

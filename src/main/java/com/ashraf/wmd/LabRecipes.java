@@ -71,6 +71,8 @@ public final class LabRecipes {
             case NANITE -> List.of(adv(6), item("silicon", 8, "wmd:silicon"), item("platinum_ingot", 4, "wmd:platinum_ingot"), copperWire(12), chipW2());
             case GRAVITY -> List.of(item("superconducting_coil", 2, "wmd:superconducting_coil"), tungsten(4), he(2), adv(3), chipW2());
             case CRYO -> List.of(item("blue_ice", 8, "minecraft:blue_ice"), item("titanium_ingot", 4, "wmd:titanium_ingot"), he(1), adv(2), chipW2());
+            case PLASMA_BALL -> List.of();
+            case ROD_RING -> List.of(item("warhead_frag", 1, "wmd:warhead_frag"), tag("steel_plate", 4, "c:plates/steel"), tungsten(1));
             case PLASMA -> List.of();
             case RAILGUN -> List.of();
             case ORBITAL_ROD -> List.of();

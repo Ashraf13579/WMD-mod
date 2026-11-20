@@ -66,9 +66,22 @@ public final class DeckConsolePayloads {
         if (!AirGate.on() || sp == null || p.targets() == null || p.targets().length == 0 || p.targets().length > Balance.FDC_MAX_LIGHTS) return;
         if (AirframeRecords.tooSoon(LAST, sp, 1, Balance.FDC_PRESS_GAP)) return;
         if (!Reach.usable(sp, p.console(), Balance.FDC_REACH)) return;
+        if (sp.level().getBlockEntity(p.console()) instanceof JetCockpitBlockEntity jc) {
+            DeckConsoleBlockEntity v = jc.isRemoved() || !jc.seatedHere(sp) ? null : jc.deckView(sp);
+            if (v != null) v.answer(sp, v.lightSet(sp, p.targets(), p.mode()));
+            return;
+        }
         if (!(sp.level().getBlockEntity(p.console()) instanceof DeckConsoleBlockEntity be) || be.isRemoved()) return;
         if (!Access.mayUse(be, sp) || be.getOwner() == null) return;
         be.answer(sp, be.lightSet(sp, p.targets(), p.mode()));
+    }
+
+    static void cockpitAsk(ServerPlayer sp, JetCockpitBlockEntity jc, Ask p, boolean refresh) {
+        if (jc.isRemoved() || !jc.seatedHere(sp)) return;
+        DeckConsoleBlockEntity v = jc.deckView(sp);
+        if (v == null) return;
+        if (refresh) { v.ask(sp, p.arg() == 1); return; }
+        v.answer(sp, v.command(sp, p.action(), p.target(), p.ship(), p.arg()));
     }
 
     static void handleAsk(ServerPlayer sp, Ask p) {
@@ -76,6 +89,7 @@ public final class DeckConsolePayloads {
         boolean refresh = p.action() == DeckConsoleBlockEntity.A_REFRESH;
         if (AirframeRecords.tooSoon(LAST, sp, refresh ? 0 : 1, refresh ? Balance.FDC_SCAN_TICKS / 2 : Balance.FDC_PRESS_GAP)) return;
         if (!Reach.usable(sp, p.console(), Balance.FDC_REACH)) return;
+        if (sp.level().getBlockEntity(p.console()) instanceof JetCockpitBlockEntity jc) { cockpitAsk(sp, jc, p, refresh); return; }
         if (!(sp.level().getBlockEntity(p.console()) instanceof DeckConsoleBlockEntity be) || be.isRemoved()) return;
         if (be.getOwner() == null || !Access.mayUse(be, sp)) return;
         if (refresh) { be.ask(sp, false); return; }

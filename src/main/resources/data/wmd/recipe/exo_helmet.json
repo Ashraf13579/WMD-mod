@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:exo_helmet"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "PAP",
+    "PXP",
+    " G "
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/titanium"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "X": {
+      "item": "wmd:chip_defence_2"
+    },
+    "G": {
+      "item": "minecraft:tinted_glass"
+    }
+  },
+  "result": {
+    "id": "wmd:exo_helmet",
+    "count": 1
+  }
+}

@@ -52,7 +52,7 @@ public class RfLinkBlock extends UnitBlock {
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext ctx, List<Component> tip, TooltipFlag flag) {
         tip.add(Component.translatable(sender ? "tooltip.wmd.rf_sender" : "tooltip.wmd.rf_receiver",
-                String.format("%,d", (sender ? Balance.RF_SEND_FE : Balance.RF_OUT_FE) * 20), Balance.RF_EFFICIENCY, String.format("%,d", Balance.RF_RANGE))
+                String.format("%,d", (sender ? Balance.RF_SEND_FE : Balance.RF_OUT_FE)), Balance.RF_EFFICIENCY, String.format("%,d", Balance.RF_RANGE))
                 .withStyle(ChatFormatting.GRAY));
         tip.add(Component.translatable("tooltip.wmd.copycat_skin").withStyle(ChatFormatting.GRAY));
     }

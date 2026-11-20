@@ -126,6 +126,7 @@ public class RailgunBlockEntity extends ItemProcessBlockEntity implements Owned,
         aimYaw = (float) s[0]; aimPitch = (float) s[1];
         chargeTicks = 0; cutsceneSent = false;
         Wmd.LOGGER.info("[railgun] {} fires the railgun at {} towards {} {} ({} blocks)", p.getGameProfile().getName(), worldPosition.toShortString(), tx, tz, Math.round(s[2]));
+        if (p instanceof net.minecraft.server.level.ServerPlayer adv) WmdTrigger.fire(adv, "railgun");
         go(SLEW);
     }
 
@@ -216,6 +217,7 @@ public class RailgunBlockEntity extends ItemProcessBlockEntity implements Owned,
         finalWarned = false;
         broadcast(RailgunEventPayload.CHARGING);
         MusicTriggersHook.fire(sl, "wmd:railgun_charge", worldPosition);
+        MusicTriggersHook.flag(sl, "wmd:railgun_charging", true, 12000);
         holdRamp(sl);
         TargetSnapshot.start(sl, worldPosition.asLong(), tx, tz, null);
     }
@@ -253,13 +255,13 @@ public class RailgunBlockEntity extends ItemProcessBlockEntity implements Owned,
                     BlockState b = sl.getBlockState(p);
                     if (b.isAir() || b.is(Wmd.MACHINE_PART.get()) || b.getBlock() instanceof RailgunBlock || !Config.Server.canBreak(sl, p)) break;
                     if (b.is(net.minecraft.tags.BlockTags.LEAVES) || b.canBeReplaced() || b.is(net.minecraft.world.level.block.Blocks.SNOW) || b.is(net.minecraft.tags.BlockTags.IMPERMEABLE)) {
-                        sl.setBlock(p, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 3);
+                        BlastWrites.set(sl, p, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 3);
                         continue;
                     }
                     if (b.is(net.minecraft.world.level.block.Blocks.GRASS_BLOCK) || b.is(net.minecraft.world.level.block.Blocks.PODZOL) || b.is(net.minecraft.world.level.block.Blocks.MYCELIUM)) {
-                        sl.setBlock(p, (rnd.nextBoolean() ? net.minecraft.world.level.block.Blocks.COARSE_DIRT : net.minecraft.world.level.block.Blocks.DIRT).defaultBlockState(), 3);
+                        BlastWrites.set(sl, p, (rnd.nextBoolean() ? net.minecraft.world.level.block.Blocks.COARSE_DIRT : net.minecraft.world.level.block.Blocks.DIRT).defaultBlockState(), 3);
                         BlockPos up = p.above();
-                        if (rnd.nextFloat() < 0.04F && sl.getBlockState(up).isAir()) sl.setBlock(up, net.minecraft.world.level.block.BaseFireBlock.getState(sl, up), 3);
+                        if (rnd.nextFloat() < 0.04F && sl.getBlockState(up).isAir()) BlastWrites.set(sl, up, net.minecraft.world.level.block.BaseFireBlock.getState(sl, up), 3);
                     }
                     break;
                 }
@@ -275,6 +277,7 @@ public class RailgunBlockEntity extends ItemProcessBlockEntity implements Owned,
         double[] m = muzzle();
         RailgunStrikes.schedule(sl, tx, tz, sl.getGameTime() + Balance.RG_TRAVEL_TICKS, getOwnerName() == null ? "?" : getOwnerName(), getOwner(), m);
         MusicTriggersHook.fire(sl, "wmd:railgun_fire", BlockPos.containing(m[0], m[1], m[2]));
+        MusicTriggersHook.flag(sl, "wmd:railgun_charging", false, 0);
         sl.playSound(null, m[0], m[1], m[2], WmdSounds.RG_SHOT.get(), SoundSource.BLOCKS, 16.0F, 1.0F);
         broadcast(RailgunEventPayload.FIRED);
         Wmd.LOGGER.info("[railgun] gun at {} FIRED at {} {}", worldPosition.toShortString(), tx, tz);
@@ -521,7 +524,7 @@ public class RailgunBlockEntity extends ItemProcessBlockEntity implements Owned,
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", String.format("%,d", Balance.RG_FE_PER_TICK * 20)),
+        return List.of(Component.translatable("gui.wmd.info.use", String.format("%,d", Balance.RG_FE_PER_TICK)),
                 Component.translatable("gui.wmd.info.railgun", Balance.RG_CHARGE_TICKS / 1200),
                 Component.translatable("gui.wmd.info.railgun_warn"));
     }

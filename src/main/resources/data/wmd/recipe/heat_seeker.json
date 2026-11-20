@@ -7,7 +7,7 @@
   ],
   "key": {
     "I": {
-      "item": "wmd:silver_ingot"
+      "tag": "c:ingots/silver"
     },
     "G": {
       "tag": "c:glass_panes"

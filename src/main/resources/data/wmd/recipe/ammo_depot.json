@@ -20,7 +20,7 @@
       "item": "minecraft:iron_door"
     },
     "C": {
-      "item": "minecraft:chest"
+      "tag": "c:chests/wooden"
     },
     "B": {
       "item": "wmd:basic_circuit"

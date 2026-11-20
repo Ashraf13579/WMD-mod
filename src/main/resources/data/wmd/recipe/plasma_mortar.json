@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:plasma_mortar"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SXS",
+    "THT",
+    "WBW"
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:superconducting_coil"
+    },
+    "X": {
+      "item": "wmd:chip_defence_2"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "H": {
+      "item": "wmd:howitzer"
+    },
+    "W": {
+      "tag": "c:plates/tungsten"
+    },
+    "B": {
+      "item": "wmd:busbar"
+    }
+  },
+  "result": {
+    "id": "wmd:plasma_mortar",
+    "count": 1
+  }
+}

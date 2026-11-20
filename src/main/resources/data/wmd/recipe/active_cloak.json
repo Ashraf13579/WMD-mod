@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:active_cloak"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GCG",
+    "AXA",
+    "TBT"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:tinted_glass"
+    },
+    "C": {
+      "item": "wmd:superconducting_coil"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "X": {
+      "item": "wmd:chip_space_2"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "B": {
+      "item": "wmd:busbar"
+    }
+  },
+  "result": {
+    "id": "wmd:active_cloak",
+    "count": 1
+  }
+}

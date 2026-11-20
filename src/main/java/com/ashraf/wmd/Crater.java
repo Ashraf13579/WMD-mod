@@ -27,6 +27,8 @@ public class Crater {
     private long cursor;
     private int drops;
 
+    private java.util.UUID owner;
+
     public Crater(int cx, int cy, int cz, double radius) {
         this(cx, cy, cz, radius, 0.55, 1.0, 0.0, radius * 1.5 + 16.0, 0, 0, 0);
     }
@@ -51,7 +53,12 @@ public class Crater {
         this.phase = phase;
         this.cursor = cursor;
         this.drops = drops;
+        this.owner = ShipStrike.shooter();
     }
+
+    java.util.UUID owner() { return owner; }
+
+    Crater owner(java.util.UUID who) { if (who != null) owner = who; return this; }
 
     public boolean isDone() { return phase >= 2; }
 
@@ -164,7 +171,7 @@ public class Crater {
 
     private void fastStep(ServerLevel level) {
         ensureOrder();
-        boolean guard = Config.Server.protectSpawnRadius() > 0 || Config.Server.respectClaims();
+        boolean guard = Config.Server.gateNeeded();
         boolean loadedOnly = !Config.Server.chunkLoading();
         int budget = Balance.RG_FAST_CHUNKS_PER_TICK * Balance.WORK_CAP_MUL, done = 0;
         long t0 = WorkBudget.start();
@@ -201,7 +208,7 @@ public class Crater {
 
     private void fastScorch(ServerLevel level) {
         ensureOrder();
-        boolean guard = Config.Server.protectSpawnRadius() > 0 || Config.Server.respectClaims();
+        boolean guard = Config.Server.gateNeeded();
         RandomSource rnd = level.random;
         int budget = Balance.RG_FAST_CHUNKS_PER_TICK * Balance.WORK_CAP_MUL, done = 0;
         long t0 = WorkBudget.start();
@@ -229,7 +236,7 @@ public class Crater {
                 BlockState state = sec.getBlockState(lx, top & 15, lz);
                 if (state.isAir() || state.hasBlockEntity() || needsHooks(state)) continue;
                 if (state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS)) {
-                    if (rnd.nextFloat() < 0.6F) { sec.setBlockState(lx, top & 15, lz, Blocks.AIR.defaultBlockState(), false); any = true; }
+                    if (rnd.nextFloat() < 0.6F) { sec.setBlockState(lx, top & 15, lz, Blocks.AIR.defaultBlockState(), false); BlastWrites.section(level, x, top, z, state, Blocks.AIR.defaultBlockState()); any = true; }
                     continue;
                 }
                 if (!state.getFluidState().isEmpty() || state.getDestroySpeed(level, p) < 0 || Hardened.rating(level, p, state) > 0) continue;
@@ -237,14 +244,14 @@ public class Crater {
                 boolean floor = r < 1.0 + n;
                 BlockState scorched = null;
                 if (floor && glass) {
-                    if (roll < 0.006F) { level.setBlock(p, Blocks.MAGMA_BLOCK.defaultBlockState(), Block.UPDATE_CLIENTS); continue; }
+                    if (roll < 0.006F) { BlastWrites.set(level, p, Blocks.MAGMA_BLOCK.defaultBlockState(), Block.UPDATE_CLIENTS); continue; }
                     if (roll < 0.36F) scorched = Blocks.TINTED_GLASS.defaultBlockState();
                     else if (roll < 0.52F) scorched = Blocks.GREEN_STAINED_GLASS.defaultBlockState();
                     else if (roll < 0.74F) scorched = Blocks.OBSIDIAN.defaultBlockState();
                     else if (roll < 0.90F) scorched = Blocks.BLACKSTONE.defaultBlockState();
                     else scorched = Blocks.BASALT.defaultBlockState();
                 } else if (floor) {
-                    if (roll < 0.004F) { level.setBlock(p, Blocks.MAGMA_BLOCK.defaultBlockState(), Block.UPDATE_CLIENTS); continue; }
+                    if (roll < 0.004F) { BlastWrites.set(level, p, Blocks.MAGMA_BLOCK.defaultBlockState(), Block.UPDATE_CLIENTS); continue; }
                     if (roll < 0.34F) scorched = Blocks.BLACKSTONE.defaultBlockState();
                     else if (roll < 0.52F) scorched = Blocks.BASALT.defaultBlockState();
                     else if (roll < 0.80F) scorched = Blocks.COARSE_DIRT.defaultBlockState();
@@ -252,10 +259,10 @@ public class Crater {
                     if (roll < 0.45F) scorched = Blocks.COARSE_DIRT.defaultBlockState();
                     else if (roll < 0.60F) scorched = Blocks.BLACKSTONE.defaultBlockState();
                 }
-                if (scorched != null) { sec.setBlockState(lx, top & 15, lz, scorched, false); any = true; }
+                if (scorched != null) { sec.setBlockState(lx, top & 15, lz, scorched, false); BlastWrites.section(level, x, top, z, state, scorched); any = true; }
                 if (fastFires < FAST_FIRES && rnd.nextFloat() < 0.01F) {
                     BlockPos up = p.above();
-                    if (level.getBlockState(up).isAir()) { level.setBlock(up, BaseFireBlock.getState(level, up), Block.UPDATE_ALL); fastFires++; }
+                    if (level.getBlockState(up).isAir()) { BlastWrites.set(level, up, BaseFireBlock.getState(level, up), Block.UPDATE_ALL); fastFires++; }
                 }
             }
             if (!any) continue;
@@ -294,8 +301,8 @@ public class Crater {
                 }
                 if (state.hasBlockEntity() || needsHooks(state)) {
                     if (state.hasBlockEntity()) CcAlarms.exploded(level, p.immutable());
-                    level.setBlock(p, hole(y), Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
-                } else sec.setBlockState(lx, y & 15, lz, hole(y), false);
+                    BlastWrites.set(level, p, hole(y), Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
+                } else { BlockState to = hole(y); sec.setBlockState(lx, y & 15, lz, to, false); BlastWrites.section(level, x, y, z, state, to); }
                 any = true;
                 lowest = Math.min(lowest, y);
             }
@@ -351,7 +358,7 @@ public class Crater {
         if (fast && phase == 1) { fastScorch(level); return; }
         boolean loadedOnly = !Config.Server.chunkLoading();
         int spawnR = Config.Server.protectSpawnRadius();
-        boolean guard = spawnR > 0 || Config.Server.respectClaims();
+        boolean guard = spawnR > 0 || Config.Server.gateNeeded();
         RandomSource rnd = level.random;
         int w = ext * 2 + 1;
         int checks = 0;
@@ -396,7 +403,7 @@ public class Crater {
                     drops++;
                 }
                 if (state.hasBlockEntity()) CcAlarms.exploded(level, p.immutable());
-                level.setBlock(p, hole(y), Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
+                BlastWrites.set(level, p, hole(y), Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
             }
             } finally { WorkBudget.done(t0); }
             if (cursor >= total) { phase = scorch > 0.0 ? 1 : 2; cursor = 0; }
@@ -424,7 +431,7 @@ public class Crater {
                 p.set(x, top, z);
                 BlockState state = level.getBlockState(p);
                 if (state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS)) {
-                    if (rnd.nextFloat() < 0.6F) level.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+                    if (rnd.nextFloat() < 0.6F) BlastWrites.set(level, p, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
                     continue;
                 }
                 if (!state.getFluidState().isEmpty() || state.getDestroySpeed(level, p) < 0 || Hardened.rating(level, p, state) > 0) continue;
@@ -441,11 +448,11 @@ public class Crater {
                     else if (roll < 0.55F) scorched = Blocks.BLACKSTONE.defaultBlockState();
                     else if (roll < 0.60F) scorched = Blocks.MAGMA_BLOCK.defaultBlockState();
                 }
-                if (scorched != null) level.setBlock(p, scorched, Block.UPDATE_CLIENTS);
+                if (scorched != null) BlastWrites.set(level, p, scorched, Block.UPDATE_CLIENTS);
                 float fireChance = (float) ((floor ? 0.06F : 0.14F) * scorch);
                 BlockPos above = p.above();
                 if (rnd.nextFloat() < fireChance && level.getBlockState(above).isAir()) {
-                    level.setBlock(above, BaseFireBlock.getState(level, above), Block.UPDATE_ALL);
+                    BlastWrites.set(level, above, BaseFireBlock.getState(level, above), Block.UPDATE_ALL);
                 }
             }
             } finally { WorkBudget.done(t0); }
@@ -464,6 +471,7 @@ public class Crater {
         if (buster) t.putBoolean("buster", true);
         if (glass) t.putBoolean("glass", true);
         if (seaTop != NO_SEA) t.putInt("sea", seaTop);
+        if (owner != null) t.putUUID("own", owner);
         return t;
     }
 
@@ -474,6 +482,7 @@ public class Crater {
                 .delay(t.getInt("dl")).fastIf(t.getBoolean("fast")).peakIf(t.getBoolean("peak")).busterIf(t.getBoolean("buster"));
         if (t.getBoolean("glass")) c.glass();
         if (t.contains("sea")) c.sea(t.getInt("sea"));
+        c.owner = t.hasUUID("own") ? t.getUUID("own") : null;
         return c;
     }
 }

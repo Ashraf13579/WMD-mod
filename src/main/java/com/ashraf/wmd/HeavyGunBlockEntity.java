@@ -216,7 +216,7 @@ public class HeavyGunBlockEntity extends ProcessUnitBlockEntity implements Owned
         if (ship == null) { deploy = Math.max(0.0F, deploy - 1.0F / (Balance.HGUN_DOOR_TICKS + Balance.HGUN_RUN_TICKS)); syncAim(sl, now); return false; }
         boolean claimed = claimKind != 0 && now - lastClaim <= Balance.GTUR_CLAIM_TICKS;
         boolean want = claimKind != 0 && now - lastClaim <= Balance.GTUR_STOW_DELAY;
-        boolean power = want && ShipPower.draw(sl, ship, Balance.HGUN_FE_LAY);
+        boolean power = want && ShipPower.draw(this, sl, ship, Balance.HGUN_FE_LAY);
         float step = 1.0F / (Balance.HGUN_DOOR_TICKS + Balance.HGUN_RUN_TICKS);
         boolean cycling = cycleAt >= 0;
         if (want && deploy < 1.0F && power) {
@@ -306,7 +306,7 @@ public class HeavyGunBlockEntity extends ProcessUnitBlockEntity implements Owned
         double a = sl.random.nextDouble() * Math.PI * 2.0, r = spread * sl.random.nextDouble();
         double ix = target.x + Math.cos(a) * r, iz = target.z + Math.sin(a) * r;
         if (OfflineGuard.refuse(sl, ix, iz) != null) return;
-        if (!ShipPower.draw(sl, ship, Balance.HGUN_FE_SHOT)) return;
+        if (!ShipPower.draw(this, sl, ship, Balance.HGUN_FE_SHOT)) return;
         int dur = Math.max(2, (int) Math.ceil(dist / Balance.HGUN_SPEED));
         ArtShell s = ArtilleryManager.get(sl).fire(sl, getOwner(), getOwnerName(), Artillery.HOWITZER, loaded, m, ix, target.y, iz, dur, BlockPos.containing(m), ++seq,
                 rackN == 0);

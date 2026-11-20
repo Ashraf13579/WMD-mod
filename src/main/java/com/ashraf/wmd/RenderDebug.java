@@ -15,7 +15,7 @@ import net.neoforged.neoforge.client.event.RenderFrameEvent;
 public final class RenderDebug {
     private RenderDebug() {}
 
-    private static boolean stats;
+    static boolean stats;
 
     private static int abState;
     private static boolean abKeep;

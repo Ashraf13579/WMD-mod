@@ -121,8 +121,10 @@ public final class BayAnim {
 
     public static double airLen(int k) { return k == AirMissiles.HEAT ? 38.4 : k == AirMissiles.AGM ? 41.6 : 48.0; }
 
-    public static double airNose(int k) { return k == AirMissiles.HEAT ? 5.0 : k == AirMissiles.RADAR ? 6.3 : k == AirMissiles.ARM ? 7.7 : 6.2; }
-    public static double airGuid(int k) { return k == AirMissiles.HEAT ? 9.0 : k == AirMissiles.RADAR ? 8.5 : k == AirMissiles.ARM ? 11.0 : 10.4; }
+    public static double airNose(int k) { return k == AirMissiles.HEAT ? 5.0 : k == AirMissiles.RADAR ? 6.3 : k == AirMissiles.ARM ? 7.7 : k == AirMissiles.METEOR ? 8.3
+            : k == AirMissiles.HEAVY ? 12.3 : 6.2; }
+    public static double airGuid(int k) { return k == AirMissiles.HEAT ? 9.0 : k == AirMissiles.RADAR ? 8.5 : k == AirMissiles.ARM ? 11.0 : k == AirMissiles.METEOR ? 9.8
+            : k == AirMissiles.HEAVY ? 13.9 : 10.4; }
 
     public static double airCentre(int k, int sec) {
         double l = airLen(k);

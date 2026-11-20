@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:exo_mod_cloak"
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:active_cloak"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "AXA",
+    " C "
+  ],
+  "key": {
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "X": {
+      "item": "wmd:chip_space_2"
+    },
+    "C": {
+      "item": "wmd:active_cloak"
+    }
+  },
+  "result": {
+    "id": "wmd:exo_mod_cloak",
+    "count": 1
+  }
+}

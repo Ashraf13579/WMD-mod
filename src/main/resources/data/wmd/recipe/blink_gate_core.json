@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:blink_gate_core"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SCS",
+    "AJA",
+    "TBT"
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:superconducting_coil"
+    },
+    "C": {
+      "item": "wmd:chip_space_2"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "J": {
+      "item": "wmd:jet_power_core"
+    },
+    "T": {
+      "item": "wmd:tungsten_alloy_casing"
+    },
+    "B": {
+      "item": "wmd:busbar"
+    }
+  },
+  "result": {
+    "id": "wmd:blink_gate_core",
+    "count": 1
+  }
+}

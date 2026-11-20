@@ -80,13 +80,16 @@ public final class DamageRings {
                 Job j = it.next();
                 if (j.level != sl || !j.crater.isDone()) continue;
                 int done = 0;
-                while (j.cursor[0] < j.chunks.size() && (done == 0 || WorkBudget.more(t0))) {
-                    long c = j.chunks.get(j.cursor[0]++);
-                    int cx = net.minecraft.world.level.ChunkPos.getX(c), cz = net.minecraft.world.level.ChunkPos.getZ(c);
-                    if (!sl.hasChunk(cx, cz)) continue;
-                    if (chunk(sl, j, cx, cz)) TargetSnapshot.changed(sl, cx, cz);
-                    done++;
-                }
+                java.util.UUID prevShooter = ShipStrike.begin(j.crater.owner());
+                try {
+                    while (j.cursor[0] < j.chunks.size() && (done == 0 || WorkBudget.more(t0))) {
+                        long c = j.chunks.get(j.cursor[0]++);
+                        int cx = net.minecraft.world.level.ChunkPos.getX(c), cz = net.minecraft.world.level.ChunkPos.getZ(c);
+                        if (!sl.hasChunk(cx, cz)) continue;
+                        if (chunk(sl, j, cx, cz)) TargetSnapshot.changed(sl, cx, cz);
+                        done++;
+                    }
+                } finally { ShipStrike.end(prevShooter); }
                 if (j.cursor[0] >= j.chunks.size()) {
                     it.remove();
                     Wmd.LOGGER.info("[rings] done at {} {}", j.crater.cx, j.crater.cz);
@@ -120,15 +123,15 @@ public final class DamageRings {
                 double near = 1.0 - Math.max(0.0, Math.min(1.0, (d - a) / Math.max(1.0, b - a)));
                 BlockState to = ring == 0 ? rubble(s, ground, near, rnd) : ring == 1 ? burnt(s, ground, rnd) : stripped(s, ground, near, rnd);
                 if (to != null && to != s && BlockRules.blastChangeable(level, m, s)) {
-                    level.setBlock(m, to, 2 | 16);
+                    BlastWrites.set(level, m, to, 2 | 16);
                     any = true;
                     if (ring == 1 && j.p.fire && to.isAir() == false && rnd.nextFloat() < 0.05F && level.getBlockState(m.above()).isAir() && BlockRules.blastChangeable(level, m.above(), Blocks.AIR.defaultBlockState()))
-                        level.setBlock(m.above(), Blocks.FIRE.defaultBlockState(), 2 | 16);
+                        BlastWrites.set(level, m.above(), Blocks.FIRE.defaultBlockState(), 2 | 16);
                 }
                 if (ground) {
                     if (ring == 0 && rnd.nextFloat() < 0.18F * near) {
                         BlockPos up = m.above();
-                        if (level.getBlockState(up).isAir() && BlockRules.blastChangeable(level, up, Blocks.AIR.defaultBlockState())) { level.setBlock(up, Blocks.GRAVEL.defaultBlockState(), 2 | 16); any = true; }
+                        if (level.getBlockState(up).isAir() && BlockRules.blastChangeable(level, up, Blocks.AIR.defaultBlockState())) { BlastWrites.set(level, up, Blocks.GRAVEL.defaultBlockState(), 2 | 16); any = true; }
                     }
                     break;
                 }

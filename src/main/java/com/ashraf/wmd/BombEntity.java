@@ -48,7 +48,13 @@ public class BombEntity extends Entity {
     private Vec3 startPos, lockSpot;
     private int tsarHits;
 
+    private int life = 1200;
+
     static final Set<BombEntity> FALLING = ConcurrentHashMap.newKeySet();
+
+    Vec3 gravityDrop() { return startPos; }
+
+    void gravityPush(Vec3 dv) { vel = vel.add(dv); }
 
     static void clearStatics() { FALLING.clear(); SENT.clear(); }
     private static final Map<net.minecraft.resources.ResourceKey<Level>, Long> SENT = new HashMap<>();
@@ -76,6 +82,10 @@ public class BombEntity extends Entity {
 
     static BombEntity release(ServerLevel level, BombType type, Vec3 at, Vec3 v, UUID owner, int[] target, Set<BlockPos> ownCells, UUID ownShip) {
         if (!Config.Server.bombAllowed(type)) return null;
+        if (SableBridge.inPlotGrid(level, at)) {
+            Wmd.LOGGER.warn("Bomb: {} release refused at {} {} {}: a craft's plot position, not the world", type.id, Mth.floor(at.x), Mth.floor(at.y), Mth.floor(at.z));
+            return null;
+        }
         BombEntity e = new BombEntity(Wmd.BOMB.get(), level);
         e.entityData.set(KIND, type.ordinal());
         e.setPos(at.x, at.y, at.z);
@@ -89,8 +99,8 @@ public class BombEntity extends Entity {
         switch (type) {
             case IRON -> {
                 double r = Math.min(Balance.IRON_SCATTER_MAX, Balance.IRON_SCATTER * h) * Math.sqrt(level.random.nextDouble()), a = level.random.nextDouble() * Math.PI * 2.0;
-                double t = Math.sqrt(2.0 * h / Balance.BOMB_G);
-                e.vel = e.vel.add(Math.cos(a) * r / t, 0.0, Math.sin(a) * r / t);
+                double drift = driftFactor(landTicks(h, v.y));
+                e.vel = e.vel.add(Math.cos(a) * r / drift, 0.0, Math.sin(a) * r / drift);
             }
             case GLIDE -> {
                 if (target != null && Math.hypot(target[0] + 0.5 - at.x, target[1] + 0.5 - at.z) <= Balance.GLIDE_RANGE) {
@@ -100,10 +110,13 @@ public class BombEntity extends Entity {
             }
             default -> {}
         }
+        double fall = landTicks(h, e.vel.y);
+        e.life = (int) Math.max(1200.0, type == BombType.GLIDE ? h / Balance.GLIDE_SINK + 400.0 : fall * 2.0 + 200.0);
         level.addFreshEntity(e);
         FALLING.add(e);
         Vec3 land = e.impactGuess(level);
-        DroneWarnings.bomb(level, owner, at.x, at.z, land.x, land.z, (long) Math.ceil(Math.sqrt(2.0 * h / Balance.BOMB_G)));
+        DroneWarnings.bomb(level, owner, at.x, at.z, land.x, land.z, (long) Math.ceil(fall));
+        MusicTriggersHook.kind(level, "bomb_release", type.id, BlockPos.containing(at));
         level.playSound(null, at.x, at.y, at.z, WmdSounds.BOMB_RELEASE.get(), SoundSource.BLOCKS, 2.0F, 0.95F + level.random.nextFloat() * 0.1F);
         return e;
     }
@@ -127,7 +140,7 @@ public class BombEntity extends Entity {
         if (isDud()) { dudTick(sl); return; }
         if (fuse() >= 0) { fuseTick(sl); return; }
         if (startPos == null) { discard(); return; }
-        if (tickCount > (type() == BombType.TSAR ? Balance.TSAR_LIFE : 1200) || getY() < sl.getMinBuildHeight()) { discard(); return; }
+        if (tickCount > (type() == BombType.TSAR ? Balance.TSAR_LIFE : life) || getY() < sl.getMinBuildHeight()) { discard(); return; }
         long gt = sl.getGameTime();
         if (gt % Balance.BOMB_RADAR_TICKS == 0 && !Long.valueOf(gt).equals(SENT.get(sl.dimension()))) { SENT.put(sl.dimension(), gt); radarSync(sl); }
         Vec3 pos = position();
@@ -165,6 +178,10 @@ public class BombEntity extends Entity {
             default -> {}
         }
         Vec3 next = pos.add(vel);
+        if (CraftShield.anyUp()) {
+            if (CraftShield.stopsFlight(sl, pos, next, ownShip, Missiles.craterRadius(Math.max(1, t.blast.tier)) * Math.max(0.3, t.blast.crater),
+                    t.blast, t.blast.tier, "a bomb")) { discard(); return; }
+        }
 
         if (SableBridge.active()) {
             for (SableBridge.ShipInfo s : SableBridge.shipsAlongSegment(sl, pos, next)) {
@@ -174,7 +191,7 @@ public class BombEntity extends Entity {
             }
         }
 
-        BlockHitResult hit = sl.clip(new ClipContext(pos, next, ClipContext.Block.COLLIDER, Double.isNaN(sinkFromY) ? ClipContext.Fluid.ANY : ClipContext.Fluid.NONE, this));
+        BlockHitResult hit = SableBridge.clipWorld(sl, new ClipContext(pos, next, ClipContext.Block.COLLIDER, Double.isNaN(sinkFromY) ? ClipContext.Fluid.ANY : ClipContext.Fluid.NONE, this), ownShip);
         if (hit.getType() == HitResult.Type.BLOCK && !ownCells.contains(hit.getBlockPos())) {
             if (t == BombType.BOUNCING && Double.isNaN(sinkFromY) && bounce(sl, hit)) return;
             if (t == BombType.DELAYED) { arm(sl, hit.getLocation()); return; }
@@ -194,15 +211,15 @@ public class BombEntity extends Entity {
     }
 
     private void steerLaser(ServerLevel sl, Vec3 pos, double h) {
-        double tLand = landTicks(h, vel.y);
-        double px = pos.x + vel.x * tLand, pz = pos.z + vel.z * tLand;
+        double tLand = landTicks(h, vel.y), drift = driftFactor(tLand);
+        double px = pos.x + vel.x * drift, pz = pos.z + vel.z * drift;
         LaserSpots.Spot spot = owner == null ? null : LaserSpots.nearest(sl, owner, px, pz, Balance.LGB_RANGE);
         lockSpot = spot == null ? null : spot.pos();
         if (spot == null) return;
         if (tickCount % 10 == 0) sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, pos.x, pos.y, pos.z, 1, 0.05, 0.05, 0.05, 0.0);
         double hs = Math.max(1.0, pos.y - spot.pos().y);
-        double tl = Math.max(1.0, landTicks(hs, vel.y));
-        double wantX = (spot.pos().x - pos.x) / tl, wantZ = (spot.pos().z - pos.z) / tl;
+        double tl = Math.max(1.0, landTicks(hs, vel.y)), dl = Math.max(1.0, driftFactor(tl));
+        double wantX = (spot.pos().x - pos.x) / dl, wantZ = (spot.pos().z - pos.z) / dl;
         double s = tl < 6.0 ? 10.0 : Balance.LGB_STEER;
         vel = new Vec3(vel.x + Mth.clamp(wantX - vel.x, -s, s), vel.y, vel.z + Mth.clamp(wantZ - vel.z, -s, s));
     }
@@ -287,14 +304,31 @@ public class BombEntity extends Entity {
         return net.minecraft.world.InteractionResult.sidedSuccess(level().isClientSide);
     }
 
-    private static double landTicks(double h, double vy) {
-        double g = Balance.BOMB_G, d = -vy;
-        return Math.max(1.0, (-d + Math.sqrt(d * d + 2.0 * g * Math.max(0.0, h))) / g);
+    static double landTicks(double h, double vy) {
+        double hh = Math.max(0.0, h), y = 0.0, v = vy;
+        int t = 0;
+        while (y > -hh && t < 6000) { v = v * Balance.BOMB_DRAG - Balance.BOMB_G; y += v; t++; }
+        return Math.max(1, t);
+    }
+
+    static double driftFactor(double t) {
+        double d = Balance.BOMB_DRAG;
+        return d >= 1.0 ? t : d * (1.0 - Math.pow(d, t)) / (1.0 - d);
     }
 
     private void explode(ServerLevel sl, Vec3 at) {
+        if (SableBridge.inPlotGrid(sl, at)) {
+            Vec3 wp = SableBridge.toWorld(sl, at);
+            if (SableBridge.inPlotGrid(sl, wp)) {
+                Wmd.LOGGER.warn("Bomb: {} would have gone off at the plot position {} {} {} (inside a craft): dropped", type().id, Mth.floor(at.x), Mth.floor(at.y), Mth.floor(at.z));
+                discard();
+                return;
+            }
+            at = wp;
+        }
         WarheadType w = type().blast;
         FlightManager mgr = FlightManager.get(sl);
+        MusicTriggersHook.kind(sl, "bomb_impact", type().id, BlockPos.containing(at));
         UUID prev = ShipStrike.begin(owner);
         Vec3 dir = new Vec3(vel.x, 0.0, vel.z);
         try {
@@ -317,7 +351,7 @@ public class BombEntity extends Entity {
         if (lockSpot != null) return lockSpot;
         if (aimed) return new Vec3(aimX, getY(), aimZ);
         double ground = sl.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mth.floor(getX()), Mth.floor(getZ()));
-        double t = landTicks(Math.max(0.0, getY() - ground), vel.y);
+        double t = driftFactor(landTicks(Math.max(0.0, getY() - ground), vel.y));
         return new Vec3(getX() + vel.x * t, ground, getZ() + vel.z * t);
     }
 

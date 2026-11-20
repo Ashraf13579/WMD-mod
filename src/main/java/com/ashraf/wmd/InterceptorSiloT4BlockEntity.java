@@ -116,7 +116,10 @@ public class InterceptorSiloT4BlockEntity extends BlockEntity implements Owned, 
 
     Vec3 mouth() { return SableBridge.toWorld(level, LauncherGeometry.toWorld(worldPosition, facing(), new double[] { 0.0, 72.0, 32.0 })); }
 
+    private boolean healed;
+
     public static void serverTick(Level level, BlockPos pos, BlockState state, InterceptorSiloT4BlockEntity be) {
+        if (!be.healed) { be.healed = true; ModelFootprint.heal(level, pos, state, InterceptorSiloT4Block.cells(), 2, "silo T4"); }
         if (level instanceof net.minecraft.server.level.ServerLevel empSl && EmpField.jammed(empSl, pos)) return;
         CommandCenter.siteSeen(be);
         if (level instanceof ServerLevel sl) be.serverStep(sl, level.getGameTime());

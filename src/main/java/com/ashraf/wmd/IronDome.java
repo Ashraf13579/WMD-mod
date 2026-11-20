@@ -30,7 +30,11 @@ public final class IronDome {
 
     public static final int M_OK = 0, M_NO_CIWS = 1, M_NO_POWER = 2, M_NO_AMMO = 3, M_NO_SEEK = 4, M_UNLOADED = 5, M_UNSET = 6;
 
-    public record Target(boolean shell, long id) {}
+    public record Target(boolean shell, long id, int air) {
+        public Target(boolean shell, long id) { this(shell, id, -1); }
+    }
+
+    public static final int AIR_ASHM = 99;
 
     public static int[] marker(int i, int cx, int cz, int r) {
         double a = Math.PI * 2.0 * i / MARKERS;
@@ -147,6 +151,13 @@ public final class IronDome {
 
         Vec3 position(Target t, double time) {
             if (level == null) return null;
+            if (t.air() >= 0 && t.air() != AIR_ASHM) {
+                if (!AirGate.on()) return null;
+                AirMissiles.Shot s = AirMissiles.flying(level, t.id());
+                if (s == null) return null;
+                double dt = time - level.getGameTime();
+                return s.vel == null ? s.pos : s.pos.add(s.vel.scale(dt));
+            }
             if (t.shell()) {
                 for (ArtShell s : ArtilleryManager.get(level).shells()) if (s.id() == t.id()) return s.position(time);
                 return null;
@@ -176,6 +187,20 @@ public final class IronDome {
                 if (owner.equals(s.owner()) || !s.interceptable() || now < s.start() + 5) continue;
                 targets.add(new Object[] { new Target(true, s.id()), s.position(now), s.endTime() - now });
             }
+
+            Set<Long> air = new HashSet<>(), ashm = new HashSet<>();
+            if (AirGate.on()) for (CiwsBlockEntity g : members()) { air.addAll(g.airTrackIds(level, now)); ashm.addAll(g.ashmTrackIds(level, now)); }
+            for (long id : air) {
+                AirMissiles.Shot s = AirMissiles.flying(level, id);
+                if (s == null) continue;
+                double v = s.vel == null ? 1.0 : Math.max(1.0, s.vel.length());
+                targets.add(new Object[] { new Target(false, id, s.kind), s.pos, (long) (Math.hypot(s.pos.x - cx, s.pos.z - cz) / v) });
+            }
+            for (long id : ashm) {
+                Flight f = mgr.find(id);
+                if (f == null) continue;
+                targets.add(new Object[] { new Target(false, id, AIR_ASHM), f.position(now), f.endTime() - now });
+            }
             Set<Target> live = new HashSet<>();
             for (Object[] o : targets) live.add((Target) o[0]);
             tried.keySet().retainAll(live);
@@ -184,7 +209,7 @@ public final class IronDome {
                 if (free.isEmpty()) break;
                 Target t = (Target) o[0];
                 Vec3 p = (Vec3) o[1];
-                double range = t.shell() ? Balance.CRAM_RANGE : Balance.CIWS_RANGE;
+                double range = t.air() >= 0 ? Balance.CIWS_AIR_RANGE : t.shell() ? Balance.CRAM_RANGE : Balance.CIWS_RANGE;
                 Set<CiwsBlockEntity> no = tried.getOrDefault(t, Set.of());
                 CiwsBlockEntity best = null;
                 double bd = range * range;
@@ -228,7 +253,7 @@ public final class IronDome {
             List<DomeMarkersPayload.Entry> l = new ArrayList<>();
             for (CcIronDomeBlockEntity c : CONSOLES) {
                 if (c.isRemoved() || !c.hasCentre() || !c.isOnline() || c.getLevel() != p.level() || c.getOwner() == null) continue;
-                if (!p.getUUID().equals(c.getOwner()) && !c.security().trusted().containsKey(p.getUUID())) continue;
+                if (!p.getUUID().equals(c.getOwner()) && !Access.sharedWith(c).contains(p.getUUID())) continue;
                 Dome d = c.dome();
                 int ok = 0;
                 for (int i = 0; i < MARKERS; i++) if (d.state[i] == M_OK) ok |= 1 << i;

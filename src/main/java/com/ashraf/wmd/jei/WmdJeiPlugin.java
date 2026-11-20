@@ -224,7 +224,8 @@ public class WmdJeiPlugin implements IModPlugin {
             int tier = Math.min(3, part.tier());
             Component text = switch (part.slot()) {
                 case 0 -> Component.translatable("jei.wmd.info.airframe", part.tier(), String.format("%.0f", MissileConfig.health(tier)), String.format("%.1f", MissileConfig.weightAirframe(tier)));
-                case 1 -> part.variant().equals("divert")
+                case 1 -> part.isAirMotor() ? Component.translatable("jei.wmd.info." + part.variant() + "_motor")
+                        : part.variant().equals("divert")
                         ? Component.translatable("jei.wmd.info.divert", String.format("%.1f", MissileConfig.speed(3)), String.format("%.1f", MissileConfig.weightDivert()), Math.round(MissileConfig.divertRange() * 100))
                         : Component.translatable("jei.wmd.info.motor", part.tier(), String.format("%,.0f", MissileConfig.baseRange(tier)), String.format("%.1f", MissileConfig.speed(tier)), String.format("%.1f", MissileConfig.weightMotor(tier)));
                 case 2 -> Component.translatable("jei.wmd.info.guidance", part.tier(), (int) Config.missRadius(part.tier()), String.format("%.1f", MissileConfig.weightGuidance(tier)));
@@ -313,7 +314,7 @@ public class WmdJeiPlugin implements IModPlugin {
             var font = Minecraft.getInstance().font;
             g.drawString(font, "->", 80, 10, 0xFF555555, false);
             g.drawString(font, Component.translatable("jei.wmd.time", String.format("%.1f", r.ticks() / 20.0)), 4, 28, 0xFF555555, false);
-            g.drawString(font, Component.translatable("jei.wmd.power", r.fePerTick() * 20), 4, 40, 0xFF555555, false);
+            g.drawString(font, Component.translatable("jei.wmd.power", r.fePerTick()), 4, 40, 0xFF555555, false);
         }
     }
 }

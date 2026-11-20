@@ -26,7 +26,7 @@ public final class AirFrag {
         ServerPlayer shooter = owner == null ? null : level.getServer().getPlayerList().getPlayer(owner);
         for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(r))) {
             double d = AirMissiles.distToBox(e.getBoundingBox(), at);
-            if (d > r) continue;
+            if (d > r || CraftShield.shelters(level, e.position(), at)) continue;
             float dmg = (float) (Balance.AAM_FRAG_DAMAGE[kind] * (1.0 - 0.7 * d / r));
             e.hurt(level.damageSources().explosion(null, shooter), dmg);
         }
@@ -41,8 +41,10 @@ public final class AirFrag {
             }
         }
 
-        ShipStrike.blast(level, hull, r, (float) (Balance.AAM_FRAG_POWER[kind] * rf), owner);
+        boolean shielded = ship != null && CraftShield.blastStopped(level, ship, at, r);
+        if (!shielded) ShipStrike.blast(level, hull, r, (float) (Balance.AAM_FRAG_POWER[kind] * rf), owner);
 
+        if (shielded) return;
         if (ship == null || ShipStrike.spare(level, ship, owner)) return;
 
         int off = AirStations.shootOff(level, ship, hull, r);
@@ -56,6 +58,24 @@ public final class AirFrag {
             broken += ShipStrike.chew(level, ship, at, at.add(dir.scale(reach)), Balance.AAM_FRAG_BLOCKS, (float) Balance.CIWS_SHIP_MAX_HARDNESS, owner);
         }
         Wmd.LOGGER.info("Air frag ({}) at {}: {} hull blocks from fragments", AirMissiles.NAMES[kind], BlockPos.containing(at).toShortString(), broken);
+        if (kind == AirMissiles.HEAVY) rodRing(level, at, heading, ship, owner, refined);
+    }
+
+    static int rodRing(ServerLevel level, Vec3 at, Vec3 heading, UUID ship, UUID owner, boolean refined) {
+        if (level == null || at == null || ship == null) return 0;
+        Vec3 axis = heading != null && heading.lengthSqr() > 1.0E-9 ? heading.normalize() : new Vec3(0, -1, 0);
+        Vec3 up = Math.abs(axis.y) < 0.9 ? new Vec3(0, 1, 0) : new Vec3(1, 0, 0);
+        Vec3 u = axis.cross(up).normalize(), w = axis.cross(u).normalize();
+        double reach = Balance.AAM_ROD_RADIUS * AirMissiles.refinedFactor(refined);
+        int broken = 0;
+        for (int i = 0; i < Balance.AAM_ROD_RAYS; i++) {
+            double a = Math.PI * 2.0 * i / Balance.AAM_ROD_RAYS;
+            Vec3 dir = u.scale(Math.cos(a)).add(w.scale(Math.sin(a)));
+            broken += ShipStrike.chew(level, ship, at, at.add(dir.scale(reach)), Balance.AAM_ROD_BLOCKS, (float) Balance.CIWS_SHIP_MAX_HARDNESS, owner);
+        }
+        level.playSound(null, at.x, at.y, at.z, WmdSounds.AAM_BURST.get(), SoundSource.HOSTILE, Balance.AAM_BURST_VOLUME, 0.7F);
+        Wmd.LOGGER.info("Air frag (rod ring) at {}: {} hull blocks cut", BlockPos.containing(at).toShortString(), broken);
+        return broken;
     }
 
     static void ground(ServerLevel level, BlockPos p, Vec3 heading, UUID owner, boolean refined) {

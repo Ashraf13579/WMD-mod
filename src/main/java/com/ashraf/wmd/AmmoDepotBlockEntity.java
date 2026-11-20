@@ -298,7 +298,10 @@ public class AmmoDepotBlockEntity extends ProcessUnitBlockEntity implements Owne
 
     boolean busyAt(BlockPos target) { return busy.contains(target.asLong()); }
 
-    void done(BlockPos target) { busy.remove(target.asLong()); }
+    void done(BlockPos target) {
+        busy.remove(target.asLong());
+        if (level != null) lastJob = level.getGameTime();
+    }
 
     void done(BlockPos target, boolean ok) { done(target); if (!ok) failed.add(target.asLong()); }
 

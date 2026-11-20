@@ -407,6 +407,6 @@ public abstract class TorpedoLauncherBlockEntity extends ItemProcessBlockEntity 
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse() * 20), Component.translatable("gui.wmd.info.torpedo_launcher", tslots.length));
+        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse()), Component.translatable("gui.wmd.info.torpedo_launcher", tslots.length));
     }
 }

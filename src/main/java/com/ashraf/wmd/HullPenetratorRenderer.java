@@ -23,7 +23,6 @@ final class HullPenetratorRenderer implements BlockEntityRenderer<BusbarBlockEnt
         if (skin == null || !(be.getBlockState().getBlock() instanceof HullPenetratorBlock) || be.getLevel() == null) return;
         poseStack.pushPose();
         poseStack.translate(0.5, 0.0, 0.5);
-        poseStack.scale(1.0F / 16.0F, 1.0F / 16.0F, 1.0F / 16.0F);
         PoseStack.Pose last = poseStack.last();
         VertexConsumer vc = buffers.getBuffer(RenderType.entityCutout(InventoryMenu.BLOCK_ATLAS));
         BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(skin);

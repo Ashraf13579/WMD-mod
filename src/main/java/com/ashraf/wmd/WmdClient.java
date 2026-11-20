@@ -121,6 +121,11 @@ public class WmdClient {
         MountedRenderer.register(event, Wmd.BATTERY_T3_BE.get(), context -> new StagedUnitRenderer<BatteryTierBlockEntity>("battery_t3", 3));
         MountedRenderer.register(event, Wmd.BATTERY_T4_BE.get(), context -> new StagedUnitRenderer<BatteryTierBlockEntity>("battery_t4", 3));
         MountedRenderer.register(event, Wmd.SENTRY_TURRET_BE.get(), context -> new StagedUnitRenderer<SentryTurretBlockEntity>("sentry_turret", 2));
+        TeslaBlocksClient.renderers(event);
+        StormBlocksClient.renderers(event);
+        HoloBlocksClient.renderers(event);
+        AccessBlocksClient.renderers(event);
+        ExoSuitBlocksClient.renderers(event);
         MountedRenderer.register(event, Wmd.FENCE_ENERGIZER_BE.get(), context -> new StagedUnitRenderer<FenceEnergizerBlockEntity>("fence_energizer", 1));
         MountedRenderer.register(event, Wmd.MINE_BE.get(), context -> new MineRenderer());
         MountedRenderer.register(event, Wmd.CCTV_CAMERA_BE.get(), context -> new StagedUnitRenderer<CctvCameraBlockEntity>("cctv_camera", 1));
@@ -210,6 +215,9 @@ public class WmdClient {
         event.registerEntityRenderer(Wmd.XL_TRANSPORTER.get(), XlTransporterRenderer::new);
         event.registerEntityRenderer(Wmd.PARTS_RUNNER.get(), PartsRunnerRenderer::new);
         event.registerEntityRenderer(Wmd.SENTRY_DOG.get(), SentryDogRenderer::new);
+        event.registerEntityRenderer(Wmd.WARDEN.get(), WardenRenderer::new);
+        event.registerBlockEntityRenderer(Wmd.WARDEN_TERMINAL_BE.get(), context -> new WardenBlockRenderer<>("warden_terminal"));
+        event.registerBlockEntityRenderer(Wmd.WARDEN_NODE_BE.get(), context -> new WardenBlockRenderer<>("warden_node"));
         event.registerEntityRenderer(Wmd.MISSILE_ROBOT.get(), MissileRobotRenderer::new);
 
         MountedRenderer.register(event, Wmd.SATELLITE_FACILITY_BE.get(),
@@ -444,21 +452,32 @@ public class WmdClient {
                 : menu.machine() instanceof SwarmLauncherBlockEntity ? new SwarmLauncherScreen(menu, inv, title)
                 : menu.machine() instanceof DeadHandBlockEntity ? new DeadHandScreen(menu, inv, title)
                 : menu.machine() instanceof SmokeMachineBlockEntity ? new SmokeMachineScreen(menu, inv, title)
+                : menu.machine() instanceof NaniteForgeBlockEntity ? new NaniteForgeScreen(menu, inv, title)
                 : menu.machine() instanceof BombRackBlockEntity ? new BombRackScreen(menu, inv, title)
                 : menu.machine() instanceof BombSightBlockEntity ? new BombSightScreen(menu, inv, title)
                 : menu.machine() instanceof EarlyWarningArrayBlockEntity ? new EarlyWarningScreen(menu, inv, title)
                 : menu.machine() instanceof GroundStationBlockEntity ? new GroundStationScreen(menu, inv, title)
                 : menu.machine() instanceof MlrsBlockEntity ? new MlrsScreen(menu, inv, title)
+                : menu.machine() instanceof PlasmaMortarBlockEntity ? new PlasmaMortarScreen(menu, inv, title)
                 : menu.machine() instanceof SuperGunBlockEntity ? new SuperGunScreen(menu, inv, title)
                 : menu.machine() instanceof ArtilleryGunBlockEntity ? new ArtilleryGunScreen(menu, inv, title)
                 : menu.machine() instanceof ShellPressBlockEntity ? new ShellPressScreen(menu, inv, title)
                 : menu.machine() instanceof CruiseLauncherBlockEntity ? new CruiseLauncherScreen(menu, inv, title)
                 : menu.machine() instanceof SatelliteFacilityBlockEntity ? new SatelliteFacilityScreen(menu, inv, title)
+                : menu.machine() instanceof HoloTableBlockEntity ? new HoloTableScreen(menu, inv, title)
                 : CcScreenC.handles(menu.machine()) ? new CcScreenC(menu, inv, title)
                 : menu.machine() instanceof CcInterceptorConsoleBlockEntity ? new CcScreenS5(menu, inv, title)
                 : menu.machine() instanceof CounterBatteryRadarBlockEntity ? new CounterBatteryScreen(menu, inv, title)
                 : menu.machine() instanceof AirSearchRadarBlockEntity ? new AirSearchRadarScreen(menu, inv, title)
                 : menu.machine() instanceof SamSiteBlockEntity ? new SamSiteScreen(menu, inv, title)
+                : menu.machine() instanceof PulseEmpBlockEntity ? new PulseEmpScreen(menu, inv, title)
+                : menu.machine() instanceof TeslaTowerBlockEntity ? new TeslaTowerScreen(menu, inv, title)
+                : menu.machine() instanceof StormGeneratorBlockEntity ? new StormGeneratorScreen(menu, inv, title)
+                : menu.machine() instanceof ActiveCloakBlockEntity ? new ActiveCloakScreen(menu, inv, title)
+                : menu.machine() instanceof CraftShieldBlockEntity ? new CraftShieldScreen(menu, inv, title)
+                : menu.machine() instanceof QuantumRadarBlockEntity ? new QuantumRadarScreen(menu, inv, title)
+                : menu.machine() instanceof GravityWellBlockEntity ? new GravityWellScreen(menu, inv, title)
+                : menu.machine() instanceof BlinkGateCoreBlockEntity ? new BlinkGateScreen(menu, inv, title)
                 : menu.machine() instanceof FireControlConsoleBlockEntity ? new FireControlScreen(menu, inv, title)
                 : menu.machine() instanceof DepthChargeRackBlockEntity ? new DepthChargeScreen(menu, inv, title)
                 : menu.machine() instanceof DredgeWinchBlockEntity ? new DredgeScreen(menu, inv, title)

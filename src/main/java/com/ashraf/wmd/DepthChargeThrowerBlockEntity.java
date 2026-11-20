@@ -393,7 +393,7 @@ public class DepthChargeThrowerBlockEntity extends ItemProcessBlockEntity implem
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse() * 20), Component.translatable("gui.wmd.info.depth_charge_thrower"));
+        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse()), Component.translatable("gui.wmd.info.depth_charge_thrower"));
     }
 
     @Override

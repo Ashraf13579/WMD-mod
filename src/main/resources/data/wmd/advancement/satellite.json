@@ -1,0 +1,38 @@
+{
+  "parent": "wmd:icbm",
+  "display": {
+    "icon": {
+      "id": "wmd:satellite_part"
+    },
+    "title": {
+      "translate": "advancements.wmd.satellite.title"
+    },
+    "description": {
+      "translate": "advancements.wmd.satellite.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_satellite_part": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wmd:satellite_part"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_satellite_part"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  }
+}

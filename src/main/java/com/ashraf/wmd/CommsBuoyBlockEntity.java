@@ -165,7 +165,7 @@ public class CommsBuoyBlockEntity extends ProcessUnitBlockEntity implements Nava
     @Override protected List<String> labelKeys() { return List.of(); }
     @Override protected int rateMbPerTick() { return 1; }
     @Override public PortMap guiPortMap() { return PORT_MAP; }
-    @Override public List<Component> guiInfo() { return List.of(Component.translatable("gui.wmd.info.use", Balance.BUOY_FE * 20), Component.translatable("gui.wmd.info.comms_buoy", (int) Balance.COMMS_DEPTH)); }
+    @Override public List<Component> guiInfo() { return List.of(Component.translatable("gui.wmd.info.use", Balance.BUOY_FE), Component.translatable("gui.wmd.info.comms_buoy", (int) Balance.COMMS_DEPTH)); }
     @Override protected SoundEvent runSound() { return WmdSounds.T4_WINCH.get(); }
     @Override protected float soundVolume() { return 0.0F; }
     @Override protected BlockPos soundLocal() { return BlockPos.ZERO; }

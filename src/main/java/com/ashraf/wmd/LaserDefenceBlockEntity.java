@@ -209,7 +209,7 @@ public class LaserDefenceBlockEntity extends ProcessUnitBlockEntity implements O
                     }
                 } else if (targetId >= 0) {
                     Flight f = mgr.find(targetId);
-                    if (f != null) mgr.damage(sl, f, Balance.LD_DMG);
+                    if (f != null && mgr.damage(sl, f, Balance.LD_DMG)) WarScore.intercept(sl, getOwner(), f);
                     if (mgr.find(targetId) == null) burnt(sl, p);
                 } else if (++bombTicks >= Balance.LD_BOMB_TICKS) {
                     bombTicks = 0;

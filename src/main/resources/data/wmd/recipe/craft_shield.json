@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:craft_shield"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SAS",
+    "XTX",
+    "SBS"
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:superconducting_coil"
+    },
+    "A": {
+      "item": "wmd:antimatter_cell"
+    },
+    "X": {
+      "item": "wmd:chip_defence_2"
+    },
+    "T": {
+      "item": "wmd:tungsten_tile"
+    },
+    "B": {
+      "item": "wmd:busbar"
+    }
+  },
+  "result": {
+    "id": "wmd:craft_shield",
+    "count": 1
+  }
+}

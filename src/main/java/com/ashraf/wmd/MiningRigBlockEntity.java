@@ -204,7 +204,7 @@ public class MiningRigBlockEntity extends ItemProcessBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.RIG_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.RIG_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.rig", Balance.RIG_RAW_PER_BLOCK, Balance.RIG_TICKS_STEEL / 20, Balance.RIG_TICKS_CARBIDE / 20, Balance.RIG_TICKS_DIAMOND / 20, Balance.RIG_WATER_MB),
                 Component.translatable("gui.wmd.info.rig_reach", Balance.RIG_RADIUS, seen));
     }

@@ -12,7 +12,11 @@ public final class ClientStatics {
 
     @SubscribeEvent
     static void onLogout(ClientPlayerNetworkEvent.LoggingOut event) {
+        ClientHoloTable.clearStatics();
         Statics.clearClient();
+        WorldMapView.clearStatics();
+        HoloTerrainView.clearStatics();
+        ClientExoSuit.clearStatics();
         ClientFlights.FLIGHTS.clear();
         ArtilleryView.clear();
         DroneView.clear();

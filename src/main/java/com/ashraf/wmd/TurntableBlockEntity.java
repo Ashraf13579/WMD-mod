@@ -210,8 +210,8 @@ public class TurntableBlockEntity extends ProcessUnitBlockEntity implements Owne
 
     private double[] onPlate(ServerLevel sl, LandingGearBlockEntity g) {
         Vec3 w = g.wheelWorld(sl), l = w == null ? null : local(sl, w);
-        if (l == null) return new double[] { Double.NaN, 0.0 };
-        return new double[] { Math.hypot(l.x - cx(), l.z - cz()), Math.abs(l.y - top()) < 1.0 ? 1.0 : 0.0 };
+        if (l == null) return new double[] { Double.NaN, 0.0, Double.NaN };
+        return new double[] { Math.hypot(l.x - cx(), l.z - cz()), Math.abs(l.y - top()) < 1.0 ? 1.0 : 0.0, l.y - top() };
     }
 
     private Look look(ServerLevel sl) {
@@ -232,7 +232,8 @@ public class TurntableBlockEntity extends ProcessUnitBlockEntity implements Owne
         boolean off = false, air = false, throttle = false;
         for (LandingGearBlockEntity g : gs) {
             double[] d = onPlate(sl, g);
-            if (!g.wow) air = true;
+            if (!g.wow && !(d[2] <= Balance.TT_AIR_GAP)) air = true;
+
             if (Double.isNaN(d[0]) || d[0] > r - Balance.TT_EDGE || d[1] <= 0.0) off = true; else on++;
             if (!g.parked) throttle = true;
         }

@@ -137,6 +137,8 @@ public class CatapultTrackBlockEntity extends ProcessUnitBlockEntity implements 
                     stateAt = now;
                     shuttle = 0.0F;
                     playOnce(sl, WmdSounds.CAT_SHOT.get(), Balance.SND_RELEASE, 1.0F);
+                    Vec3 t0 = SableBridge.toWorld(sl, along(0.0)), t1 = SableBridge.toWorld(sl, along(length - 1)), nose = g.wheelWorld(sl);
+                    if (t0 != null && t1 != null && nose != null) AirFxPayload.send(sl, t0, Balance.AIRFX_R, new AirFxPayload(AirFxPayload.CATAPULT, jet, t0, t1, nose, (float) Balance.CAT_END_SPEED));
                     Wmd.LOGGER.info("Catapult at {}: launching {} ({} blocks)", worldPosition, jet, length);
                     sync();
                 }

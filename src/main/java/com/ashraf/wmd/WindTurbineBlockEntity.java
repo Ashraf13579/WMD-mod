@@ -112,8 +112,8 @@ public class WindTurbineBlockEntity extends ProcessUnitBlockEntity {
     @Override
     public List<Component> guiInfo() {
         int hub = (int) Math.floor(worldPosition.getY() + HUB_UP);
-        return List.of(Component.translatable("gui.wmd.info.wind_output", fePerTickNow * 20, heightFe() * 20, hub),
-                Component.translatable("gui.wmd.info.wind_height", Balance.WIND_FE_LOW * 20, Balance.WIND_Y_LOW, Balance.WIND_FE_HIGH * 20, Balance.WIND_Y_HIGH),
+        return List.of(Component.translatable("gui.wmd.info.wind_output", fePerTickNow, heightFe(), hub),
+                Component.translatable("gui.wmd.info.wind_height", Balance.WIND_FE_LOW, Balance.WIND_Y_LOW, Balance.WIND_FE_HIGH, Balance.WIND_Y_HIGH),
                 Component.translatable("gui.wmd.info.wind_weather", Math.round((Balance.WIND_RAIN - 1.0) * 100), Math.round((Balance.WIND_THUNDER - 1.0) * 100)),
                 Component.translatable("gui.wmd.info.wind_clear", Math.round(clear * 100.0F), Balance.WIND_CLEAR_R));
     }

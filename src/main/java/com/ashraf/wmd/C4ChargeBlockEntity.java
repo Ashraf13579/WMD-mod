@@ -70,6 +70,14 @@ public class C4ChargeBlockEntity extends BlockEntity implements Owned {
     }
 
     static void breach(ServerLevel sl, BlockPos pos, BlockState state) {
+
+        java.util.UUID owner = sl.getBlockEntity(pos) instanceof C4ChargeBlockEntity be ? be.getOwner() : null;
+        java.util.UUID prevShooter = ShipStrike.begin(owner != null ? owner : ShipStrike.shooter());
+        WmdApiImpl.blast(sl, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 1.5 + Balance.C4_DEPTH, "c4", "c4", ShipStrike.shooter());
+        try { breach0(sl, pos, state); } finally { ShipStrike.end(prevShooter); }
+    }
+
+    private static void breach0(ServerLevel sl, BlockPos pos, BlockState state) {
         Direction face = Machines.mount(state);
         Direction in = face.getOpposite();
         Vec3 c = Vec3.atCenterOf(pos);
@@ -85,7 +93,7 @@ public class C4ChargeBlockEntity extends BlockEntity implements Owned {
             if (Hardened.rating(sl, p, s) > Balance.C4_RATING) continue;
             if (!Config.Server.canBreak(sl, p)) continue;
             CcAlarms.exploded(sl, p);
-            sl.destroyBlock(p, false);
+            BlastWrites.destroy(sl, p, false);
         }
         sl.sendParticles(ParticleTypes.EXPLOSION, c.x, c.y, c.z, 3, 0.4, 0.4, 0.4, 0.0);
         sl.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y, c.z, 30, 0.6, 0.6, 0.6, 0.05);

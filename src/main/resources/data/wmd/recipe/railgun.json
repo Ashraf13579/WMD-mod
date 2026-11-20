@@ -11,7 +11,7 @@
       "item": "wmd:antimatter_cell"
     },
     "C": {
-      "item": "wmd:superconducting_coil"
+      "item": "wmd:warden_core"
     },
     "T": {
       "item": "wmd:tungsten_alloy_casing"
@@ -20,7 +20,7 @@
       "item": "wmd:chip_railgun_1"
     },
     "B": {
-      "item": "wmd:tungsten_block"
+      "tag": "c:storage_blocks/tungsten"
     },
     "S": {
       "item": "wmd:super_gun"

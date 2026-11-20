@@ -25,7 +25,13 @@ import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class StorageTankBlockEntity extends BlockEntity implements GeoBlockEntity, MachinePorts, GuiMachine, TankDamage.Holder {
+public class StorageTankBlockEntity extends BlockEntity implements GeoBlockEntity, MachinePorts, GuiMachine, TankDamage.Holder, Owned {
+
+    private final OwnerData ownerData = new OwnerData();
+    @Override public java.util.UUID getOwner() { return ownerData.id(); }
+    @Override public String getOwnerName() { return ownerData.name(); }
+    @Override public void claim(net.minecraft.world.entity.player.Player player) { ownerData.claim(player); setChanged(); }
+    @Override public SecurityData security() { return ownerData.security(); }
 
     private final FluidTank tank = new FluidTank(Balance.STORAGE_TANK_MB);
     private int syncedMb = -1;
@@ -242,6 +248,7 @@ public class StorageTankBlockEntity extends BlockEntity implements GeoBlockEntit
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
+        ownerData.write(tag);
         tank.writeToNBT(registries, tag);
         health.save(tag);
     }
@@ -249,6 +256,7 @@ public class StorageTankBlockEntity extends BlockEntity implements GeoBlockEntit
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
+        if (tag.hasUUID("owner")) ownerData.read(tag);
         int before = tank.getFluidAmount();
         tank.readFromNBT(registries, tag);
         health.load(tag);

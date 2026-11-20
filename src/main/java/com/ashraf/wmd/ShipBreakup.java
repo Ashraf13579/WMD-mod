@@ -21,7 +21,7 @@ public final class ShipBreakup {
 
     private ShipBreakup() {}
 
-    private record Check(ServerLevel level, UUID id, Vec3 at, float power, long due) {}
+    private record Check(ServerLevel level, UUID id, Vec3 at, float power, long due, UUID shooter) {}
 
     private record Mark(ServerLevel level, AABB box, long due, UUID parent) {}
 
@@ -43,8 +43,9 @@ public final class ShipBreakup {
 
     static void hit(ServerLevel level, SableBridge.ShipInfo ship, Vec3 at, float power) {
         if (!Config.Server.shipBreakup() || ship == null) return;
+        MusicTriggersHook.crew(level, "wmd:ship_hit", ship.id(), net.minecraft.core.BlockPos.containing(at));
         FIRST.putIfAbsent(ship.id(), Math.max(1, ship.blockCount()));
-        if (CHECKS.size() < Balance.SHIP_CHECKS_MAX) CHECKS.add(new Check(level, ship.id(), at, power, level.getGameTime() + Balance.SHIP_CHECK_DELAY));
+        if (CHECKS.size() < Balance.SHIP_CHECKS_MAX) CHECKS.add(new Check(level, ship.id(), at, power, level.getGameTime() + Balance.SHIP_CHECK_DELAY, ShipStrike.shooter()));
     }
 
     private static void burn(ServerLevel level, UUID id, long now) {
@@ -84,7 +85,10 @@ public final class ShipBreakup {
         int first = FIRST.getOrDefault(c.id, Math.max(1, info.blockCount()));
         double lost = 1.0 - info.blockCount() / (double) first;
         boolean breaks = c.power >= Balance.SHIP_FRACTURE_POWER || lost >= Balance.SHIP_FRACTURE_LOSS;
-        if (breaks || lost >= Balance.SHIP_BURN_LOSS) burn(level, c.id, now);
+        if (breaks || lost >= Balance.SHIP_BURN_LOSS) {
+            if (!BURNING.containsKey(c.id)) WarScore.craft(level, c.shooter, c.id, first);
+            burn(level, c.id, now);
+        }
         if (!breaks || now - FRACTURED.getOrDefault(c.id, -100_000L) < Balance.SHIP_FRACTURE_COOLDOWN || LoadGuard.overloaded()) return;
         if (!Config.Server.blockDamage() || !Config.Server.canBreakShip(level, BlockPos.containing(c.at))) return;
         int cut = SableBridge.shipFracture(level, c.id, c.at);
@@ -121,5 +125,6 @@ public final class ShipBreakup {
         mgr.holdForTest(level, x, z, WarheadFx.holdRadius(tier, WarheadType.HE));
         WarheadFx.detonate(level, mgr, x, y, z, tier, WarheadType.HE, h > 1.0E-3 ? v.x / h : 0.0, h > 1.0E-3 ? v.z / h : 1.0);
         Wmd.LOGGER.info("[ship] {} crashed at {} {} {} ({} blocks: an HE tier {} blast)", info.name(), x, y, z, blocks, tier);
+        MusicTriggersHook.fire(level, "wmd:ship_crash", new net.minecraft.core.BlockPos(x, y, z));
     }
 }

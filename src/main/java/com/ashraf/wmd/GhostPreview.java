@@ -67,7 +67,13 @@ public final class GhostPreview {
         InteractionHand hand = InteractionHand.MAIN_HAND;
         Block mb = ghostOf(player.getMainHandItem());
         if (mb == null) { hand = InteractionHand.OFF_HAND; mb = ghostOf(player.getOffhandItem()); }
-        if (mb == null) { plan = null; return; }
+        if (mb == null) {
+            plan = null;
+            Plan w = wrenchPlan(mc, level, player, level.getGameTime());
+            wplan = w;
+            if (w != null) draw(event, level, w);
+            return;
+        }
         if (!(mc.hitResult instanceof BlockHitResult hit) || hit.getType() != HitResult.Type.BLOCK) { plan = null; return; }
         ItemStack stack = player.getItemInHand(hand);
         BlockItem bi = (BlockItem) stack.getItem();
@@ -87,6 +93,43 @@ public final class GhostPreview {
             plan = p;
         }
         draw(event, level, p);
+    }
+
+    private static Plan wplan;
+
+    private static Plan wrenchPlan(Minecraft mc, ClientLevel level, LocalPlayer player, long now) {
+        ItemStack st = player.getMainHandItem();
+        if (!st.is(Wmd.WRENCH.get())) return null;
+        boolean rot = WrenchRotate.rotateMode(st), sneak = player.isShiftKeyDown();
+        if (!rot && !sneak) return null;
+        if (!(mc.hitResult instanceof BlockHitResult hit) || hit.getType() != HitResult.Type.BLOCK) return null;
+        BlockPos ctrl = WrenchRotate.controllerFor(level, hit.getBlockPos());
+        if (ctrl == null) return null;
+        BlockState s = level.getBlockState(ctrl);
+        if (!(s.getBlock() instanceof MachineBlock mb) || mb.footprint().size() <= 1 || !WrenchRotate.turnable(mb) || !s.hasProperty(MachineBlock.FACING)) return null;
+        Direction nf = WrenchRotate.turnedFacing(s, !(rot && sneak));
+        if (nf == null) return null;
+        Plan c = wplan;
+        if (c != null && c.origin.equals(ctrl) && c.facing == nf && now - c.checkedAt < RECHECK && now >= c.checkedAt) return c;
+        Direction f = s.getValue(MachineBlock.FACING), mount = Machines.mount(s);
+        Plan p = new Plan();
+        p.block = mb; p.origin = ctrl; p.facing = nf; p.mount = mount; p.checkedAt = now;
+        p.state = s.setValue(MachineBlock.FACING, nf);
+        p.minX = p.minY = p.minZ = Integer.MAX_VALUE;
+        p.maxX = p.maxY = p.maxZ = Integer.MIN_VALUE;
+        java.util.Set<BlockPos> old = new java.util.HashSet<>();
+        for (BlockPos l : mb.footprint()) old.add(Machines.toWorld(ctrl, f, mount, l.getX(), l.getY(), l.getZ()));
+        List<BlockPos> fresh = new ArrayList<>();
+        for (BlockPos l : mb.footprint()) {
+            BlockPos w = Machines.toWorld(ctrl, nf, mount, l.getX(), l.getY(), l.getZ());
+            grow(p, w);
+            if (w.equals(ctrl) || old.contains(w)) continue;
+            if (level.isOutsideBuildHeight(w) || !level.getBlockState(w).canBeReplaced()) addRed(p, w); else fresh.add(w);
+        }
+        BlockPos joined = WrenchRotate.joinedModule(level, ctrl, mb, f, mount);
+        if (joined != null) addRed(p, joined);
+        p.ok = joined == null && PlaceGuard.blocker(level, fresh) == null;
+        return p;
     }
 
     static Block ghostOf(ItemStack s) {

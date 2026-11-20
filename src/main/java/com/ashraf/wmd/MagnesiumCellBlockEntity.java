@@ -88,7 +88,7 @@ public class MagnesiumCellBlockEntity extends ItemProcessBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.MGCELL_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.MGCELL_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.mgcell_mgcl", Balance.MGCELL_MGCL_MB, Balance.MGCELL_MG_FROM_MGCL, Balance.MGCELL_CL_FROM_MGCL),
                 Component.translatable("gui.wmd.info.mgcell_brine", Balance.MGCELL_BRINE_MB, Balance.MGCELL_MG_FROM_BRINE, Balance.MGCELL_BRINE_TICKS / 20),
                 Component.translatable("gui.wmd.info.mgcell_lithium", Balance.MGCELL_LI_EVERY));

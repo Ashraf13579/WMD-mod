@@ -133,7 +133,7 @@ public final class AntiTorpedo {
                 if (t != e && hostile(t, e.owner()) && t.position().distanceTo(next) <= Balance.ATT_FUSE) { burst(sl, e, next, "kill"); return; }
             }
         }
-        BlockHitResult hit = sl.clip(new ClipContext(pos, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, e));
+        BlockHitResult hit = SableBridge.clipWorld(sl, new ClipContext(pos, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, e), null);
         if (hit.getType() == HitResult.Type.BLOCK) { burst(sl, e, hit.getLocation(), "ground"); return; }
         if (e.tickCount % Balance.TORP_NOISE_TICKS == 0) NoiseNet.emit(sl, e.getUUID(), next, k.db(), NoiseNet.Kind.TORPEDO, e.owner(), null);
         s.run += s.vel.length();
@@ -160,6 +160,7 @@ public final class AntiTorpedo {
         UUID owner = e.owner();
         STATE.remove(e);
         e.discard();
+        MusicTriggersHook.fire(sl, "wmd:anti_torpedo", net.minecraft.core.BlockPos.containing(at));
         int kills = 0;
         for (TorpedoEntity t : sl.getEntitiesOfClass(TorpedoEntity.class, new AABB(at, at).inflate(Balance.ATT_FUSE + 1.0))) {
             if (!hostile(t, owner) || t.position().distanceTo(at) > Balance.ATT_FUSE + 1.0) continue;

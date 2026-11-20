@@ -65,6 +65,7 @@ public final class ImpactFx {
                 case BUNKER -> new double[] { 0.0, 0.0, 0.0, 0.4, 0 };
                 case EMP -> new double[] { 0.0, 0.0, 0.0, 0.0, 0 };
                 case NUKE -> new double[] { 1.3, 1.3, 1.0, 1.2, 1 };
+                case PLASMA_BALL -> new double[] { 1.2, 1.0, 0.0, 0.8, 0 };
                 case PLASMA -> new double[] { 1.5, 1.5, 0.0, 1.3, 0 };
                 case ANTIMATTER -> new double[] { 1.7, 1.7, 0.0, 1.4, 0 };
                 case ORBITAL_ROD -> new double[] { 0.0, 2.4, 0.0, 1.9, 0 };
@@ -74,7 +75,7 @@ public final class ImpactFx {
                 case TSAR -> new double[] { 1.9, 2.2, 1.5, 1.7, 1 };
                 case ROD -> new double[] { 0.0, 1.3, 0.0, 1.0, 0 };
                 case HEMP, SEISMIC -> new double[] { 0.0, 0.0, 0.0, 0.0, 0 };
-                case INTERCEPTOR, ASAT, CUBESAT -> new double[] { 0.0, 0.0, 0.0, 0.0, 0 };
+                case INTERCEPTOR, ASAT, CUBESAT, ROD_RING -> new double[] { 0.0, 0.0, 0.0, 0.0, 0 };
                 case HEAVY_BLAST -> new double[] { 1.2, 1.4, 0.0, 1.4, 0 };
                 case CARPET -> new double[] { 0.0, 0.0, 0.0, 0.0, 0 };
                 case UPHEAVAL, DAM_BREAKER -> new double[] { 1.0, 1.0, 0.0, 1.0, 0 };
@@ -226,6 +227,10 @@ public final class ImpactFx {
                 play(d < 200 * b.scale ? WmdSounds.ANNIHILATION.get() : WmdSounds.ANNIHILATION_FAR.get(), b.pos, loud, 1.0F, delay);
                 if (d >= 300 * b.scale) play(WmdSounds.HE_FAR.get(), b.pos, loud, 0.6F, delay);
             }
+            case PLASMA_BALL -> {
+                play(d < 200 * b.scale ? WmdSounds.PM_IMPACT.get() : WmdSounds.PLASMA_BLAST_FAR.get(), b.pos, loud, d < 200 * b.scale ? 1.0F : 1.45F, delay);
+                if (d >= 300 * b.scale) play(WmdSounds.HE_FAR.get(), b.pos, loud, 0.9F, delay);
+            }
             case PLASMA -> {
                 play(d < 200 * b.scale ? WmdSounds.PLASMA_BLAST.get() : WmdSounds.PLASMA_BLAST_FAR.get(), b.pos, loud, 1.0F, delay);
                 if (d >= 300 * b.scale) play(WmdSounds.HE_FAR.get(), b.pos, loud, 0.7F, delay);
@@ -330,10 +335,20 @@ public final class ImpactFx {
         var BANK = WmdParticles.LAUNCH_SMOKE.get();
         var TRAIL = WmdParticles.TRAIL_SMOKE.get();
         var FLAME = WmdParticles.ROCKET_FLAME.get();
+        Vec3 cam = mc.gameRenderer.getMainCamera().getPosition();
+        double viewR = mc.options.getEffectiveRenderDistance() * 16.0 + 64.0;
         for (Iterator<Blast> it = ACTIVE.iterator(); it.hasNext(); ) {
             Blast b = it.next();
             b.age++;
             double R = b.radius, s = b.scale, x = b.pos.x, y = b.pos.y, z = b.pos.z;
+
+            double ringReach = Math.max(R * (b.type.reach > 0 ? b.type.reach : 3.0), R * 2.2);
+            double maxDist = Math.max(DhBridge.ready ? ClientBlastGeo.FAR_VIEW : viewR, ringReach) + R * 2.5;
+            if (b.age > 1 && b.pos.distanceToSqr(cam) > maxDist * maxDist) {
+                int life = life(b);
+                if (b.age > life) it.remove();
+                continue;
+            }
             if (b.age == 1) {
                 for (int i = 0; i < (int) Math.ceil(6 * b.fb); i++) level.addAlwaysVisibleParticle(ParticleTypes.FLASH, true, x + rnd.nextGaussian() * R * 0.2, y + 2 + rnd.nextDouble() * R * 0.3, z + rnd.nextGaussian() * R * 0.2, 0, 0, 0);
                 for (int i = 0; i < Math.min(6, (int) (4 * s * b.fb)); i++) level.addAlwaysVisibleParticle(ParticleTypes.EXPLOSION_EMITTER, true, x + rnd.nextGaussian() * R * 0.25, y + rnd.nextDouble() * R * 0.3, z + rnd.nextGaussian() * R * 0.25, 0, 0, 0);
@@ -423,7 +438,7 @@ public final class ImpactFx {
             lights(level, b, rnd);
             special(level, b, rnd);
 
-            int life = b.type == WarheadType.CHAFF ? 1800 : b.type == WarheadType.ORBITAL_ROD || b.type == WarheadType.ASTEROID ? COOL_TICKS : 260;
+            int life = life(b);
             if (b.age > life) it.remove();
         }
         craters(level, rnd);
@@ -440,6 +455,7 @@ public final class ImpactFx {
             case CHAFF -> new float[] { 0.70F, 0.72F, 0.80F, 3.0F, 0.5F, 0.52F, 0.58F };
             case BUNKER -> new float[] { 0.36F, 0.28F, 0.20F, 3.6F, 0.12F, 0.1F, 0.08F };
             case NUKE, THERMO, TSAR -> new float[] { 0.62F, 0.50F, 0.38F, 5.2F, 0.14F, 0.12F, 0.1F };
+            case PLASMA_BALL -> new float[] { 0.45F, 0.70F, 0.95F, 2.8F, 0.22F, 0.26F, 0.32F };
             case PLASMA -> new float[] { 0.62F, 0.40F, 0.92F, 4.2F, 0.30F, 0.22F, 0.40F };
             case ANTIMATTER -> new float[] { 0.80F, 0.62F, 0.90F, 5.0F, 0.36F, 0.30F, 0.42F };
             case ORBITAL_ROD -> new float[] { 0.58F, 0.54F, 0.48F, 7.0F, 0.26F, 0.24F, 0.22F };
@@ -465,6 +481,10 @@ public final class ImpactFx {
             net.minecraft.core.particles.ParticleOptions opt = particle instanceof net.minecraft.core.particles.ParticleOptions po ? po : (net.minecraft.core.particles.ParticleOptions) particle;
             level.addAlwaysVisibleParticle(opt, true, ox, oy, oz, ct * out, up, st * out);
         }
+    }
+
+    private static int life(Blast b) {
+        return b.type == WarheadType.CHAFF ? 1800 : b.type == WarheadType.ORBITAL_ROD || b.type == WarheadType.ASTEROID ? COOL_TICKS : 260;
     }
 
     private static void ring(ClientLevel level, Blast b, RandomSource rnd) {
@@ -651,6 +671,12 @@ public final class ImpactFx {
                     level.addAlwaysVisibleParticle(ParticleTypes.END_ROD, true, x + rnd.nextGaussian() * b.radius * 0.5, y + 1 + rnd.nextDouble() * b.radius * 0.7,
                             z + rnd.nextGaussian() * b.radius * 0.5, rnd.nextGaussian() * 0.6, rnd.nextDouble() * 0.6, rnd.nextGaussian() * 0.6);
             }
+            case PLASMA_BALL -> {
+                if (age == 1) quasarSet(b, "nuk_ball:1.2", "nuk_ring:0.2");
+                if (age <= 30 && age % 2 == 0) for (int i = 0; i < 5; i++)
+                    level.addAlwaysVisibleParticle(ParticleTypes.ELECTRIC_SPARK, true, x + rnd.nextGaussian() * b.radius * 0.4, y + 1 + rnd.nextDouble() * b.radius * 0.5,
+                            z + rnd.nextGaussian() * b.radius * 0.4, rnd.nextGaussian() * 0.4, rnd.nextDouble() * 0.3, rnd.nextGaussian() * 0.4);
+            }
             case PLASMA -> {
                 if (age == 1) quasarSet(b, "nuk_ball:3.0", "nuk_ring:0.3", "he_debris:1.0");
                 if (age <= 60 && age % 2 == 0) for (int i = 0; i < 8; i++)
@@ -824,6 +850,17 @@ public final class ImpactFx {
                     VeilBridge.glow(k + 1, x, y + R * 0.4 * Math.min(1.0, age / 5.0), z, fl(0.6 + 0.4 * heat), fl(0.25 + 0.75 * heat * heat), fl(0.85 + 0.15 * heat), fl(R * 4 + 60), fl(10.0 * f + 1.0), 1.0F, t);
                     VeilBridge.bloomNear(x, y + 2, z, 1800.0, fl(2.6 * fade(age, 140)));
                     VeilBridge.haze(x, y + R * 0.4, z, R, 1400.0, fl(fade(age, 120)));
+                }
+            }
+            case PLASMA_BALL -> {
+                if (age == 1) {
+                    VeilBridge.flash(x, y + 2.0, z, 0.75F, 0.92F, 1.0F, 60.0F, 9.0F, 1.0F, 24);
+                    VeilBridge.shock(x, y + 1.0, z);
+                }
+                if (age <= 80) {
+                    double f = fade(age, 80), heat = Math.max(0.0, 1.0 - age / 40.0);
+                    VeilBridge.glow(k + 1, x, y + 1.5, z, fl(1.0 - 0.5 * heat), fl(0.45 + 0.45 * heat), fl(0.15 + 0.85 * heat), fl(R * 3 + 16), fl(5.0 * f + 1.0), 1.0F, t);
+                    VeilBridge.bloomNear(x, y + 2, z, 600.0, fl(1.4 * fade(age, 60)));
                 }
             }
             case PLASMA -> {

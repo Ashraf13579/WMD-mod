@@ -94,11 +94,16 @@ public final class CcBattleLog extends SavedData {
         l.add(new Event(System.currentTimeMillis(), kind, key, List.copyOf(a)));
         while (l.size() > RING) l.remove(0);
         d.setDirty();
+        MusicTriggersHook.team(server, owner, key);
     }
 
     static void clear(MinecraftServer server, UUID owner) {
         CcBattleLog d = get(server);
         if (d.rings.remove(owner) != null) d.setDirty();
+    }
+
+    static String who(MinecraftServer server, Flight f) {
+        return f.launcher() + (VnBridge.present() ? VnBridge.tag(ownerOf(server, f)) : "");
     }
 
     static UUID ownerOf(MinecraftServer server, Flight f) {
@@ -157,8 +162,8 @@ public final class CcBattleLog extends SavedData {
         if (o != null) add(level.getServer(), o, LOST, f.isCruise() ? "log.wmd.cruise_lost" : "log.wmd.lost", Integer.toString(f.tier()), warhead(f), Integer.toString(f.tx()), Integer.toString(f.tz()));
     }
 
-    public static void onIntercept(ServerLevel level, Vec3 from, Flight f) {
-        if (f == null || from == null) return;
+    public static UUID onIntercept(ServerLevel level, Vec3 from, Flight f) {
+        if (f == null || from == null) return null;
         InterceptorSite best = null;
         double bd = 24.0 * 24.0;
         for (InterceptorSite s : CommandCenter.allSites()) {
@@ -166,12 +171,13 @@ public final class CcBattleLog extends SavedData {
             double d = SableBridge.worldPos(level, s.getBlockPos()).distanceToSqr(from);
             if (d <= bd) { bd = d; best = s; }
         }
-        if (best == null || best.getOwner() == null) return;
-        add(level.getServer(), best.getOwner(), INTERCEPT, f.isCruise() ? "log.wmd.cruise_intercept" : "log.wmd.intercept", f.launcher(), Integer.toString(f.tier()), i(from.x), i(from.z));
+        if (best == null || best.getOwner() == null) return null;
+        add(level.getServer(), best.getOwner(), INTERCEPT, f.isCruise() ? "log.wmd.cruise_intercept" : "log.wmd.intercept", who(level.getServer(), f), Integer.toString(f.tier()), i(from.x), i(from.z));
+        return best.getOwner();
     }
 
     public static void onSatEngage(MinecraftServer server, UUID owner, int satId, Flight f, boolean kill) {
-        if (owner != null && f != null) add(server, owner, INTERCEPT, kill ? "log.wmd.intsat_kill" : "log.wmd.intsat_miss", Integer.toString(satId), f.launcher());
+        if (owner != null && f != null) add(server, owner, INTERCEPT, kill ? "log.wmd.intsat_kill" : "log.wmd.intsat_miss", Integer.toString(satId), who(server, f));
     }
 
     public static void onAsat(MinecraftServer server, OrbitMath.Sat s, boolean hit, String shooterName, ServerPlayer shooter) {
@@ -188,7 +194,7 @@ public final class CcBattleLog extends SavedData {
 
     static void onJam(ServerLevel level, Flight f, GroundStationBlockEntity st) {
         UUID att = ownerOf(level.getServer(), f);
-        if (st.getOwner() != null) add(level.getServer(), st.getOwner(), JAM, "log.wmd.jam_us", f.launcher(), Integer.toString(f.tx()), Integer.toString(f.tz()));
+        if (st.getOwner() != null) add(level.getServer(), st.getOwner(), JAM, "log.wmd.jam_us", who(level.getServer(), f), Integer.toString(f.tx()), Integer.toString(f.tz()));
         if (att != null) add(level.getServer(), att, JAM, "log.wmd.jammed", Integer.toString(f.tx()), Integer.toString(f.tz()), st.getOwnerName());
     }
 

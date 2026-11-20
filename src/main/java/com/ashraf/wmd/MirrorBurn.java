@@ -72,7 +72,7 @@ public final class MirrorBurn {
 
     private static void burn(ServerLevel gl, double cx, double cz) {
         int r = Balance.MIRROR_SPOT_R;
-        boolean guard = Config.Server.protectSpawnRadius() > 0 || Config.Server.respectClaims();
+        boolean guard = Config.Server.gateNeeded();
         BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
         int x0 = (int) Math.floor(cx), z0 = (int) Math.floor(cz);
         for (int dx = -r; dx <= r; dx++) for (int dz = -r; dz <= r; dz++) {
@@ -90,7 +90,7 @@ public final class MirrorBurn {
             if (st.hasBlockEntity() || st.getDestroySpeed(gl, p) < 0 || Hardened.rating(gl, p, st) > 0) continue;
             if (st.is(Blocks.WATER) || st.getFluidState().is(net.minecraft.tags.FluidTags.WATER)) {
                 if (s >= 3) {
-                    gl.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+                    BlastWrites.set(gl, p, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
                     gl.sendParticles(ParticleTypes.CLOUD, x + 0.5, top + 1.0, z + 0.5, 4, 0.4, 0.3, 0.4, 0.05);
                     if (gl.random.nextFloat() < 0.2F) gl.playSound(null, p, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.6F, 0.8F);
                 }
@@ -107,10 +107,10 @@ public final class MirrorBurn {
             else if (s >= Balance.MIRROR_GLASS_S && st.is(BlockTags.SAND)) to = Blocks.GLASS.defaultBlockState();
             else if (s >= Balance.MIRROR_GLASS_S && (st.is(Blocks.GRASS_BLOCK) || st.is(Blocks.DIRT) || st.is(Blocks.PODZOL) || st.is(Blocks.MYCELIUM)))
                 to = Blocks.COARSE_DIRT.defaultBlockState();
-            if (to != null && !st.is(to.getBlock())) { gl.setBlock(p, to, Block.UPDATE_ALL); top = to.isAir() ? top - 1 : top; }
+            if (to != null && !st.is(to.getBlock())) { BlastWrites.set(gl, p, to, Block.UPDATE_ALL); top = to.isAir() ? top - 1 : top; }
             if (s >= Balance.MIRROR_FIRE_S && gl.random.nextFloat() < 0.35F) {
                 BlockPos up = new BlockPos(x, top + 1, z);
-                if (gl.getBlockState(up).isAir()) gl.setBlock(up, BaseFireBlock.getState(gl, up), Block.UPDATE_ALL);
+                if (gl.getBlockState(up).isAir()) BlastWrites.set(gl, up, BaseFireBlock.getState(gl, up), Block.UPDATE_ALL);
             }
             if (gl.random.nextFloat() < 0.25F) gl.sendParticles(ParticleTypes.LARGE_SMOKE, x + 0.5, top + 1.2, z + 0.5, 1, 0.2, 0.3, 0.2, 0.02);
         }
@@ -123,7 +123,7 @@ public final class MirrorBurn {
             BlockState ts = gl.getBlockState(topP);
             if (!(ts.is(BlockTags.LEAVES) || ts.is(BlockTags.LOGS) || ts.is(BlockTags.PLANKS) || ts.is(BlockTags.WOOL) || ts.ignitedByLava())) continue;
             if (guard && !Config.Server.canBreak(gl, up)) continue;
-            if (gl.getBlockState(up).isAir()) gl.setBlock(up, BaseFireBlock.getState(gl, up), Block.UPDATE_ALL);
+            if (gl.getBlockState(up).isAir()) BlastWrites.set(gl, up, BaseFireBlock.getState(gl, up), Block.UPDATE_ALL);
         }
 
         AABB box = new AABB(cx - r - 0.5, -64, cz - r - 0.5, cx + r + 0.5, 400, cz + r + 0.5);

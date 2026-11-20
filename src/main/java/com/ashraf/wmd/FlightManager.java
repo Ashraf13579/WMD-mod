@@ -150,6 +150,7 @@ public class FlightManager extends SavedData {
         flights.add(divert ? nf.withSwerve() : nf);
         if (!build.hypersonic()) Recon.onLaunch(level, flights.get(flights.size() - 1));
         SatDefence.onLaunch(level, flights.get(flights.size() - 1));
+        WmdApiImpl.launched(level, flights.get(flights.size() - 1));
         CcBattleLog.onLaunch(level, flights.get(flights.size() - 1));
         MusicTriggersHook.launch(level, flights.get(flights.size() - 1));
         StrikeToasts.flightOut(level, flights.get(flights.size() - 1));
@@ -174,6 +175,7 @@ public class FlightManager extends SavedData {
         flights.add(nf);
         Recon.onLaunch(level, nf);
         CcBattleLog.onLaunch(level, nf);
+        WmdApiImpl.launched(level, nf);
         MusicTriggersHook.launch(level, nf);
         StrikeToasts.flightOut(level, nf);
         setDirty();
@@ -321,6 +323,14 @@ public class FlightManager extends SavedData {
             changed = true;
         }
 
+        if (CraftShield.anyUp()) for (Flight f : new ArrayList<>(flights)) {
+            MissileBuild bld = f.build();
+            if (bld == null || bld.isInterceptor() || Satellites.toOrbit(bld) || Asat.isAsat(bld) || now <= f.start()) continue;
+            WarheadType wt = WarheadType.of(bld.warheadType());
+            if (CraftShield.stopsFlight(level, f.position(now - 1), f.position(now), null, Missiles.craterRadius(Math.max(1, wt.tier)) * Math.max(0.3, wt.crater), wt, wt.tier,
+                    "a missile")) { kill(level, f); changed = true; }
+        }
+
         for (ProjectilePath.FlightHit h : ProjectilePath.flights(level, flights, now)) { if (endEarly(level, h.flight(), h.hit())) changed = true; }
 
         if (!ForcefieldBlockEntity.LOADED.isEmpty()) for (Flight f : new ArrayList<>(flights)) {
@@ -358,10 +368,12 @@ public class FlightManager extends SavedData {
             changed = true;
         }
         WarheadFx.tick(level, this, now);
+
         for (int i = 0; i < craters.size(); i++) {
             Crater c = craters.get(i);
             long ct0 = ImpactProfiler.start();
-            c.step(level);
+            java.util.UUID prevShooter = ShipStrike.begin(c.owner());
+            try { c.step(level); } finally { ShipStrike.end(prevShooter); }
             ImpactProfiler.add(ImpactProfiler.CRATER, ct0);
             if (c.isDone()) {
                 craters.remove(i--);
@@ -522,8 +534,11 @@ public class FlightManager extends SavedData {
             else WarheadFx.detonate(level, this, f.tx(), gy, f.tz(), type.tier, type, f.tx() + 0.5 - f.ox(), f.tz() + 0.5 - f.oz(), f.build().refined());
         }
         finally { ShipStrike.end(prev); }
-        BaySabotage.check(level, this, f.tx(), gy, f.tz(), type);
-        CookOff.check(level, this, f.tx(), gy, f.tz(), type);
+        java.util.UUID prevCook = ShipStrike.begin(CcBattleLog.ownerOf(level.getServer(), f));
+        try {
+            BaySabotage.check(level, this, f.tx(), gy, f.tz(), type);
+            CookOff.check(level, this, f.tx(), gy, f.tz(), type);
+        } finally { ShipStrike.end(prevCook); }
         CcBattleLog.onImpact(level, f, gy);
         CcBda.onImpact(level, f, gy);
         MusicTriggersHook.flight(level, "impact", f, new net.minecraft.core.BlockPos(f.tx(), gy, f.tz()));
@@ -567,8 +582,8 @@ public class FlightManager extends SavedData {
             double cr = Missiles.craterRadius(type.tier) * 0.28;
             ShipStrike.blast(level, p, cr, ShipStrike.powerFor(cr), owner);
         }
-        BaySabotage.check(level, this, gx, gy, gz, type);
-        CookOff.check(level, this, gx, gy, gz, type);
+        java.util.UUID prevCook = ShipStrike.begin(CcBattleLog.ownerOf(level.getServer(), f));
+        try { BaySabotage.check(level, this, gx, gy, gz, type); CookOff.check(level, this, gx, gy, gz, type); } finally { ShipStrike.end(prevCook); }
         if (owner != null && ArtilleryManager.shipLogOk(owner, hit.shipId(), now))
             CcBattleLog.add(level.getServer(), owner, CcBattleLog.HIT, "log.wmd.ship_struck", hit.shipName(), Integer.toString(f.tier()),
                     f.build().warheadType().isEmpty() ? "?" : "#warhead.wmd." + f.build().warheadType(), Integer.toString(gx), Integer.toString(gy), Integer.toString(gz));
@@ -584,6 +599,78 @@ public class FlightManager extends SavedData {
         setDirty();
         syncSoon = true;
         return true;
+    }
+
+    static boolean remoteCommandable(Flight f) {
+        MissileBuild b = f.build();
+        return b != null && !Satellites.toOrbit(b) && !Asat.isAsat(b) && !Crew.isCrew(b) && !StationKit.isKit(b) && !Cargo.isCargo(b) && !Cubesat.isCubesat(b);
+    }
+
+    String burstWhy(ServerLevel level, Flight f) {
+        long now = level.getGameTime();
+        if (!f.inDive(now)) return "gui.wmd.tablet.why_burst.cruise";
+        if (!f.prepared() || !level.hasChunkAt(net.minecraft.core.BlockPos.containing(f.position(now)))) return "gui.wmd.tablet.why_burst.far";
+        return null;
+    }
+
+    boolean remoteBurst(ServerLevel level, Flight f) {
+        if (burstWhy(level, f) != null) return false;
+        int i = -1;
+        for (int j = 0; j < flights.size(); j++) if (flights.get(j).id() == f.id()) { i = j; break; }
+        if (i < 0) return false;
+        f = flights.remove(i);
+        long now = level.getGameTime();
+        Evade.remove(f.id());
+        uplinkLocks.remove(f.id()); shipLocks.remove(f.id()); counters.remove(f.id());
+        asatTargets.remove(f.id());
+        damage.remove(f.id());
+        WarheadType type = WarheadType.of(f.build().warheadType());
+        if (f.prepared()) release(level, f.tx(), f.tz(), WarheadFx.holdRadius(type.tier, type), now + RELEASE_DELAY);
+        Vec3 p = f.position(now), dir = p.subtract(f.position(now - 1));
+        int gx = (int) Math.floor(p.x), gy = (int) Math.floor(p.y), gz = (int) Math.floor(p.z);
+        double hx = Math.abs(dir.x) + Math.abs(dir.z) > 1.0E-6 ? dir.x : f.tx() + 0.5 - f.ox(), hz = Math.abs(dir.x) + Math.abs(dir.z) > 1.0E-6 ? dir.z : f.tz() + 0.5 - f.oz();
+        java.util.UUID prev = ShipStrike.begin(CcBattleLog.ownerOf(level.getServer(), f));
+        try { WarheadFx.detonate(level, this, gx, gy, gz, type.tier, type, hx, hz, f.build().refined()); }
+        finally { ShipStrike.end(prev); }
+        java.util.UUID prevCook = ShipStrike.begin(CcBattleLog.ownerOf(level.getServer(), f));
+        try { BaySabotage.check(level, this, gx, gy, gz, type); CookOff.check(level, this, gx, gy, gz, type); } finally { ShipStrike.end(prevCook); }
+        MusicTriggersHook.flight(level, "impact", f, new net.minecraft.core.BlockPos(gx, gy, gz));
+        StrikeToasts.flightDoneAt(level, f, true, p.x, p.z);
+        logLine(level, String.format("%s | IMPACT (REMOTE BURST) | %s | tier %d | %s | at %d %d %d | flight %d s%n", Instant.now(), f.launcher(), f.tier(), type.id, gx, gy, gz, (now - f.start()) / 20));
+        setDirty();
+        syncSoon = true;
+        return true;
+    }
+
+    boolean remoteAbort(ServerLevel level, Flight f) {
+        if (!flights.remove(f)) return false;
+        long gt = level.getGameTime();
+        Vec3 wp = f.position(gt);
+        Wreckage.spawn(level, wp, wp.subtract(f.position(gt - 1)), f.tier());
+        StrikeToasts.flightDone(level, f, false);
+        Evade.remove(f.id());
+        uplinkLocks.remove(f.id()); shipLocks.remove(f.id()); counters.remove(f.id());
+        asatTargets.remove(f.id());
+        damage.remove(f.id());
+        if (f.prepared()) {
+            WarheadType wt = WarheadType.of(f.build().warheadType());
+            release(level, f.tx(), f.tz(), WarheadFx.holdRadius(wt.tier, wt), gt + RELEASE_DELAY);
+        }
+        logLine(level, String.format("%s | ABORTED (REMOTE) | %s | tier %d | %s | at %d %d %d | flight %d s%n", Instant.now(), f.launcher(), f.tier(), f.build().warheadType(),
+                (int) Math.floor(wp.x), (int) Math.floor(wp.y), (int) Math.floor(wp.z), (gt - f.start()) / 20));
+        setDirty();
+        syncSoon = true;
+        return true;
+    }
+
+    private static void logLine(ServerLevel level, String line) {
+        try {
+            Path file = level.getServer().getWorldPath(LevelResource.ROOT).resolve("wmd_launch_log.txt");
+            Files.writeString(file, line, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            Wmd.LOGGER.warn("Could not write launch log", e);
+        }
+        Wmd.LOGGER.info("Missile {}", line.trim());
     }
 
     private boolean syncSoon;

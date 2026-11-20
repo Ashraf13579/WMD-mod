@@ -64,7 +64,7 @@ public final class AirshipWatch {
 
     private static void scan(MinecraftServer server, ServerLevel level) {
         List<SableBridge.ShipInfo> large = new ArrayList<>();
-        for (SableBridge.ShipInfo s : SableBridge.allShips(level)) if (s.isLarge()) large.add(s);
+        for (SableBridge.ShipInfo s : SableBridge.allShips(level)) if (s.isLarge() && !Cloak.hidden(level, s.id())) large.add(s);
         if (large.isEmpty()) return;
         List<Watcher> ws = new ArrayList<>();
         for (EarlyWarningArrayBlockEntity a : EarlyWarningArrayBlockEntity.all()) {

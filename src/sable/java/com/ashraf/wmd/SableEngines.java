@@ -36,6 +36,13 @@ final class SableEngines {
     static AzimuthPodBlockEntity azimuthPod(BlockPos pos, BlockState state) { return new AzimuthPod(pos, state); }
     static BowThrusterBlockEntity bowThruster(BlockPos pos, BlockState state) { return new BowThruster(pos, state); }
 
+    static IonThrusterBlockEntity ionThruster(BlockPos pos, BlockState state) { return new IonThruster(pos, state); }
+
+    static final class IonThruster extends IonThrusterBlockEntity implements BlockEntitySubLevelActor {
+        IonThruster(BlockPos pos, BlockState state) { super(pos, state); }
+        @Override public void sable$physicsTick(ServerSubLevel sub, RigidBodyHandle handle, double dt) { push(this, sub, handle, dt); }
+    }
+
     static final class CargoHook extends CargoHookBlockEntity implements BlockEntitySubLevelActor {
         CargoHook(BlockPos pos, BlockState state) { super(pos, state); }
         @Override public void sable$physicsTick(ServerSubLevel sub, RigidBodyHandle handle, double dt) { push(this, sub, handle, dt); }

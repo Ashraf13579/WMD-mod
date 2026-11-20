@@ -20,7 +20,7 @@
       "item": "wmd:chip_defence_2"
     },
     "S": {
-      "item": "wmd:steel_block"
+      "tag": "c:storage_blocks/steel"
     },
     "B": {
       "item": "wmd:network_card"

@@ -174,7 +174,7 @@ public class AntimatterStoreBlockEntity extends ItemProcessBlockEntity implement
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", String.format("%,d", Balance.AM_STORE_FE * 20)),
+        return List.of(Component.translatable("gui.wmd.info.use", String.format("%,d", Balance.AM_STORE_FE)),
                 Component.translatable("gui.wmd.info.antimatter_store", Balance.AM_STORE_CELLS, Balance.AM_STORE_BACKUP_TICKS / 20),
                 Component.translatable("gui.wmd.info.antimatter_backup", Math.max(0, (level != null && level.isClientSide ? shownBackup : backup) / 20)));
     }

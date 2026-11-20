@@ -68,7 +68,7 @@ public final class UraniumCategory implements IRecipeCategory<WmdJeiPlugin.Machi
         var font = Minecraft.getInstance().font;
         g.drawString(font, "->", 88, 10, GREY, false);
         g.drawString(font, Component.translatable("jei.wmd.time", String.format("%.1f", r.ticks() / 20.0)), 4, 28, GREY, false);
-        g.drawString(font, Component.translatable("jei.wmd.power", r.fePerTick() * 20), 4, 40, GREY, false);
+        g.drawString(font, Component.translatable("jei.wmd.power", r.fePerTick()), 4, 40, GREY, false);
         if (cascade) g.drawString(font, Component.translatable("jei.wmd.cascade", Balance.CENT_NEIGHBOUR_BONUS_PCT), 4, 52, GREY, false);
     }
 }

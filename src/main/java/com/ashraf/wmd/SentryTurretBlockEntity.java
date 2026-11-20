@@ -265,7 +265,7 @@ public class SentryTurretBlockEntity extends ProcessUnitBlockEntity implements O
     public List<Component> guiInfo() {
         String state = targetId >= 0 ? (firing ? "firing" : "tracking") : blinded ? "smoke" : "searching";
         return List.of(Component.translatable("gui.wmd.info.sentry_turret." + state),
-                Component.translatable("gui.wmd.info.sentry_turret.range", Balance.ST_RANGE, String.format("%,d", Balance.ST_FE_PER_VOLLEY * 10)),
+                Component.translatable("gui.wmd.info.sentry_turret.range", Balance.ST_RANGE, String.format("%,d", Balance.ST_FE_PER_VOLLEY / 2)),
                 Component.translatable("gui.wmd.info.sentry_turret.spares", getOwnerName() == null || getOwnerName().isEmpty() ? "-" : getOwnerName()));
     }
 

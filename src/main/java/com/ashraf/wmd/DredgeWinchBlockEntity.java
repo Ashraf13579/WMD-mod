@@ -312,7 +312,7 @@ public class DredgeWinchBlockEntity extends ItemProcessBlockEntity implements Ow
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse() * 20), Component.translatable("gui.wmd.info.dredge_winch"));
+        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse()), Component.translatable("gui.wmd.info.dredge_winch"));
     }
 
     @Override

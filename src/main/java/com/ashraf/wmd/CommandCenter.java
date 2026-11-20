@@ -58,9 +58,15 @@ public final class CommandCenter {
         if (viewer == null) return s;
         for (CcBuildingBlockEntity b : BUILDINGS) {
             if (b.isRemoved() || b.getOwner() == null || b.getOwner().equals(viewer)) continue;
-            if (b.security().trusted().containsKey(viewer)) s.add(b.getOwner());
+            if (Access.sharedWith(b).contains(viewer)) s.add(b.getOwner());
         }
         return s;
+    }
+
+    static List<CcBuildingBlockEntity> buildingsIn(Level level) {
+        List<CcBuildingBlockEntity> l = new ArrayList<>();
+        for (CcBuildingBlockEntity b : BUILDINGS) if (!b.isRemoved() && b.getLevel() == level && b.getOwner() != null) l.add(b);
+        return l;
     }
 
     static List<CcBuildingBlockEntity> activeBuildingsIn(Level level) {
@@ -73,7 +79,7 @@ public final class CommandCenter {
         java.util.Set<UUID> s = new java.util.HashSet<>();
         if (owner == null) return s;
         for (CcBuildingBlockEntity b : BUILDINGS)
-            if (!b.isRemoved() && owner.equals(b.getOwner())) s.addAll(b.security().trusted().keySet());
+            if (!b.isRemoved() && owner.equals(b.getOwner())) s.addAll(Access.sharedWith(b));
         return s;
     }
 

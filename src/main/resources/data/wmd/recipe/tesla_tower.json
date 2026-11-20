@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:tesla_tower"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WXW",
+    "CTC",
+    "PBP"
+  ],
+  "key": {
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "X": {
+      "item": "wmd:chip_defence_2"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "B": {
+      "item": "wmd:busbar"
+    }
+  },
+  "result": {
+    "id": "wmd:tesla_tower",
+    "count": 1
+  }
+}

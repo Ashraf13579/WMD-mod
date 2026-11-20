@@ -146,7 +146,7 @@ public class TorpedoNetBlock extends Block implements EntityBlock, SimpleWaterlo
     }
 
     static BlockHitResult clip(ServerLevel sl, Vec3 from, Vec3 to, Entity torpedo) {
-        BlockHitResult hit = sl.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, torpedo));
+        BlockHitResult hit = SableBridge.clipWorld(sl, new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, torpedo), null);
         if (hit.getType() != HitResult.Type.BLOCK) return null;
         return solid(sl.getBlockState(hit.getBlockPos())) ? hit : null;
     }
@@ -154,8 +154,8 @@ public class TorpedoNetBlock extends Block implements EntityBlock, SimpleWaterlo
     static boolean cut(ServerLevel sl, BlockPos p) {
         BlockState s = sl.getBlockState(p);
         if (!solid(s) || !BlockRules.blastMay(sl, p)) return false;
-        if (s.getValue(CTRL)) sl.setBlock(p, s.setValue(HOLE, true), 3);
-        else sl.setBlock(p, water(s), 3);
+        if (s.getValue(CTRL)) BlastWrites.set(sl, p, s.setValue(HOLE, true), 3);
+        else BlastWrites.set(sl, p, water(s), 3);
         sl.playSound(null, p, SoundEvents.CHAIN_BREAK, SoundSource.BLOCKS, Balance.SND_MECH, 0.7F);
         sl.sendParticles(ParticleTypes.BUBBLE, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 16, 0.4, 0.4, 0.4, 0.05);
         return true;

@@ -139,7 +139,10 @@ public class SeaMineBlockEntity extends BlockEntity implements Owned {
         }
         Vec3 c = be.caseAt();
         SeaMines.put(sl, pos, be.kind(), c, be.getOwner());
-        if (be.ready() && now == be.armedFrom + Balance.SEAMINE_ARM_TICKS) sl.playSound(null, c.x, c.y, c.z, WmdSounds.MINE_ARM.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 0.7F);
+        if (be.ready() && now == be.armedFrom + Balance.SEAMINE_ARM_TICKS) {
+            sl.playSound(null, c.x, c.y, c.z, WmdSounds.MINE_ARM.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 0.7F);
+            AirFxPayload.at(sl, AirFxPayload.MINE_ARM, c, null, 1.0F, Balance.AIRFX_NEAR_R);
+        }
         if (!be.ready() || !be.armed() || Math.floorMod(now + pos.asLong(), (long) Balance.MINE_SCAN_TICKS) != 0 || !SableBridge.active()) return;
         switch (be.kind()) {
             case K_INFLUENCE -> {

@@ -36,6 +36,10 @@ public class CcMapTableBlockEntity extends CcModuleBlockEntity {
         super(Wmd.CC_MAP_TABLE_BE.get(), pos, state, Balance.CC_TABLE_FE_PER_TICK);
     }
 
+    protected CcMapTableBlockEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> type, BlockPos pos, BlockState state, int fe) {
+        super(type, pos, state, fe);
+    }
+
     @Override public CcModule kind() { return CcModule.MAP_TABLE; }
 
     public boolean buildingFound() { return bFound; }
@@ -121,7 +125,7 @@ public class CcMapTableBlockEntity extends CcModuleBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse() * 20), Component.translatable("gui.wmd.info.cc_table"));
+        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse()), Component.translatable("gui.wmd.info.cc_table"));
     }
 
     private void writeSummary(CompoundTag tag) {

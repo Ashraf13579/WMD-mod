@@ -70,7 +70,7 @@ public class HydrogenFurnaceBlockEntity extends ItemProcessBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.H2F_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.H2F_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.hydrogen_furnace", Balance.H2F_OXIDE, Balance.H2F_H2_MB, Balance.H2F_POWDER, Balance.H2F_CYCLE_TICKS / 20),
                 Component.translatable("gui.wmd.info.items_hint"));
     }

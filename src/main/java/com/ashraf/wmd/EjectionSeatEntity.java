@@ -18,6 +18,7 @@ public class EjectionSeatEntity extends Entity {
     private static final EntityDataAccessor<Boolean> TANDEM = SynchedEntityData.defineId(EjectionSeatEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> BACK = SynchedEntityData.defineId(EjectionSeatEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> CHUTE = SynchedEntityData.defineId(EjectionSeatEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<org.joml.Vector3f> UP = SynchedEntityData.defineId(EjectionSeatEntity.class, EntityDataSerializers.VECTOR3);
 
     private Vec3 up = new Vec3(0.0, 1.0, 0.0);
     private int age, landedAt = -1;
@@ -31,12 +32,16 @@ public class EjectionSeatEntity extends Entity {
         entityData.set(TANDEM, tandem);
         entityData.set(BACK, back);
         up = launchUp.lengthSqr() > 1.0E-6 ? launchUp.normalize() : new Vec3(0.0, 1.0, 0.0);
+        entityData.set(UP, new org.joml.Vector3f((float) up.x, (float) up.y, (float) up.z));
         moveTo(at.x, at.y, at.z, yaw, 0.0F);
         setDeltaMovement(vel);
     }
 
     public boolean tandem() { return entityData.get(TANDEM); }
     public boolean back() { return entityData.get(BACK); }
+
+    public boolean rocketing() { return age <= Balance.EJECT_ROCKET_TICKS && landedAt < 0; }
+    public Vec3 launchUp() { org.joml.Vector3f u = entityData.get(UP); return u.lengthSquared() < 1.0E-6F ? new Vec3(0.0, 1.0, 0.0) : new Vec3(u.x, u.y, u.z); }
 
     public float chuteOpen(float pt) {
         int c = entityData.get(CHUTE);
@@ -94,7 +99,7 @@ public class EjectionSeatEntity extends Entity {
     @Override
     protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dims, float scale) { return new Vec3(0.0, 0.24, 0.0); }
 
-    @Override protected void defineSynchedData(SynchedEntityData.Builder b) { b.define(TANDEM, false); b.define(BACK, false); b.define(CHUTE, -1); }
+    @Override protected void defineSynchedData(SynchedEntityData.Builder b) { b.define(TANDEM, false); b.define(BACK, false); b.define(CHUTE, -1); b.define(UP, new org.joml.Vector3f(0.0F, 1.0F, 0.0F)); }
     @Override protected void readAdditionalSaveData(CompoundTag tag) { age = tag.getInt("age"); landedAt = tag.contains("landed") ? tag.getInt("landed") : -1; entityData.set(TANDEM, tag.getBoolean("tandem")); entityData.set(BACK, tag.getBoolean("back")); }
     @Override protected void addAdditionalSaveData(CompoundTag tag) { tag.putInt("age", age); if (landedAt >= 0) tag.putInt("landed", landedAt); tag.putBoolean("tandem", tandem()); tag.putBoolean("back", back()); }
     @Override public boolean isPickable() { return false; }

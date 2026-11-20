@@ -60,11 +60,24 @@ public class HandMissileEntity extends Entity {
         if (e.lastAim == null) e.lastAim = start.add(look.scale(50.0));
         double hd = Math.hypot(e.lastAim.x - start.x, e.lastAim.z - start.z);
         e.apexY = Math.max(start.y, e.lastAim.y) + Math.min(Balance.JAV_CLIMB, Math.max(12.0, hd * 0.45));
+
+        double roof = Math.min(ceiling(level, start, e.apexY), ceiling(level, e.lastAim, e.apexY)) - 3.0;
+        if (roof < e.apexY) {
+            e.apexY = roof;
+            if (roof < Math.max(start.y, e.lastAim.y) + 4.0) e.diving = true;
+        }
         level.addFreshEntity(e);
         level.playSound(null, start.x, start.y, start.z, WmdSounds.INT_T1_EJECT.get(), SoundSource.PLAYERS, 3.0F, kind == HandLock.MANPADS ? 1.2F : 0.9F);
         Vec3 back = sp.getEyePosition().subtract(look.scale(1.6));
         level.sendParticles(ParticleTypes.CLOUD, back.x, back.y, back.z, 16, 0.35, 0.35, 0.35, 0.06);
         level.sendParticles(ParticleTypes.POOF, start.x, start.y, start.z, 6, 0.1, 0.1, 0.1, 0.02);
+    }
+
+    private static double ceiling(ServerLevel level, Vec3 p, double top) {
+        if (top <= p.y + 1.0) return top + 10.0;
+        BlockHitResult h = SableBridge.clipWorld(level, new ClipContext(p.add(0.0, 1.0, 0.0), new Vec3(p.x, top, p.z), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE,
+                net.minecraft.world.phys.shapes.CollisionContext.empty()), null);
+        return h.getType() == HitResult.Type.MISS ? top + 10.0 : h.getLocation().y;
     }
 
     @Override
@@ -101,6 +114,7 @@ public class HandMissileEntity extends Entity {
         double turn = Math.toRadians(manpads ? Balance.MANPADS_TURN : Balance.JAV_TURN);
         vel = turnToward(vel.normalize(), desired.normalize(), turn).scale(speed);
         Vec3 next = pos.add(vel);
+        if (CraftShield.anyUp()) { if (CraftShield.stopsFlight(sl, pos, next, null, Balance.CSH_SHELL_R, WarheadType.HE, 1, "a hand-held missile")) { discard(); return; } }
 
         if (tp != null && !lost && tickCount >= ej) {
             double d = segDist(pos, next, tp);
@@ -119,7 +133,7 @@ public class HandMissileEntity extends Entity {
             return;
         }
 
-        BlockHitResult hit = sl.clip(new ClipContext(pos, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+        BlockHitResult hit = SableBridge.clipWorld(sl, new ClipContext(pos, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this), null);
         if (hit.getType() == HitResult.Type.BLOCK && tickCount > 2) {
             Vec3 at = hit.getLocation();
             if (manpads) burst(sl, at, false);
@@ -159,7 +173,7 @@ public class HandMissileEntity extends Entity {
             case HandLock.T_CRUISE -> {
                 FlightManager mgr = FlightManager.get(sl);
                 Flight f = mgr.find(target.flight());
-                if (f != null) mgr.kill(sl, f);
+                if (f != null) { mgr.kill(sl, f); WarScore.intercept(sl, owner, f); }
             }
             default -> {}
         }

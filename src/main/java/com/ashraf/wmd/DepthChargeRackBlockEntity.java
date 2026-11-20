@@ -165,7 +165,7 @@ public class DepthChargeRackBlockEntity extends ItemProcessBlockEntity implement
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse() * 20), Component.translatable("gui.wmd.info.depth_charge_rack"));
+        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse()), Component.translatable("gui.wmd.info.depth_charge_rack"));
     }
 
     @Override

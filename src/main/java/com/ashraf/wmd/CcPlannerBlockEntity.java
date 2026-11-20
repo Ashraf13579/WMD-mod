@@ -140,7 +140,7 @@ public class CcPlannerBlockEntity extends CcConsoleBlockEntity {
             l.add(Wmd.STAGE_UPPER.get());
             l.add(Wmd.STAGE_BOOSTER.get());
         } else if (be instanceof InterceptorSite s) {
-            for (Item it : new Item[] { Wmd.INTERCEPTOR_T1.get(), Wmd.INTERCEPTOR_T2.get() }) if (s.magazineHandler().isItemValid(0, new ItemStack(it))) l.add(it);
+            for (int t = 1; t <= 4; t++) { Item it = InterceptorItem.ofTier(t); if (s.magazineHandler().isItemValid(0, new ItemStack(it))) l.add(it); }
         } else if (be instanceof ArtilleryGunBlockEntity g) {
             for (int t = 0; t < Artillery.TYPES.length; t++) {
                 Item it = Artillery.shellItem(g.gun(), t);

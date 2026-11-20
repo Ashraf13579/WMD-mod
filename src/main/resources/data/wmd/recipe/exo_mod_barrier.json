@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:exo_mod_barrier"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "SXS",
+    "PAP"
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:superconducting_coil"
+    },
+    "X": {
+      "item": "wmd:chip_defence_2"
+    },
+    "P": {
+      "item": "wmd:armour_plate"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:exo_mod_barrier",
+    "count": 1
+  }
+}

@@ -169,7 +169,7 @@ public class AntimatterColliderBlockEntity extends ItemProcessBlockEntity implem
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", String.format("%,d", Balance.AM_FE_PER_TICK * 20)),
+        return List.of(Component.translatable("gui.wmd.info.use", String.format("%,d", Balance.AM_FE_PER_TICK)),
                 Component.translatable("gui.wmd.info.antimatter_collider", Balance.AM_H2_MB * 20, Balance.AM_WATER_MB * 20, Balance.AM_CYCLE_TICKS / 1200),
                 Component.translatable("gui.wmd.info.antimatter_store_hint"));
     }

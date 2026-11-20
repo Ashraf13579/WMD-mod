@@ -44,6 +44,7 @@ public final class AntiShipMissiles {
     static boolean surfaceShip(ServerLevel sl, SableBridge.ShipInfo s, UUID ownShip, UUID shooter) {
         if (!AirGate.on() || s == null || s.id().equals(ownShip)) return false;
         if (AirPicture.isAircraft(sl, s.id()) || NavalLayer.submerged(sl, s)) return false;
+        if (Cloak.hidden(sl, s.id())) return false;
         if (shooter != null && shooter.equals(Crafts.owner(sl, s.id()))) return false;
         return !(s.blockCount() <= Balance.DEBRIS_TREE_MAX && SableBridge.debrisRemnant(sl, s.id()));
     }

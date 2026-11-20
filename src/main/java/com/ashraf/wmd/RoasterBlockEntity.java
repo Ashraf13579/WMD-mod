@@ -83,7 +83,7 @@ public class RoasterBlockEntity extends ItemProcessBlockEntity implements CcAnim
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.ROAST_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.ROAST_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.roaster", Balance.ROAST_CONC, Balance.ROAST_LPG_MB, Balance.ROAST_OXIDE, Balance.ROAST_CYCLE_TICKS / 20),
                 Component.translatable("gui.wmd.info.items_hint"));
     }

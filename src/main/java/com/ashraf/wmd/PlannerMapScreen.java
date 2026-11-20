@@ -34,6 +34,9 @@ public class PlannerMapScreen extends Screen {
     private final BlockPos pos;
     private final int cx, cz, size;
     private ResourceLocation tex;
+
+    private WorldMapLayer wmap;
+    private int wmapW;
     private DynamicTexture dyn;
 
     private double vx, vz, zoom = 1.0;
@@ -89,7 +92,7 @@ public class PlannerMapScreen extends Screen {
             for (int j = 0; j < size; j++) {
                 int x = x0 + i, z = z0 + j;
                 int argb;
-                if (!level.hasChunk(x >> 4, z >> 4)) argb = 0xFF101418;
+                if (!level.hasChunk(x >> 4, z >> 4)) argb = 0;
                 else {
                     int h = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z) - 1;
                     mp.set(x, h, z);
@@ -115,6 +118,7 @@ public class PlannerMapScreen extends Screen {
         mapY = TOP;
         mapW = Math.max(120, Math.min(width - SP - 3 * M, height - TOP - M));
         mapX = M;
+        if (wmap == null || wmapW != mapW) { if (wmap != null) wmap.close(); wmap = new WorldMapLayer("planner", mapW, mapW); wmapW = mapW; }
         if (tex == null) sample();
     }
 
@@ -122,6 +126,7 @@ public class PlannerMapScreen extends Screen {
     public void removed() {
         if (dyn != null) { dyn.close(); dyn = null; }
         if (tex != null) { Minecraft.getInstance().getTextureManager().release(tex); tex = null; }
+        if (wmap != null) { wmap.close(); wmap = null; }
     }
 
     @Override
@@ -421,6 +426,7 @@ public class PlannerMapScreen extends Screen {
 
         WmdUi.well(g, mapX, mapY, mapW, mapW);
         g.enableScissor(mapX, mapY, mapX + mapW, mapY + mapW);
+        if (wmap != null && wmap.update(vx, vz, 1.0 / scale(), 0.8F)) { wmap.draw(g, mapX, mapY); wmap.drawStatus(g, font, mapX + 3, mapY + mapW - 11); }
         if (tex != null) {
             double s = scale();
             double u0 = (vx - mapW / 2.0 / s) - (cx - size / 2.0), v0 = (vz - mapW / 2.0 / s) - (cz - size / 2.0);

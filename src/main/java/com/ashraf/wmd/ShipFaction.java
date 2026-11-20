@@ -85,7 +85,7 @@ public final class ShipFaction {
         if (who == null) return true;
         if (who.equals(defender)) return true;
         if (team.contains(who)) return true;
-        return machine != null && machine.security() != null && machine.security().trusted().containsKey(who);
+        return machine != null && machine.security() != null && (machine.security().trusted().containsKey(who) || Access.listedFriend(machine, who));
     }
 
     public static Relation relation(ServerLevel level, UUID shipId, UUID defender, Owned machine) {
@@ -93,9 +93,20 @@ public final class ShipFaction {
         Occupants o = occupants(level, shipId);
         if (o.empty()) return Relation.NEUTRAL;
         Set<UUID> team = CommandCenter.trustedBy(defender);
-        for (UUID u : o.machineOwners().keySet()) if (!trusted(defender, team, machine, u)) return Relation.HOSTILE;
-        for (UUID u : o.players().keySet()) if (!trusted(defender, team, machine, u)) return Relation.HOSTILE;
-        return Relation.FRIENDLY;
+
+        boolean neutral = false;
+        for (UUID u : o.machineOwners().keySet()) { Relation r = vs(defender, team, machine, u); if (r == Relation.HOSTILE) return r; neutral |= r == Relation.NEUTRAL; }
+        for (UUID u : o.players().keySet()) { Relation r = vs(defender, team, machine, u); if (r == Relation.HOSTILE) return r; neutral |= r == Relation.NEUTRAL; }
+        return neutral ? Relation.NEUTRAL : Relation.FRIENDLY;
+    }
+
+    private static Relation vs(UUID defender, Set<UUID> team, Owned machine, UUID who) {
+        if (trusted(defender, team, machine, who)) return Relation.FRIENDLY;
+        return switch (VnBridge.relation(defender, who)) {
+            case SAME, ALLY -> Relation.FRIENDLY;
+            case PEACE -> Relation.NEUTRAL;
+            default -> Relation.HOSTILE;
+        };
     }
 
     public static boolean isHostileTo(UUID defenderOwner, ServerLevel level, UUID shipId) {

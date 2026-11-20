@@ -258,7 +258,7 @@ public class NavalGunBlockEntity extends ProcessUnitBlockEntity implements Owned
         boolean claimed = manned(now);
         boolean ordered = orderTarget != null;
         boolean want = (claimKind != 0 && now - lastClaim <= Balance.GTUR_STOW_DELAY) || ordered;
-        boolean power = want && ShipPower.draw(sl, ship, spec.feLay());
+        boolean power = want && ShipPower.draw(this, sl, ship, spec.feLay());
         noPower = want && !power;
         if (want && deploy < 1.0F && power) {
             if (deploy <= 0.0F) playOnce(sl, WmdSounds.HG_PORT.get(), Balance.SND_MECH, 1.3F);
@@ -486,7 +486,7 @@ public class NavalGunBlockEntity extends ProcessUnitBlockEntity implements Owned
         int round;
         int need = salvoHeavy ? (int) sol[4] : 0;
         if (salvoHeavy && charges < need) { endSalvo(now); return; }
-        if (!ShipPower.draw(sl, ship, Math.max(1, spec.feShot() / spec.barrels()))) { noPower = true; endSalvo(now); return; }
+        if (!ShipPower.draw(this, sl, ship, Math.max(1, spec.feShot() / spec.barrels()))) { noPower = true; endSalvo(now); return; }
         double spread;
         boolean guidedOk;
         double hx = Math.hypot(target.x - mw.x, target.z - mw.z);

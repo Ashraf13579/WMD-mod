@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:exo_mod_thermal"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "GXG",
+    "PAP"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:tinted_glass"
+    },
+    "X": {
+      "item": "wmd:chip_defence_2"
+    },
+    "P": {
+      "tag": "c:plates/titanium"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:exo_mod_thermal",
+    "count": 1
+  }
+}

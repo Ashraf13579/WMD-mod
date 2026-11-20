@@ -33,6 +33,10 @@ final class StrikeDrones {
     static final double CLIMB_UP = 6.0, CLIMB_RATE = 0.35, DOCK_RATE = 0.25, PATROL_R = 12.0, ORBIT_R = 2.5, DIVE_AT = 10.0, BOOST = 1.45;
 
     static Component launch(ServerLevel level, DroneHiveBlockEntity hive, int bay, DroneType t, ServerPlayer by, boolean fly, int[] out) {
+        return launch(level, hive, bay, t, by, fly, out, null);
+    }
+
+    static Component launch(ServerLevel level, DroneHiveBlockEntity hive, int bay, DroneType t, ServerPlayer by, boolean fly, int[] out, double[] point) {
         MinecraftServer server = level.getServer();
         if (level != server.overworld()) return Component.translatable("message.wmd.hive.overworld");
         Drones ds = Drones.get(server);
@@ -46,6 +50,7 @@ final class StrikeDrones {
         BlockPos hp = hive.getBlockPos();
         d.hiveX = hp.getX(); d.hiveY = hp.getY(); d.hiveZ = hp.getZ(); d.bay = bay;
         d.huntPlayers = hive.huntPlayers(bay); d.huntMobs = hive.huntMobs(bay);
+        if (point != null && !fly) { d.pointed = true; d.ptx = point[0]; d.ptz = point[1]; }
         d.battery = t == DroneType.T1 ? Balance.DRONE_T1_BATTERY : Balance.DRONE_T2_BATTERY;
         d.health = t == DroneType.T1 ? Balance.DRONE_T1_HEALTH : Balance.DRONE_T2_HEALTH;
         d.yaw = by.getYRot();
@@ -152,12 +157,11 @@ final class StrikeDrones {
     }
 
     private static void hunt(ServerLevel level, Drones.Drone d, long now, double speed) {
-        LivingEntity tgt = d.target != null && level.getEntity(d.target) instanceof LivingEntity le && valid(level, d, le, Balance.DRONE_T1_RANGE) ? le : null;
-        if (tgt == null && (now + d.id) % 10 == 0) tgt = find(level, d, Balance.DRONE_T1_RANGE, d.huntPlayers, d.huntMobs);
+        LivingEntity tgt = d.target != null && level.getEntity(d.target) instanceof LivingEntity le && valid(level, d, le, reach(d, Balance.DRONE_T1_RANGE)) ? le : null;
+        if (tgt == null && (now + d.id) % 10 == 0) tgt = find(level, d, reach(d, Balance.DRONE_T1_RANGE), d.huntPlayers, d.huntMobs);
         if (tgt == null) {
             d.target = null;
-            d.angle += speed / PATROL_R;
-            moveTo(level, d, d.hx + Math.cos(d.angle) * PATROL_R, d.hy + 10.0, d.hz + Math.sin(d.angle) * PATROL_R, speed);
+            patrol(level, d, speed);
             return;
         }
         d.target = tgt.getUUID();
@@ -183,8 +187,16 @@ final class StrikeDrones {
     }
 
     private static boolean strike(Drones ds, ServerLevel level, Drones.Drone d, long now, double speed) {
-        LivingEntity tgt = d.target != null && level.getEntity(d.target) instanceof LivingEntity le && valid(level, d, le, Balance.DRONE_T2_RANGE) ? le : null;
-        if (tgt == null) tgt = find(level, d, Balance.DRONE_T2_RANGE, true, false);
+        LivingEntity tgt = d.target != null && level.getEntity(d.target) instanceof LivingEntity le && valid(level, d, le, reach(d, Balance.DRONE_T2_RANGE)) ? le : null;
+        if (tgt == null) tgt = find(level, d, reach(d, Balance.DRONE_T2_RANGE), true, false);
+        if (tgt == null && d.pointed) {
+            d.target = null;
+            if (Math.hypot(d.ptx - d.x, d.ptz - d.z) > PATROL_R * 2.0) {
+                int g = Drones.groundAt(level, d.x, d.z);
+                moveTo(level, d, d.ptx, (g == Integer.MIN_VALUE ? d.y : g + 14.0), d.ptz, speed);
+            } else patrol(level, d, speed);
+            return false;
+        }
         if (tgt == null) {
             Drones.tell(level.getServer(), d.owner, Component.translatable("message.wmd.hive_drone.no_target", d.id).withStyle(ChatFormatting.GRAY));
             d.target = null;
@@ -262,9 +274,21 @@ final class StrikeDrones {
         return ch != null && !ch.getBlockState(p).getCollisionShape(level, p).isEmpty();
     }
 
+    static double cx(Drones.Drone d) { return d.pointed ? d.ptx : d.hx; }
+    static double cz(Drones.Drone d) { return d.pointed ? d.ptz : d.hz; }
+
+    static double reach(Drones.Drone d, double own) { return d.pointed ? Balance.DRONE_POINT_R : own; }
+
+    private static void patrol(ServerLevel level, Drones.Drone d, double speed) {
+        d.angle += speed / PATROL_R;
+        double y = d.hy + 10.0;
+        if (d.pointed) { int g = Drones.groundAt(level, d.ptx, d.ptz); y = g == Integer.MIN_VALUE ? d.y : g + 10.0; }
+        moveTo(level, d, cx(d) + Math.cos(d.angle) * PATROL_R, y, cz(d) + Math.sin(d.angle) * PATROL_R, speed);
+    }
+
     private static boolean valid(ServerLevel level, Drones.Drone d, LivingEntity e, double range) {
         if (!e.isAlive() || e.level() != level || e.isSpectator()) return false;
-        if (Math.hypot(e.getX() - d.hx, e.getZ() - d.hz) > range) return false;
+        if (Math.hypot(e.getX() - cx(d), e.getZ() - cz(d)) > range) return false;
         if (e instanceof ServerPlayer sp) {
             if (sp.isCreative() || sp.getUUID().equals(d.owner)) return false;
             return d.kind == 2 || d.huntPlayers ? !CommandCenter.ownersTrusting(sp.getUUID()).contains(d.owner) : false;
@@ -281,7 +305,8 @@ final class StrikeDrones {
             if (q < bd) { bd = q; best = p; }
         }
         if (mobs) {
-            AABB box = new AABB(d.hx - range, d.hy - 48.0, d.hz - range, d.hx + range, d.hy + 64.0, d.hz + range);
+            double by = d.pointed ? d.y : d.hy;
+            AABB box = new AABB(cx(d) - range, by - 48.0, cz(d) - range, cx(d) + range, by + 64.0, cz(d) + range);
             for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, box, e -> e instanceof Enemy)) {
                 if (!valid(level, d, e, range)) continue;
                 double q = e.distanceToSqr(d.x, d.y, d.z);

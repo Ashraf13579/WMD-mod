@@ -20,7 +20,7 @@
       "item": "minecraft:string"
     },
     "C": {
-      "item": "minecraft:chest"
+      "tag": "c:chests/wooden"
     },
     "S": {
       "item": "minecraft:string"

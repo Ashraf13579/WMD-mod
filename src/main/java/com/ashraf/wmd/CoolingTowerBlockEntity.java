@@ -92,7 +92,7 @@ public class CoolingTowerBlockEntity extends ProcessUnitBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.TOWER_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.TOWER_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.tower_condense", Balance.TOWER_CONDENSE_MB, Balance.TOWER_CONDENSE_MB * Balance.TOWER_WATER_PCT / 100),
                 Component.translatable("gui.wmd.info.tower_dump"));
     }

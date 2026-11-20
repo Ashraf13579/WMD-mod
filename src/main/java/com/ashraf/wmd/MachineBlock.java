@@ -78,7 +78,21 @@ public abstract class MachineBlock extends BaseEntityBlock implements net.minecr
     static boolean gate(Level level, BlockPos controller, Player player, Owned o) {
         if (player.getUUID().equals(o.getOwner()) && Hacks.clear(level, controller))
             player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wmd.hack.relocked"), true);
-        if (o.getOwner() == null) o.claim(player);
+        if (o.getOwner() == null) {
+            if (o instanceof ProcessUnitBlockEntity pu && !pu.ownable()) return true;
+
+            if (level instanceof net.minecraft.server.level.ServerLevel sl && player instanceof net.minecraft.server.level.ServerPlayer sp) {
+                java.util.UUID ship = SableBridge.shipIdAt(sl, controller);
+                java.util.UUID craftOwner = ship == null ? null : Crafts.owner(sl, ship);
+                if (craftOwner != null ? !craftOwner.equals(sp.getUUID()) : !ClaimGuard.mayPlaceQuiet(sl, sp, controller)) {
+                    player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wmd.access.claimed_land"), true);
+                    return false;
+                }
+            }
+            o.claim(player);
+            AccessStore st = AccessStore.of(level);
+            if (st != null) st.index(o);
+        }
         else if (!Access.mayUse(o, player)) { Access.deny(o, player); return false; }
         return true;
     }
@@ -178,7 +192,10 @@ public abstract class MachineBlock extends BaseEntityBlock implements net.minecr
                 for (BlockPos l : footprint()) {
                     BlockPos p = Machines.toWorld(pos, facing, mount, l.getX(), l.getY(), l.getZ());
 
-                    if (!p.equals(pos) && level.getBlockState(p).is(Wmd.MACHINE_PART.get()) && ownPart(level, p, pos)) level.removeBlock(p, false);
+                    if (!p.equals(pos) && level.getBlockState(p).is(Wmd.MACHINE_PART.get()) && ownPart(level, p, pos)) {
+                        if (BlastWrites.inBlast()) BlastWrites.remove(level, p, false);
+                        else level.removeBlock(p, false);
+                    }
                 }
             } finally {
                 removing = false;

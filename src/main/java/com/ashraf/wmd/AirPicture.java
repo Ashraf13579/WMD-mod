@@ -71,6 +71,7 @@ public final class AirPicture {
         List<Seen> out = new ArrayList<>();
         for (Aircraft a : all(level)) {
             if (a.id().equals(ownShip)) continue;
+            if (Cloak.hidden(level, a.id())) continue;
             double d = a.pos().distanceTo(sensor), r = detectRange(base, a.blocks());
             if (d <= r) out.add(new Seen(a, d, r));
         }

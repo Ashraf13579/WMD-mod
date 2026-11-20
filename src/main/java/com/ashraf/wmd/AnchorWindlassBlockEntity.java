@@ -363,7 +363,7 @@ public class AnchorWindlassBlockEntity extends ProcessUnitBlockEntity implements
     }
 
     private boolean weigh(ServerLevel sl, Hawse h, long now, boolean busbar) {
-        boolean paid = busbar || (ship != null && ShipPower.draw(sl, ship, Balance.ANCHOR_FE_WEIGH));
+        boolean paid = busbar || (ship != null && ShipPower.draw(this, sl, ship, Balance.ANCHOR_FE_WEIGH));
         if (!paid) { problems |= P_NO_POWER; if (onBottom) hold(sl, h, now, true); return false; }
         chainOut = Math.max(0.0F, chainOut - (float) (Balance.ANCHOR_WEIGH_SPEED / 20.0));
         if (onBottom && anchor != null) {

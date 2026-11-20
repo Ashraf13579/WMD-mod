@@ -180,10 +180,11 @@ public final class TerrainAtlas extends SavedData {
 
     static int depthAt(ServerLevel level, int bx, int bz) {
         byte[] d = get(level).floors.get(ChunkPos.asLong(bx >> 4, bz >> 4));
-        return d == null ? -1 : d[((bz & 15) >> 2) * 4 + ((bx & 15) >> 2)] & 0xFF;
+        if (d == null) return WorldMap.depthAt(level, bx, bz);
+        return d[((bz & 15) >> 2) * 4 + ((bx & 15) >> 2)] & 0xFF;
     }
 
-    static int exploredAt(ServerLevel level, int bx, int bz) { return get(level).explored(bx, bz); }
+    static int exploredAt(ServerLevel level, int bx, int bz) { int e = get(level).explored(bx, bz); return e != 0 ? e : WorldMap.exploredAt(level, bx, bz); }
 
     private int explored(int bx, int bz) {
         int[] s = cells.get(ChunkPos.asLong(bx >> 4, bz >> 4));

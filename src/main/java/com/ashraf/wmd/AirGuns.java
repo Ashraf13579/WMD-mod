@@ -38,6 +38,7 @@ public final class AirGuns {
         Jet best = null;
         for (AirPicture.Aircraft a : AirPicture.all(sl)) {
             if (a.id().equals(ownShip)) continue;
+            if (Cloak.hidden(sl, a.id())) continue;
             Vec3 c = a.pos(), v = c.subtract(muzzle);
             double along = v.dot(dir);
             if (along <= 0.0 || along > range) continue;
@@ -79,7 +80,14 @@ public final class AirGuns {
         return hits;
     }
 
-    static int chewGround(ServerLevel sl, Vec3 point, Vec3 dir, int rounds, int max) {
+    static int chewGround(ServerLevel sl, Vec3 point, Vec3 dir, int rounds, int max) { return chewGround(sl, point, dir, rounds, max, ShipStrike.shooter()); }
+
+    static int chewGround(ServerLevel sl, Vec3 point, Vec3 dir, int rounds, int max, java.util.UUID owner) {
+        java.util.UUID prevShooter = ShipStrike.begin(owner);
+        try { return chew0(sl, point, dir, rounds, max); } finally { ShipStrike.end(prevShooter); }
+    }
+
+    private static int chew0(ServerLevel sl, Vec3 point, Vec3 dir, int rounds, int max) {
         TankDamage.hitAt(sl, point, rounds);
         int broken = 0;
         net.minecraft.core.BlockPos p = net.minecraft.core.BlockPos.containing(point.add(dir.normalize().scale(0.1)));
@@ -90,7 +98,7 @@ public final class AirGuns {
             if (st.isAir()) { p = net.minecraft.core.BlockPos.containing(Vec3.atCenterOf(p).add(dir.normalize())); continue; }
             float hard = st.getDestroySpeed(sl, p);
             if (hard < 0 || hard > Balance.CIWS_SHIP_MAX_HARDNESS || !BlockRules.blastRemovable(sl, p, st)) break;
-            if (sl.destroyBlock(p, false)) broken++;
+            if (BlastWrites.destroy(sl, p, false)) broken++;
         }
         return broken;
     }

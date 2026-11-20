@@ -23,7 +23,7 @@
       "item": "wmd:chip_metallurgy_3"
     },
     "S": {
-      "item": "wmd:steel_block"
+      "tag": "c:storage_blocks/steel"
     },
     "C": {
       "item": "wmd:titanium_casing"

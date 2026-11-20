@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:motor_ramjet"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TCT",
+    "HMC",
+    "TWT"
+  ],
+  "key": {
+    "T": {
+      "tag": "c:plates/titanium"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "H": {
+      "item": "wmd:heat_shield_tile"
+    },
+    "M": {
+      "item": "wmd:motor_t3"
+    },
+    "W": {
+      "tag": "c:ingots/tungsten"
+    }
+  },
+  "result": {
+    "id": "wmd:motor_ramjet",
+    "count": 1
+  }
+}

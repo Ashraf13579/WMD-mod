@@ -134,11 +134,18 @@ public class SubDieselBlockEntity extends ProcessUnitBlockEntity implements Nava
         phaseTicks = 0;
         coughAt = 0;
         if (s == S_CRANK) playOnce(sl, WmdSounds.DIESEL_START.get(), Balance.SND_MECH, 1.0F);
+        if (s == S_RUN) exhaustFx(sl, 1.0F);
         syncNow();
+    }
+
+    private void exhaustFx(ServerLevel sl, float kind) {
+        double[] w = worldPoint(OUTLET[0], OUTLET[1], OUTLET[2]);
+        AirFxPayload.at(sl, AirFxPayload.DIESEL, new Vec3(w[0], w[1], w[2]), null, kind, Balance.AIRFX_NEAR_R);
     }
 
     private void cough(ServerLevel sl) {
         playOnce(sl, WmdSounds.DIESEL_COUGH.get(), Balance.SND_MECH, 0.9F + sl.random.nextFloat() * 0.2F);
+        exhaustFx(sl, 0.0F);
         coughAt = phaseTicks + 12 + sl.random.nextInt(9);
         rpm *= 0.8F;
     }
@@ -163,7 +170,7 @@ public class SubDieselBlockEntity extends ProcessUnitBlockEntity implements Nava
         l.add(Component.translatable("gui.wmd.sub_diesel.state" + cState));
         l.add(Component.translatable(cMode == M_AUTO ? "gui.wmd.sub_diesel.mode_auto" : cMode == M_ON ? "gui.wmd.sub_diesel.mode_on" : "gui.wmd.sub_diesel.mode_off"));
         l.add(Component.translatable(!cAir ? "gui.wmd.sub_diesel.no_air" : cVia ? "gui.wmd.sub_diesel.air_snorkel" : "gui.wmd.sub_diesel.air_open"));
-        l.add(Component.translatable("gui.wmd.sub_diesel.output", cProd ? Balance.SD_FE_PER_TICK * 20 : 0));
+        l.add(Component.translatable("gui.wmd.sub_diesel.output", cProd ? Balance.SD_FE_PER_TICK : 0));
         return l;
     }
 
@@ -275,7 +282,7 @@ public class SubDieselBlockEntity extends ProcessUnitBlockEntity implements Nava
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.gen_output", String.format("%,d", Balance.SD_FE_PER_TICK * 20)),
+        return List.of(Component.translatable("gui.wmd.info.gen_output", String.format("%,d", Balance.SD_FE_PER_TICK)),
                 Component.translatable("gui.wmd.info.sub_diesel", String.format("%,d", Balance.SD_FE_PER_MB)));
     }
 

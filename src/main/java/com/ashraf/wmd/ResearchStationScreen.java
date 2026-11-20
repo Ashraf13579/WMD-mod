@@ -114,7 +114,7 @@ public class ResearchStationScreen extends MachineScreen implements WmdUi.Kit {
         tips.add(new Object[] { nx, ny, nx + 20, ny + 27, List.of(Wmd.CHIP_BLANK.get().getDescription(), haveLine(blanks, 1, "")) });
 
         int sec = sel.ticks() / 20;
-        g.drawString(font, Component.translatable("gui.wmd.research.time", sec / 60 + ":" + String.format("%02d", sec % 60), sel.fePerTick() * 20), x + 7, y + TIME_Y, TEXT, false);
+        g.drawString(font, Component.translatable("gui.wmd.research.time", sec / 60 + ":" + String.format("%02d", sec % 60), sel.fePerTick()), x + 7, y + TIME_Y, TEXT, false);
 
         g.drawString(font, Component.translatable("gui.wmd.research.unlocks"), x + 7, y + UNLOCKS_Y, TEXT, false);
         int ux = x + 7, uy = y + UNLOCKS_Y + 11;

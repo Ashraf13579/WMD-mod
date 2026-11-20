@@ -123,7 +123,7 @@ public class SuperGunBlockEntity extends ArtilleryGunBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse() * 20), Component.translatable("gui.wmd.info.art_gun", minRange(), range()),
+        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse()), Component.translatable("gui.wmd.info.art_gun", minRange(), range()),
                 Component.translatable("gui.wmd.info.super_gun", Balance.SUPER_GUN_CHARGES, Balance.SUPER_GUN_RELOAD_TICKS / 20));
     }
 

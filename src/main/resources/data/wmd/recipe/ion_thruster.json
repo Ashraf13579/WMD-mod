@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:ion_thruster"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SXS",
+    "CTC",
+    "SBS"
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:superconducting_coil"
+    },
+    "X": {
+      "item": "wmd:chip_space_2"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "B": {
+      "item": "wmd:busbar"
+    }
+  },
+  "result": {
+    "id": "wmd:ion_thruster",
+    "count": 1
+  }
+}

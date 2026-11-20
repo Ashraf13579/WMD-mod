@@ -17,7 +17,7 @@
       "item": "wmd:advanced_circuit"
     },
     "S": {
-      "item": "wmd:steel_block"
+      "tag": "c:storage_blocks/steel"
     },
     "B": {
       "item": "wmd:network_card"

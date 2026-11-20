@@ -63,7 +63,11 @@ public enum WarheadType {
 
     NANITE("nanite",              3, 0.00, 0.00, 0.0, 0.00, 0.0, 0.0,  0, 0.0, 1.0),
     GRAVITY("gravity",            3, 0.25, 0.30, 1.2, 0.10, 0.8, 0.0,  0, 0.1, 1.2),
-    CRYO("cryo",                  3, 0.00, 0.00, 0.0, 0.00, 0.0, 0.0,  0, 0.0, 1.4);
+    CRYO("cryo",                  3, 0.00, 0.00, 0.0, 0.00, 0.0, 0.0,  0, 0.0, 1.4),
+
+    PLASMA_BALL("plasma_ball",    1, 0.80, 0.40, 2.0, 0.50, 1.2, 1.5, 10, 0.2, 1.6),
+
+    ROD_RING("rod_ring",          2, 0.00, 0.00, 0.0, 0.00, 0.0, 0.0,  0, 0.0, 1.0);
 
     public final String id;
     public final int tier;
@@ -86,7 +90,9 @@ public enum WarheadType {
         return this == HEAVY_BLAST || this == CARPET || this == UPHEAVAL || this == NAPALM || this == PENETRATOR || this == DAISY_CUTTER || this == EARTHQUAKE || this == DAM_BREAKER || this == TSAR;
     }
 
-    public boolean machineOnly() { return this == PLASMA || this == RAILGUN || this == ORBITAL_ROD || this == ASTEROID; }
+    public boolean machineOnly() { return this == PLASMA || this == RAILGUN || this == ORBITAL_ROD || this == ASTEROID || this == PLASMA_BALL; }
+
+    public boolean airOnly() { return this == ROD_RING; }
 
     public boolean mushroom() { return this == NUKE || this == THERMO || this == TSAR; }
 }

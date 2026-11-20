@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:exo_mod_rebreather"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "OPO",
+    " A "
+  ],
+  "key": {
+    "O": {
+      "item": "wmd:oxygen_tank"
+    },
+    "P": {
+      "tag": "c:plates/titanium"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:exo_mod_rebreather",
+    "count": 1
+  }
+}

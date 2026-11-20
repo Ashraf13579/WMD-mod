@@ -6,8 +6,8 @@
   "mixins": [],
   "client": [
     "CreativeScreenMixin",
-    "GlowMixin",
-    "ItemPickerMenuAccessor"
+    "ItemPickerMenuAccessor",
+    "SableCloakRenderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

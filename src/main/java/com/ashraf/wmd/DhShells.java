@@ -83,6 +83,7 @@ final class DhShells {
         Vec3 dir = v.lengthSqr() < 1.0E-8 ? new Vec3(0, -1, 0) : v.normalize();
         double w = (s.gun() == Artillery.HOWITZER ? 0.7 : 0.5) * sc;
         if (s.gun() == Artillery.SUPER_GUN) w = 1.4 * sc;
+        if (s.gun() == Artillery.PLASMA) w = 1.8 * sc;
         boxes.add(cube(Vec3.ZERO, w, BODY, EDhApiBlockMaterial.METAL));
         boxes.add(cube(dir.scale(-w), w * 0.9, BODY, EDhApiBlockMaterial.METAL));
         boxes.add(cube(dir.scale(w * 0.8), w * 0.6, GLINT, EDhApiBlockMaterial.ILLUMINATED));

@@ -201,6 +201,14 @@ public class CiwsBlockEntity extends BlockEntity implements Owned, GeoBlockEntit
             if (d < best && elev > 2.0 && (see || target == null)) { best = d; target = f; clear = see; }
         }
 
+        if (target == null && owner != null && !droneOnly && powered) {
+            AirTarget air = airTarget(sl, gun, mgr, now);
+            if (air != null) {
+                if ((airStep(sl, now, gun, mgr, air) | changed) && (now % 4 == 0 || firingUntil == now + Balance.CRAM_BURST_TICKS)) sync();
+                return;
+            }
+        }
+
         if (target == null && owner != null && !droneOnly) {
             ArtShell shell = cramTarget(sl, gun, now);
             if (shell != null) {
@@ -276,7 +284,7 @@ public class CiwsBlockEntity extends BlockEntity implements Owned, GeoBlockEntit
                 firingUntil = now + 6;
                 if (now % 2 == 0)
                     PacketDistributor.sendToPlayersNear(sl, null, gun.x, gun.y, gun.z, 900, new CiwsFirePayload(worldPosition, gun.x, gun.y, gun.z, aim.x, aim.y, aim.z, dmg > 0));
-                if (dmg > 0 && target != null) mgr.damage(sl, target, dmg);
+                if (dmg > 0 && target != null) { if (mgr.damage(sl, target, dmg)) WarScore.intercept(sl, owner, target); }
                 else if (dmg > 0) Drones.ciwsHit(sl, drone, dmg, owner, ownerName);
                 changed = true;
             }
@@ -328,6 +336,68 @@ public class CiwsBlockEntity extends BlockEntity implements Owned, GeoBlockEntit
         }
         return best;
     }
+
+    private record AirTarget(boolean ashm, long id, int kind, Vec3 pos, Vec3 vel) {}
+
+    private final java.util.Set<Long> triedAir = new java.util.HashSet<>(), triedAshm = new java.util.HashSet<>();
+
+    private AirTarget airTarget(ServerLevel sl, Vec3 gun, FlightManager mgr, long now) {
+        if (!AirGate.on()) return null;
+        java.util.List<Long> shots = TrackNet.airMissileTracks(sl, owner, frequency, now), ashm = TrackNet.ashmTracks(sl, owner, frequency, now);
+        triedAir.retainAll(shots);
+        triedAshm.retainAll(ashm);
+        if (shots.isEmpty() && ashm.isEmpty()) return null;
+        AirTarget best = null;
+        double bd = Balance.CIWS_AIR_RANGE * Balance.CIWS_AIR_RANGE;
+        for (long id : shots) {
+            if (triedAir.contains(id)) continue;
+            AirMissiles.Shot s = AirMissiles.flying(sl, id);
+            if (s == null) continue;
+            double d = s.pos.distanceToSqr(gun);
+            if (d >= bd || elevation(gun, s.pos) <= 2.0) continue;
+            bd = d;
+            best = new AirTarget(false, id, s.kind, s.pos, s.vel == null ? Vec3.ZERO : s.vel);
+        }
+        for (long id : ashm) {
+            if (triedAshm.contains(id)) continue;
+            Flight f = mgr.find(id);
+            if (f == null) continue;
+            Vec3 p = f.position(now);
+            double d = p.distanceToSqr(gun);
+            if (d >= bd || elevation(gun, p) <= 2.0) continue;
+            bd = d;
+            best = new AirTarget(true, id, -1, p, f.position(now + 1).subtract(p));
+        }
+        return best;
+    }
+
+    private static double elevation(Vec3 gun, Vec3 p) { return Math.toDegrees(Math.atan2(p.y - gun.y, Math.hypot(p.x - gun.x, p.z - gun.z))); }
+
+    private boolean airStep(ServerLevel sl, long now, Vec3 gun, FlightManager mgr, AirTarget t) {
+        Vec3 lead = t.pos().add(t.vel().scale(t.pos().distanceTo(gun) / BULLET_SPEED));
+        int r = slew(gun, lead);
+        if (now % 4 == 0) store.use(Balance.CIWS_MOVE_FE);
+        boolean changed = (r & 1) != 0;
+        if ((r & 2) != 0 && burstReady(now)) {
+            (t.ashm() ? triedAshm : triedAir).add(t.id());
+            if (!clearLine(sl, gun.add(t.pos().subtract(gun).normalize().scale(4.0)), t.pos())) return changed;
+            double p = t.ashm() ? Balance.CIWS_ASHM_HIT : Balance.CIWS_AIR_HIT[Mth.clamp(t.kind(), 0, Balance.CIWS_AIR_HIT.length - 1)];
+            if (burst(sl, now, gun, lead, p)) shootDownAir(sl, mgr, t.ashm(), t.id());
+            changed = true;
+        }
+        return changed;
+    }
+
+    void shootDownAir(ServerLevel sl, FlightManager mgr, boolean ashm, long id) {
+        if (!AirGate.on()) return;
+        if (!ashm) { AirMissiles.shootDown(sl, id, owner); return; }
+        Flight f = mgr.find(id);
+        if (f != null && mgr.damage(sl, f, Float.MAX_VALUE / 4.0F)) Wmd.LOGGER.info("Anti-ship missile {} shot down by a CIWS of {}", id, owner);
+    }
+
+    java.util.List<Long> airTrackIds(ServerLevel sl, long now) { return owner == null ? java.util.List.of() : TrackNet.airMissileTracks(sl, owner, frequency, now); }
+
+    java.util.List<Long> ashmTrackIds(ServerLevel sl, long now) { return owner == null ? java.util.List.of() : TrackNet.ashmTracks(sl, owner, frequency, now); }
 
     private boolean bombStep(ServerLevel sl, long now, Vec3 gun, BombEntity b) {
         Vec3 p = b.position();
@@ -471,16 +541,19 @@ public class CiwsBlockEntity extends BlockEntity implements Owned, GeoBlockEntit
         boolean changed = (r & 1) != 0;
         if ((r & 2) != 0 && burstReady(now)) {
             if (!clearLine(sl, gun.add(p.subtract(gun).normalize().scale(4.0)), p)) { dome.missed(this, t); return changed; }
-            boolean hit = burst(sl, now, gun, lead, Balance.DOME_HIT);
+            double chance = t.air() < 0 ? Balance.DOME_HIT
+                    : t.air() == IronDome.AIR_ASHM ? Balance.CIWS_ASHM_HIT_DOME : Balance.CIWS_AIR_HIT_DOME[Mth.clamp(t.air(), 0, Balance.CIWS_AIR_HIT_DOME.length - 1)];
+            boolean hit = burst(sl, now, gun, lead, chance);
             if (hit) {
                 dome.done(t);
-                if (t.shell()) ArtilleryManager.get(sl).shootDown(sl, t.id(), owner, ownerName);
+                if (t.air() >= 0) shootDownAir(sl, mgr, t.air() == IronDome.AIR_ASHM, t.id());
+                else if (t.shell()) ArtilleryManager.get(sl).shootDown(sl, t.id(), owner, ownerName);
                 else {
                     Flight f = mgr.find(t.id());
                     if (f != null) {
                         CcBattleLog.add(sl.getServer(), owner, CcBattleLog.INTERCEPT, "log.wmd.dome_kill", f.launcher(), Integer.toString(f.tier()),
                                 Long.toString(Math.round(p.x)), Long.toString(Math.round(p.z)));
-                        mgr.damage(sl, f, Float.MAX_VALUE / 4.0F);
+                        if (mgr.damage(sl, f, Float.MAX_VALUE / 4.0F)) WarScore.intercept(sl, owner, f);
                     }
                 }
             } else dome.missed(this, t);

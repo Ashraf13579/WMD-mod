@@ -125,7 +125,7 @@ public class NoseRadarBlockEntity extends ProcessUnitBlockEntity implements Owne
             if (ship != null) AT.computeIfAbsent(sl.dimension(), k -> new HashMap<>()).computeIfAbsent(ship, k -> new LinkedHashSet<>()).add(worldPosition.asLong());
             if (open && ship != null && AirPicture.isAircraft(sl, ship)) { open = false; sync(); }
         }
-        powered = !off && ship != null && ShipPower.draw(sl, ship, Balance.NOSE_FE);
+        powered = !off && ship != null && ShipPower.crewed(sl, ship) && ShipPower.draw(this, sl, ship, Balance.NOSE_FE);
         if (!on()) { if (!inCone.isEmpty()) inCone = List.of(); return false; }
         if ((now + (worldPosition.asLong() & 3L)) % Balance.NOSE_SCAN_TICKS == 0) scan(sl, now);
         return true;

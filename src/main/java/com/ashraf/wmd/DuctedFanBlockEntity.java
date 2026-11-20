@@ -65,7 +65,7 @@ public class DuctedFanBlockEntity extends AirEngineBlockEntity {
 
     private boolean useLoad() {
         int fe = (int) Math.round(Balance.EDF_FE_LOAD * Math.abs(throttle));
-        return fe <= 0 || useExtraEnergy(fe) || (getLevel() instanceof ServerLevel sl && ShipPower.draw(sl, ship, fe));
+        return fe <= 0 || useExtraEnergy(fe) || (getLevel() instanceof ServerLevel sl && ShipPower.draw(this, sl, ship, fe));
     }
 
     @Override
@@ -73,8 +73,8 @@ public class DuctedFanBlockEntity extends AirEngineBlockEntity {
         if (!(getLevel() instanceof ServerLevel sl)) return;
         orders(sl);
         tickAir(sl);
-        if (Math.abs(spool) > 1.0E-3 && ShipPower.draw(sl, ship, Balance.EDF_FE)) {
-            float target = (float) (Math.abs(throttle) > 1.0E-3 && ShipPower.draw(sl, ship, (int) Math.round(Balance.EDF_FE_LOAD * Math.abs(throttle))) ? throttle : 0.0);
+        if (Math.abs(spool) > 1.0E-3 && ShipPower.draw(this, sl, ship, Balance.EDF_FE)) {
+            float target = (float) (Math.abs(throttle) > 1.0E-3 && ShipPower.draw(this, sl, ship, (int) Math.round(Balance.EDF_FE_LOAD * Math.abs(throttle))) ? throttle : 0.0);
             spool = approach(spool, target, 1.0F / (Math.abs(target) > Math.abs(spool) ? Balance.EDF_SPOOL_UP : Balance.EDF_SPOOL_DOWN));
             steer(0.05F);
             active = true;
@@ -182,7 +182,7 @@ public class DuctedFanBlockEntity extends AirEngineBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.edf_use", Balance.EDF_FE * 20, (Balance.EDF_FE + Balance.EDF_FE_LOAD) * 20),
+        return List.of(Component.translatable("gui.wmd.info.edf_use", Balance.EDF_FE, (Balance.EDF_FE + Balance.EDF_FE_LOAD)),
                 Component.translatable("gui.wmd.screw.order", Component.translatable("gui.wmd.prop.step" + cStep), sourceName(cSource)),
                 Component.translatable("gui.wmd.edf.state", Math.round(cSpool * 100.0F), Math.round(cYaw), Math.round(cPitch)),
                 Component.translatable(!SableBridge.loaded() ? "gui.wmd.screw.no_sable" : "gui.wmd.air.air_rule"));

@@ -145,7 +145,7 @@ public class StarterGeneratorBlockEntity extends ProcessUnitBlockEntity implemen
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.gen_output", Balance.SG_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.gen_output", Balance.SG_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.starter_generator", Balance.SG_TAR_TICKS_PER_MB * Balance.SG_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.gen_hint"));
     }

@@ -1,0 +1,35 @@
+{
+  "parent": "wmd:titanium",
+  "display": {
+    "icon": {
+      "id": "wmd:torpedo_t1"
+    },
+    "title": {
+      "translate": "advancements.wmd.torpedo.title"
+    },
+    "description": {
+      "translate": "advancements.wmd.torpedo.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_torpedo_t1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wmd:torpedo_t1"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_torpedo_t1"
+    ]
+  ]
+}

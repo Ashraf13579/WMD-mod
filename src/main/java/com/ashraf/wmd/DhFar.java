@@ -427,12 +427,16 @@ final class DhFar {
         double sc = Mth.clamp(p.distanceTo(cam) / 2000.0, 0.8, 2.0), w = 1.0 * sc;
         Vec3 dir = s.vel == null || s.vel.lengthSqr() < 1.0E-8 ? new Vec3(0, 0, -1) : s.vel.normalize();
         for (int i = 0; i < 3; i++) boxes.add(cube(dir.scale((i - 1) * w), w, i == 2 ? NOSE : new Color(225, 228, 232), EDhApiBlockMaterial.METAL));
+        boolean ramjet = s.kind == AirMissiles.METEOR, heavy = s.kind == AirMissiles.HEAVY;
         if (s.burning)
-            for (int k = 0; k < 3; k++) boxes.add(cube(dir.scale(-(w * 2.0 + k * w * 0.8)), w * (1.0 - k * 0.2), k == 0 ? new Color(255, 200, 90) : new Color(255, 130, 40), EDhApiBlockMaterial.ILLUMINATED));
+            for (int k = 0; k < 3; k++) boxes.add(cube(dir.scale(-(w * 2.0 + k * w * 0.8)), w * (1.0 - k * 0.2) * (heavy ? 1.4 : 1.0),
+                    ramjet ? (k == 0 ? new Color(235, 245, 255) : new Color(150, 200, 255)) : k == 0 ? new Color(255, 200, 90) : new Color(255, 130, 40), EDhApiBlockMaterial.ILLUMINATED));
         int k = 0;
         for (Vec3 q : s.trail) {
             if (++k < 2) continue;
-            boxes.add(cube(q.subtract(p), w * (0.5 + k * 0.02), new Color(200, 200, 206, Math.max(10, 130 - k * 5)), EDhApiBlockMaterial.STONE));
+            double tw = ramjet ? 0.3 : heavy ? 1.6 : 1.0;
+            int a0 = ramjet ? 45 : heavy ? 170 : 130;
+            boxes.add(cube(q.subtract(p), w * tw * (0.5 + k * 0.02), new Color(200, 200, 206, Math.max(10, a0 - k * 5)), EDhApiBlockMaterial.STONE));
         }
         return boxes;
     }

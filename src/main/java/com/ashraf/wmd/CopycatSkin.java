@@ -28,15 +28,51 @@ final class CopycatSkin {
 
     private CopycatSkin() {}
 
-    private record Face(TextureAtlasSprite sprite, int r, int g, int b) {}
+    static final class SkinInfo {
+        final TextureAtlasSprite[] sprites = new TextureAtlasSprite[6];
+        final int[] tintIdx = new int[6];
+        final boolean anyTinted;
+
+        SkinInfo(BlockState skin) {
+            BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(skin);
+            RandomSource rnd = RandomSource.create(42L);
+            boolean tinted = false;
+            for (Direction d : Direction.values()) {
+                rnd.setSeed(42L);
+                List<BakedQuad> qs = model.getQuads(skin, d, rnd, ModelData.EMPTY, null);
+                BakedQuad q = qs.isEmpty() ? null : qs.get(0);
+                int o = d.ordinal();
+                sprites[o] = q != null ? q.getSprite() : model.getParticleIcon(ModelData.EMPTY);
+                tintIdx[o] = q != null && q.isTinted() ? q.getTintIndex() : -1;
+                if (tintIdx[o] >= 0) tinted = true;
+            }
+            anyTinted = tinted;
+        }
+    }
+
+    private static final Map<BlockState, SkinInfo> SKIN_CACHE = Statics.client(new java.util.IdentityHashMap<>());
+    private static final Vector3f TMP_N = new Vector3f();
+    private static final int[] FACE_R = new int[6], FACE_G = new int[6], FACE_B = new int[6];
+
+    static void clearCache() { SKIN_CACHE.clear(); }
+
+    static SkinInfo skinInfo(BlockState skin) {
+        if (SKIN_CACHE.size() > 512) SKIN_CACHE.clear();
+        return SKIN_CACHE.computeIfAbsent(skin, SkinInfo::new);
+    }
 
     static void draw(MeshModel mesh, String bone, Matrix4f pose, Matrix3f normal, BlockState skin, Level level, BlockPos pos, MultiBufferSource buffers, int light, int overlay) {
         if (mesh == null || skin == null || pose == null || normal == null) return;
-        BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(skin);
-        Map<Direction, Face> faces = new EnumMap<>(Direction.class);
-        for (Direction d : Direction.values()) faces.put(d, face(model, skin, d, level, pos));
+        SkinInfo info = skinInfo(skin);
+        var colors = info.anyTinted && level != null ? Minecraft.getInstance().getBlockColors() : null;
+        for (int o = 0; o < 6; o++) {
+            int col = colors != null && info.tintIdx[o] >= 0 ? colors.getColor(skin, level, pos, info.tintIdx[o]) : 0xFFFFFF;
+            FACE_R[o] = (col >> 16) & 255;
+            FACE_G[o] = (col >> 8) & 255;
+            FACE_B[o] = col & 255;
+        }
         VertexConsumer vc = buffers.getBuffer(RenderType.entityCutoutNoCull(InventoryMenu.BLOCK_ATLAS));
-        Vector3f n = new Vector3f();
+        Vector3f n = TMP_N;
         mesh.forEachQuad(bone, (v, i) -> {
 
             float ax = v[i + 16] - v[i], ay = v[i + 17] - v[i + 1], az = v[i + 18] - v[i + 2];
@@ -45,7 +81,9 @@ final class CopycatSkin {
             float mx = Math.abs(nx), my = Math.abs(ny), mz = Math.abs(nz);
             int axis = mx >= my && mx >= mz ? 0 : my >= mz ? 1 : 2;
             Direction dir = axis == 0 ? (nx > 0 ? Direction.EAST : Direction.WEST) : axis == 1 ? (ny > 0 ? Direction.UP : Direction.DOWN) : (nz > 0 ? Direction.SOUTH : Direction.NORTH);
-            Face f = faces.get(dir);
+            int o = dir.ordinal();
+            TextureAtlasSprite sp = info.sprites[o];
+            int fr = FACE_R[o], fg = FACE_G[o], fb = FACE_B[o];
 
             int ia = axis == 0 ? 2 : 0, ib = axis == 1 ? 2 : 1;
             float oa = 0.5F, ob = ib == 1 ? 0.0F : 0.5F;
@@ -56,20 +94,11 @@ final class CopycatSkin {
                 float u = clamp01(v[i + k + ia] + oa - ta), w = clamp01(v[i + k + ib] + ob - tb);
                 float tu = u, tv = ib == 1 ? 1.0F - w : w;
                 n.set(v[i + k + 5], v[i + k + 6], v[i + k + 7]).mul(normal);
-                vc.addVertex(pose, v[i + k], v[i + k + 1], v[i + k + 2]).setColor(f.r(), f.g(), f.b(), 255).setUv(f.sprite().getU(tu), f.sprite().getV(tv))
+                vc.addVertex(pose, v[i + k], v[i + k + 1], v[i + k + 2]).setColor(fr, fg, fb, 255).setUv(sp.getU(tu), sp.getV(tv))
                         .setOverlay(overlay).setLight(light).setNormal(n.x, n.y, n.z);
             }
         });
     }
 
     private static float clamp01(float x) { return x < 0.0F ? 0.0F : Math.min(x, 1.0F); }
-
-    private static Face face(BakedModel model, BlockState skin, Direction dir, Level level, BlockPos pos) {
-        List<BakedQuad> qs = model.getQuads(skin, dir, RandomSource.create(42L), ModelData.EMPTY, null);
-        BakedQuad q = qs.isEmpty() ? null : qs.get(0);
-        TextureAtlasSprite sp = q != null ? q.getSprite() : model.getParticleIcon(ModelData.EMPTY);
-        int col = 0xFFFFFF;
-        if (q != null && q.isTinted() && level != null) col = Minecraft.getInstance().getBlockColors().getColor(skin, level, pos, q.getTintIndex());
-        return new Face(sp, (col >> 16) & 255, (col >> 8) & 255, col & 255);
-    }
 }

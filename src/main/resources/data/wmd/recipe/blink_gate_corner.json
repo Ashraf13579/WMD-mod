@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:blink_gate_corner"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TST",
+    "SAS",
+    "TST"
+  ],
+  "key": {
+    "T": {
+      "item": "wmd:tungsten_alloy_casing"
+    },
+    "S": {
+      "item": "wmd:superconducting_coil"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:blink_gate_corner",
+    "count": 1
+  }
+}

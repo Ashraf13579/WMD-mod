@@ -12,6 +12,8 @@ uniform float HazeStrength;
 uniform vec4 Lens;         // 1 Nov: xyz = the gravity well's black hole, w = its horizon radius (blocks)
 uniform vec4 LensParams;   // x = the Einstein ring / horizon ratio, y = strength 0..1
 uniform float BloomStrength;
+uniform vec4 Dome;         // 19 Nov (gravity well generator): xyz = the sphere's centre (its core), w = the sphere radius (blocks)
+uniform vec4 DomeParams;   // x = strength 0..1, y = seconds since the last bend (the pulse up the dome), < 0 = none
 
 in vec2 texCoord;
 out vec4 fragColor;
@@ -88,7 +90,44 @@ void main() {
         }
     }
 
+    // ---- 19 Nov (gravity well generator): the WARPED DOME of its sphere. Where the view ray crosses the sphere's upper shell before it reaches the
+    //      scene, the picture behind is refracted (strongest at the grazing rim), a slow ripple crawls over the shell, and a bend sends a pulse up it
+    float domeGlow = 0.0;
+    if (DomeParams.x > 0.001 && Dome.w > 0.0) {
+        vec3 dc = toLocal(Dome.xyz);
+        float sceneD = length(local);
+        vec3 rd = local / max(sceneD, 0.0001);
+        float db = dot(dc, rd);
+        float dcc = dot(dc, dc) - Dome.w * Dome.w;
+        float disc = db * db - dcc;
+        if (disc > 0.0) {
+            float sq = sqrt(disc);
+            float th = dcc > 0.0 ? db - sq : db + sq;      // camera outside: the near shell; inside: the shell overhead
+            if (th > 0.0 && th < sceneD) {
+                vec3 dn = normalize(rd * th - dc);
+                if (dn.y > -0.15) {                          // the dome above the ground, not the buried half
+                    float rim = 1.0 - abs(dot(dn, rd));
+                    rim = rim * rim * rim;
+                    float lat = asin(clamp(dn.y, -1.0, 1.0));
+                    float lon = atan(dn.z, dn.x);
+                    float tm = VeilRenderTime;
+                    float wave = sin(lat * 18.0 - tm * 1.6) * 0.5 + sin(lon * 9.0 + lat * 6.0 + tm * 1.1) * 0.5;
+                    float pulse = 0.0;
+                    if (DomeParams.y >= 0.0) {
+                        float f = (lat + 0.15) - DomeParams.y * 1.3;
+                        pulse = exp(-f * f / 0.02) * max(0.0, 1.0 - DomeParams.y / 1.4);
+                    }
+                    float k = DomeParams.x * (rim * 0.9 + 0.12 + 0.25 * wave * (0.4 + rim)) + pulse * 1.2;
+                    vec3 nv = (VeilCamera.ViewMat * vec4(dn, 0.0)).xyz;
+                    uv += nv.xy * vec2(1.0 / aspect, 1.0) * k * 0.012;
+                    domeGlow = DomeParams.x * (rim * 0.14 + 0.015 * (wave + 1.0)) + pulse * 0.22;
+                }
+            }
+        }
+    }
+
     vec3 base = texture(DiffuseSampler0, uv).rgb;
+    base += vec3(0.25, 0.45, 1.0) * domeGlow;      // 19 Nov: the dome's faint blue rim + the bend pulse
 
     // ---- bloom: bright pixels spill light over their surroundings
     if (BloomStrength > 0.01) {

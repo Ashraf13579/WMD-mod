@@ -85,7 +85,8 @@ public final class MeshModel {
 
     private static final int MIN_GPU_QUADS = 700;
 
-    private static final int MAX_VARIANTS = 6;
+    private static final int MAX_VARIANTS = 16;
+    private static final Matrix4f TMP_MV = new Matrix4f();
 
     private static final class Cached { VertexBuffer[] vb; int[] atlas; int quads; float[] bb;
         void close() { if (vb != null) for (VertexBuffer b : vb) if (b != null) b.close(); } }
@@ -108,10 +109,10 @@ public final class MeshModel {
         Integer bq = boneQuads.get(bone);
         if (bq == null) { int t = 0; for (Part part : list) t += part.quads(); boneQuads.put(bone, bq = t); }
         if (bq < MIN_GPU_QUADS) return false;
-        long t0 = System.nanoTime();
+        long t0 = RenderDebug.stats ? System.nanoTime() : 0L;
         boolean dark = darkFor(pose);
         try {
-            Map<Long, Cached> variants = cache.computeIfAbsent(bone, k -> new java.util.LinkedHashMap<>());
+            Map<Long, Cached> variants = cache.computeIfAbsent(bone, k -> new java.util.LinkedHashMap<>(16, 0.75F, true));
             long key = ((long) light << 32) ^ (overlay & 0xFFFFFFFFL) ^ (dark ? Long.MIN_VALUE : 0L);
             Cached c = variants.get(key);
             if (c == null) {
@@ -152,7 +153,7 @@ public final class MeshModel {
                 variants.put(key, c);
             }
             if (cull && c.bb != null && !inView(pose, c.bb)) { statCulled += c.quads; return true; }
-            Matrix4f mv = new Matrix4f(RenderSystem.getModelViewMatrix()).mul(pose.pose());
+            Matrix4f mv = TMP_MV.set(RenderSystem.getModelViewMatrix()).mul(pose.pose());
             for (int ai = 0; ai < c.vb.length; ai++) {
                 RenderType rt = RenderType.entityCutoutNoCull(atlas(c.atlas[ai]));
                 rt.setupRenderState();
@@ -161,10 +162,12 @@ public final class MeshModel {
                 VertexBuffer.unbind();
                 rt.clearRenderState();
             }
-            statGpu += c.quads;
-            long dt = System.nanoTime() - t0;
-            statNanos += dt;
-            myNanos += dt;
+            if (RenderDebug.stats) {
+                statGpu += c.quads;
+                long dt = System.nanoTime() - t0;
+                statNanos += dt;
+                myNanos += dt;
+            }
             return true;
         } catch (Throwable t) {
             gpu = false;
@@ -185,7 +188,7 @@ public final class MeshModel {
 
     private void emit(VertexConsumer vc, PoseStack.Pose pose, Part part, int count, int cr, int cg, int cb, int ca, int overlay, int light) {
         if (ghostAlpha > 0) { cr = cr * ((ghostRgb >> 16) & 255) / 255; cg = cg * ((ghostRgb >> 8) & 255) / 255; cb = cb * (ghostRgb & 255) / 255; ca = ghostAlpha; }
-        long t0 = System.nanoTime();
+        long t0 = RenderDebug.stats ? System.nanoTime() : 0L;
         float[] v = part.v();
         if (!fast) {
             for (int i = 0; i < count * 32; i += 8) {
@@ -208,12 +211,14 @@ public final class MeshModel {
                 }
             }
         }
-        long dt = System.nanoTime() - t0;
-        statQuads += count;
-        statLod += part.quads() - count;
-        statNanos += dt;
-        myQuads += count;
-        myNanos += dt;
+        if (RenderDebug.stats) {
+            long dt = System.nanoTime() - t0;
+            statQuads += count;
+            statLod += part.quads() - count;
+            statNanos += dt;
+            myQuads += count;
+            myNanos += dt;
+        }
     }
 
     private static final List<MeshModel> ALL = new ArrayList<>();
@@ -280,6 +285,7 @@ public final class MeshModel {
     static void onReload(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener((net.minecraft.server.packs.resources.ResourceManagerReloadListener) manager -> {
             synchronized (ALL) { for (MeshModel m : ALL) { synchronized (m) { m.tried = false; m.parts = null; m.partsReady = null; } m.closeCache(); } }
+            CopycatSkin.clearCache();
         });
     }
 
@@ -354,15 +360,25 @@ public final class MeshModel {
     public static volatile float lodMinPx2 = 0.5F;
     private static float pxK;
 
+    public boolean hasAny() { Map<String, List<Part>> p = load(); return p != null && !p.isEmpty(); }
+
+    private static float lastLodDet = Float.NaN, lastLodPxK = Float.NaN, lastLodInvSc2Px2;
+
     private static int lodCount(PoseStack.Pose pose, Part part) {
         if (lodMinPx2 <= 0 || !inLevel || part.bb() == null || pxK <= 0) return part.quads();
         float[] bb = part.bb();
-        Vector3f t = new Vector3f();
-        pose.pose().transformPosition((bb[0] + bb[3]) * 0.5F, (bb[1] + bb[4]) * 0.5F, (bb[2] + bb[5]) * 0.5F, t);
-        float dist2 = t.lengthSquared();
         Matrix4f m = pose.pose();
-        float sc = (float) Math.cbrt(Math.abs(m.determinant3x3()));
-        float thr = lodMinPx2 * dist2 / (sc * sc * pxK * pxK);
+        Vector3f t = TMP;
+        m.transformPosition((bb[0] + bb[3]) * 0.5F, (bb[1] + bb[4]) * 0.5F, (bb[2] + bb[5]) * 0.5F, t);
+        float dist2 = t.lengthSquared();
+        float det = Math.abs(m.determinant3x3());
+        if (det != lastLodDet || pxK != lastLodPxK) {
+            float sc = (float) Math.cbrt(det);
+            lastLodInvSc2Px2 = 1.0F / (sc * sc * pxK * pxK);
+            lastLodDet = det;
+            lastLodPxK = pxK;
+        }
+        float thr = lodMinPx2 * dist2 * lastLodInvSc2Px2;
         float[] area = part.area();
         if (area[area.length - 1] >= thr) return part.quads();
         int lo = 0, hi = area.length;
@@ -391,6 +407,7 @@ public final class MeshModel {
         } else if (event.getStage() == net.neoforged.neoforge.client.event.RenderLevelStageEvent.Stage.AFTER_LEVEL) {
             inLevel = false;
             frustum = null;
+            lastLodDet = Float.NaN;
         }
     }
 
@@ -398,7 +415,7 @@ public final class MeshModel {
         net.minecraft.client.renderer.culling.Frustum fr = frustum;
         if (fr == null || camPos == null) return true;
         Matrix4f m = pose.pose();
-        Vector3f t = new Vector3f();
+        Vector3f t = TMP;
         double x0 = Double.MAX_VALUE, y0 = Double.MAX_VALUE, z0 = Double.MAX_VALUE, x1 = -Double.MAX_VALUE, y1 = -Double.MAX_VALUE, z1 = -Double.MAX_VALUE;
         for (int i = 0; i < 8; i++) {
             m.transformPosition((i & 1) == 0 ? bb[0] : bb[3], (i & 2) == 0 ? bb[1] : bb[4], (i & 4) == 0 ? bb[2] : bb[5], t);

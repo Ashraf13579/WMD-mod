@@ -1,5 +1,9 @@
 package com.ashraf.wmd;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -91,7 +95,28 @@ public final class WmdUi {
 
     public static void deny() { ui(WmdSounds.UI_DENY.get(), 0.8F, SoundEvents.UI_BUTTON_CLICK.value(), 0.5F, 0.5F); }
 
-    public static void panel(GuiGraphics g, int x, int y, int w, int h) { g.blitSprite(PANEL, x, y, w, h); }
+    public static void panel(GuiGraphics g, int x, int y, int w, int h) {
+        slateOwnBackground();
+        g.blitSprite(PANEL, x, y, w, h);
+    }
+
+    private static MethodHandle slateOwn;
+    private static boolean slateLooked;
+
+    static void slateOwnBackground() {
+        if (!slateLooked) {
+            slateLooked = true;
+            if (net.neoforged.fml.ModList.get().isLoaded("slate")) {
+                try {
+                    slateOwn = MethodHandles.publicLookup().findStatic(Class.forName("dev.fallingcloud.slate.core.screen.reskin.ContainerReskin"),
+                            "ownBackground", MethodType.methodType(void.class));
+                } catch (Throwable t) { Wmd.LOGGER.info("[ui] Slate found but ContainerReskin.ownBackground() is not ({}); its container reskin may cover WMD screens", t.toString()); }
+            }
+        }
+        if (slateOwn != null) {
+            try { slateOwn.invokeExact(); } catch (Throwable t) { slateOwn = null; }
+        }
+    }
 
     public static void drawer(GuiGraphics g, int x, int y, int w, int h) { g.blitSprite(DRAWER, x, y, w, h); }
 

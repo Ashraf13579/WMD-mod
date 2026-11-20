@@ -77,6 +77,7 @@ final class SeaChart {
 
     static int[] area(ServerLevel sl, int x0, int z0, int cell, int w, int h, double cx, double cz) {
         int[] out = new int[w * h], raw = new int[w * h];
+        WorldMap.warm(sl, (int) Math.max(x0, cx - Balance.CHART_RANGE), (int) Math.max(z0, cz - Balance.CHART_RANGE), (int) Math.min(x0 + (long) w * cell, cx + Balance.CHART_RANGE), (int) Math.min(z0 + (long) h * cell, cz + Balance.CHART_RANGE));
         for (int j = 0; j < h; j++) for (int i = 0; i < w; i++) {
             int bx = x0 + i * cell + cell / 2, bz = z0 + j * cell + cell / 2;
             if (Math.abs(bx - cx) > Balance.CHART_RANGE || Math.abs(bz - cz) > Balance.CHART_RANGE) continue;

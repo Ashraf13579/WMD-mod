@@ -38,7 +38,7 @@ public class DesalterBlockEntity extends ProcessUnitBlockEntity {
         int n = Math.min(Math.min(Balance.DESALTER_MB_PER_TICK, crude.getFluidAmount()), desalted.getSpace());
         if (n <= 0) return false;
         dFrac += n * Balance.DESALTER_YIELD;
-        bFrac += n * (1.0 - Balance.DESALTER_YIELD);
+        bFrac += n * Balance.DESALTER_BRINE;
         int d = (int) dFrac, b = (int) bFrac;
         dFrac -= d;
         bFrac -= b;

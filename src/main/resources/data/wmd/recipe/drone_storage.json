@@ -4,7 +4,7 @@
   "pattern": [
     "III",
     "CHC",
-    "SSS"
+    "AAA"
   ],
   "key": {
     "I": {
@@ -14,10 +14,10 @@
       "item": "wmd:machine_casing"
     },
     "H": {
-      "item": "minecraft:chest"
+      "tag": "c:chests/wooden"
     },
-    "S": {
-      "tag": "c:ingots/steel"
+    "A": {
+      "item": "wmd:aluminium_plate"
     }
   },
   "result": {

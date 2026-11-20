@@ -114,7 +114,7 @@ public class BatteryTierBlockEntity extends ProcessUnitBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.battery_tier", tier, String.format("%,d", cap()), String.format("%,d", Balance.BAT_IO[tier] * 20)),
+        return List.of(Component.translatable("gui.wmd.info.battery_tier", tier, String.format("%,d", cap()), String.format("%,d", Balance.BAT_IO[tier])),
                 Component.translatable(tier == 1 ? "gui.wmd.info.battery_t1_row" : "gui.wmd.info.battery_alone", Balance.BAT_T1_ROW));
     }
 

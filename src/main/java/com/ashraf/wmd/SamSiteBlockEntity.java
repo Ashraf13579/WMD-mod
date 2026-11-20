@@ -403,7 +403,7 @@ public class SamSiteBlockEntity extends ItemProcessBlockEntity implements Owned,
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.sam", String.format("%,d", (int) Balance.SAM_RANGE), Balance.SAM_SHOT_FE / 1000, Balance.SAM_FE * 20),
+        return List.of(Component.translatable("gui.wmd.info.sam", String.format("%,d", (int) Balance.SAM_RANGE), Balance.SAM_SHOT_FE / 1000, Balance.SAM_FE),
                 Component.translatable("gui.wmd.info.sam_rounds"));
     }
 

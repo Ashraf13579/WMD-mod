@@ -142,7 +142,7 @@ public final class MachineHints {
         int st = menu.status();
         String block = m instanceof BlockEntity be ? BuiltInRegistries.BLOCK.getKey(be.getBlockState().getBlock()).getPath() : "";
         if (GuiMachine.lowPower(st) && m.guiFeUse() > 0)
-            return new Hint(Component.translatable("gui.wmd.hint.low_power", GuiMachine.lowPowerPct(st), String.format("%,d", m.guiFeUse() * 20)), how("power"));
+            return new Hint(Component.translatable("gui.wmd.hint.low_power", GuiMachine.lowPowerPct(st), String.format("%,d", m.guiFeUse())), how("power"));
         if ((st == NO_INPUT || st == IDLE) && block.equals("magnesium_cell")) {
             int mg = menu.tankAmount(0);
             if (mg > 0 && mg < Balance.MGCELL_MGCL_MB)
@@ -151,7 +151,7 @@ public final class MachineHints {
         switch (st) {
             case RUNNING: return null;
             case NO_POWER:
-                return m.guiFeUse() > 0 ? new Hint(Component.translatable("gui.wmd.hint.power", String.format("%,d", m.guiFeUse() * 20)), how("power")) : null;
+                return m.guiFeUse() > 0 ? new Hint(Component.translatable("gui.wmd.hint.power", String.format("%,d", m.guiFeUse())), how("power")) : null;
             case OUT_FULL: return new Hint(null, how("output_full"));
             case NO_ELECTRODE: return new Hint(null, how("electrode"));
             case NO_IMPELLER: return new Hint(null, how("impeller"));

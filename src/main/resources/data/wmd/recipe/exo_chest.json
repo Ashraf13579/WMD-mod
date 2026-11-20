@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:exo_chest"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "ACA",
+    "SPS",
+    "AXA"
+  ],
+  "key": {
+    "A": {
+      "item": "wmd:armour_plate"
+    },
+    "C": {
+      "item": "wmd:chip_space_2"
+    },
+    "S": {
+      "item": "wmd:superconducting_coil"
+    },
+    "P": {
+      "item": "wmd:power_core"
+    },
+    "X": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:exo_chest",
+    "count": 1
+  }
+}

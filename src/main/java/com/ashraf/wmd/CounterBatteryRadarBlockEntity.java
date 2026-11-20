@@ -311,7 +311,7 @@ public class CounterBatteryRadarBlockEntity extends ProcessUnitBlockEntity imple
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.CBR_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.CBR_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.cbr", String.format("%,d", Balance.CBR_RANGE)));
     }
 

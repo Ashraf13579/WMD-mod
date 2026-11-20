@@ -29,6 +29,9 @@ public class MissilePartItem extends Item {
     public static final String JET = "jet";
     public boolean isJet() { return slot == 1 && JET.equals(variant); }
 
+    public static final String RAMJET = "ramjet", HEAVY = "heavy";
+    public boolean isAirMotor() { return slot == 1 && (RAMJET.equals(variant) || HEAVY.equals(variant)); }
+
     public int tier() { return tier; }
 
     public String variant() { return variant; }

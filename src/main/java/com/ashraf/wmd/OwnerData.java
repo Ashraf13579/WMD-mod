@@ -17,6 +17,8 @@ public final class OwnerData {
 
     public void claim(Player p) { id = p.getUUID(); name = p.getGameProfile().getName(); }
 
+    public void set(UUID owner, String ownerName) { id = owner; name = ownerName == null ? "" : ownerName; }
+
     public void write(CompoundTag tag) {
         if (id != null) tag.putUUID("owner", id);
         tag.putString("ownerName", name);

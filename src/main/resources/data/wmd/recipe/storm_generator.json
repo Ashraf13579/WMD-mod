@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:storm_generator"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SXS",
+    "CTC",
+    "MBM"
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:superconducting_coil"
+    },
+    "X": {
+      "item": "wmd:chip_defence_2"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "T": {
+      "item": "wmd:tesla_tower"
+    },
+    "M": {
+      "item": "wmd:tungsten_alloy_casing"
+    },
+    "B": {
+      "item": "wmd:busbar"
+    }
+  },
+  "result": {
+    "id": "wmd:storm_generator",
+    "count": 1
+  }
+}

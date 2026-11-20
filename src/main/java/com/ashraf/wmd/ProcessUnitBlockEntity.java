@@ -29,7 +29,7 @@ import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-public abstract class ProcessUnitBlockEntity extends BlockEntity implements GeoBlockEntity, MachinePorts, GuiMachine, EmpVulnerable {
+public abstract class ProcessUnitBlockEntity extends BlockEntity implements GeoBlockEntity, MachinePorts, GuiMachine, EmpVulnerable, Owned {
 
     private static class Buffer extends EnergyStorage {
         Buffer(int capacity, int maxReceive) { super(capacity, maxReceive, 0); }
@@ -51,6 +51,7 @@ public abstract class ProcessUnitBlockEntity extends BlockEntity implements GeoB
     private int syncedLevelQ = -1;
     private float levelTarget, levelShown;
     Object soundHandle;
+    Object overlayHandle;
     private int clientAge;
     int clientAge() { return clientAge; }
     private boolean wasRunning;
@@ -73,6 +74,8 @@ public abstract class ProcessUnitBlockEntity extends BlockEntity implements GeoB
 
     protected void idle() {}
 
+    protected void jammed(net.minecraft.server.level.ServerLevel level) {}
+
     protected abstract List<FluidTank> tanks();
 
     protected abstract SoundEvent runSound();
@@ -82,6 +85,10 @@ public abstract class ProcessUnitBlockEntity extends BlockEntity implements GeoB
     protected boolean cabinSound() { return false; }
 
     protected float soundPitch() { return 1.0F; }
+
+    protected SoundEvent overlaySound() { return null; }
+    protected float overlayVolume() { return 0.0F; }
+    protected float overlayPitch() { return 1.0F; }
 
     protected boolean soundAlive() { return running; }
 
@@ -176,7 +183,7 @@ public abstract class ProcessUnitBlockEntity extends BlockEntity implements GeoB
     }
     @Override public boolean guiRunning() { return running; }
     @Override public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", fePerTick * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", fePerTick),
                 Component.translatable("gui.wmd.info.rate", rateMbPerTick() * 20));
     }
     public boolean hasPower() { return store.getEnergyStored() >= feCost(); }
@@ -333,8 +340,12 @@ public abstract class ProcessUnitBlockEntity extends BlockEntity implements GeoB
 
     protected static String mb(FluidTank t) { return t.getFluidAmount() + " / " + t.getCapacity() + " mB"; }
 
+    private boolean healed;
+
     public static void serverTick(Level level, BlockPos pos, BlockState state, ProcessUnitBlockEntity be) {
+        if (!be.healed) { be.healed = true; if (state.getBlock() instanceof CoalGeneratorBlock cg) ModelFootprint.heal(level, pos, state, cg.cells(), 4, "coal generator"); }
         if (level instanceof net.minecraft.server.level.ServerLevel empSl && EmpField.jammed(empSl, pos)) {
+            be.jammed(empSl);
             if (be.running) {
                 be.running = false;
                 be.setChanged();
@@ -416,6 +427,17 @@ public abstract class ProcessUnitBlockEntity extends BlockEntity implements GeoB
 
     public float spinAngle(float partialTick) { return spin + spinSpeed * partialTick; }
 
+    private final OwnerData baseOwner = new OwnerData();
+
+    @Override public java.util.UUID getOwner() { return baseOwner.id(); }
+    @Override public String getOwnerName() { return baseOwner.name(); }
+    @Override public void claim(net.minecraft.world.entity.player.Player player) { if (ownable()) { baseOwner.claim(player); setChanged(); } }
+    @Override public SecurityData security() { return baseOwner.security(); }
+
+    public boolean ownable() { return true; }
+
+    private boolean baseOwned() { return security() == baseOwner.security(); }
+
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
@@ -424,6 +446,7 @@ public abstract class ProcessUnitBlockEntity extends BlockEntity implements GeoB
         tag.putInt("energy", store.getEnergyStored());
         tag.putBoolean("running", running);
         for (int i = 0; i < UPGRADE_SLOTS; i++) if (!upgrades[i].isEmpty()) tag.put("upg" + i, upgrades[i].save(registries));
+        if (baseOwned() && baseOwner.id() != null) baseOwner.write(tag);
     }
 
     @Override
@@ -437,6 +460,7 @@ public abstract class ProcessUnitBlockEntity extends BlockEntity implements GeoB
             for (int i = 0; i < UPGRADE_SLOTS; i++) upgrades[i] = net.minecraft.world.item.ItemStack.parseOptional(registries, tag.getCompound("upg" + i));
             applyBuffer();
         }
+        if (baseOwned() && tag.hasUUID("owner")) baseOwner.read(tag);
         if (tag.contains("muf")) mufflerShown = tag.getInt("muf");
         flowTarget = tag.getInt("flowq") / 20.0F;
         levelTarget = tag.getInt("levelq") / 32.0F;

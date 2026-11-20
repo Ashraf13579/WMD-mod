@@ -208,7 +208,7 @@ public class SatelliteFacilityBlockEntity extends ItemProcessBlockEntity impleme
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.SATFAC_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.SATFAC_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.satellite_facility", Balance.SATFAC_TICKS / 20),
                 Component.translatable("gui.wmd.info.items_hint"));
     }

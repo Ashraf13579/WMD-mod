@@ -30,7 +30,7 @@ public final class Collapse {
     private Collapse() {}
 
     private record Job(ServerLevel level, Crater crater, int cx, int cy, int cz, int minY, long at, double outer, List<Long> chunks, int[] cursor, int[] fallen, int[] bodies, Set<Long> weighed,
-                       long[] ns, ArrayDeque<Long> crumble, double topple, double[] dust) {}
+                       long[] ns, ArrayDeque<Long> crumble, double topple, double[] dust, java.util.UUID owner) {}
 
     private static final List<Job> JOBS = Statics.server(new ArrayList<>());
 
@@ -39,15 +39,17 @@ public final class Collapse {
     static void queue(ServerLevel level, Crater crater, DamageRings.Profile p) {
         if (!Config.Server.collapse() || crater.radius < 1.5) return;
         double outer = Math.min(Math.max(1.5, Math.max(p.rubble(), Math.max(p.burn(), p.strip()))) * crater.radius, Balance.COLLAPSE_MAX_R);
-        add(level, crater, crater.cx, crater.cy, crater.cz, crater.cy - (int) Math.ceil(crater.depth) - Balance.COLLAPSE_BELOW, 0L, outer);
+        add(level, crater, crater.owner(), crater.cx, crater.cy, crater.cz, crater.cy - (int) Math.ceil(crater.depth) - Balance.COLLAPSE_BELOW, 0L, outer);
     }
 
-    static void queueAt(ServerLevel level, BlockPos at, double outer) {
+    static void queueAt(ServerLevel level, BlockPos at, double outer) { queueAt(level, at, outer, ShipStrike.shooter()); }
+
+    static void queueAt(ServerLevel level, BlockPos at, double outer, java.util.UUID owner) {
         if (!Config.Server.collapse()) return;
-        add(level, null, at.getX(), at.getY(), at.getZ(), at.getY() - Balance.C4_DEPTH - Balance.COLLAPSE_BELOW, level.getGameTime() + Balance.C4_COLLAPSE_DELAY, outer);
+        add(level, null, owner, at.getX(), at.getY(), at.getZ(), at.getY() - Balance.C4_DEPTH - Balance.COLLAPSE_BELOW, level.getGameTime() + Balance.C4_COLLAPSE_DELAY, outer);
     }
 
-    private static void add(ServerLevel level, Crater crater, int x, int y, int z, int minY, long at, double outer) {
+    private static void add(ServerLevel level, Crater crater, java.util.UUID owner, int x, int y, int z, int minY, long at, double outer) {
         int r = (int) Math.ceil(outer) + 1;
         List<Long> chunks = new ArrayList<>();
         for (int cx = (x - r) >> 4; cx <= (x + r) >> 4; cx++)
@@ -57,7 +59,7 @@ public final class Collapse {
             return dx * dx + dz * dz;
         }));
         JOBS.add(new Job(level, crater, x, y, z, minY, at, outer, chunks, new int[1], new int[1], new int[1], new HashSet<>(), new long[2], new ArrayDeque<>(),
-                level.random.nextDouble() * Math.PI * 2.0, new double[] { Double.MAX_VALUE, -Double.MAX_VALUE, Double.MAX_VALUE, -Double.MAX_VALUE, 0, 0, 0 }));
+                level.random.nextDouble() * Math.PI * 2.0, new double[] { Double.MAX_VALUE, -Double.MAX_VALUE, Double.MAX_VALUE, -Double.MAX_VALUE, 0, 0, 0 }, owner));
         LAST.add(new Reach(level.getGameTime(), x, z, outer));
         if (LAST.size() > 8) LAST.remove(0);
         ImpactProfiler.watchAny(crater == null ? "c4 collapse" : "collapse r" + (int) crater.radius);
@@ -77,18 +79,21 @@ public final class Collapse {
                 Job j = it.next();
                 if (j.level != sl || sl.getGameTime() < j.at || j.crater != null && (!j.crater.isDone() || DamageRings.busy(j.crater))) continue;
                 int done = 0;
-                while (j.cursor[0] < j.chunks.size() && (done == 0 || WorkBudget.more(t0))) {
-                    long c = j.chunks.get(j.cursor[0]++);
-                    int cx = ChunkPos.getX(c), cz = ChunkPos.getZ(c);
-                    if (!sl.hasChunk(cx, cz)) continue;
-                    long c0 = System.nanoTime();
-                    if (chunk(sl, j, cx, cz)) TargetSnapshot.changed(sl, cx, cz);
-                    long dt = System.nanoTime() - c0;
-                    j.ns[0] += dt;
-                    j.ns[1] = Math.max(j.ns[1], dt);
-                    done++;
-                }
-                if (!j.crumble.isEmpty()) crumble(sl, j, t0);
+                java.util.UUID prevShooter = ShipStrike.begin(j.owner);
+                try {
+                    while (j.cursor[0] < j.chunks.size() && (done == 0 || WorkBudget.more(t0))) {
+                        long c = j.chunks.get(j.cursor[0]++);
+                        int cx = ChunkPos.getX(c), cz = ChunkPos.getZ(c);
+                        if (!sl.hasChunk(cx, cz)) continue;
+                        long c0 = System.nanoTime();
+                        if (chunk(sl, j, cx, cz)) TargetSnapshot.changed(sl, cx, cz);
+                        long dt = System.nanoTime() - c0;
+                        j.ns[0] += dt;
+                        j.ns[1] = Math.max(j.ns[1], dt);
+                        done++;
+                    }
+                    if (!j.crumble.isEmpty()) crumble(sl, j, t0);
+                } finally { ShipStrike.end(prevShooter); }
                 if (j.cursor[0] >= j.chunks.size() && j.crumble.isEmpty()) {
                     dust(sl, j);
                     it.remove();
@@ -109,7 +114,7 @@ public final class Collapse {
             BlockState s = level.getBlockState(p);
             if (s.isAir() || !BlockRules.blastRemovable(level, p, s)) continue;
             if ((n++ & 15) == 0) level.levelEvent(2001, p, net.minecraft.world.level.block.Block.getId(s));
-            level.setBlock(p, Blocks.AIR.defaultBlockState(), QUIET);
+            BlastWrites.set(level, p, Blocks.AIR.defaultBlockState(), QUIET);
             j.fallen[0]++;
             changed.add(ChunkPos.asLong(p.getX() >> 4, p.getZ() >> 4));
             double[] d = j.dust;
@@ -199,6 +204,8 @@ public final class Collapse {
                 if (s.isAir()) continue;
                 if (j.fallen[0] < LoadGuard.scale(Balance.COLLAPSE_MAX_FALLING, 0.25) && s.isCollisionShapeFullBlock(level, p)) {
                     FallingBlockEntity fb = FallingBlockEntity.fall(level, p, s);
+                    BlastWrites.fell(level, p, s);
+                    if (RollbackLog.willLog(level, p)) fb.disableDrop();
                     fb.dropItem = false;
                     j.fallen[0]++;
                 } else {
@@ -263,7 +270,7 @@ public final class Collapse {
         for (BlockPos p : cut) {
             if (!BlockRules.blastRemovable(level, p, level.getBlockState(p))) continue;
             if (puffs++ < 48) level.levelEvent(2001, p, net.minecraft.world.level.block.Block.getId(level.getBlockState(p)));
-            level.setBlock(p, Blocks.AIR.defaultBlockState(), QUIET);
+            BlastWrites.set(level, p, Blocks.AIR.defaultBlockState(), QUIET);
         }
         return free;
     }

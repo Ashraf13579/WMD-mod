@@ -349,6 +349,7 @@ public final class StationLaser {
                     Vec3 at = f.position(ground.getGameTime());
                     to = from.add(s.dir.normalize().scale(60.0));
                     FlightManager.get(ground).kill(ground, f);
+                    WarScore.intercept(ground, owner, f);
                     PacketDistributor.sendToPlayersNear(ground, null, at.x, at.y, at.z, 1_024.0, new LaserPayloads.Ground(at.x, at.y, at.z, ground.getGameTime()));
                     if (op != null) op.sendSystemMessage(Component.translatable("message.wmd.laser.hit_missile", (int) at.x, (int) at.z).withStyle(ChatFormatting.GREEN));
                     if (owner != null) CcBattleLog.add(server, owner, CcBattleLog.INTERCEPT, "log.wmd.laser.hit_missile", Integer.toString((int) at.x), Integer.toString((int) at.z));

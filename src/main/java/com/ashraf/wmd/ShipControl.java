@@ -88,6 +88,7 @@ public final class ShipControl {
     }
 
     public static Order newest(ServerLevel level, UUID ship) {
+        if (EmpBlackout.out(level, ship)) return null;
         Map<UUID, Map<BlockPos, Order>> m = ORDERS.get(level);
         Map<BlockPos, Order> s = m == null || ship == null ? null : m.get(ship);
         if (s == null) return null;

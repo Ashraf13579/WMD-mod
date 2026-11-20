@@ -200,6 +200,26 @@ public class RfLinkBlockEntity extends ProcessUnitBlockEntity implements Owned, 
         return got > 0;
     }
 
+    static int pullBuiltIn(ServerLevel sl, Owned to, Vec3 at, int channel, int want, long now) {
+        if (!AirGate.on() || channel <= 0 || want <= 0) return 0;
+        Map<Integer, Set<Long>> m = SENDERS.get(sl.dimension());
+        Set<Long> set = m == null ? null : m.get(channel);
+        if (set == null) return 0;
+        double range2 = (double) Balance.RF_RANGE * Balance.RF_RANGE;
+        int got = 0;
+        for (Long p : new ArrayList<>(set)) {
+            if (want - got <= 0) break;
+            BlockPos sp = BlockPos.of(p);
+            if (!sl.isLoaded(sp) || !(sl.getBlockEntity(sp) instanceof RfLinkBlockEntity s) || s.isRemoved() || !s.sender || s.channel != channel) continue;
+            if (!Access.joins(s, to) || s.jammed(sl, now)) continue;
+            if (s.headWorld().distanceToSqr(at) > range2) continue;
+            int raw = (int) Math.min(Integer.MAX_VALUE, ((long) (want - got) * 100 + Balance.RF_EFFICIENCY - 1) / Balance.RF_EFFICIENCY);
+            int sent = s.beam(raw, now, at);
+            if (sent > 0) got += (int) ((long) sent * Balance.RF_EFFICIENCY / 100);
+        }
+        return Math.min(got, want);
+    }
+
     private void finishTick(long now) {
         boolean link = state == 1 && now - lastLink <= Balance.RF_LINK_HOLD;
         if (++rateTicks >= 20) { rateTicks = 0; int r = rateAcc / 20; rateAcc = 0; if (r != cRate) { cRate = r; dirty = true; } }
@@ -253,8 +273,8 @@ public class RfLinkBlockEntity extends ProcessUnitBlockEntity implements Owned, 
         String ch = channel > 0 ? String.format("%04d", channel) : "----";
         List<Component> l = new ArrayList<>();
         l.add(Component.translatable(sender ? "gui.wmd.info.rf_sender" : "gui.wmd.info.rf_receiver", ch,
-                String.format("%,d", (sender ? Balance.RF_SEND_FE : Balance.RF_OUT_FE) * 20)));
-        l.add(Component.translatable(sender ? "gui.wmd.info.rf_now_sender" : "gui.wmd.info.rf_now_receiver", cPartners, String.format("%,d", cRate * 20)));
+                String.format("%,d", (sender ? Balance.RF_SEND_FE : Balance.RF_OUT_FE))));
+        l.add(Component.translatable(sender ? "gui.wmd.info.rf_now_sender" : "gui.wmd.info.rf_now_receiver", cPartners, String.format("%,d", cRate)));
         l.add(Component.translatable("gui.wmd.info.rf_rule", Balance.RF_EFFICIENCY, String.format("%,d", Balance.RF_RANGE)));
         return l;
     }

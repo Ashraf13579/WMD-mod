@@ -364,9 +364,13 @@ public class NuclearReactorBlockEntity extends ItemProcessBlockEntity implements
             sl.playSound(null, b[0], b[1], b[2], WmdSounds.NR_ALARM.get(), SoundSource.BLOCKS, Balance.SND_ALARM, st >= STEAM ? 1.15F : 1.0F);
         if (st >= STEAM && now % 40 == 0)
             sl.playSound(null, b[0], b[1], b[2], WmdSounds.NR_STEAM.get(), SoundSource.BLOCKS, Balance.SND_RELEASE, 0.9F + sl.random.nextFloat() * 0.2F);
-        if (st >= IMMINENT && now % 60 == 0)
+        if (st >= IMMINENT && (now - sirenAt >= Balance.SIREN_TICKS || now < sirenAt)) {
+            sirenAt = now;
             sl.playSound(null, b[0], b[1], b[2], WmdSounds.SIREN.get(), SoundSource.BLOCKS, Balance.SND_ALARM, 1.0F);
+        }
     }
+
+    private long sirenAt = Long.MIN_VALUE / 2;
 
     private void overheat(ServerLevel sl) {
         if (Config.reactorMeltdown()) {
@@ -400,7 +404,8 @@ public class NuclearReactorBlockEntity extends ItemProcessBlockEntity implements
         FlightManager mgr = FlightManager.get(sl);
         int tier = Balance.REACTOR_MELTDOWN_TIER;
         mgr.holdForTest(sl, gx, gz, WarheadFx.holdRadius(tier, WarheadType.NUKE));
-        Forcefield.inside(() -> WarheadFx.detonate(sl, mgr, gx, gy, gz, tier, WarheadType.NUKE, 0.0, 1.0));
+        java.util.UUID prevShooter = ShipStrike.begin(getOwner());
+        try { WarTreaty.accident(() -> Forcefield.inside(() -> WarheadFx.detonate(sl, mgr, gx, gy, gz, tier, WarheadType.NUKE, 0.0, 1.0))); } finally { ShipStrike.end(prevShooter); }
     }
 
     private void tell(ServerLevel sl, int r, Component msg) {
@@ -541,7 +546,7 @@ public class NuclearReactorBlockEntity extends ItemProcessBlockEntity implements
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.reactor_steam", Balance.REACTOR_STEAM_MB, Balance.REACTOR_PUMP_FE_PER_TICK * 20, Balance.REACTOR_FUEL_TICKS / 1200),
+        return List.of(Component.translatable("gui.wmd.info.reactor_steam", Balance.REACTOR_STEAM_MB, Balance.REACTOR_PUMP_FE_PER_TICK, Balance.REACTOR_FUEL_TICKS / 1200),
                 Component.translatable("gui.wmd.info.reactor_loop"));
     }
 

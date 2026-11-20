@@ -57,6 +57,7 @@ public final class NoiseNet {
             Source s = it.next();
             if (s.until() < now) { it.remove(); continue; }
             if (s.key() == ownKey || (ownShip != null && ownShip.equals(s.ship()))) continue;
+            if (s.ship() != null && Cloak.hidden(level, s.ship())) continue;
             double d2 = s.pos().distanceToSqr(ear);
             if (d2 > r2) continue;
             double d = Math.sqrt(d2), lv = received(s.db(), d);

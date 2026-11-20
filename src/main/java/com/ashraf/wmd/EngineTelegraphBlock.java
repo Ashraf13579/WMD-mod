@@ -44,6 +44,7 @@ public class EngineTelegraphBlock extends UnitBlock {
     @Override
     public void interact(Level level, BlockPos controller, Player player, BlockHitResult hit) {
         if (!(level.getBlockEntity(controller) instanceof EngineTelegraphBlockEntity be)) return;
+        if (!gate(level, controller, player, be)) return;
         BlockState st = level.getBlockState(controller);
         Direction facing = st.getValue(FACING);
         BlockPos local = Machines.toLocal(controller, facing, hit.getBlockPos());

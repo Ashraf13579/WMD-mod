@@ -7,7 +7,7 @@
   ],
   "key": {
     "A": {
-      "item": "wmd:aluminium_ingot"
+      "tag": "c:ingots/aluminum"
     },
     "S": {
       "tag": "c:ingots/steel"

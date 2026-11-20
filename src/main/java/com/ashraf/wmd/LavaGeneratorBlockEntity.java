@@ -116,9 +116,9 @@ public class LavaGeneratorBlockEntity extends ProcessUnitBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.lava_now", fePerTickNow * 20),
-                Component.translatable("gui.wmd.info.lava_piped", Balance.LG_FE_PIPED * 20, 1000 / Balance.LG_MB_PER_TICK / 20),
-                Component.translatable("gui.wmd.info.lava_passive", Balance.LG_FE_PER_SOURCE * 20, Balance.LG_FE_PASSIVE_MAX * 20, sources));
+        return List.of(Component.translatable("gui.wmd.info.lava_now", fePerTickNow),
+                Component.translatable("gui.wmd.info.lava_piped", Balance.LG_FE_PIPED, 1000 / Balance.LG_MB_PER_TICK / 20),
+                Component.translatable("gui.wmd.info.lava_passive", Balance.LG_FE_PER_SOURCE, Balance.LG_FE_PASSIVE_MAX, sources));
     }
 
     @Override protected SoundEvent runSound() { return SoundEvents.LAVA_AMBIENT; }

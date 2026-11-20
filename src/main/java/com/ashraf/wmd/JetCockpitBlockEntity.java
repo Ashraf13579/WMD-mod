@@ -33,6 +33,10 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
     public static final int B_TAKE = 1 << 20;
 
     public static final int B_REVERSE = 1 << 22;
+
+    public static final int B_CLOAK = 1 << 23;
+
+    public static final int B_SHIELD = 1 << 24;
     @Override public CompoundTag loadoutTag() { return loadout; }
     @Override public void setLoadoutTag(CompoundTag t) { loadout = t == null ? new CompoundTag() : t; setChanged(); }
 
@@ -40,7 +44,7 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
     public static final int TINT_SMOKE = 0, TINT_CLEAR = 1, TINT_GOLD = 2;
 
     public static final int B_FIRE = 1, B_FLARES = 2, B_RADAR = 4, B_LOCK = 8, B_EJECT = 16, B_LEAVE = 32, B_JAM = 64, B_CHECK = 128,
-            B_GEAR = 256, B_DESIG = 512, B_AGMMODE = 1024, B_HOVER = 2048, B_CHUTE = 4096, B_HOOK = 8192, B_HOOK_REL = 16384, B_REFUEL = 32768, B_JETTISON = 65536, B_STORES = 131072, B_RAMP = 262144, B_RAMP_DROP = 524288, B_TAILHOOK = 1048576, B_SLEW = 2097152;
+            B_GEAR = 256, B_DESIG = 512, B_AGMMODE = 1024, B_HOVER = 2048, B_CHUTE = 4096, B_HOOK = 8192, B_HOOK_REL = 16384, B_REFUEL = 32768, B_JETTISON = 65536, B_STORES = 131072, B_RAMP = 262144, B_RAMP_DROP = 524288, B_TAILHOOK = 1 << 25, B_SLEW = 2097152;
 
     static final double SEAT_X = 0.0, SEAT_Y = 6.2 / 16.0, SEAT_Z0 = 5.4 / 16.0, SEAT_DZ = 2.0;
     static final float STICK_DEG = 12.0F, THROTTLE_PX = 6.0F, AB_PX = 7.2F, CANOPY_DEG = 34.0F;
@@ -90,6 +94,8 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
         return out;
     }
     private UUID ship, lockId;
+
+    private UUID dlId;
 
     private boolean sea;
     private boolean avionics, sentAvionics;
@@ -150,6 +156,20 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
     private ServerPlayer occupant(ServerLevel sl, int i) {
         CockpitSeatEntity s = seat(sl, i);
         return s != null && s.getFirstPassenger() instanceof ServerPlayer p ? p : null;
+    }
+
+    boolean seatedHere(ServerPlayer p) {
+        if (!(getLevel() instanceof ServerLevel sl) || p == null) return false;
+        for (int i = 0; i < seats(); i++) if (occupant(sl, i) == p) return true;
+        return false;
+    }
+
+    private DeckConsoleBlockEntity deckView;
+
+    DeckConsoleBlockEntity deckView(ServerPlayer p) {
+        if (!(getLevel() instanceof ServerLevel sl) || ship == null || !AirGate.on()) return null;
+        deckView = DeckConsoleBlockEntity.remote(sl, ship, p, worldPosition, deckView);
+        return deckView;
     }
 
     void sit(ServerPlayer p) {
@@ -288,12 +308,25 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
         if ((buttons & B_FIRE) != 0) fireStation(sl, p);
         if ((buttons & B_FLARES) != 0) flares(sl, p);
         if ((buttons & B_JAM) != 0) jammer(sl, p);
+        if ((buttons & B_CLOAK) != 0) cloak(sl, p);
+        if ((buttons & B_SHIELD) != 0) shield(sl, p);
+    }
+
+    private void shield(ServerLevel sl, ServerPlayer p) {
+        if (!AirGate.on()) return;
+        int[] r = CraftShield.toggleAll(sl, ship);
+        int floor = (int) Math.round(Balance.CSH_FLOOR * 100);
+        p.displayClientMessage(r[0] < 0 ? Component.translatable("message.wmd.cockpit.no_shield")
+                : r[0] == 0 ? Component.translatable("message.wmd.cockpit.shield_off")
+                : r[1] < floor ? Component.translatable("message.wmd.cockpit.shield_low", r[1], floor)
+                : Component.translatable("message.wmd.cockpit.shield_on", Balance.CSH_RISE_TICKS / 20, r[1]), true);
+        if (r[0] >= 0) click(sl, r[0] == 1 ? 1.3F : 0.9F);
     }
 
     private void fireStation(ServerLevel sl, ServerPlayer p) {
         if (!AirGate.on()) return;
         if (!avionics) { p.displayClientMessage(Component.translatable("message.wmd.cockpit.avionics_needed"), true); return; }
-        String grp = station < LoadoutPlan.GROUPS ? FiringGroups.fire(sl, this, ship, loadout, station, lockId, lockId == null ? null : new CockpitLock(this)) : null;
+        String grp = station < LoadoutPlan.GROUPS ? FiringGroups.fire(sl, this, ship, loadout, station, target(), lockId == null ? null : new CockpitLock(this)) : null;
         if (grp != null) { p.displayClientMessage(Component.translatable(grp, station + 1), true); return; }
         List<Object> wl = weaponList(sl);
         if (wl.isEmpty()) { p.displayClientMessage(Component.translatable("message.wmd.cockpit.no_stations"), true); return; }
@@ -310,7 +343,7 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
             s = rk.get(Math.floorMod(rktTurn++, rk.size()));
         } else s = (AirStations.Station) e;
         AirMissiles.LockSource lock = lockId == null ? null : new CockpitLock(this);
-        String why = s.fire(sl, lockId, lock);
+        String why = s.fire(sl, target(), lock);
         p.displayClientMessage(why == null ? Component.translatable("message.wmd.cockpit.station_fired", station + 1)
                 : Component.translatable("message.wmd.cockpit.station_refused", station + 1, why), true);
     }
@@ -319,6 +352,14 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
         if (!AirGate.on()) return;
         int r = JammerPodBlockEntity.toggleAll(sl, ship);
         p.displayClientMessage(Component.translatable(r < 0 ? "message.wmd.cockpit.no_jammer" : r == 1 ? "message.wmd.cockpit.jam_on" : "message.wmd.cockpit.jam_off"), true);
+        if (r >= 0) click(sl, r == 1 ? 1.3F : 0.9F);
+    }
+
+    private void cloak(ServerLevel sl, ServerPlayer p) {
+        if (!AirGate.on()) return;
+        int r = ActiveCloakBlockEntity.toggleAll(sl, ship);
+        p.displayClientMessage(Component.translatable(r < 0 ? "message.wmd.cockpit.no_cloak" : r == 1 ? "message.wmd.cockpit.cloak_on" : "message.wmd.cockpit.cloak_off",
+                String.format(java.util.Locale.ROOT, "%.1f", Balance.CLOAK_ENGAGE_TICKS / 20.0)), true);
         if (r >= 0) click(sl, r == 1 ? 1.3F : 0.9F);
     }
 
@@ -361,7 +402,7 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
             TowBar.pilotTook(sl, ship, "message.wmd.tow.pilot");
             if (throttle < 0.05F && !ab && LandingGearBlockEntity.onWheels(sl, ship)) LandingGearBlockEntity.reverse(sl, ship, 6, axesPlot()[0]);
         }
-        if (ship != null) FiringGroups.tick(sl, this, ship, lockId, lockId == null ? null : new CockpitLock(this));
+        if (ship != null) FiringGroups.tick(sl, this, ship, target(), lockId == null ? null : new CockpitLock(this));
         if (brakeHeld && ship != null && AirGate.on() && now % 4 == 0) LandingGearBlockEntity.brakes(sl, ship, 6);
 
         if (gun && ship != null && AirGate.on() && now % Balance.COCKPIT_GUN_RETRIGGER == 0) GunPodBlockEntity.triggerAll(sl, ship, Balance.COCKPIT_GUN_HOLD);
@@ -381,6 +422,7 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
         pitch = np; roll = nr; yaw = ny;
         ship = SableBridge.shipIdAt(sl, worldPosition);
         if (ship != null) AirCrash.tick(sl, ship);
+        if (ship != null && AirGate.on()) JetBoom.tick(sl, ship, now);
         if (ship != null && (manned[0] || ap.flying() || now % Balance.PROP_BEAT == 0)) publish(sl);
         if (ship != null && AirGate.on()) {
             if ((now + (worldPosition.asLong() & 63)) % Balance.NAV_SCAN == 0 || (nav == null && now % 20 == 0)) {
@@ -391,8 +433,8 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
             }
         }
 
-        boolean av = (any || ap.on()) && !ejected && ship != null && ShipPower.draw(sl, ship, Balance.COCKPIT_FE)
-                && (!deck() || ShipPower.draw(sl, ship, Balance.FDK_FE - Balance.COCKPIT_FE));
+        boolean av = (any || ap.on()) && !ejected && ship != null && ShipPower.draw(this, sl, ship, Balance.COCKPIT_FE)
+                && (!deck() || ShipPower.draw(this, sl, ship, Balance.FDK_FE - Balance.COCKPIT_FE));
         if (av != avionics) { avionics = av; if (!av) lockId = null; }
         if (now % Balance.COCKPIT_RADAR_TICKS == 0) radar(sl, now);
         if (any && now % Balance.COCKPIT_HUD_TICKS == 0) hud(sl);
@@ -550,6 +592,20 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
     private Vec3 nose() { double[] a = worldPoint(SEAT_X, 1.0, 0.0), b = worldPoint(SEAT_X, 1.0, 1.0); return new Vec3(b[0] - a[0], b[1] - a[1], b[2] - a[2]).normalize(); }
     private Vec3 eye() { double[] a = worldPoint(SEAT_X, 1.4, SEAT_Z0); return new Vec3(a[0], a[1], a[2]); }
 
+    private Vec3 armCue(ServerLevel sl, Vec3 from, Vec3 dir) {
+        long now = sl.getGameTime();
+        if (now - armCueAt >= ARM_CUE_TICKS || now < armCueAt) {
+            armCueAt = now;
+            BlockPos e = AirStations.armEmitter(sl, from, dir, getOwnerId(), ship, sea ? null : lockId);
+            armCuePos = e == null ? null : SableBridge.worldPos(sl, e);
+        }
+        return armCuePos;
+    }
+
+    static final int ARM_CUE_TICKS = 10;
+    private long armCueAt = Long.MIN_VALUE / 2;
+    private Vec3 armCuePos;
+
     private static double offAxis(Vec3 from, Vec3 nose, Vec3 to) {
         Vec3 d = to.subtract(from);
         double l = d.length();
@@ -563,6 +619,8 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
         NoseRadarBlockEntity nr = noseRadar(sl);
         boolean on = avionics && nr != null && nr.on();
         if (on != radarOn) { radarOn = on; sync(); }
+
+        if (dlId != null && (!avionics || !AirMissiles.datalink(sl, getOwnerId(), dlId, now) || Cloak.hidden(sl, dlId))) dlId = null;
         if (!on) { if (lockId != null) { lockId = null; if (nr != null) nr.track(null); } return; }
         if (lockId == null) return;
         if (sea) {
@@ -572,7 +630,7 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
         }
         Vec3 at = nr.at();
         AirPicture.Aircraft t = AirPicture.get(sl, lockId);
-        boolean keep = t != null && offAxis(at, nr.boresight(), t.pos()) <= Math.min(Balance.COCKPIT_LOCK_KEEP, nr.lockGimbal()) && t.pos().distanceTo(at) <= AirJam.lockRange(sl, lockId, nr.lockRange());
+        boolean keep = t != null && !Cloak.hidden(sl, lockId) && offAxis(at, nr.boresight(), t.pos()) <= Math.min(Balance.COCKPIT_LOCK_KEEP, nr.lockGimbal()) && t.pos().distanceTo(at) <= AirJam.lockRange(sl, lockId, nr.lockRange());
         if (keep) { Rwr.lock(sl, lockId, at, getOwnerId(), "nose", worldPosition.asLong(), now); nr.track(t.pos()); }
         else { lockId = null; nr.track(null); }
     }
@@ -580,7 +638,7 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
     private void nextLock(ServerLevel sl) {
         if (!AirGate.on() || !avionics) return;
         NoseRadarBlockEntity nr = noseRadar(sl);
-        if (nr == null || !nr.on()) { lockId = null; return; }
+        if (nr == null || !nr.on()) { lockId = null; nextDatalink(sl); return; }
         Vec3 at = nr.at(), n = nr.boresight();
         double cone = Math.min(Balance.COCKPIT_LOCK_CONE, nr.lockGimbal());
         if (sea) {
@@ -597,12 +655,35 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
         for (AirPicture.Seen s : nr.seenInCone())
             if (offAxis(at, n, s.a().pos()) <= cone && s.a().pos().distanceTo(at) <= AirJam.lockRange(sl, s.a().id(), nr.lockRange())) in.add(s);
         in.sort((x, y) -> Double.compare(x.dist(), y.dist()));
-        if (in.isEmpty()) { lockId = null; nr.track(null); return; }
+        if (in.isEmpty()) { lockId = null; nr.track(null); nextDatalink(sl); return; }
         int idx = 0;
         for (int i = 0; i < in.size(); i++) if (in.get(i).a().id().equals(lockId)) { idx = (i + 1) % in.size(); break; }
         lockId = in.get(idx).a().id();
+        dlId = null;
         nr.track(in.get(idx).a().pos());
     }
+
+    private void nextDatalink(ServerLevel sl) {
+        long now = sl.getGameTime();
+        Vec3 me = eye();
+        List<UUID> c = new ArrayList<>();
+        java.util.Map<UUID, Double> dist = new java.util.HashMap<>();
+        for (UUID id : TrackNet.trackedBy(sl, getOwnerId(), now)) {
+            if (id.equals(ship) || Cloak.hidden(sl, id)) continue;
+            SableBridge.ShipInfo si = SableBridge.shipInfo(sl, id);
+            if (si == null) continue;
+            double d = si.worldCenter().distanceTo(me);
+            if (d > Balance.AAM_RANGE[AirMissiles.HEAVY]) continue;
+            c.add(id); dist.put(id, d);
+        }
+        if (c.isEmpty()) { dlId = null; return; }
+        c.sort((x, y) -> Double.compare(dist.get(x), dist.get(y)));
+        int k = 0;
+        for (int i = 0; i < c.size(); i++) if (c.get(i).equals(dlId)) { k = (i + 1) % c.size(); break; }
+        dlId = c.get(k);
+    }
+
+    private UUID target() { return lockId != null ? lockId : dlId; }
 
     private UUID getOwnerId() { return this instanceof Owned o ? o.getOwner() : null; }
 
@@ -625,6 +706,7 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
         int stnKind = -2, stnCount = 0;
         Vec3 aim = null, lead = null, lockVel = null;
         int pip = 0;
+        boolean armNone = false;
         int[] cm = { 0, 0 };
         int gunRounds = -1;
         int gear = -1;
@@ -651,6 +733,7 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
         if (AirGate.on()) {
             if (lockId != null && sea) { SableBridge.ShipInfo si = SableBridge.shipInfo(sl, lockId); if (si != null) lock = si.worldCenter(); else lockId = null; }
             else if (lockId != null) { AirPicture.Aircraft t = AirPicture.get(sl, lockId); if (t != null) { lock = t.pos(); lockVel = t.vel(); } else lockId = null; }
+            else if (dlId != null) { SableBridge.ShipInfo si = SableBridge.shipInfo(sl, dlId); if (si != null) lock = si.worldCenter(); else dlId = null; }
             List<Object> wl = ship == null ? List.of() : weaponList(sl);
             stnCount = wl.size();
             Object sel = station < wl.size() ? wl.get(station) : null;
@@ -664,6 +747,11 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
             if (avionics && AirStores.isBomb(stnKind)) {
                 Vec3 from = sel instanceof AirStations.Station s2 ? SableBridge.worldPos(sl, s2.stationPos()) : at;
                 aim = AirStores.bombImpact(sl, stnKind, from == null ? at : from.add(0.0, -0.6, 0.0), v.scale(1.0 / 20.0), getOwnerId(), ship);
+            }
+            if (avionics && stnKind == AirMissiles.ARM && ship != null) {
+                Vec3 from = sel instanceof AirStations.Station s4 ? SableBridge.worldPos(sl, s4.stationPos()) : at;
+                aim = armCue(sl, from == null ? at : from, f);
+                if (aim == null) armNone = true;
             }
             if (avionics && stnKind == AirStores.ROCKET && ship != null) {
                 List<RocketPodBlockEntity> rk = sel == RKT_ENTRY ? rockets(sl) : List.of();
@@ -690,11 +778,14 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
                 | (ab ? CockpitHudPayload.F_AB : 0) | (ejected ? CockpitHudPayload.F_EJECTED : 0) | (tandem() || deck() ? CockpitHudPayload.F_TANDEM : 0)
                 | (o != null && worldPosition.equals(o.from()) ? CockpitHudPayload.F_CONTROL : 0) | (noseRadar(sl) == null ? CockpitHudPayload.F_NORADAR : 0)
                 | (AirGate.on() && ship != null && AirJam.on(sl, ship) ? CockpitHudPayload.F_JAM : 0)
+                | (AirGate.on() && ship != null && CraftShield.up(sl, ship) ? CockpitHudPayload.F_SHIELD : 0)
                 | (AirGate.on() && lockId != null && AirJam.on(sl, lockId) ? CockpitHudPayload.F_LOCKJAM : 0)
                 | (AirStations.agmGps(ship) ? CockpitHudPayload.F_AGMGPS : 0)
                 | (sea && radarOn ? CockpitHudPayload.F_SEA : 0)
                 | pip
                 | (podMem ? CockpitHudPayload.F_PODMEM : 0)
+                | (armNone ? CockpitHudPayload.F_ARM_NONE : 0)
+                | (lockId == null && dlId != null ? CockpitHudPayload.F_DATALINK : 0)
                 | (avionics && stnKind == AirMissiles.HEAT && AirStations.heatPick(sl, at, f, ship) != null ? CockpitHudPayload.F_GROWL : 0);
         for (int i = 0; i < seats(); i++) {
             ServerPlayer p = occupant(sl, i);
@@ -723,6 +814,8 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
         if (ejected) return;
         ejected = true;
         lockId = null;
+        dlId = null;
+        MusicTriggersHook.fire(sl, "wmd:eject", BlockPos.containing(SableBridge.toWorld(sl, net.minecraft.world.phys.Vec3.atCenterOf(getBlockPos()))));
         Vec3 up = upVec(), vel = shipVel(sl);
         Vec3 canopyAt = plotPoint(SEAT_X, 1.2, SEAT_Z0 + (tandem() ? 1.0 : 0.6));
         EjectedCanopyEntity c = new EjectedCanopyEntity(AirBlocks.EJECTED_CANOPY.get(), sl);
@@ -741,6 +834,7 @@ public class JetCockpitBlockEntity extends ProcessUnitBlockEntity implements CcA
         }
         sl.playSound(null, worldPosition, WmdSounds.EJECT_BLAST.get(), SoundSource.BLOCKS, Balance.SND_RELEASE, 1.0F);
         sl.playSound(null, worldPosition, WmdSounds.SEAT_ROCKET.get(), SoundSource.BLOCKS, Balance.SND_RELEASE, 1.0F);
+        AirFxPayload.send(sl, cw, Balance.AIRFX_R, new AirFxPayload(AirFxPayload.EJECT, ship, cw, up, Vec3.ZERO, 1.0F));
         sl.sendParticles(ParticleTypes.EXPLOSION, cw.x, cw.y, cw.z, 1, 0.0, 0.0, 0.0, 0.0);
         sl.sendParticles(ParticleTypes.LARGE_SMOKE, cw.x, cw.y, cw.z, 24, 0.5, 0.3, 0.8, 0.05);
         sync();

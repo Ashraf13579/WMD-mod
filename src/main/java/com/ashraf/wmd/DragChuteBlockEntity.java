@@ -23,6 +23,8 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 public class DragChuteBlockEntity extends ProcessUnitBlockEntity implements CcAnimated, CopycatState.Host {
 
+    @Override public boolean ownable() { return false; }
+
     public static final int PACKED = 0, OUT = 1, SPENT = 2;
 
     private final CopycatState copycat = new CopycatState();

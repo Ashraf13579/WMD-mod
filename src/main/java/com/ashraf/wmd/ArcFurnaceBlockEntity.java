@@ -79,7 +79,7 @@ public class ArcFurnaceBlockEntity extends ItemProcessBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.ARC_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.ARC_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.arc_ti", Balance.ARC_TI_CONC, Balance.ARC_TI_COKE, Balance.ARC_INGOTS_PER_CYCLE, Balance.ARC_TI_CYCLE_TICKS / 20),
                 Component.translatable("gui.wmd.info.arc_w", Balance.ARC_W_CONC, Balance.ARC_INGOTS_PER_CYCLE, Balance.ARC_W_CYCLE_TICKS / 20),
                 Component.translatable("gui.wmd.info.items_hint"));

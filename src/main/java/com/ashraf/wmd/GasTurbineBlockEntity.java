@@ -127,7 +127,7 @@ public class GasTurbineBlockEntity extends ItemProcessBlockEntity implements CcA
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.turbine", Balance.TURBINE_FE_PER_TICK * 20, Balance.TURBINE_FE_PER_MB_LPG, Balance.TURBINE_FE_PER_MB_GASOLINE, Balance.TURBINE_FE_PER_MB_NAPHTHA),
+        return List.of(Component.translatable("gui.wmd.info.turbine", Balance.TURBINE_FE_PER_TICK, Balance.TURBINE_FE_PER_MB_LPG, Balance.TURBINE_FE_PER_MB_GASOLINE, Balance.TURBINE_FE_PER_MB_NAPHTHA),
                 Component.translatable("gui.wmd.info.turbine_life", Balance.TURBINE_BLADE_LIFE / 1200),
                 Component.translatable("gui.wmd.info.turbine_danger"));
     }

@@ -18,6 +18,7 @@ public final class SubHits {
     static void hit(ServerLevel level, SableBridge.ShipInfo ship, Vec3 at, float power, double dist) {
         if (ship == null || !Config.Server.navalSubImplosion() || dist > Balance.SUB_IMPLODE_REACH || !DeepSeasBridge.isSub(ship.id())) return;
         if (!NavalLayer.submerged(level, ship)) return;
+        MusicTriggersHook.crew(level, "wmd:sub_hit", ship.id(), net.minecraft.core.BlockPos.containing(at));
         DeepSeasBridge.SubState st = DeepSeasBridge.state(ship.id());
         double depth = Math.max(NavalLayer.shipDepth(level, ship), st == null ? 0 : st.depth());
         depth = Math.max(0.0, depth - DeepHull.implodeBonus(level, ship.id()));

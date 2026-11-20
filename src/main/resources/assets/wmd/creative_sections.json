@@ -62,10 +62,10 @@
   "wmd_air_battles": [
     { "title": "creative.wmd.section.example_jets", "items": ["single_jet", "twin_jet", "stealth_jet"] },
     { "title": "creative.wmd.section.cockpits", "items": ["jet_cockpit*", "flight_deck", "power_core", "jet_power_core", "flight_check_tablet", "gunner_station"] },
-    { "title": "creative.wmd.section.engines", "items": ["turbofan", "ducted_fan", "lift_fan", "turboprop", "tiltrotor", "heli_*", "jato_*", "engine_repair_kit"] },
+    { "title": "creative.wmd.section.engines", "items": ["turbofan", "ducted_fan", "ion_thruster", "lift_fan", "turboprop", "tiltrotor", "heli_*", "jato_*", "engine_repair_kit"] },
     { "title": "creative.wmd.section.airframe", "items": ["wing_section", "control_surface", "landing_gear*", "tailhook", "drag_chute", "fuel_tank", "drop_tank", "nav_light", "refuel_probe", "drogue_pod", "cargo_hook_*", "cargo_ramp", "cargo_pallet*"] },
     { "title": "creative.wmd.section.air_weapons", "items": ["pylon", "launch_rail", "weapons_bay", "aam_*", "radar_seeker", "gun_pod", "gun_turret", "heavy_gun", "rocket_pod", "air_rocket", "ashm"] },
-    { "title": "creative.wmd.section.air_sensors", "items": ["nose_radar", "targeting_pod", "jammer_pod", "dispenser", "air_search_radar", "sam_site"] },
+    { "title": "creative.wmd.section.air_sensors", "items": ["nose_radar", "targeting_pod", "jammer_pod", "dispenser", "air_search_radar", "sam_site", "quantum_radar", "active_cloak", "craft_shield"] },
     { "title": "creative.wmd.section.carrier", "items": ["catapult_track", "arresting_wire", "deck_light", "deck_lift", "turntable", "deck_console", "hangar_door"] },
     { "title": "creative.wmd.section.ground_crew", "items": ["service_*", "ammo_depot", "ordnance_loader", "heavy_loader", "loader_track", "survey_scanner", "gantry_*"] }
   ]

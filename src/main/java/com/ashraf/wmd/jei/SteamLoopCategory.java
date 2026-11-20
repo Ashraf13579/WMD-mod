@@ -69,7 +69,7 @@ public final class SteamLoopCategory implements IRecipeCategory<SteamLoopCategor
         var font = Minecraft.getInstance().font;
         g.drawString(font, "->", 52, 10, GREY, false);
         g.drawString(font, Component.translatable("jei.wmd.per_tick"), 92, 10, GREY, false);
-        g.drawString(font, Component.translatable(r.fe() >= 0 ? "jei.wmd.steam_loop.makes" : "jei.wmd.steam_loop.uses", String.format("%,d", Math.abs(r.fe()) * 20)), 4, 28, GREY, false);
+        g.drawString(font, Component.translatable(r.fe() >= 0 ? "jei.wmd.steam_loop.makes" : "jei.wmd.steam_loop.uses", String.format("%,d", Math.abs(r.fe()))), 4, 28, GREY, false);
         g.drawString(font, Component.translatable(r.note()), 4, 40, GREY, false);
     }
 }

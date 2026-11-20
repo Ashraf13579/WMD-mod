@@ -1,0 +1,38 @@
+{
+  "parent": "wmd:warden_kill",
+  "display": {
+    "icon": {
+      "id": "wmd:bomb_tsar"
+    },
+    "title": {
+      "translate": "advancements.wmd.tsar.title"
+    },
+    "description": {
+      "translate": "advancements.wmd.tsar.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_bomb_tsar": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wmd:bomb_tsar"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_bomb_tsar"
+    ]
+  ],
+  "rewards": {
+    "experience": 150
+  }
+}

@@ -57,7 +57,7 @@ public final class ClientFxEmp {
         SHOWS.add(s);
         Vec3 cam = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         double d = Math.hypot(cam.x - x, cam.z - z), near = s.r * 0.75;
-        if (d < ClientBlastGeo.FAR_VIEW) level.setSkyFlashTime(4);
+        if (tier > 0 && d < ClientBlastGeo.FAR_VIEW) level.setSkyFlashTime(4);
         if (d < near && ClientConfig.explosionScreen()) wash = Math.max(wash, (float) (1.0 - d / near) * 0.7F);
     }
 

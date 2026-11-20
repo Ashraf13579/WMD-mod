@@ -87,7 +87,7 @@ public class CentrifugeBlockEntity extends ItemProcessBlockEntity {
     @Override
     public List<Component> guiInfo() {
         int n = countNeighbours(), pct = speedPct(n);
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.CENT_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.CENT_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.centrifuge", Balance.CENT_YELLOWCAKE, Balance.CENT_ENRICHED, Balance.CENT_DEPLETED, Balance.CENT_CYCLE_TICKS * 100 / pct / 20),
                 Component.translatable("gui.wmd.info.cascade", n, pct - 100));
     }

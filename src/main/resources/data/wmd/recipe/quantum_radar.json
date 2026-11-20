@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:quantum_radar"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RQR",
+    "SXS",
+    "TBT"
+  ],
+  "key": {
+    "R": {
+      "item": "wmd:radar_component"
+    },
+    "Q": {
+      "item": "minecraft:amethyst_cluster"
+    },
+    "S": {
+      "item": "wmd:superconducting_coil"
+    },
+    "X": {
+      "item": "wmd:chip_space_2"
+    },
+    "T": {
+      "item": "wmd:tungsten_alloy_casing"
+    },
+    "B": {
+      "item": "wmd:busbar"
+    }
+  },
+  "result": {
+    "id": "wmd:quantum_radar",
+    "count": 1
+  }
+}

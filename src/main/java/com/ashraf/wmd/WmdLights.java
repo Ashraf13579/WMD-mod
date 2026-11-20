@@ -148,6 +148,7 @@ final class WmdLights {
             f.bright = f.flashBright * k * k;
             f.radius = f.flashRadius * (0.6F + 0.4F * k);
         }
+        LdlBridge.sync();
     }
 
     static void clear() {
@@ -155,11 +156,22 @@ final class WmdLights {
         FLASHES.clear();
     }
 
+    interface Sink {
+        void light(Object key, double x, double y, double z, double dx, double dy, double dz, boolean spot, float angle, float reach, float bright);
+    }
+
+    static void export(Sink sink) {
+        for (Light l : LIGHTS.values()) sink.light(l, l.tx, l.ty, l.tz, l.tdx, l.tdy, l.tdz, l.spot, l.angle, l.spot ? l.dist : l.radius, l.bright);
+        for (Light f : FLASHES) sink.light(f, f.tx, f.ty, f.tz, 0.0, 0.0, 0.0, false, 0.0F, f.radius, f.bright);
+    }
+
+    static boolean drawnNow() { return !VeilBridge.shaderPackOn() || underPack(); }
+
     private static boolean irisLooked;
     private static Object irisApi;
     private static java.lang.reflect.Method irisShadow;
 
-    private static boolean shadowPass() {
+    static boolean shadowPass() {
         if (!irisLooked) {
             irisLooked = true;
             try {
@@ -464,15 +476,19 @@ final class WmdLights {
 
     private static final int[] SUBDIV = { 0, 2, 4 };
     private static final double SUB_STEP = 0.04;
+    private static final double[] EMIT_W = new double[12], EMIT_GP = new double[75];
+    private static final float[] EMIT_COL = new float[12], EMIT_GU = new float[50], EMIT_GC = new float[75];
+    private static final int[] EMIT_CORNER = new int[4];
+    private static final org.joml.Vector3d EMIT_V = new org.joml.Vector3d();
 
     private static int emit(BufferBuilder bb, Face f, org.joml.Matrix4d pose, Light l, Vec3 cam, float k, int q) {
-        double[] w = new double[12];
+        double[] w = EMIT_W;
 
         double fnx = f.nx, fny = f.ny, fnz = f.nz;
         if (pose == null) {
             for (int i = 0; i < 4; i++) { w[i * 3] = f.bx + f.p[i * 3]; w[i * 3 + 1] = f.by + f.p[i * 3 + 1]; w[i * 3 + 2] = f.bz + f.p[i * 3 + 2]; }
         } else {
-            org.joml.Vector3d v = new org.joml.Vector3d();
+            org.joml.Vector3d v = EMIT_V;
             for (int i = 0; i < 4; i++) {
                 pose.transformPosition(v.set(f.bx + (double) f.p[i * 3], f.by + (double) f.p[i * 3 + 1], f.bz + (double) f.p[i * 3 + 2]));
                 w[i * 3] = v.x; w[i * 3 + 1] = v.y; w[i * 3 + 2] = v.z;
@@ -480,7 +496,7 @@ final class WmdLights {
             pose.transformDirection(v.set(f.nx, f.ny, f.nz)).normalize();
             fnx = v.x; fny = v.y; fnz = v.z;
         }
-        float[] col = new float[12];
+        float[] col = EMIT_COL;
         boolean any = false;
         double spread = 0.0;
         for (int i = 0; i < 4; i++) {
@@ -501,8 +517,8 @@ final class WmdLights {
         }
 
         int m = n + 1;
-        double[] gp = new double[m * m * 3];
-        float[] gu = new float[m * m * 2], gc = new float[m * m * 3];
+        double[] gp = EMIT_GP;
+        float[] gu = EMIT_GU, gc = EMIT_GC;
         for (int bj = 0; bj <= n; bj++)
             for (int ai = 0; ai <= n; ai++) {
                 double a = ai / (double) n, b = bj / (double) n;
@@ -513,7 +529,7 @@ final class WmdLights {
                 lightAt(l, gp[o * 3], gp[o * 3 + 1], gp[o * 3 + 2], fnx, fny, fnz, f, k, gc, o * 3);
             }
         int quads = 0;
-        int[] corner = new int[4];
+        int[] corner = EMIT_CORNER;
         for (int bj = 0; bj < n; bj++)
             for (int ai = 0; ai < n; ai++) {
                 corner[0] = bj * m + ai; corner[1] = bj * m + ai + 1; corner[2] = (bj + 1) * m + ai + 1; corner[3] = (bj + 1) * m + ai;

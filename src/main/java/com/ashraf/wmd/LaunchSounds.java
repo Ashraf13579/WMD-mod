@@ -27,6 +27,7 @@ public final class LaunchSounds {
         int tier = Math.max(1, Math.min(4, p.kind() % 10));
         if (p.kind() == LaunchSoundPayload.CRUISE) { cruise(p.x(), p.y(), p.z()); return; }
         if (p.kind() == LaunchSoundPayload.DRONE) { droneDown(p.x(), p.y(), p.z()); return; }
+        if (p.kind() == LaunchSoundPayload.JET_BOOM) { boom(p.x(), p.y(), p.z(), 40.0F, 1.05F); ClientVapourCone.thump(p.x(), p.y(), p.z()); return; }
         if (p.kind() >= LaunchSoundPayload.BOOM) { boom(p.x(), p.y(), p.z(), tier == 4 ? 60.0F : 40.0F, 1.0F); return; }
         boolean ascent = p.kind() >= LaunchSoundPayload.ASCENT;
         float vol = PAD_VOLUME[tier - 1];

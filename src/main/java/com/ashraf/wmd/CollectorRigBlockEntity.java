@@ -497,7 +497,7 @@ public class CollectorRigBlockEntity extends ItemProcessBlockEntity implements O
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse() * 20), Component.translatable("gui.wmd.info.collector_rig"));
+        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse()), Component.translatable("gui.wmd.info.collector_rig"));
     }
 
     @Override

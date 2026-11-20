@@ -259,7 +259,8 @@ public class BombRackBlockEntity extends ProcessUnitBlockEntity implements Owned
         if (getBlockState().getBlock() instanceof MachineBlock mb)
             for (BlockPos l : mb.footprint()) cells.add(Machines.toWorld(worldPosition, facing(), m, l.getX(), l.getY(), l.getZ()));
         UUID ship = SableBridge.shipIdAt(sl, worldPosition);
-        BombEntity.release(sl, t, new Vec3(p[0], p[1], p[2]), worldVel.add(push), getOwner(), targetSet ? new int[] { targetX, targetZ } : null, cells, ship);
+        if (BombEntity.release(sl, t, new Vec3(p[0], p[1], p[2]), worldVel.add(push), getOwner(), targetSet ? new int[] { targetX, targetZ } : null, cells, ship) == null)
+            return false;
         bombs[slot].shrink(1);
         if (bombs[slot].isEmpty()) bombs[slot] = ItemStack.EMPTY;
         syncCounts();

@@ -173,7 +173,7 @@ public class CcMapPrinterBlockEntity extends CcModuleBlockEntity implements GuiI
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", kind().fe() * 20), Component.translatable("gui.wmd.info.cc_printer"));
+        return List.of(Component.translatable("gui.wmd.info.use", kind().fe()), Component.translatable("gui.wmd.info.cc_printer"));
     }
 
     @Override

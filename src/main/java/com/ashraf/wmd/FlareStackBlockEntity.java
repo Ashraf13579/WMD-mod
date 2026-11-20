@@ -52,7 +52,7 @@ public class FlareStackBlockEntity extends ProcessUnitBlockEntity implements CcA
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.flare_output", Balance.FLARE_FE_PER_MB * Balance.FLARE_MB_PER_SEC, Balance.FLARE_MB_PER_SEC),
+        return List.of(Component.translatable("gui.wmd.info.flare_output", Balance.FLARE_FE_PER_MB * Balance.FLARE_MB_PER_SEC / 20, Balance.FLARE_MB_PER_SEC),
                 Component.translatable("gui.wmd.info.flare_hint"));
     }
 

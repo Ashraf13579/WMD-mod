@@ -397,6 +397,7 @@ public final class Recon {
         net.minecraft.world.phys.AABB q = new net.minecraft.world.phys.AABB(box[0], level.getMinBuildHeight() - 512.0, box[1], box[2], level.getMaxBuildHeight() + 2048.0, box[3]);
         for (SableBridge.ShipInfo s : SableBridge.largeShipsIntersecting(level, q)) {
             if (out.size() >= MAX_SHIPS) break;
+            if (Cloak.hidden(level, s.id())) continue;
             int x = (int) Math.floor(s.worldCenter().x), z = (int) Math.floor(s.worldCenter().z);
             if (x < box[0] || x >= box[2] || z < box[1] || z >= box[3]) continue;
             String name = s.name() == null ? "?" : s.name().replace('|', '/');
@@ -506,7 +507,7 @@ public final class Recon {
             ServerLevel ow = server.overworld();
             for (ServerPlayer p : ow.players()) {
                 if (l.size() >= MAX_DOTS * 2) break;
-                if (p.isSpectator() || p.getUUID().equals(owner) || !(drone ? Drones.sees(server, owner, p.getX(), p.getZ()) : inArea(e, p.getX(), p.getZ()))) continue;
+                if (p.isSpectator() || p.getUUID().equals(owner) || Cloak.playerHidden(ow, p) || !(drone ? Drones.sees(server, owner, p.getX(), p.getZ()) : inArea(e, p.getX(), p.getZ()))) continue;
                 if (!ow.canSeeSky(BlockPos.containing(p.getEyePosition()))) continue;
                 l.add((int) Math.floor(p.getX())); l.add((int) Math.floor(p.getZ()));
             }
@@ -532,6 +533,7 @@ public final class Recon {
                 map ? s.x0() : 0, map ? s.z0() : 0, map ? s.step() : 0, map ? s.n() : 0, map ? s.loadedPct() : 0,
                 map ? s.col() : new byte[0], map ? s.icons() : new int[0], dots, flights, map, ReconFill.state(owner), map ? s.hts() : null,
                 map ? s.ships() : Map.of()));
+        if (map && VnBridge.present()) VnMapPayload.send(sp, server.overworld(), s.x0(), s.z0(), s.n() * s.step());
     }
 
     static void clearRuntime(MinecraftServer server) { JOBS.clear(); ALERTED.clear(); LAST_ASK.clear(); ReconFill.clear(server); }

@@ -49,6 +49,9 @@ final class ShaderFx {
     static double LIM;
     private static final ByteBufferBuilder SMOKE_BUF = new ByteBufferBuilder(1 << 18);
     private static final Map<BufferBuilder, Pending> PENDING = new IdentityHashMap<>();
+    private static final java.util.ArrayDeque<float[]> QUAD_POOL = new java.util.ArrayDeque<>(1024);
+    private static final PoseStack IDENTITY_POSE = new PoseStack();
+    private static final Matrix4f TMP_PROJ = new Matrix4f();
 
     private static final class Pending {
         final List<float[]> quads = new ArrayList<>();
@@ -56,10 +59,21 @@ final class ShaderFx {
         int n;
     }
 
+    private static float[] borrowQuad() { return QUAD_POOL.isEmpty() ? new float[N] : QUAD_POOL.pop(); }
+
+    private static void recycle(Pending p) {
+        if (p == null) return;
+        for (float[] q : p.quads) if (QUAD_POOL.size() < 8192) QUAD_POOL.push(q);
+        p.quads.clear();
+        if (p.open != null) { if (QUAD_POOL.size() < 8192) QUAD_POOL.push(p.open); p.open = null; }
+        p.n = 0;
+    }
+
     private static ResourceLocation tex(String name) { return ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "textures/fx/" + name + ".png"); }
 
     @SubscribeEvent
     static void onFrame(RenderFrameEvent.Pre event) {
+        for (Pending p : PENDING.values()) recycle(p);
         PENDING.clear();
         Minecraft mc = Minecraft.getInstance();
         on = mc.level != null && enabled() && VeilBridge.shaderPackOn();
@@ -77,8 +91,8 @@ final class ShaderFx {
 
     static void vert(BufferBuilder bb, Vec3 cam, double x, double y, double z, float r, float g, float b, float a) {
         Pending p = of(bb);
-        if (p.open == null) { p.open = new float[N]; p.open[0] = PLAIN; p.n = 0; }
-        double dx = x - cam.x, dy = y - cam.y, dz = z - cam.z, l = Math.sqrt(dx * dx + dy * dy + dz * dz), k = l > LIM ? LIM / l : 1.0;
+        if (p.open == null) { p.open = borrowQuad(); p.open[0] = PLAIN; p.n = 0; }
+        double dx = x - cam.x, dy = y - cam.y, dz = z - cam.z, l2 = dx * dx + dy * dy + dz * dz, k = l2 > LIM * LIM ? LIM / Math.sqrt(l2) : 1.0;
         put(p.open, 1 + p.n * 9, dx * k, dy * k, dz * k, 0.5F, 0.5F, r, g, b, a);
         if (++p.n == 4) { p.quads.add(fadeInU(p.open)); p.open = null; }
     }
@@ -96,13 +110,13 @@ final class ShaderFx {
     }
 
     static void disc(BufferBuilder bb, Vec3 cam, Vector3f left, Vector3f up, double x, double y, double z, double rad, float r, float g, float b, float a) {
-        double dx = x - cam.x, dy = y - cam.y, dz = z - cam.z, l = Math.sqrt(dx * dx + dy * dy + dz * dz), k = l > LIM ? LIM / l : 1.0;
+        double dx = x - cam.x, dy = y - cam.y, dz = z - cam.z, l2 = dx * dx + dy * dy + dz * dz, k = l2 > LIM * LIM ? LIM / Math.sqrt(l2) : 1.0;
         double cx = dx * k, cy = dy * k, cz = dz * k, s = rad * k;
         double t = x * 0.37 + y * 0.11 + z * 0.23 + rad * 0.5;
         double c = Math.cos(t) * s, sn = Math.sin(t) * s;
         double lx = left.x() * c + up.x() * sn, ly = left.y() * c + up.y() * sn, lz = left.z() * c + up.z() * sn;
         double ux = up.x() * c - left.x() * sn, uy = up.y() * c - left.y() * sn, uz = up.z() * c - left.z() * sn;
-        float[] q = new float[N];
+        float[] q = borrowQuad();
         q[0] = ROUND;
         put(q, 1, cx - lx - ux, cy - ly - uy, cz - lz - uz, 0.0F, 1.0F, r, g, b, a);
         put(q, 10, cx + lx - ux, cy + ly - uy, cz + lz - uz, 1.0F, 1.0F, r, g, b, a);
@@ -120,8 +134,8 @@ final class ShaderFx {
         mv.set(event.getModelViewMatrix());
         RenderSystem.applyModelViewMatrix();
         RenderSystem.backupProjectionMatrix();
-        RenderSystem.setProjectionMatrix(new Matrix4f(event.getProjectionMatrix()), VertexSorting.DISTANCE_TO_ORIGIN);
-        PoseStack.Pose pose = new PoseStack().last();
+        RenderSystem.setProjectionMatrix(TMP_PROJ.set(event.getProjectionMatrix()), VertexSorting.DISTANCE_TO_ORIGIN);
+        PoseStack.Pose pose = IDENTITY_POSE.last();
         if (!additive) smoke(p);
         else for (int shape = ROUND; shape <= PLAIN; shape++) {
             RenderType rt = RenderType.eyes(shape == ROUND ? GLOW : FADE_ADD);
@@ -135,6 +149,7 @@ final class ShaderFx {
             }
             if (vc != null) buffers.endBatch(rt);
         }
+        recycle(p);
         RenderSystem.restoreProjectionMatrix();
         mv.popMatrix();
         RenderSystem.applyModelViewMatrix();

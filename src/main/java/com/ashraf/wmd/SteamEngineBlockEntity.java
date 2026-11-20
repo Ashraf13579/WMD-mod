@@ -148,7 +148,7 @@ public class SteamEngineBlockEntity extends ProcessUnitBlockEntity implements Gu
     @Override
     public List<Component> guiInfo() {
         int perCoal = Math.round(1600 * Balance.SE_BURN_MULT) * Balance.SE_FE_PER_TICK;
-        return List.of(Component.translatable("gui.wmd.info.gen_output", Balance.SE_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.gen_output", Balance.SE_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.steam_engine", String.format("%,d", perCoal), 20 / Balance.SE_WATER_TICKS_PER_MB),
                 Component.translatable("gui.wmd.info.gen_hint"));
     }

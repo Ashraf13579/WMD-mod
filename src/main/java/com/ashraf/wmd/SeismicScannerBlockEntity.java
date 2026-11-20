@@ -88,7 +88,7 @@ public class SeismicScannerBlockEntity extends CctvDeviceEntity {
             for (BlockEntity be : ch.getBlockEntities().values()) {
                 int kind = kind(be);
                 if (kind < 0 || !(be instanceof Owned ow) || hits.size() >= 64) continue;
-                if (ow.getOwner() != null && (ow.getOwner().equals(getOwner()) || Access.trusts(this, ow.getOwner()))) continue;
+                if (ow.getOwner() != null && (ow.getOwner().equals(getOwner()) || Access.trusts(this, ow.getOwner()) || Access.listedFriend(this, ow.getOwner()))) continue;
                 Vec3 v = Vec3.atCenterOf(be.getBlockPos()).subtract(o), h = new Vec3(v.x, 0, v.z);
                 double len = h.length();
                 if (len > r || (len > 2.0 && h.dot(f) / len < cos)) continue;

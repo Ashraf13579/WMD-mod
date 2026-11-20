@@ -61,7 +61,7 @@ public class CokerBlockEntity extends ItemProcessBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.COKER_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.COKER_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.coker", Balance.COKER_BITUMEN_MB, Balance.COKER_COKE_PER_CYCLE, Balance.COKER_CYCLE_TICKS / 20),
                 Component.translatable("gui.wmd.info.chute_hint"));
     }

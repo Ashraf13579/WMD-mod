@@ -29,7 +29,19 @@ public final class VeilBridge {
             irisInstalled = ModList.get().isLoaded("iris");
             if (irisInstalled) Wmd.LOGGER.info("[wmd] Iris is installed: Veil keeps its light buffers off (even with no shaderpack), so WMD's Veil lights are off; aircraft lights use block light");
         }
+        if (vilc()) return false;
         return irisInstalled || shaderPackOn();
+    }
+
+    private static Boolean vilcInstalled;
+
+    static boolean vilc() {
+        if (vilcInstalled == null) {
+            vilcInstalled = ModList.get().isLoaded("ymvilc");
+            if (vilcInstalled) Wmd.LOGGER.info("[wmd] Veil Iris Lights Compat found: WMD's Veil lights stay on with Iris (client option veilLightsWithVilc)");
+        }
+        if (!vilcInstalled) return false;
+        try { return ClientConfig.VEIL_LIGHTS_WITH_VILC.get(); } catch (RuntimeException e) { return true; }
     }
 
     static boolean shaderPackOn() {
@@ -87,7 +99,8 @@ public final class VeilBridge {
 
     public static void spot(long key, double x, double y, double z, double dx, double dy, double dz, float r, float g, float b, float angle, float distance, float brightness, long gameTime) {
         if (ClientHemp.darkAt(x, z)) return;
-        if (!active() || lightsOff()) { WmdLights.spot(key, x, y, z, dx, dy, dz, r, g, b, angle, distance, brightness, gameTime); return; }
+
+        if (!active() || lightsOff() || !VeilLights.SPOTS_OK) { WmdLights.spot(key, x, y, z, dx, dy, dz, r, g, b, angle, distance, brightness, gameTime); return; }
         try {
             VeilLights.spot(key, x, y, z, dx, dy, dz, r, g, b, angle, distance, brightness, gameTime);
         } catch (Throwable t) {
@@ -160,6 +173,25 @@ public final class VeilBridge {
         if (camDist(x, y, z) >= 256.0) return;
         try {
             VeilPost.lens(x, y, z, r, strength);
+        } catch (Throwable t) {
+            fail(t);
+        }
+    }
+
+    public static void dome(double x, double y, double z, double r, float strength) {
+        if (!active() || r <= 0.5) return;
+        if (camDist(x, y, z) >= r + Balance.GWG_FX_RANGE) return;
+        try {
+            VeilPost.dome(x, y, z, r, strength);
+        } catch (Throwable t) {
+            fail(t);
+        }
+    }
+
+    public static void domePulse() {
+        if (!active()) return;
+        try {
+            VeilPost.domePulse();
         } catch (Throwable t) {
             fail(t);
         }

@@ -1,0 +1,35 @@
+{
+  "parent": "wmd:research",
+  "display": {
+    "icon": {
+      "id": "wmd:drone_t1"
+    },
+    "title": {
+      "translate": "advancements.wmd.drone.title"
+    },
+    "description": {
+      "translate": "advancements.wmd.drone.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_drone_t1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wmd:drone_t1"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_drone_t1"
+    ]
+  ]
+}

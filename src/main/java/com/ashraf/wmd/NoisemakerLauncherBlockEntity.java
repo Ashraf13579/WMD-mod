@@ -139,7 +139,7 @@ public class NoisemakerLauncherBlockEntity extends ItemProcessBlockEntity implem
         TorpedoKind k = t.kind();
         if (k == null || k == TorpedoKind.ATT || k.drone()) return false;
         UUID o = t.owner();
-        return o == null || !Access.trusts(this, o);
+        return o == null || !(Access.trusts(this, o) || Access.listedFriend(this, o));
     }
 
     @Override
@@ -203,7 +203,7 @@ public class NoisemakerLauncherBlockEntity extends ItemProcessBlockEntity implem
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.DECOY_FE * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.DECOY_FE),
                 Component.translatable("gui.wmd.info.noisemaker_launcher", Balance.DECOY_MAG, Balance.TORP_DECOY_TICKS / 20, (int) Balance.DECOY_AUTO_RANGE));
     }
 

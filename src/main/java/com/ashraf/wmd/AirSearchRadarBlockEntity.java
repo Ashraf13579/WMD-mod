@@ -98,6 +98,7 @@ public class AirSearchRadarBlockEntity extends ProcessUnitBlockEntity implements
         if (level instanceof ServerLevel sl) {
             long now = sl.getGameTime();
             if ((now + (worldPosition.asLong() & 7L)) % Balance.ASR_SWEEP_TICKS == 0) sweep(sl, now);
+            if (now % MISSILE_SCAN == 0) missiles(sl, now);
         }
         return true;
     }
@@ -106,6 +107,39 @@ public class AirSearchRadarBlockEntity extends ProcessUnitBlockEntity implements
     protected void idle() {
         if (!contacts.isEmpty()) { contacts = new ListTag(); sync(); }
         if (level instanceof ServerLevel sl) setAlarm(sl, 0);
+    }
+
+    static final int MISSILE_SCAN = 5;
+
+    private void missiles(ServerLevel sl, long now) {
+        UUID owner = getOwner();
+        if (!AirGate.on() || owner == null) return;
+        Vec3 me = SableBridge.worldPos(sl, worldPosition).add(0.0, ANTENNA_Y, 0.0);
+        FlightManager fm = FlightManager.get(sl);
+        double r2 = Balance.ASR_RANGE * Balance.ASR_RANGE;
+        for (AirMissiles.Shot m : AirMissiles.inFlight(sl)) {
+            if (m.pos == null || m.end != null || !hostile(owner, m.owner)) continue;
+            double dx = m.pos.x - me.x, dz = m.pos.z - me.z;
+            if (dx * dx + dz * dz > r2 || masked(sl, me, m.pos) || fm.chaffHides(me.x, me.z, m.pos.x, m.pos.z)) continue;
+            TrackNet.reportAirMissile(sl, owner, frequency, m.id, now);
+        }
+        for (Flight f : fm.flights()) {
+            if (now < f.start() || now > f.endTime() || !f.isCruise() || f.cruise() == null || !f.cruise().air || !AntiShipMissiles.isAshm(f.build())) continue;
+            if (f.isOwnedBy(owner, null)) continue;
+            UUID fo = null;
+            try { fo = f.ownerId() == null || f.ownerId().isEmpty() ? null : UUID.fromString(f.ownerId()); } catch (IllegalArgumentException ignored) { }
+            if (fo != null && !hostile(owner, fo)) continue;
+            Vec3 p = f.position(now);
+            double dx = p.x - me.x, dz = p.z - me.z;
+            if (dx * dx + dz * dz > r2 || masked(sl, me, p) || fm.chaffHides(me.x, me.z, p.x, p.z)) continue;
+            TrackNet.reportAshm(sl, owner, frequency, f.id(), now);
+        }
+    }
+
+    private boolean hostile(UUID owner, UUID shooter) {
+        if (shooter == null) return true;
+        if (shooter.equals(owner) || Access.trusts(this, shooter) || Access.listedFriend(this, shooter)) return false;
+        return !(VnBridge.present() && VnBridge.spares(owner, shooter));
     }
 
     private void sweep(ServerLevel sl, long now) {
@@ -271,7 +305,7 @@ public class AirSearchRadarBlockEntity extends ProcessUnitBlockEntity implements
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.ASR_FE * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.ASR_FE),
                 Component.translatable("gui.wmd.info.asr", String.format("%,d", (int) Balance.ASR_RANGE), Balance.ASR_SWEEP_TICKS / 20.0F));
     }
 

@@ -284,7 +284,8 @@ public class FusionReactorBlockEntity extends ProcessUnitBlockEntity implements 
         int gx = (int) Math.floor(w[0]), gy = (int) Math.floor(w[1]), gz = (int) Math.floor(w[2]);
         FlightManager mgr = FlightManager.get(sl);
         mgr.holdForTest(sl, gx, gz, WarheadFx.holdRadius(2, WarheadType.PLASMA));
-        Forcefield.inside(() -> WarheadFx.detonate(sl, mgr, gx, gy, gz, 2, WarheadType.PLASMA, 0.0, 1.0));
+        java.util.UUID prevShooter = ShipStrike.begin(ShipStrike.shooter() != null ? ShipStrike.shooter() : getOwner());
+        try { Forcefield.inside(() -> WarheadFx.detonate(sl, mgr, gx, gy, gz, 2, WarheadType.PLASMA, 0.0, 1.0)); } finally { ShipStrike.end(prevShooter); }
     }
 
     private boolean released;

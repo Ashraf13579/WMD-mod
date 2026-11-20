@@ -8,11 +8,13 @@ final class AamMeshes {
 
     static final float AGM_R = 3.0F, AGM_HL = 20.8F;
 
-    static boolean big(String mesh) { return "aam_radar".equals(mesh) || "aam_arm".equals(mesh); }
+    static final float HEAVY_R = 4.0F, HEAVY_HL = 38.4F;
 
-    static float radiusPx(String mesh) { return "aam_agm".equals(mesh) ? AGM_R : big(mesh) ? RADAR_R : HEAT_R; }
+    static boolean big(String mesh) { return "aam_radar".equals(mesh) || "aam_arm".equals(mesh) || "aam_meteor".equals(mesh); }
 
-    static float lengthPx(String mesh) { return 2.0F * ("aam_agm".equals(mesh) ? AGM_HL : big(mesh) ? RADAR_HL : HEAT_HL); }
+    static float radiusPx(String mesh) { return "aam_heavy".equals(mesh) ? HEAVY_R : "aam_agm".equals(mesh) ? AGM_R : big(mesh) ? RADAR_R : HEAT_R; }
+
+    static float lengthPx(String mesh) { return 2.0F * ("aam_heavy".equals(mesh) ? HEAVY_HL : "aam_agm".equals(mesh) ? AGM_HL : big(mesh) ? RADAR_HL : HEAT_HL); }
 
     static float hangPx(String mesh) { return 2.0F * radiusPx(mesh) + LUG; }
 }

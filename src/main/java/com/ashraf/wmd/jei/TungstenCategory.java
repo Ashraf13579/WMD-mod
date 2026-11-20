@@ -100,7 +100,7 @@ public final class TungstenCategory implements IRecipeCategory<TungstenCategory.
         var font = Minecraft.getInstance().font;
         g.drawString(font, "->", 82, 10, GREY, false);
         g.drawString(font, Component.translatable("jei.wmd.time", String.format("%.1f", r.ticks() / 20.0)), 4, 28, GREY, false);
-        g.drawString(font, Component.translatable("jei.wmd.power", r.fePerTick() * 20), 4, 40, GREY, false);
+        g.drawString(font, Component.translatable("jei.wmd.power", r.fePerTick()), 4, 40, GREY, false);
         if (!r.note().isEmpty()) {
             Component note = Component.translatable(r.note());
             g.drawString(font, note, W - 4 - font.width(note), 28, 0xFF1F4E9A, false);

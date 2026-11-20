@@ -43,7 +43,7 @@ public class TiltrotorBlockEntity extends P6DriveBlockEntity {
         hoverOn = ShipModes.hover(ship);
         tilt = approach(tilt, hoverOn ? 90.0F : 0.0F, 90.0F / Balance.TR_TILT_TICKS);
         boolean want = Math.abs(throttle) > 0.02 && damageStage() < 3 && ship != null;
-        turning = want && ShipPower.draw(sl, ship, Balance.TR_FE);
+        turning = want && ShipPower.draw(this, sl, ship, Balance.TR_FE);
         spoolTo(turning ? 1.0F : 0.0F);
         push(sl);
         long now = sl.getGameTime();

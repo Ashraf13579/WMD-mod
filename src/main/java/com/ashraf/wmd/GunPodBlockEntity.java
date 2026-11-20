@@ -160,7 +160,7 @@ public class GunPodBlockEntity extends ProcessUnitBlockEntity implements Owned, 
         }
         sig = sl.hasNeighborSignal(worldPosition);
         boolean want = (sig || now < triggerUntil) && rounds > 0 && ship != null;
-        boolean paid = want && ShipPower.draw(sl, ship, Balance.GPOD_FE);
+        boolean paid = want && ShipPower.draw(this, sl, ship, Balance.GPOD_FE);
         spin = paid ? Math.min(spin + 1, Balance.GPOD_SPIN_UP) : Math.max(0, spin - 1);
         boolean shooting = paid && spin >= Balance.GPOD_SPIN_UP;
         if (shooting && now >= nextBurst) {
@@ -196,7 +196,7 @@ public class GunPodBlockEntity extends ProcessUnitBlockEntity implements Owned, 
                     if (!other.equals(ship) && !ShipStrike.spare(sl, other, getOwner()))
                         for (int i = 0; i < n && hits < Balance.GPOD_MAX_BLOCKS; i++)
                             if (sl.random.nextDouble() < Balance.GUN_GROUND_CHEW) hits += ShipStrike.chew(sl, other, m, to.add(dir.scale(0.8)), 1, (float) Balance.CIWS_SHIP_MAX_HARDNESS, getOwner());
-                } else hits = AirGuns.chewGround(sl, to, dir, n, Balance.GPOD_MAX_BLOCKS);
+                } else hits = AirGuns.chewGround(sl, to, dir, n, Balance.GPOD_MAX_BLOCKS, getOwner());
             }
         }
         HeatLog.fired(sl, worldPosition, getOwner());

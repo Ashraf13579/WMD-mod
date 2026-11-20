@@ -34,7 +34,11 @@ public class AirEngineRenderer implements BlockEntityRenderer<AirEngineBlockEnti
             "turbofan_nacelle", new float[][] { { -24F, 0F, -8F, 24F, 1.6F, 56F }, { -24F, 1.6F, -8F, -22.4F, 46.4F, 56F }, { 22.4F, 1.6F, -8F, 24F, 46.4F, 56F },
                     { -24F, 46.4F, -8F, 24F, 48F, 24F }, { -24F, 46.4F, 24F, -8F, 48F, 56F }, { 8F, 46.4F, 24F, 24F, 48F, 56F } },
             "jato_pod", new float[][] { { -6.6F, 15.0F, -7.0F, 6.6F, 15.6F, 39.0F } },
-            "jato_nacelle", new float[][] { { -8F, 14.6F, -8F, 8F, 16F, 40F }, { -8F, 1F, -8F, -6.6F, 14.6F, 40F }, { 6.6F, 1F, -8F, 8F, 14.6F, 40F } });
+            "jato_nacelle", new float[][] { { -8F, 14.6F, -8F, 8F, 16F, 40F }, { -8F, 1F, -8F, -6.6F, 14.6F, 40F }, { 6.6F, 1F, -8F, 8F, 14.6F, 40F } },
+
+            "ion_thruster_pod", new float[][] { { -6.4F, 29.6F, -1.0F, 22.4F, 30.6F, 33.0F } },
+            "ion_thruster_nacelle", new float[][] { { -8F, 0F, -8F, 24F, 1.6F, 40F }, { -8F, 1.6F, -8F, -6.4F, 30.4F, 40F }, { 22.4F, 1.6F, -8F, 24F, 30.4F, 40F },
+                    { -8F, 30.4F, -8F, 24F, 32F, 8F }, { -8F, 30.4F, 24F, 24F, 32F, 40F }, { 8F, 30.4F, 8F, 24F, 32F, 24F } });
 
     private final Variant pod, nacelle;
 
@@ -84,22 +88,28 @@ public class AirEngineRenderer implements BlockEntityRenderer<AirEngineBlockEnti
     static final class CopycatSkin {
         private CopycatSkin() {}
 
+        private static final org.joml.Vector3f TMP_N = new org.joml.Vector3f();
+        private static final float[] TMP_XYZ = new float[3];
+
         static void drawBoxes(MultiBufferSource buffers, Matrix4f pose, Matrix3f nrm, BlockState skin, net.minecraft.world.level.block.entity.BlockEntity be,
                               float[][] boxes, int light, int overlay) {
             VertexConsumer vc = buffers.getBuffer(RenderType.entityCutout(InventoryMenu.BLOCK_ATLAS));
-            BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(skin);
+            com.ashraf.wmd.CopycatSkin.SkinInfo info = com.ashraf.wmd.CopycatSkin.skinInfo(skin);
             for (float[] b : boxes) {
-                for (Direction dir : Direction.values()) face(vc, pose, nrm, model, skin, be, dir, b, light, overlay);
+                for (Direction dir : Direction.values()) face(vc, pose, nrm, info, skin, be, dir, b, light, overlay);
             }
         }
 
         static void face(VertexConsumer vc, Matrix4f pose, Matrix3f nrm, BakedModel model, BlockState skin, net.minecraft.world.level.block.entity.BlockEntity be,
                                  Direction dir, float[] b, int light, int overlay) {
-            List<BakedQuad> qs = model.getQuads(skin, dir, RandomSource.create(42L), ModelData.EMPTY, null);
-            BakedQuad q = qs.isEmpty() ? null : qs.get(0);
-            TextureAtlasSprite sp = q != null ? q.getSprite() : model.getParticleIcon(ModelData.EMPTY);
-            int col = 0xFFFFFF;
-            if (q != null && q.isTinted() && be.getLevel() != null) col = Minecraft.getInstance().getBlockColors().getColor(skin, be.getLevel(), be.getBlockPos(), q.getTintIndex());
+            face(vc, pose, nrm, com.ashraf.wmd.CopycatSkin.skinInfo(skin), skin, be, dir, b, light, overlay);
+        }
+
+        static void face(VertexConsumer vc, Matrix4f pose, Matrix3f nrm, com.ashraf.wmd.CopycatSkin.SkinInfo info, BlockState skin, net.minecraft.world.level.block.entity.BlockEntity be,
+                                 Direction dir, float[] b, int light, int overlay) {
+            int o = dir.ordinal();
+            TextureAtlasSprite sp = info.sprites[o];
+            int col = info.tintIdx[o] >= 0 && be.getLevel() != null ? Minecraft.getInstance().getBlockColors().getColor(skin, be.getLevel(), be.getBlockPos(), info.tintIdx[o]) : 0xFFFFFF;
             int r = (col >> 16) & 255, g = (col >> 8) & 255, bl = col & 255;
 
             int ia, ib, id;
@@ -113,12 +123,13 @@ public class AirEngineRenderer implements BlockEntityRenderer<AirEngineBlockEnti
                 default -> { ia = 0; ib = 2; id = 1; d = b[1]; }
             }
             float oa = ia == 1 ? 0.0F : -8.0F, ob = ib == 1 ? 0.0F : -8.0F;
-            float[] n = nrmTransform(nrm, dir.getStepX(), dir.getStepY(), dir.getStepZ());
+            TMP_N.set(dir.getStepX(), dir.getStepY(), dir.getStepZ()).mul(nrm);
+            float nx = TMP_N.x, ny = TMP_N.y, nz = TMP_N.z;
             for (float a0 = b[ia]; a0 < b[ia + 3] - 1.0E-3F; ) {
                 float a1 = Math.min(b[ia + 3], gridNext(a0, oa));
                 for (float b0 = b[ib]; b0 < b[ib + 3] - 1.0E-3F; ) {
                     float b1 = Math.min(b[ib + 3], gridNext(b0, ob));
-                    tile(vc, pose, n, sp, dir, ia, ib, id, a0, a1, b0, b1, d, oa, ob, r, g, bl, light, overlay);
+                    tile(vc, pose, nx, ny, nz, sp, dir, ia, ib, id, a0, a1, b0, b1, d, oa, ob, r, g, bl, light, overlay);
                     b0 = b1;
                 }
                 a0 = a1;
@@ -132,29 +143,37 @@ public class AirEngineRenderer implements BlockEntityRenderer<AirEngineBlockEnti
             return f < 0.0F ? f + 1.0F : f;
         }
 
-        private static void tile(VertexConsumer vc, Matrix4f pose, float[] n, TextureAtlasSprite sp, Direction dir, int ia, int ib, int id,
+        private static void tile(VertexConsumer vc, Matrix4f pose, float nx, float ny, float nz, TextureAtlasSprite sp, Direction dir, int ia, int ib, int id,
                                  float a0, float a1, float b0, float b1, float d, float oa, float ob, int r, int g, int bl, int light, int overlay) {
             float ua0 = frac(a0, oa), ua1 = ua0 + (a1 - a0) / 16.0F, vb0 = frac(b0, ob), vb1 = vb0 + (b1 - b0) / 16.0F;
-
-            float[][] ab = switch (dir) {
-                case SOUTH, WEST, DOWN -> new float[][] { { a0, b0 }, { a1, b0 }, { a1, b1 }, { a0, b1 } };
-                case UP -> new float[][] { { a0, b1 }, { a1, b1 }, { a1, b0 }, { a0, b0 } };
-                default -> new float[][] { { a1, b0 }, { a0, b0 }, { a0, b1 }, { a1, b1 } };
-            };
-            for (float[] p : ab) {
-                float[] xyz = new float[3];
-                xyz[ia] = p[0];
-                xyz[ib] = p[1];
-                xyz[id] = d;
-                float u = sp.getU(p[0] == a0 ? ua0 : ua1), v = sp.getV(1.0F - (p[1] == b0 ? vb0 : vb1));
-                vc.addVertex(pose, xyz[0] / 16.0F, xyz[1] / 16.0F, xyz[2] / 16.0F).setColor(r, g, bl, 255).setUv(u, v).setOverlay(overlay).setLight(light)
-                        .setNormal(n[0], n[1], n[2]);
+            float u0 = sp.getU(ua0), u1 = sp.getU(ua1), v0 = sp.getV(1.0F - vb0), v1 = sp.getV(1.0F - vb1);
+            switch (dir) {
+                case SOUTH, WEST, DOWN -> {
+                    emitCorner(vc, pose, ia, ib, id, a0, b0, d, u0, v0, r, g, bl, light, overlay, nx, ny, nz);
+                    emitCorner(vc, pose, ia, ib, id, a1, b0, d, u1, v0, r, g, bl, light, overlay, nx, ny, nz);
+                    emitCorner(vc, pose, ia, ib, id, a1, b1, d, u1, v1, r, g, bl, light, overlay, nx, ny, nz);
+                    emitCorner(vc, pose, ia, ib, id, a0, b1, d, u0, v1, r, g, bl, light, overlay, nx, ny, nz);
+                }
+                case UP -> {
+                    emitCorner(vc, pose, ia, ib, id, a0, b1, d, u0, v1, r, g, bl, light, overlay, nx, ny, nz);
+                    emitCorner(vc, pose, ia, ib, id, a1, b1, d, u1, v1, r, g, bl, light, overlay, nx, ny, nz);
+                    emitCorner(vc, pose, ia, ib, id, a1, b0, d, u1, v0, r, g, bl, light, overlay, nx, ny, nz);
+                    emitCorner(vc, pose, ia, ib, id, a0, b0, d, u0, v0, r, g, bl, light, overlay, nx, ny, nz);
+                }
+                default -> {
+                    emitCorner(vc, pose, ia, ib, id, a1, b0, d, u1, v0, r, g, bl, light, overlay, nx, ny, nz);
+                    emitCorner(vc, pose, ia, ib, id, a0, b0, d, u0, v0, r, g, bl, light, overlay, nx, ny, nz);
+                    emitCorner(vc, pose, ia, ib, id, a0, b1, d, u0, v1, r, g, bl, light, overlay, nx, ny, nz);
+                    emitCorner(vc, pose, ia, ib, id, a1, b1, d, u1, v1, r, g, bl, light, overlay, nx, ny, nz);
+                }
             }
         }
 
-        private static float[] nrmTransform(Matrix3f m, float x, float y, float z) {
-            org.joml.Vector3f v = new org.joml.Vector3f(x, y, z).mul(m);
-            return new float[] { v.x, v.y, v.z };
+        private static void emitCorner(VertexConsumer vc, Matrix4f pose, int ia, int ib, int id, float pa, float pb, float d,
+                                       float u, float v, int r, int g, int bl, int light, int overlay, float nx, float ny, float nz) {
+            TMP_XYZ[ia] = pa; TMP_XYZ[ib] = pb; TMP_XYZ[id] = d;
+            vc.addVertex(pose, TMP_XYZ[0] / 16.0F, TMP_XYZ[1] / 16.0F, TMP_XYZ[2] / 16.0F).setColor(r, g, bl, 255).setUv(u, v).setOverlay(overlay).setLight(light)
+                    .setNormal(nx, ny, nz);
         }
     }
 }

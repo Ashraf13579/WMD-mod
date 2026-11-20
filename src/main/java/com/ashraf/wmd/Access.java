@@ -17,17 +17,34 @@ public final class Access {
 
     public static boolean mayUse(Owned o, Player p) {
         return o == null || o.getOwner() == null || o.getOwner().equals(p.getUUID()) || p.hasPermissions(2) || o.security().allows(p.getUUID())
-                || Hacks.allows(o, p);
+                || Hacks.allows(o, p)
+                || terminal(o, p.getUUID(), AccessStore.USE);
     }
 
     public static boolean trusts(Owned o, java.util.UUID who) {
-        return o == null || o.getOwner() == null || o.getOwner().equals(who) || (who != null && o.security().allows(who));
+        return o == null || o.getOwner() == null || o.getOwner().equals(who) || (who != null && o.security().allows(who))
+                || terminal(o, who, AccessStore.USE);
+    }
+
+    static boolean terminal(Owned o, java.util.UUID who, int min) {
+        if (o == null || who == null || o.getOwner() == null) return false;
+        return AccessStore.level(o, who) >= min || (min <= AccessStore.USE && AccessStore.isPublic(o));
+    }
+
+    public static boolean listedFriend(Owned o, java.util.UUID who) {
+        return o != null && who != null && o.getOwner() != null && AccessStore.level(o, who) >= AccessStore.FRIEND;
+    }
+
+    public static java.util.Set<java.util.UUID> sharedWith(Owned o) {
+        java.util.Set<java.util.UUID> out = new java.util.LinkedHashSet<>(o.security().trusted().keySet());
+        out.addAll(AccessStore.players(o, AccessStore.USE));
+        return out;
     }
 
     public static boolean joins(Owned upstream, Owned module) {
         if (upstream == null || module == null) return true;
         java.util.UUID a = upstream.getOwner(), b = module.getOwner();
-        return a == null || b == null || a.equals(b) || upstream.security().trusted().containsKey(b);
+        return a == null || b == null || a.equals(b) || upstream.security().trusted().containsKey(b) || AccessStore.level(upstream, b) >= AccessStore.USE;
     }
 
     public static boolean mayMine(Owned o, Player p) {
@@ -40,7 +57,8 @@ public final class Access {
     }
 
     public static boolean mayConfigure(Owned o, Player p) {
-        return o == null || o.getOwner() == null || o.getOwner().equals(p.getUUID()) || p.hasPermissions(2);
+        return o == null || o.getOwner() == null || o.getOwner().equals(p.getUUID()) || p.hasPermissions(2)
+                || terminal(o, p.getUUID(), AccessStore.CONFIGURE);
     }
 
     public static void deny(Owned o, Player p) { deny(o, p, CcAlarms.USE); }

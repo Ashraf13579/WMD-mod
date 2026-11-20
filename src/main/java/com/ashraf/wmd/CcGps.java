@@ -54,7 +54,7 @@ public final class CcGps {
             BlockPos room = t != null ? t.hallCentre() : r.getBlockPos();
             GpsPayload p = minimap(server, r, owner, room, t);
             next.putIfAbsent(owner, p);
-            for (UUID u : r.security().trusted().keySet()) next.putIfAbsent(u, p);
+            for (UUID u : Access.sharedWith(r)) next.putIfAbsent(u, p);
         }
         for (Map.Entry<UUID, GpsPayload> e : next.entrySet()) {
             ServerPlayer p = server.getPlayerList().getPlayer(e.getKey());
@@ -72,7 +72,7 @@ public final class CcGps {
     private static GpsPayload minimap(MinecraftServer server, CcGpsRackBlockEntity r, UUID owner, BlockPos room, CcBuildingBlockEntity t) {
         java.util.List<UUID> ids = new java.util.ArrayList<>();
         ids.add(owner);
-        for (UUID u : r.security().trusted().keySet()) if (!ids.contains(u)) ids.add(u);
+        for (UUID u : Access.sharedWith(r)) if (!ids.contains(u)) ids.add(u);
         int[] mates = new int[GpsPayload.MAX_MATES * 2];
         java.util.List<String> names = new java.util.ArrayList<>();
         for (UUID u : ids) {

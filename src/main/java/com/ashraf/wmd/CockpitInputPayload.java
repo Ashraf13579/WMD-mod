@@ -39,7 +39,7 @@ public record CockpitInputPayload(BlockPos cockpit, int seat, int pitch, int rol
             if (!(sp.getVehicle() instanceof CockpitSeatEntity seat) || !seat.cockpit().equals(p.cockpit()) || seat.seatIndex() != p.seat()) return;
             float thr = Float.isFinite(p.throttle()) ? p.throttle() : 0.0F;
             if (sp.level().getBlockEntity(p.cockpit()) instanceof JetCockpitBlockEntity be)
-                be.input(sp, p.seat(), Integer.signum(p.pitch()), Integer.signum(p.roll()), Integer.signum(p.yaw()), thr, p.afterburner(), p.buttons() & 0x7FFFFF,                   p.station(), p.gun(),
+                be.input(sp, p.seat(), Integer.signum(p.pitch()), Integer.signum(p.roll()), Integer.signum(p.yaw()), thr, p.afterburner(), p.buttons() & 0x3FFFFFF,                               p.station(), p.gun(),
                         p.brake(), Float.isFinite(p.ax()) && Float.isFinite(p.ay()) && Float.isFinite(p.az()) ? new net.minecraft.world.phys.Vec3(p.ax(), p.ay(), p.az()) : null,
                         aimDir(p));
         });

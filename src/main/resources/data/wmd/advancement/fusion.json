@@ -1,0 +1,38 @@
+{
+  "parent": "wmd:fission",
+  "display": {
+    "icon": {
+      "id": "wmd:chip_fusion_1"
+    },
+    "title": {
+      "translate": "advancements.wmd.fusion.title"
+    },
+    "description": {
+      "translate": "advancements.wmd.fusion.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_chip_fusion_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wmd:chip_fusion_1"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_chip_fusion_1"
+    ]
+  ],
+  "rewards": {
+    "experience": 150
+  }
+}

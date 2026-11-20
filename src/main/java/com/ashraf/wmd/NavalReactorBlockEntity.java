@@ -148,6 +148,10 @@ public class NavalReactorBlockEntity extends ProcessUnitBlockEntity implements G
             double[] c = be.worldPoint(1.0, 1.8, 1.0);
             double d = Math.sqrt((c[0] - pos.x) * (c[0] - pos.x) + (c[1] - pos.y) * (c[1] - pos.y) + (c[2] - pos.z) * (c[2] - pos.z));
             if (d > r + Balance.NR_CRACK_REACH) continue;
+            if (CraftShield.anyUp()) {
+                UUID ship = SableBridge.shipIdAt(sl, be.getBlockPos());
+                if (ship != null && CraftShield.blastStopped(sl, ship, pos, r)) continue;
+            }
             be.crack(sl);
         }
     }
@@ -270,7 +274,7 @@ public class NavalReactorBlockEntity extends ProcessUnitBlockEntity implements G
             IEnergyStorage onFlange = sl.getCapability(net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage.BLOCK, flange.relative(east), east.getOpposite());
             if (onFlange != null && onFlange.canReceive()) {
                 int given = onFlange.receiveEnergy(Math.min(stored, Balance.NR_OUT_PER_TICK), false);
-                if (given > 0) { stored -= given; setChanged(); }
+                if (given > 0) { stored -= given; setChanged(); PowerMeter.noteOut(sl, worldPosition, given); }
             }
         }
 
@@ -344,13 +348,16 @@ public class NavalReactorBlockEntity extends ProcessUnitBlockEntity implements G
         FlightManager mgr = FlightManager.get(sl);
         int tier = Balance.NR_MELTDOWN_TIER;
         mgr.holdForTest(sl, gx, gz, WarheadFx.holdRadius(tier, WarheadType.NUKE));
-        Forcefield.inside(() -> WarheadFx.detonate(sl, mgr, gx, gy, gz, tier, WarheadType.NUKE, 0.0, 1.0));
+        java.util.UUID prevShooter = ShipStrike.begin(getOwner());
+        try { WarTreaty.accident(() -> Forcefield.inside(() -> WarheadFx.detonate(sl, mgr, gx, gy, gz, tier, WarheadType.NUKE, 0.0, 1.0))); } finally { ShipStrike.end(prevShooter); }
     }
+
+    private long sirenAt = Long.MIN_VALUE / 2;
 
     private void warnings(ServerLevel sl, long now) {
         if (heat >= Balance.NR_HEAT_ALARM && now % 40 == 0) sl.playSound(null, worldPosition, WmdSounds.NR_ALARM.get(), SoundSource.BLOCKS, Balance.SND_ALARM, heat >= Balance.NR_HEAT_STEAM ? 1.15F : 1.0F);
         if (heat >= Balance.NR_HEAT_STEAM && now % 40 == 20) sl.playSound(null, worldPosition, WmdSounds.NR_STEAM.get(), SoundSource.BLOCKS, Balance.SND_RELEASE, 0.9F + sl.random.nextFloat() * 0.2F);
-        if (heat >= Balance.NR_HEAT_SCRAM + 50.0 && now % 60 == 0) sl.playSound(null, worldPosition, WmdSounds.SIREN.get(), SoundSource.BLOCKS, Balance.SND_ALARM, 1.0F);
+        if (heat >= Balance.NR_HEAT_SCRAM + 50.0 && (now - sirenAt >= Balance.SIREN_TICKS || now < sirenAt)) { sirenAt = now; sl.playSound(null, worldPosition, WmdSounds.SIREN.get(), SoundSource.BLOCKS, Balance.SND_ALARM, 1.0F); }
     }
 
     public BlockPos corePos(Level lv) {
@@ -368,7 +375,7 @@ public class NavalReactorBlockEntity extends ProcessUnitBlockEntity implements G
     @Override
     public List<Component> panelLines() {
         List<Component> l = new ArrayList<>();
-        l.add(Component.translatable("gui.wmd.naval_reactor.power", pctNow, pctNow * Balance.NR_FE_PER_TICK / 100 * 20));
+        l.add(Component.translatable("gui.wmd.naval_reactor.power", pctNow, pctNow * Balance.NR_FE_PER_TICK / 100));
         l.add(Component.translatable("gui.wmd.naval_reactor.heat", shownHeat, (int) Balance.NR_HEAT_MAX));
         l.add(Component.translatable("gui.wmd.naval_reactor.coolant", water.getFluidAmount() * 100 / Balance.NR_WATER_TANK_MB, Balance.NR_TANK_COOL_PCT));
         l.add(Component.translatable(cracked ? "gui.wmd.naval_reactor.cracked" : sea ? "gui.wmd.naval_reactor.cool_sea" : cooled ? "gui.wmd.naval_reactor.cool_pipe" : "gui.wmd.naval_reactor.cool_none"));
@@ -473,7 +480,7 @@ public class NavalReactorBlockEntity extends ProcessUnitBlockEntity implements G
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.gen_output", Balance.NR_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.gen_output", Balance.NR_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.naval_reactor", Balance.NR_FUEL_TICKS / 72_000, Balance.NR_QUIET_PCT),
                 Component.translatable("gui.wmd.info.naval_reactor_cool"));
     }

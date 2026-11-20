@@ -131,6 +131,10 @@ public final class CcBuildingSpec {
         };
     }
 
+    public static Block blockFor(CcModule k, net.minecraft.world.item.ItemStack s) {
+        return k == CcModule.MAP_TABLE && HoloBlocks.isHolo(s) ? HoloBlocks.HOLO_TABLE.get() : block(k);
+    }
+
     public static Item item(CcModule k) {
         Block b = block(k);
         return b == null ? Items.AIR : b.asItem();
@@ -138,6 +142,7 @@ public final class CcBuildingSpec {
 
     public static CcModule kindOf(Item item) {
         if (item == null || item == Items.AIR) return null;
+        if (item == HoloBlocks.HOLO_TABLE_ITEM.get()) return CcModule.MAP_TABLE;
         for (CcModule k : CcModule.values()) if (item(k) == item) return k;
         return null;
     }

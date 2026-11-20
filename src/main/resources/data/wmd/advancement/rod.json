@@ -1,0 +1,38 @@
+{
+  "parent": "wmd:satellite",
+  "display": {
+    "icon": {
+      "id": "wmd:station_kit_rod"
+    },
+    "title": {
+      "translate": "advancements.wmd.rod.title"
+    },
+    "description": {
+      "translate": "advancements.wmd.rod.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_station_kit_rod": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wmd:station_kit_rod"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_station_kit_rod"
+    ]
+  ],
+  "rewards": {
+    "experience": 150
+  }
+}

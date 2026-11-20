@@ -32,7 +32,7 @@ public class CcBuildingBlockEntity extends ProcessUnitBlockEntity implements Own
     public static final int N = CcModule.values().length;
     private static final PortMap PORT_MAP = new PortMap(CcBuildingSpec.X0, CcBuildingSpec.X1, CcBuildingSpec.Z1 + 1)
             .power(CcBuildingSpec.SOCKET_X, CcBuildingSpec.SOCKET_Y, CcBuildingSpec.SOCKET_Z, Direction.EAST, false);
-    private static final int UNKNOWN = 0, ABSENT = 1, PRESENT = 2;
+    private static final int UNKNOWN = 0, ABSENT = 1, PRESENT = 2, WRONG = 3;
 
     private static class Buffer extends EnergyStorage {
         Buffer(int capacity) { super(capacity, Math.max(1, capacity / 20), 0); }
@@ -217,9 +217,11 @@ public class CcBuildingBlockEntity extends ProcessUnitBlockEntity implements Own
 
     public int draw() {
         int d = Balance.CC_BUILDING_FE_PER_TICK;
-        for (CcModule k : CcModule.values()) if (placed(k)) d += k.fe();
+        for (CcModule k : CcModule.values()) if (placed(k)) d += k == CcModule.MAP_TABLE && HoloBlocks.isHolo(modules.getStackInSlot(k.ordinal())) ? Balance.HOLOT_FE : k.fe();
         return d;
     }
+
+    private net.minecraft.world.level.block.Block blockFor(CcModule k) { return CcBuildingSpec.blockFor(k, modules.getStackInSlot(k.ordinal())); }
 
     int bufferStored() { return buffer.getEnergyStored(); }
     int bufferCapacity() { return buffer.getMaxEnergyStored(); }
@@ -255,7 +257,9 @@ public class CcBuildingBlockEntity extends ProcessUnitBlockEntity implements Own
         BlockPos c = moduleController(k);
         if (!mayLoad && !level.isLoaded(c)) return UNKNOWN;
         BlockEntity be = level.getBlockEntity(c);
-        return be instanceof CcModuleBlockEntity m && m.kind() == k && worldPosition.equals(m.buildingPos()) ? PRESENT : ABSENT;
+        if (!(be instanceof CcModuleBlockEntity m && m.kind() == k && worldPosition.equals(m.buildingPos()))) return ABSENT;
+
+        return installed(k) && level.getBlockState(c).getBlock() != blockFor(k) ? WRONG : PRESENT;
     }
 
     private void refresh(CcModule k, boolean mayLoad) {
@@ -263,6 +267,7 @@ public class CcBuildingBlockEntity extends ProcessUnitBlockEntity implements Own
         int pres = presence(k, mayLoad);
         if (pres == UNKNOWN) return;
         boolean want = installed(k);
+        if (pres == WRONG) { level.removeBlock(moduleController(k), false); pres = ABSENT; }
         if (want && pres == ABSENT && place(k)) pres = PRESENT;
         else if (!want && pres == PRESENT) { remove(k); pres = ABSENT; }
         CcModuleBlockEntity m = pres == PRESENT ? module(k) : null;
@@ -281,7 +286,7 @@ public class CcBuildingBlockEntity extends ProcessUnitBlockEntity implements Own
     }
 
     private boolean place(CcModule k) {
-        if (!(CcBuildingSpec.block(k) instanceof MachineBlock mb)) return false;
+        if (!(blockFor(k) instanceof MachineBlock mb)) return false;
         BlockPos c = moduleController(k);
         Direction f = moduleFacing(k);
         for (BlockPos l : mb.footprint()) {
@@ -506,7 +511,7 @@ public class CcBuildingBlockEntity extends ProcessUnitBlockEntity implements Own
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", draw() * 20), Component.translatable("gui.wmd.info.cc_building"));
+        return List.of(Component.translatable("gui.wmd.info.use", draw()), Component.translatable("gui.wmd.info.cc_building"));
     }
 
     @Override

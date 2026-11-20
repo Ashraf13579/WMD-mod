@@ -36,6 +36,14 @@ public final class ClientConfig {
             .comment("Also draw WMD's dynamic lights while an Iris shaderpack is on. Off by default: the pack lights the world itself (WMD lamps give block light), and some packs show WMD's lights as patches or flicker.")
             .define("wmdLightsUnderShaders", false);
 
+    public static final ModConfigSpec.BooleanValue VEIL_LIGHTS_WITH_VILC = BUILDER
+            .comment("With the mod Veil Iris Lights Compat (VILC) installed, keep WMD's coloured Veil lights on while Iris / a shaderpack is used (VILC draws them). Turn off if lights look wrong or the game stutters with your shaderpack.")
+            .define("veilLightsWithVilc", true);
+
+    public static final ModConfigSpec.BooleanValue LAMBDYNLIGHTS = BUILDER
+            .comment("With the mod LambDynamicLights installed, WMD's lights (lamps, engines, flares, blasts) light up the blocks around them while a shaderpack is on, through LambDynamicLights (works with every shaderpack; white light in block steps).")
+            .define("lambDynamicLights", true);
+
     public enum HoloDetail { LOW, MEDIUM, HIGH }
 
     public static final ModConfigSpec.DoubleValue CAMERA_SHAKE = BUILDER
@@ -62,6 +70,10 @@ public final class ClientConfig {
             .comment("Missile camera: show the HUD (reticle, altitude / speed / time, target). false = the clean camera image (the back hint stays).")
             .define("missileCamHud", true);
 
+    public static final ModConfigSpec.BooleanValue WARDEN_MUSIC = BUILDER
+            .comment("Play the Warden boss fight's own music (on the Music volume slider). false = no Warden music from WMD (e.g. when you score the fight yourself with Music Triggers and its wmd:boss_* events).")
+            .define("wardenMusic", true);
+
     public static final ModConfigSpec.BooleanValue STRIKE_TOAST = BUILDER
             .comment("Strike result card: when your strike / salvo / fire mission is over, a short card shows hits, intercepted rounds and the damage report state.")
             .define("strikeToast", true);
@@ -82,7 +94,13 @@ public final class ClientConfig {
             .comment("With a shaderpack on: switch it off while you are in orbit (the pack draws a day sky there) and back on when you leave.")
             .define("shaderPauseOrbit", true);
 
+    public static final ModConfigSpec.BooleanValue SHIP_REDRAW = BUILDER
+            .comment("Ships (Create Aeronautics / Sable): redraw a ship when it loads again or comes back into view, so copycat blocks and WMD wings keep their look. Turn off if far ships make your game stutter; /wmdredraw still works.")
+            .define("shipRedraw", true);
+
     public static final ModConfigSpec SPEC = BUILDER.build();
+
+    public static boolean shipRedraw() { return !SPEC.isLoaded() || SHIP_REDRAW.get(); }
 
     public static boolean newSounds() { return !SPEC.isLoaded() || NEW_SOUNDS.get(); }
 
@@ -114,6 +132,8 @@ public final class ClientConfig {
     public static boolean missileCamHud() { return !SPEC.isLoaded() || MISSILE_CAM_HUD.get(); }
 
     public static boolean strikeToast() { return !SPEC.isLoaded() || STRIKE_TOAST.get(); }
+
+    public static boolean wardenMusic() { return !SPEC.isLoaded() || WARDEN_MUSIC.get(); }
 
     public static int count(float base, net.minecraft.util.RandomSource random) {
         double d = SPEC.isLoaded() ? SMOKE_DENSITY.get() : 1.0;

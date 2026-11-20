@@ -186,7 +186,7 @@ public class ResearchStationBlockEntity extends ItemProcessBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", fe() * 20), Component.translatable("gui.wmd.info.research"));
+        return List.of(Component.translatable("gui.wmd.info.use", fe()), Component.translatable("gui.wmd.info.research"));
     }
 
     @Override protected SoundEvent runSound() { return WmdSounds.RESEARCH_RUN.get(); }

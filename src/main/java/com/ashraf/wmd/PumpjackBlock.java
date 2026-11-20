@@ -21,10 +21,23 @@ import net.minecraft.world.level.block.state.BlockState;
 public class PumpjackBlock extends MachineBlock {
 
     public static final MapCodec<PumpjackBlock> CODEC = simpleCodec(PumpjackBlock::new);
-    private static final List<BlockPos> FOOTPRINT = new ArrayList<>();
 
-    static {
-        for (int x = -1; x <= 1; x++) for (int z = 0; z <= 7; z++) FOOTPRINT.add(new BlockPos(x, 0, z));
+    private static List<BlockPos> footprint;
+
+    static List<BlockPos> cells() {
+        if (footprint == null) {
+            List<BlockPos> l = new ArrayList<>();
+            for (int x = -1; x <= 1; x++) for (int z = 0; z <= 7; z++) l.add(new BlockPos(x, 0, z));
+            int upper = 0;
+            for (BlockPos p : MachineShapes.cells("pumpjack")) {
+                if (p.getY() < 1 || p.getX() < -1 || p.getX() > 1 || p.getZ() < 0 || p.getZ() > 7) continue;
+                l.add(p);
+                upper++;
+            }
+            if (upper < 40) Wmd.LOGGER.error("[pumpjack] only {} upper cells: data/wmd/machine_shapes/pumpjack.json missing? (the tall parts have no hitbox)", upper);
+            footprint = List.copyOf(l);
+        }
+        return footprint;
     }
 
     private static final List<BlockPos> FRONT_3X3 = new ArrayList<>();
@@ -62,7 +75,7 @@ public class PumpjackBlock extends MachineBlock {
     protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
 
     @Override
-    protected List<BlockPos> footprint() { return FOOTPRINT; }
+    protected List<BlockPos> footprint() { return cells(); }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new PumpjackBlockEntity(pos, state); }

@@ -31,15 +31,50 @@ public class FieldManualScreen extends Screen {
         if (!AirGate.AVAILABLE) return base;
         List<Page> l = new java.util.ArrayList<>(base);
         l.add(new Page("air_search_radar", new String[] { "busbar > air_search_radar" },
-                () -> new Object[] { n((int) Balance.ASR_RANGE), n(Balance.ASR_SWEEP_TICKS / 20), n(Balance.ASR_FE * 20), n((int) Balance.ASR_CLUTTER_RANGE), n((int) Balance.ASR_CLUTTER_AGL) }));
+                () -> new Object[] { n((int) Balance.ASR_RANGE), n(Balance.ASR_SWEEP_TICKS / 20), n(Balance.ASR_FE), n((int) Balance.ASR_CLUTTER_RANGE), n((int) Balance.ASR_CLUTTER_AGL) }));
         l.add(new Page("sam_site", new String[] { "air_search_radar aam_radar > sam_site" },
                 () -> new Object[] { n((int) Balance.SAM_RANGE), n((int) Balance.AAM_PITBULL), n(Balance.SAM_SHOT_FE) }));
+        l.add(new Page("pulse_emp", new String[] { "superconducting_coil chip_defence_2 > pulse_emp" },
+                () -> new Object[] { n((int) (Balance.PEMP_CHARGE_FE / 1_000_000L)), n((int) Balance.PEMP_RANGE), n((int) Balance.PEMP_HALF_ANGLE), n(Balance.PEMP_BLACKOUT / 20),
+                        n(Balance.PEMP_COOLDOWN / 1200) }));
+        l.add(new Page("active_cloak", new String[] { "superconducting_coil chip_space_2 > active_cloak", "jet_power_core > active_cloak" },
+                () -> new Object[] { n(Balance.CLOAK_FE), n(Balance.CLOAK_COVER_BLOCKS), n((int) Balance.CLOAK_FIELD_R), n(Balance.CLOAK_ENGAGE_TICKS / 20), n(Balance.CLOAK_RECHARGE_TICKS / 20) }));
+        l.add(new Page("quantum_radar", new String[] { "radar_component chip_space_2 > quantum_radar", "quantum_radar > sam_site" },
+                () -> new Object[] { n((int) Balance.QR_RANGE), n((int) Balance.QR_PLAYER_RANGE), n(Balance.QR_FE), n(Balance.QR_SWEEP_TICKS / 20) }));
+        l.add(new Page("gravity_well", new String[] { "superconducting_coil tungsten_block chip_defence_2 > gravity_well" },
+                () -> new Object[] { n(Balance.GWG_R_MIN), n(Balance.GWG_R_MAX), n(Balance.GWG_BUFFER_FE / 1_000_000), n(Balance.GWG_LOCKOUT / 20) }));
+        l.add(new Page("plasma_mortar", new String[] { "superconducting_coil howitzer > plasma_mortar", "~hydrogen busbar > plasma_mortar" },
+                () -> new Object[] { n(Balance.PMORT_MIN), n(Balance.PMORT_RANGE), n((int) Math.round(Missiles.craterRadius(WarheadType.PLASMA_BALL.tier) * WarheadType.PLASMA_BALL.crater)),
+                        n(Balance.PMORT_BURN / 20), n(Balance.PMORT_SHOT_FE / 1_000_000), n(Balance.PMORT_H2_MB) }));
+        l.add(new Page("tesla_tower", new String[] { "copper_wire chip_defence_2 > tesla_tower" },
+                () -> new Object[] { n((int) Balance.TT_RANGE), n((int) Balance.TT_STORM_RANGE), n(Balance.TT_CHAIN), n((int) Balance.TT_DMG), n(Balance.TT_STRIKE_FE) }));
+        l.add(new Page("storm_generator", new String[] { "tesla_tower superconducting_coil > storm_generator" },
+                () -> new Object[] { n(Balance.STGEN_MIN_RANGE), n(Balance.STGEN_MAX_RANGE), n(Balance.STGEN_RADII[0]), n(Balance.STGEN_RADII[Balance.STGEN_RADII.length - 1]),
+                        n(Balance.STGEN_STORM / 20), n(Balance.STGEN_BUFFER_FE / 1_000_000), n(Balance.STGEN_COOLDOWN / 1200) }));
+        l.add(new Page("access_terminal", new String[] { "steel_ingot advanced_circuit > access_terminal" },
+                () -> new Object[] { n(AccessStore.MAX_GRANTS), n(AccessTerminalPayloads.MAX_ROWS) }));
+        l.add(new Page("holo_table", new String[] { "cc_map_table antimatter_cell superconducting_coil > holo_table" },
+                () -> new Object[] { n(Balance.HOLOT_SPANS[0]), n(Balance.HOLOT_SPANS[Balance.HOLOT_SPANS.length - 1]), n(Balance.HOLOT_FE) }));
+        l.add(new Page("exo_suit", new String[] { "power_core superconducting_coil > exo_chest" },
+                () -> new Object[] { n(Balance.EXO_ARMOR[0] + Balance.EXO_ARMOR[1] + Balance.EXO_ARMOR[2] + Balance.EXO_ARMOR[3]), n(Balance.EXO_FE_CAP / 1_000_000),
+                        n(Balance.EXO_HOVER_MAX / 20), n(Balance.EXO_LEAP_CHARGE / 20), n(Balance.EXO_EMP_LOCK / 20) }));
+        l.add(new Page("exo_modules", new String[] { "exo_mod_cannon exo_mod_wings > suit_rack" },
+                () -> new Object[] { String.valueOf(Balance.EXO_CANNON_CHARGE / 20.0), n(Balance.EXO_MSL_SALVO), n(Balance.EXO_BARRIER_FE) }));
+        l.add(new Page("hand_tools", new String[] { "superconducting_coil power_core > tractor_beam", "superconducting_coil chip_defence_2 > plasma_cutter" },
+                () -> new Object[] { n((int) Balance.TRB_RANGE), n(Balance.TRB_CRAFT_MAX_BLOCKS), n((int) Balance.PCU_REACH), n(Balance.PCU_BREACH_DEPTH), n(Balance.PCU_OVERHEAT_TICKS / 20) }));
+        l.add(new Page("ion_thruster", new String[] { "superconducting_coil chip_space_2 > ion_thruster", "jet_power_core > ion_thruster" },
+                () -> new Object[] { n((int) Balance.ION_THRUST), n((int) Balance.ION_AIRFLOW), n(Balance.ION_FE_IDLE + Balance.ION_FE_LOAD), n((int) Balance.ION_STEER_MAX) }));
+        l.add(new Page("craft_shield", new String[] { "superconducting_coil antimatter_cell chip_defence_2 > craft_shield", "jet_power_core > craft_shield" },
+                () -> new Object[] { n(Balance.CSH_FE), n(CraftShield.drain(Balance.AAM_FRAG_RADIUS[1]) / 1000), n(Balance.CSH_ROUND_FE), n((int) Math.round(Balance.CSH_FLOOR * 100)),
+                        n(Balance.CSH_COOLDOWN / 20) }));
+        l.add(new Page("blink_gate", new String[] { "blink_gate_corner blink_gate_segment > blink_gate_core" },
+                () -> new Object[] { n(Balance.BG_JUMP_FE / 1_000_000), n(Balance.BG_BLOCK_FE), n(Balance.BG_OPEN_FE), n(Balance.BG_COOL / 20) }));
         l.add(new Page("jet_power_core", new String[] { "busbar > jet_power_core", "~jet_fuel > jet_power_core" },
-                () -> new Object[] { n(Balance.CORE_BUFFER_FE), n(Balance.CORE_APU_FE * 20), n((int) Math.round(Balance.CORE_APU_START * 100)) }));
+                () -> new Object[] { n(Balance.CORE_BUFFER_FE), n(Balance.CORE_APU_FE), n((int) Math.round(Balance.CORE_APU_START * 100)) }));
         l.add(new Page("rf_power", new String[] { "busbar > rf_sender", "rf_sender > rf_receiver > busbar" },
-                () -> new Object[] { n(Balance.RF_SEND_FE * 20), n(Balance.RF_OUT_FE * 20), Balance.RF_EFFICIENCY, n(Balance.RF_RANGE) }));
+                () -> new Object[] { n(Balance.RF_SEND_FE), n(Balance.RF_OUT_FE), Balance.RF_EFFICIENCY, n(Balance.RF_RANGE) }));
         l.add(new Page("service_arm", new String[] { "~jet_fuel ~diesel busbar > service_arm", "service_receptacle > jet_power_core" },
-                () -> new Object[] { n((int) Balance.SA_REACH), n(Balance.SA_FUEL_RATE * 20), n(Balance.SA_GROUND_FE * 20), n(Balance.SA_FE_MOVE * 20) }));
+                () -> new Object[] { n((int) Balance.SA_REACH_MIN) + "-" + n((int) Balance.SA_REACH), n(Balance.SA_FUEL_RATE * 20), n(Balance.SA_GROUND_FE), n(Balance.SA_FE_MOVE) }));
         l.add(new Page("countermeasure_dispenser", new String[] { "flare_pack > countermeasure_dispenser", "chaff_pod > countermeasure_dispenser" },
                 () -> new Object[] { n(Balance.AAM_DISPENSER_FLARES), n(Balance.AAM_DISPENSER_CHAFF), n(Balance.DISP_PER_ITEM) }));
         l.add(new Page("wing", new String[] { "wing_section > control_surface" },
@@ -69,6 +104,8 @@ public class FieldManualScreen extends Screen {
                 () -> new Object[] { n((int) Balance.SCANNER_RANGE) }));
         l.add(new Page("gantry", new String[] { "survey_scanner engine_repair_kit > gantry_cabinet", "gantry_rail" },
                 () -> new Object[] { n(Balance.GANTRY_SPAN_MIN), n(Balance.GANTRY_SPAN_MAX), n(Balance.GANTRY_FE) }));
+        l.add(new Page("nanite_forge", new String[] { "antimatter_cell engine_repair_kit superconducting_coil > nanite_forge" },
+                () -> new Object[] { n(Balance.NFORGE_BATCH), n(Balance.NFORGE_BATCH_TICKS), n(Balance.NFORGE_FE), n(Balance.NFORGE_BLOCK_FE), n(Balance.NFORGE_BUFFER / 1_000_000) }));
         l.add(new Page("loadout", new String[0],
                 () -> new Object[] { n((int) Balance.AD_RANGE), String.format("%.1f", Balance.LOADER_REACH), String.format("%.1f", Balance.HEAVY_LOADER_REACH), n(Balance.LOADER_TRACK_MAX) }));
         l.add(new Page("loadout_screen", new String[0],
@@ -76,9 +113,11 @@ public class FieldManualScreen extends Screen {
         l.add(new Page("air_guns", new String[] { "air_search_radar > ciws" },
                 () -> new Object[] { n((int) Balance.CIWS_JET_RANGE) }));
         l.add(new Page("jammer_pod", new String[] { "jet_power_core > jammer_pod" },
-                () -> new Object[] { n((int) Math.round(Balance.AIRJAM_LOCK_FACTOR * 100)), n(Balance.JAM_POD_FE * 20) }));
+                () -> new Object[] { n((int) Math.round(Balance.AIRJAM_LOCK_FACTOR * 100)), n(Balance.JAM_POD_FE) }));
         l.add(new Page("bay_air", new String[] { "airframe_t2 motor_t2 guidance_t2 warhead_frag > bay_core", "heat_seeker radar_seeker arm_seeker laser_seeker > aam_heat" },
                 () -> new Object[] { Balance.BAY_AIR_YIELD, Math.round(Balance.AAM_REFINED_BONUS * 100) }));
+        l.add(new Page("aam_meteor_heavy", new String[] { "motor_ramjet radar_seeker > aam_meteor", "motor_heavy datalink_seeker > aam_heavy" },
+                () -> new Object[] { n((int) Balance.AAM_RANGE[AirMissiles.METEOR]), n((int) Balance.AAM_RANGE[AirMissiles.HEAVY]), Balance.BAY_AIR_HEAVY_YIELD }));
         l.add(new Page("aam_arm", new String[] { "arm_seeker > aam_arm", "aam_arm > pylon" },
                 () -> new Object[] { n((int) Balance.AAM_ARM_CONE), n((int) Balance.AAM_RANGE[AirMissiles.ARM]) }));
         l.add(new Page("ashm", new String[] { "airframe_t3 jet_engine guidance_t3 warhead_he_t1 > bay_core", "radar_seeker > ashm", "ashm > pylon weapons_bay" },
@@ -120,11 +159,11 @@ public class FieldManualScreen extends Screen {
                 () -> new Object[] { n((int) Balance.AGM_CONE), n((int) Balance.AAM_RANGE[AirMissiles.AGM]) }));
         l.add(new Page("nose_radar", new String[] { "jet_power_core > nose_radar", "nose_radar > aam_radar" },
                 () -> new Object[] { n((int) Balance.NOSE_RANGE), n((int) Balance.NOSE_SEARCH_CONE), n((int) Balance.AIR_NOSE_LOCK_RANGE), n((int) Balance.AAM_PITBULL),
-                        n(Balance.NOSE_FE * 20) }));
+                        n(Balance.NOSE_FE) }));
         l.add(new Page("jet_cockpit", new String[] { "jet_power_core > jet_cockpit" },
-                () -> new Object[] { n(Balance.COCKPIT_FE * 20), n(Balance.EJECT_HOLD_TICKS / 20) }));
+                () -> new Object[] { n(Balance.COCKPIT_FE), n(Balance.EJECT_HOLD_TICKS / 20) }));
         l.add(new Page("flight_deck", new String[] { "jet_cockpit jet_cockpit advanced_circuit > flight_deck" },
-                () -> new Object[] { n(Balance.FDK_FE * 20) }));
+                () -> new Object[] { n(Balance.FDK_FE) }));
         return List.copyOf(l);
     }
 
@@ -153,25 +192,25 @@ public class FieldManualScreen extends Screen {
                     "research_station > chip_metallurgy_2 chip_mining_1 chip_power_2"}, () -> new Object[0]),
             new Page("power", new String[] { "coal_generator diesel_generator > busbar > crusher",
                     "minecraft:coal + ~minecraft:water > steam_engine > busbar" },
-                    () -> new Object[] { n(Balance.COAL_GEN_FE_PER_TICK * 20), n(Balance.SE_FE_PER_TICK * 20), n(GeneratorEngineBlockEntity.FE_PER_SECOND) }),
+                    () -> new Object[] { n(Balance.COAL_GEN_FE_PER_TICK), n(Balance.SE_FE_PER_TICK), n(GeneratorEngineBlockEntity.FE_PER_SECOND / 20) }),
 
             new Page("blast_furnace", new String[] {
                     "minecraft:iron_ingot + " + Balance.BF_STEEL_COAL + "*minecraft:coal > blast_furnace > steel_ingot",
                     "minecraft:raw_iron minecraft:sand > blast_furnace > minecraft:iron_ingot silicon"},
-                    () -> new Object[] { n(Balance.BF_STEEL_COAL), n(Balance.BF_STEEL_TICKS / 20), n(Balance.BF_SMELT_PER_COAL), n(Balance.BF_BLOWER_SPEED), n(Balance.BF_BLOWER_FE * 20) }),
+                    () -> new Object[] { n(Balance.BF_STEEL_COAL), n(Balance.BF_STEEL_TICKS / 20), n(Balance.BF_SMELT_PER_COAL), n(Balance.BF_BLOWER_SPEED), n(Balance.BF_BLOWER_FE) }),
 
             new Page("early_machines", new String[] {
                     Balance.CO_COAL + "*minecraft:coal > coke_oven > coke ~coal_tar",
                     "minecraft:raw_iron > stamp_mill > " + Balance.SM_YIELD + "*crushed_iron"},
-                    () -> new Object[] { n(Balance.CO_COAL), n(Balance.SG_FE_PER_TICK * 20), n(Balance.SM_YIELD) }),
+                    () -> new Object[] { n(Balance.CO_COAL), n(Balance.SG_FE_PER_TICK), n(Balance.SM_YIELD) }),
 
             new Page("renewables", new String[] { "3*solar_cell + 2*minecraft:copper_ingot > solar_panel > busbar",
                     "3*steel_plate + machine_casing > wind_turbine > busbar" },
-                    () -> new Object[] { n(Balance.SOLAR_ARRAY_FE[1] * 20), n(Balance.SOLAR_ARRAY_FE[2] * 20), n(Balance.SOLAR_ARRAY_FE[3] * 20),
-                            n(Balance.SOLAR_ARRAY_FE[4] * 20), n(Balance.SOLAR_ARRAY_FE[5] * 20), n(Balance.WIND_FE_LOW * 20), n(Balance.WIND_FE_HIGH * 20),
+                    () -> new Object[] { n(Balance.SOLAR_ARRAY_FE[1]), n(Balance.SOLAR_ARRAY_FE[2]), n(Balance.SOLAR_ARRAY_FE[3]),
+                            n(Balance.SOLAR_ARRAY_FE[4]), n(Balance.SOLAR_ARRAY_FE[5]), n(Balance.WIND_FE_LOW), n(Balance.WIND_FE_HIGH),
                             n(Balance.WIND_Y_HIGH) }),
             new Page("lava_power", new String[] { "~minecraft:lava > lava_generator > busbar" },
-                    () -> new Object[] { n(Balance.LG_FE_PIPED * 20), n(1000 / Balance.LG_MB_PER_TICK / 20), n(Balance.LG_FE_PER_SOURCE * 20), n(Balance.LG_FE_PASSIVE_MAX * 20) }),
+                    () -> new Object[] { n(Balance.LG_FE_PIPED), n(1000 / Balance.LG_MB_PER_TICK / 20), n(Balance.LG_FE_PER_SOURCE), n(Balance.LG_FE_PASSIVE_MAX) }),
 
             new Page("plates_wires", new String[] {
                     "9*steel_ingot > steel_block > rolling_mill > 2*steel_plate",
@@ -179,7 +218,7 @@ public class FieldManualScreen extends Screen {
                     "aluminium_plate titanium_plate gold_wire aluminium_cable"},
                     () -> new Object[] { n(Balance.MILL_PLATES), n(Balance.WIRE_PER_INGOT) }),
             new Page("oil", new String[] { "oil_detector > pumpjack > ~crude_oil", "~crude_oil > desalter > ~desalted_crude + ~brine" },
-                    () -> new Object[] { n(Balance.PUMPJACK_MB_PER_30S), n((int) Math.round((1.0 - Balance.DESALTER_YIELD) * 100)) }),
+                    () -> new Object[] { n(Balance.PUMPJACK_MB_PER_30S), String.valueOf(Balance.DESALTER_BRINE * 100.0) }),
             new Page("refinery", new String[] { "~desalted_crude > furnace > ~hot_crude > atmospheric_column", "~fuel_oil > vacuum_column > ~bitumen", "~bitumen > coker > 4*petroleum_coke" },
                     () -> new Object[] { n(Balance.COKER_BITUMEN_MB), n(Balance.COKER_COKE_PER_CYCLE) }),
             new Page("deposits", new String[] { "ground_scanner > rutile_deposit > rutile_core_sample + rutile_chunk" }, () -> new Object[0]),
@@ -286,7 +325,7 @@ public class FieldManualScreen extends Screen {
             new Page("arc", new String[] { "titanium_sponge + carbon_electrode > arc_furnace > titanium_ingot" },
                     () -> new Object[] { n(Balance.ARC_CYCLES_PER_ELECTRODE), n(Balance.ARC_W_CONC) }),
             new Page("turbine", new String[] { "4*titanium_ingot + chip_metallurgy_2 > turbine_blades", "~lpg + turbine_blades > gas_turbine > busbar" },
-                    () -> new Object[] { n(Balance.TURBINE_FE_PER_TICK * 20), n(converterEfficiency()) }),
+                    () -> new Object[] { n(Balance.TURBINE_FE_PER_TICK), n(converterEfficiency()) }),
 
             new Page("tungsten", new String[] {
                     "raw_tungsten > crusher > " + Balance.CRUSH_YIELD + "*tungsten_concentrate",
@@ -323,11 +362,11 @@ public class FieldManualScreen extends Screen {
                     () -> new Object[0]),
             new Page("reactor_build", new String[0], () -> new Object[0]),
             new Page("reactor_run", new String[] { "fuel_rod > nuclear_reactor > ~steam + spent_fuel_rod" },
-                    () -> new Object[] { n(Balance.REACTOR_PUMP_FE_PER_TICK * 20), n(Balance.REACTOR_FUEL_TICKS / 1200) }),
+                    () -> new Object[] { n(Balance.REACTOR_PUMP_FE_PER_TICK), n(Balance.REACTOR_FUEL_TICKS / 1200) }),
             new Page("steam_loop", new String[] {
                     "nuclear_reactor > ~steam > steam_turbine > busbar",
                     "~spent_steam > cooling_tower > ~minecraft:water"},
-                    () -> new Object[] { n(Balance.PIPE_RATE_MB), n(Balance.STEAM_TURBINE_MB * Balance.STEAM_TURBINE_FE_PER_MB * 20), n(100 - Balance.TOWER_WATER_PCT) }),
+                    () -> new Object[] { n(Balance.PIPE_RATE_MB), n(Balance.STEAM_TURBINE_MB * Balance.STEAM_TURBINE_FE_PER_MB), n(100 - Balance.TOWER_WATER_PCT) }),
             new Page("meltdown", new String[] { "nuclear_reactor" },
                     () -> new Object[] { n(Balance.REACTOR_HEAT_ALARM), n(Balance.REACTOR_HEAT_STEAM), n(Balance.REACTOR_HEAT_IMMINENT), n(Balance.REACTOR_HEAT_MAX) }),
             new Page("plutonium", new String[] {
@@ -337,7 +376,7 @@ public class FieldManualScreen extends Screen {
 
             new Page("fusion", new String[] {
                     "~deuterium + ~tritium + ~minecraft:water > fusion_reactor"},
-                    () -> new Object[] { n(Balance.FUSION_MAX_FE * 20), n(Balance.FUSION_IGNITION_FE), n(Balance.FUSION_RAMP_TICKS / 20), n(Balance.FUSION_START_WATER_MB),
+                    () -> new Object[] { n(Balance.FUSION_MAX_FE), n(Balance.FUSION_IGNITION_FE), n(Balance.FUSION_RAMP_TICKS / 20), n(Balance.FUSION_START_WATER_MB),
                             n(Balance.FUSION_START_FUEL_MB) }),
 
             new Page("fusion_fuel", new String[] {
@@ -349,13 +388,13 @@ public class FieldManualScreen extends Screen {
             new Page("antimatter", new String[] {
                     "~hydrogen + ~minecraft:water + empty_trap_cell > antimatter_collider",
                     "antimatter_collider > antimatter_cell > antimatter_store"},
-                    () -> new Object[] { n(Balance.AM_FE_PER_TICK * 20), n(Balance.AM_H2_MB * 20), n(Balance.AM_WATER_MB * 20), n(Balance.AM_CYCLE_TICKS / 1200),
+                    () -> new Object[] { n(Balance.AM_FE_PER_TICK), n(Balance.AM_H2_MB * 20), n(Balance.AM_WATER_MB * 20), n(Balance.AM_CYCLE_TICKS / 1200),
                             n(Balance.AM_STORE_CELLS), n(Balance.AM_STORE_BACKUP_TICKS / 20) }),
 
             new Page("railgun", new String[] {
                     "tungsten_block + tungsten_plate + superconducting_coil > railgun_slug",
                     "railgun_slug > railgun"},
-                    () -> new Object[] { n(Balance.RG_FE_PER_TICK * 20), n(Balance.RG_CHARGE_TICKS / 1200), n((int) Balance.RG_ABORT_REACH) }),
+                    () -> new Object[] { n(Balance.RG_FE_PER_TICK), n(Balance.RG_CHARGE_TICKS / 1200), n((int) Balance.RG_ABORT_REACH) }),
 
             new Page("salvage", new String[] {
                     "salvage_generator > salvage_turret",
@@ -394,14 +433,14 @@ public class FieldManualScreen extends Screen {
                     () -> new Object[0]),
 
             new Page("gasoline_engine", new String[] { "~gasoline > gasoline_engine > busbar", "~reformate > gasoline_engine > busbar" },
-                    () -> new Object[] { n(Balance.GE_FE_PER_TICK * 20), n(Balance.GE_FE_PER_MB_GASOLINE), n(Balance.GE_FE_PER_MB_REFORMATE) }),
+                    () -> new Object[] { n(Balance.GE_FE_PER_TICK), n(Balance.GE_FE_PER_MB_GASOLINE), n(Balance.GE_FE_PER_MB_REFORMATE) }),
 
             new Page("free_piston", new String[] { "~reformate > free_piston_generator > busbar" },
-                    () -> new Object[] { n(Balance.FP_FE_PER_TICK * 20), n(Balance.FP_FE_PER_MB), n(Balance.GE_FE_PER_MB_REFORMATE) }),
+                    () -> new Object[] { n(Balance.FP_FE_PER_TICK), n(Balance.FP_FE_PER_MB), n(Balance.GE_FE_PER_MB_REFORMATE) }),
             new Page("aluminium_he", new String[] { "2*raw_bauxite + carbon_electrode > electrolyser > aluminium_ingot", "2*nitrate_dust + ~naphtha > nitration_reactor > he_charge" },
                     () -> new Object[] { n(Balance.ELECTRO_CYCLES_PER_ELECTRODE), n(Balance.NITRO_NAPHTHA_MB) }),
             new Page("alkylation", new String[] { "~lpg + acid_catalyst > alkylation_unit > ~alkylate" },
-                    () -> new Object[] { n(Balance.ALKYLATION_MB_PER_TICK * 20), n((int) Math.round(Balance.ALKYLATE_YIELD * 100)), n(Balance.ALKY_ACID_LPG_MB), n(Balance.ALKYLATION_FE_PER_TICK * 20) }),
+                    () -> new Object[] { n(Balance.ALKYLATION_MB_PER_TICK * 20), n((int) Math.round(Balance.ALKYLATE_YIELD * 100)), n(Balance.ALKY_ACID_LPG_MB), n(Balance.ALKYLATION_FE_PER_TICK) }),
             new Page("canisters", new String[] { "fuel_canister > alkylation_unit > alkylate_canister" },
                     () -> new Object[] { n(Balance.ALKYLATE_CANISTER_MB), String.valueOf(Balance.ALKYLATE_T4_RANGE_MULT) }),
 
@@ -410,13 +449,13 @@ public class FieldManualScreen extends Screen {
             new Page("space_chip", new String[] { "satellite_part + 2*advanced_circuit + plutonium > chip_space_1", "plutonium + 4*tungsten_plate + chip_space_1 > rtg_cell" },
                     () -> new Object[0]),
             new Page("sat_facility", new String[] { "rtg_cell + minecraft:clock > satellite_facility > payload_unit" },
-                    () -> new Object[] { n(Balance.SATFAC_TICKS / 20), n(Balance.SATFAC_FE_PER_TICK * 20) }),
+                    () -> new Object[] { n(Balance.SATFAC_TICKS / 20), n(Balance.SATFAC_FE_PER_TICK) }),
             new Page("sat_launch", new String[] { "payload_unit > launch_terminal_4" },
                     () -> new Object[] { n(Balance.SAT_DOWNRANGE), n(Balance.SAT_MAX) }),
             new Page("orbit_suit", new String[] { "chip_space_1 + chip_fusion_1 > chip_space_2 > eva_torso" },
                     () -> new Object[] { n(Balance.O2_FULL / 1200) }),
             new Page("orbit_oxygen", new String[] { "~minecraft:water > oxygen_station > oxygen_tank" },
-                    () -> new Object[] { n(Balance.O2_STATION_FE_PER_TICK * 20), n(Balance.O2_STATION_FILL_TICKS / 20) }),
+                    () -> new Object[] { n(Balance.O2_STATION_FE_PER_TICK), n(Balance.O2_STATION_FILL_TICKS / 20) }),
             new Page("station", new String[] { "station_hull + titanium_casing > orbital_frame > station_kit_core", "oxygen_tank + carbon_electrode > life_support_unit > station_kit_habitat" },
                     () -> new Object[] { n((int) (Balance.STATION_BUFFER / 1_000_000L)), n(Balance.STATION_WING_FE), n(Balance.STATION_SUN_TICKS / 1200), n(Balance.STATION_ORBIT_TICKS / 1200) }),
             new Page("cargo", new String[] { "station_hull + solar_cell > cargo_pod > launch_terminal_4", "titanium_plate + ~jet_fuel > station_fuel_cell" },
@@ -438,7 +477,7 @@ public class FieldManualScreen extends Screen {
             new Page("orbit_eva", new String[] { "eva_boots" },
                     () -> new Object[] { n(Balance.ORBIT_LOST_R) }),
             new Page("ground_station", new String[] { "ground_station" },
-                    () -> new Object[] { n(Balance.GROUND_STATION_FE_PER_TICK * 20) }),
+                    () -> new Object[] { n(Balance.GROUND_STATION_FE_PER_TICK) }),
             new Page("nav_sat", new String[] { "minecraft:clock > payload_unit + uplink_cell" },
                     () -> new Object[0]),
             new Page("uplink", new String[] { "uplink_cell > bay_core > missile" },
@@ -452,16 +491,16 @@ public class FieldManualScreen extends Screen {
             new Page("recon_drone", new String[] { "recon_drone" },
                     () -> new Object[] { n(Balance.DRONE_RANGE), n(Balance.DRONE_LOITER_S) }),
             new Page("early_warning", new String[] { "early_warning_array" },
-                    () -> new Object[] { n(Balance.EWA_RANGE), n(Balance.EWA_FE_PER_TICK * 20) }),
+                    () -> new Object[] { n(Balance.EWA_RANGE), n(Balance.EWA_FE_PER_TICK) }),
             new Page("asat", new String[] { "warhead_asat > stage_upper" },
                     () -> new Object[] { n(Balance.ASAT_CLIMB_S), n(Balance.ASAT_HIT_PCT) }),
             new Page("hacking", new String[] { "ground_station + cc_ew_rack" },
-                    () -> new Object[] { n(Balance.SAT_HACK_SECONDS), n(Balance.SAT_HACK_FE_PER_TICK * 20), n(Balance.SAT_REKEY_COOLDOWN_S / 60) }),
+                    () -> new Object[] { n(Balance.SAT_HACK_SECONDS), n(Balance.SAT_HACK_FE_PER_TICK), n(Balance.SAT_REKEY_COOLDOWN_S / 60) }),
             new Page("interceptor_sat", new String[] { "kill_vehicle_pack > payload_unit + cc_interceptor_console" },
                     () -> new Object[] { n(Balance.INT_SAT_KILL_PCT), n(Balance.INT_SAT_ZONE) }),
 
             new Page("cc_building", new String[] { "cc_building" },
-                    () -> new Object[] { n(Balance.CC_BUILDING_FE_PER_TICK * 20) }),
+                    () -> new Object[] { n(Balance.CC_BUILDING_FE_PER_TICK) }),
             new Page("cc_reach", new String[] { "cc_comms_array" },
                     () -> new Object[] { n(Balance.CC_REACH) }),
             new Page("cc_map_table", new String[] { "cc_map_table" },
@@ -470,6 +509,8 @@ public class FieldManualScreen extends Screen {
                     () -> new Object[] { n(CcDefcon.THREAT_RADIUS), n(CcDefcon.COUNTER_ARM_TICKS / 20) }),
             new Page("battle_log", new String[] { "cc_map_table > cc_map_printer" },
                     () -> new Object[0]),
+            new Page("war", new String[] { "cc_map_table" },
+                    () -> new Object[] { n(Config.Server.warDeclareMinutes()), n(Config.Server.warMinutes()), n(Config.Server.warTerritoryChunks()) }),
             new Page("cc_warning_board", new String[] { "cc_warning_board" },
                     () -> new Object[0]),
             new Page("cc_recon_wall", new String[] { "cc_recon_wall" },
@@ -500,15 +541,15 @@ public class FieldManualScreen extends Screen {
             new Page("mortar", new String[] { "shell_mortar_he > mortar" },
                     () -> new Object[] { n(Balance.MORTAR_MIN), n(Balance.MORTAR_RANGE), n(Balance.MORTAR_RELOAD_TICKS / 20), n(Balance.MORTAR_MAGAZINE) }),
             new Page("howitzer", new String[] { "shell_howitzer_he + propellant_charge > howitzer" },
-                    () -> new Object[] { n(Balance.HOWITZER_MIN), n(Balance.HOWITZER_RANGE), n(Balance.HOWITZER_CHARGES), n(Balance.HOWITZER_FE_PER_TICK * 20) }),
+                    () -> new Object[] { n(Balance.HOWITZER_MIN), n(Balance.HOWITZER_RANGE), n(Balance.HOWITZER_CHARGES), n(Balance.HOWITZER_FE_PER_TICK) }),
             new Page("shell_press", new String[] { "steel_plate + he_charge + minecraft:redstone > shell_press" },
-                    () -> new Object[] { n(Balance.SHELL_PRESS_TICKS / 20), n(Balance.SHELL_PRESS_FE_PER_TICK * 20) }),
+                    () -> new Object[] { n(Balance.SHELL_PRESS_TICKS / 20), n(Balance.SHELL_PRESS_FE_PER_TICK) }),
             new Page("shells", new String[] { "shell_mortar_he shell_mortar_smoke shell_mortar_illum shell_mortar_cluster" },
                     () -> new Object[] { n(Balance.ART_SMOKE_SECONDS), n(Balance.ART_ILLUM_SECONDS), n(Balance.ART_CLUSTER_BOMBLETS), n((int) Math.round(Balance.ART_SPOT_FACTOR * 100)) }),
             new Page("guided", new String[] { "shell_mortar_guided shell_howitzer_guided mlrs_pod_guided" },
                     () -> new Object[] { String.valueOf((int) Balance.GUIDED_SHELL_SPREAD), String.valueOf((int) Balance.MLRS_GUIDED_SPREAD) }),
             new Page("counter_battery", new String[] { "counter_battery_radar" },
-                    () -> new Object[] { n(Balance.CBR_RANGE), n(Balance.CBR_ERROR), n(Balance.CBR_FE_PER_TICK * 20) }),
+                    () -> new Object[] { n(Balance.CBR_RANGE), n(Balance.CBR_ERROR), n(Balance.CBR_FE_PER_TICK) }),
             new Page("chem_warheads", new String[] { "warhead_neutron warhead_flash > bay_core", "warhead_chemical > gas_mask" },
                     () -> new Object[] { n(Balance.GAS_TICKS / 1200) }),
             new Page("special_shells", new String[] { "shell_howitzer_laser shell_howitzer_flak > howitzer", "warhead_nuke > shell_super_nuke > super_gun" },
@@ -518,7 +559,7 @@ public class FieldManualScreen extends Screen {
             new Page("iron_dome", new String[] { "ciws > cc_iron_dome" },
                     () -> new Object[] { n(Balance.DOME_RADIUS_MIN), n(Balance.DOME_RADIUS_MAX), n(Balance.DOME_MARKER_TOL), n((int) Math.round(Balance.DOME_HIT * 100)) }),
             new Page("mlrs", new String[] { "mlrs_pod > mlrs" },
-                    () -> new Object[] { n(Balance.MLRS_MIN), n(Balance.MLRS_RANGE), n(Balance.MLRS_RELOAD_TICKS / 20), n(Balance.MLRS_FE_PER_TICK * 20) }),
+                    () -> new Object[] { n(Balance.MLRS_MIN), n(Balance.MLRS_RANGE), n(Balance.MLRS_RELOAD_TICKS / 20), n(Balance.MLRS_FE_PER_TICK) }),
             new Page("super_gun", new String[] { "shell_super_he + super_charge > super_gun" },
                     () -> new Object[] { n(Balance.SUPER_GUN_MIN), n(Balance.SUPER_GUN_RANGE), n(Balance.SUPER_GUN_RELOAD_TICKS / 1200), n(Balance.SUPER_GUN_WARN_RANGE) }),
             new Page("camo", new String[] { "camo_net" },
@@ -534,36 +575,36 @@ public class FieldManualScreen extends Screen {
             new Page("sonar", new String[] { "hydrophone_array sonar_dome > sonar_console" },
                     () -> new Object[] { n((int) Balance.SILENT_SPEED), n((int) Balance.SONAR_LAYER_DEPTH), n((int) Balance.SONAR_LAYER_DB) }),
             new Page("sonar_dome", new String[] { "sonar_dome" },
-                    () -> new Object[] { n((int) Balance.SONAR_DOME_RANGE), n((int) Balance.SONAR_PING_RANGE), n(Balance.SONAR_PING_SHOW / 20), n((int) Balance.SONAR_PING_DB), n(Balance.SONAR_DOME_FE * 20) }),
+                    () -> new Object[] { n((int) Balance.SONAR_DOME_RANGE), n((int) Balance.SONAR_PING_RANGE), n(Balance.SONAR_PING_SHOW / 20), n((int) Balance.SONAR_PING_DB), n(Balance.SONAR_DOME_FE) }),
             new Page("hydrophone_array", new String[] { "hydrophone_array" },
-                    () -> new Object[] { n((int) Balance.SONAR_ARRAY_RANGE), n(Balance.SONAR_ARRAY_FE * 20) }),
+                    () -> new Object[] { n((int) Balance.SONAR_ARRAY_RANGE), n(Balance.SONAR_ARRAY_FE) }),
             new Page("sonar_console", new String[] { "sonar_console" },
-                    () -> new Object[] { n(Balance.SONAR_CONSOLE_FE * 20) }),
+                    () -> new Object[] { n(Balance.SONAR_CONSOLE_FE) }),
 
             new Page("towed_array_winch", new String[] { "towed_array_winch" },
-                    () -> new Object[] { n((int) Balance.TOWED_RANGE), n((int) Balance.TOWED_LENGTH), n((int) Balance.TOWED_DEAF_SPEED), n((int) Balance.TOWED_DEAF_TURN), n(Balance.TOWED_SETTLE_TICKS / 20), n(Balance.TOWED_FE * 20) }),
+                    () -> new Object[] { n((int) Balance.TOWED_RANGE), n((int) Balance.TOWED_LENGTH), n((int) Balance.TOWED_DEAF_SPEED), n((int) Balance.TOWED_DEAF_TURN), n(Balance.TOWED_SETTLE_TICKS / 20), n(Balance.TOWED_FE) }),
             new Page("listening_node", new String[] { "listening_node" },
                     () -> new Object[] { n((int) Balance.NODE_RANGE), n((int) (Balance.NODE_BATTERY / Balance.NODE_FE / 1200)), n(Balance.NODE_TURBINE_STILL), n(Balance.NODE_TURBINE_FLOW), n(Balance.NODE_FE) }),
             new Page("coastal_battery", new String[] { "cruise_missile + alkylate_canister > coastal_battery" },
-                    () -> new Object[] { n((int) Balance.COASTAL_PICK), n((int) Balance.COASTAL_SKIM_ALT), n(Balance.COASTAL_FE * 20) }),
+                    () -> new Object[] { n((int) Balance.COASTAL_PICK), n((int) Balance.COASTAL_SKIM_ALT), n(Balance.COASTAL_FE) }),
             new Page("dock_crane", new String[] { "dock_crane" },
-                    () -> new Object[] { String.format("%.1f", DockCraneBlockEntity.reachMin()), String.format("%.1f", DockCraneBlockEntity.reachMax()), n((int) Balance.CRANE_DROP), n(Balance.CRANE_FE * 20) }),
+                    () -> new Object[] { String.format("%.1f", DockCraneBlockEntity.reachMin()), String.format("%.1f", DockCraneBlockEntity.reachMax()), n((int) Balance.CRANE_DROP), n(Balance.CRANE_FE) }),
 
             new Page("torpedo", new String[] { "torpedo_t1 torpedo_t2 torpedo_t3" },
                     () -> new Object[] { n((int) Math.round(Balance.TORP_SPEED[0] * 20)), n((int) Balance.TORP_RANGE[0]), n((int) Balance.TORP_ARM) }),
             new Page("torpedo_tube", new String[] { "torpedo_tube" },
-                    () -> new Object[] { n(Balance.TUBE_FE * 20) }),
+                    () -> new Object[] { n(Balance.TUBE_FE) }),
             new Page("torpedo_launcher_deck", new String[] { "torpedo_launcher_deck" },
-                    () -> new Object[] { n((int) Balance.DECK_TRAIN_MAX), n(Balance.DECK_FE * 20) }),
+                    () -> new Object[] { n((int) Balance.DECK_TRAIN_MAX), n(Balance.DECK_FE) }),
             new Page("torpedo_rack", new String[] { "torpedo_rack" },
                     () -> new Object[0]),
             new Page("fire_control_console", new String[] { "sonar_console fire_control_console > torpedo_tube" },
-                    () -> new Object[] { n((int) Balance.SALVO_FAN), n((int) Balance.GYRO_MAX), n((int) Balance.GYRO_STRAIGHT), n(Balance.FCC_FE * 20) }),
+                    () -> new Object[] { n((int) Balance.SALVO_FAN), n((int) Balance.GYRO_MAX), n((int) Balance.GYRO_STRAIGHT), n(Balance.FCC_FE) }),
             new Page("launch_aboard", new String[] { "fire_control_console > launch_cell + coastal_battery" },
                     () -> new Object[] { n(Balance.FCC_ROWS) }),
 
             new Page("naval_reactor", new String[] { "fuel_rod > naval_reactor > spent_fuel_rod" },
-                    () -> new Object[] { n(Balance.NR_FE_PER_TICK * 20), n(Balance.NR_FUEL_TICKS / 72_000), n(Balance.NR_QUIET_PCT), n((int) Balance.NR_HEAT_SCRAM) }),
+                    () -> new Object[] { n(Balance.NR_FE_PER_TICK), n(Balance.NR_FUEL_TICKS / 72_000), n(Balance.NR_QUIET_PCT), n((int) Balance.NR_HEAT_SCRAM) }),
             new Page("periscope", new String[] { "periscope" },
                     () -> new Object[] { String.valueOf(Balance.PERI_ZOOM_LOW), n((int) Balance.PERI_ZOOM_HIGH), String.valueOf(Balance.PERI_HEAD_UP) }),
             new Page("comms_buoy", new String[] { "comms_buoy" },
@@ -574,32 +615,32 @@ public class FieldManualScreen extends Screen {
                     () -> new Object[] { n(Balance.POD_SEATS), n((int) Balance.POD_REACH) }),
 
             new Page("screw_propeller", new String[] { "helm_station > screw_propeller" },
-                    () -> new Object[] { n(Balance.SCREW_FE * 20), n((Balance.SCREW_FE + Balance.SCREW_FE_LOAD) * 20) }),
+                    () -> new Object[] { n(Balance.SCREW_FE), n((Balance.SCREW_FE + Balance.SCREW_FE_LOAD)) }),
             new Page("engine_telegraph", new String[] { "engine_telegraph > screw_propeller" },
                     () -> new Object[] { n((int) EngineTelegraphBlockEntity.RUDDER_CLICK) }),
             new Page("helm_station", new String[] { "helm_station > screw_propeller" },
-                    () -> new Object[] { n(Balance.HELM_FE * 20) }),
+                    () -> new Object[] { n(Balance.HELM_FE) }),
 
             new Page("pump_jet", new String[] { "helm_station > pump_jet" },
-                    () -> new Object[] { n(Balance.PJ_FE * 20), n((Balance.PJ_FE + Balance.PJ_FE_LOAD) * 20) }),
+                    () -> new Object[] { n(Balance.PJ_FE), n((Balance.PJ_FE + Balance.PJ_FE_LOAD)) }),
             new Page("sub_diesel", new String[] { "sub_diesel > snorkel_mast" },
-                    () -> new Object[] { n(Balance.SD_FE_PER_TICK * 20) }),
+                    () -> new Object[] { n(Balance.SD_FE_PER_TICK) }),
             new Page("snorkel_mast", new String[] { "snorkel_mast > sub_diesel" },
                     () -> new Object[] { String.valueOf(Balance.SN_HEAD_UP) }),
 
             new Page("ducted_fan", new String[] { "engine_telegraph > ducted_fan" },
-                    () -> new Object[] { n(Balance.EDF_FE * 20), n((Balance.EDF_FE + Balance.EDF_FE_LOAD) * 20), n((int) Balance.EDF_AIRFLOW) }),
+                    () -> new Object[] { n(Balance.EDF_FE), n((Balance.EDF_FE + Balance.EDF_FE_LOAD)), n((int) Balance.EDF_AIRFLOW) }),
             new Page("turbofan", new String[] { "hydrotreater > turbofan" },
-                    () -> new Object[] { n(Balance.TF_STARTER_FE * 20), n((int) Balance.TF_AIRFLOW) }),
+                    () -> new Object[] { n(Balance.TF_STARTER_FE), n((int) Balance.TF_AIRFLOW) }),
             new Page("engine_damage", new String[] { "turbofan > engine_repair_kit", "ducted_fan > engine_repair_kit" },
                     () -> new Object[] { n((int) Math.round(Balance.ENGINE_SMOKE * 100)), n((int) Math.round(Balance.ENGINE_SMOKE_THRUST * 100)),
                             n((int) Math.round(Balance.ENGINE_FIRE * 100)), n((int) Math.round(Balance.ENGINE_FIRE_THRUST * 100)), n((int) Balance.CONTRAIL_Y), n((int) Balance.CONTRAIL_SPEED) }),
             new Page("jato_rack", new String[] { "jato_booster > jato_rack" },
                     () -> new Object[] { n(Balance.JATO_BURN / 20), n(Balance.JATO_PROP_LIFE / 20) }),
             new Page("depth_charge", new String[] { "depth_charge > depth_charge_rack" },
-                    () -> new Object[] { n((int) Math.round(Balance.DC_SINK * 20)), n((int) Balance.DC_DEPTH_MIN), n((int) Balance.DC_DEPTH_MAX), n(Balance.DC_RACK_FE * 20) }),
+                    () -> new Object[] { n((int) Math.round(Balance.DC_SINK * 20)), n((int) Balance.DC_DEPTH_MIN), n((int) Balance.DC_DEPTH_MAX), n(Balance.DC_RACK_FE) }),
             new Page("kgun", new String[] { "depth_charge_rack > depth_charge_thrower > depth_charge" },
-                    () -> new Object[] { n(Balance.KG_RELOAD_TICKS / 20), n(Balance.KG_FE * 20) }),
+                    () -> new Object[] { n(Balance.KG_RELOAD_TICKS / 20), n(Balance.KG_FE) }),
             new Page("sea_mines", new String[] { "mine_influence mine_bottom mine_captor" },
                     () -> new Object[] { n(Balance.SEAMINE_ARM_TICKS / 20) }),
             new Page("mine_influence", new String[] { "mine_influence" },
@@ -613,7 +654,7 @@ public class FieldManualScreen extends Screen {
             new Page("uuv", new String[] { "torpedo_tube > uuv" },
                     () -> new Object[] { n((int) Balance.TORP_RANGE[4]), n((int) Balance.UUV_RANGE), n(Balance.UUV_LIFE / 1200) }),
             new Page("launch_cell", new String[] { "fire_control_console launch_cell > asroc" },
-                    () -> new Object[] { n((int) Balance.ASROC_MIN_RANGE), n((int) Balance.ASROC_RANGE), n((int) Balance.LC_MAX_DEPTH), n(Balance.LC_FE * 20) }),
+                    () -> new Object[] { n((int) Balance.ASROC_MIN_RANGE), n((int) Balance.ASROC_RANGE), n((int) Balance.LC_MAX_DEPTH), n(Balance.LC_FE) }),
             new Page("slbm", new String[] { "slbm > launch_cell" },
                     () -> new Object[] { n(MissileStats.range(new MissileBuild(3, 3, 3, 3, "he", false, false, false, false, 0, MissileBuild.KIND_SLBM))), n((int) Balance.SLBM_MIN_RANGE),
                             n((int) Math.round(SlbmEntity.climbed(Balance.SLBM_CLIMB_TICKS))) }),
@@ -626,11 +667,11 @@ public class FieldManualScreen extends Screen {
             new Page("noisemaker_launcher", new String[] { "noisemaker > noisemaker_launcher" },
                     () -> new Object[] { n(Balance.DECOY_MAG), n((int) Balance.DECOY_AUTO_RANGE), n(Balance.DECOY_FE * Balance.DECOY_CHARGE_TICKS) }),
             new Page("torpedo_line", new String[] { "torpedo_line_shop torpedo_line_fitout torpedo_line_test > torpedo_t1" },
-                    () -> new Object[] { n(Balance.TLINE_RUN_TICKS[0] / 20), n(Balance.TLINE_FE_PER_TICK * 20), n(Balance.TLINE_RACK) }),
+                    () -> new Object[] { n(Balance.TLINE_RUN_TICKS[0] / 20), n(Balance.TLINE_FE_PER_TICK), n(Balance.TLINE_RACK) }),
             new Page("dredge_winch", new String[] { "nodule_field > dredge_winch > manganese_nodule" },
-                    () -> new Object[] { n(Balance.NODULE_MIN_WATER), n(Balance.DREDGE_REACH), n(Balance.DREDGE_YIELD_MIN), n(Balance.DREDGE_YIELD_MAX), n(Balance.DREDGE_CABLE), n(Balance.DREDGE_FE * 20) }),
+                    () -> new Object[] { n(Balance.NODULE_MIN_WATER), n(Balance.DREDGE_REACH), n(Balance.DREDGE_YIELD_MIN), n(Balance.DREDGE_YIELD_MAX), n(Balance.DREDGE_CABLE), n(Balance.DREDGE_FE) }),
             new Page("collector_rig", new String[] { "seabed_crawler collector_rig > manganese_concentrate nickel_cobalt_concentrate" },
-                    () -> new Object[] { n(Balance.CRAWLER_RADIUS), n(Balance.RIG_SEP_IN), n(Balance.RIG_MN_OUT), n(Balance.RIG_NICO_OUT), n(Balance.RIG_FE * 20) }),
+                    () -> new Object[] { n(Balance.CRAWLER_RADIUS), n(Balance.RIG_SEP_IN), n(Balance.RIG_MN_OUT), n(Balance.RIG_NICO_OUT), n(Balance.RIG_FE) }),
             new Page("nodule_survey", new String[] { "sonar_dome sonar_console > nodule_field" },
                     () -> new Object[] { n(Balance.SURVEY_RANGE), n(Balance.SURVEY_KEEP_TICKS / 1200) }),
             new Page("sub_hull", new String[] { "sonar_console" },
@@ -658,7 +699,14 @@ public class FieldManualScreen extends Screen {
             new Page("config_server", new String[0],
                     () -> new Object[0]),
             new Page("strike_toast", new String[0],
-                    () -> new Object[0])));
+                    () -> new Object[0]),
+
+            new Page("warden", new String[] { "hacking_device" },
+                    () -> new Object[0]),
+            new Page("warden_tells", new String[0],
+                    () -> new Object[] { n(Balance.WARDEN_ROCKET_LOCK * 50) }),
+            new Page("warden_stages", new String[] { "warden_core" },
+                    () -> new Object[] { n(Balance.WARDEN_HUG_TICKS / 20), n(Balance.WARDEN_ENRAGE_TICKS / 1200), n(Balance.WARDEN_RESET_TICKS / 1200) })));
 
     static int indexOf(String id) {
         if (id != null) for (int i = 0; i < PAGES.size(); i++) if (PAGES.get(i).id().equals(id)) return i;

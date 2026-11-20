@@ -94,7 +94,7 @@ public class ChlorAlkaliBlockEntity extends ItemProcessBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.CELL_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.CELL_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.cell_brine", Balance.CELL_BRINE_MB, Balance.CELL_CL_FROM_BRINE, Balance.CELL_H2_FROM_BRINE, Balance.CELL_CAUSTIC),
                 Component.translatable("gui.wmd.info.cell_hint"),
                 Component.translatable("gui.wmd.info.cell_heavy", Balance.CELL_HW_MB, Balance.CELL_D2_FROM_HW));

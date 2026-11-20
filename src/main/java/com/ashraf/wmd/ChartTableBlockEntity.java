@@ -120,7 +120,7 @@ public class ChartTableBlockEntity extends ProcessUnitBlockEntity implements Own
     protected void idle() {
         if (!(level instanceof ServerLevel sl)) return;
         UUID ship = SableBridge.shipIdAt(sl, worldPosition);
-        tick(sl, ship != null && AirGate.on() && ShipPower.draw(sl, ship, Balance.CHART_FE));
+        tick(sl, ship != null && AirGate.on() && ShipPower.draw(this, sl, ship, Balance.CHART_FE));
     }
 
     private void tick(ServerLevel sl, boolean power) {

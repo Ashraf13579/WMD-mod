@@ -64,8 +64,12 @@ public final class ClientCockpit {
 
     static final KeyMapping REVERSE = key("reverse", GLFW.GLFW_KEY_LEFT_CONTROL);
 
+    static final KeyMapping CLOAK = key("cloak", GLFW.GLFW_KEY_5);
+
+    static final KeyMapping SHIELD = key("shield", GLFW.GLFW_KEY_6);
+
     private static final KeyMapping[] ALL = { PITCH_DOWN, PITCH_UP, ROLL_LEFT, ROLL_RIGHT, YAW_LEFT, YAW_RIGHT, THR_UP, THR_DOWN, LOCK, FLARES, RADAR, EJECT, MINIMAL, STN1, STN2, STN3, STN4, JAMMER, CHECK, GUN,
-            GEAR, BRAKE, DESIG, PODCAM, AGMMODE, HOVER, CHUTE, HOOK, REFUEL, JETTISON, STORES, RAMP, THERMAL, REVERSE };
+            GEAR, BRAKE, DESIG, PODCAM, AGMMODE, HOVER, CHUTE, HOOK, REFUEL, JETTISON, STORES, RAMP, THERMAL, REVERSE, CLOAK, SHIELD };
 
     @EventBusSubscriber(modid = Wmd.MODID, value = Dist.CLIENT)
     static final class Keys {
@@ -154,6 +158,8 @@ public final class ClientCockpit {
         event.setCanceled(true);
     }
 
+    static void askStores() { if (seated() != null) buttons |= JetCockpitBlockEntity.B_STORES; }
+
     @SubscribeEvent
     static void click(InputEvent.InteractionKeyMappingTriggered event) {
         if (!AirGate.on() || seated() == null) return;
@@ -196,6 +202,8 @@ public final class ClientCockpit {
         if (pressed(9, d[9])) buttons |= JetCockpitBlockEntity.B_FLARES;
         if (pressed(10, d[10])) buttons |= JetCockpitBlockEntity.B_RADAR;
         if (pressed(17, d[17])) buttons |= JetCockpitBlockEntity.B_JAM;
+        if (pressed(34, d[34])) buttons |= JetCockpitBlockEntity.B_CLOAK;
+        if (pressed(35, d[35])) buttons |= JetCockpitBlockEntity.B_SHIELD;
         if (pressed(18, d[18])) buttons |= JetCockpitBlockEntity.B_CHECK;
 
         if (d[20]) { if (++gearHold == GEAR_HOOK_HOLD) buttons |= JetCockpitBlockEntity.B_TAILHOOK; }

@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:pulse_emp"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SXS",
+    "ATA",
+    "WBW"
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:superconducting_coil"
+    },
+    "X": {
+      "item": "wmd:chip_defence_2"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "W": {
+      "tag": "c:plates/tungsten"
+    },
+    "B": {
+      "item": "wmd:busbar"
+    }
+  },
+  "result": {
+    "id": "wmd:pulse_emp",
+    "count": 1
+  }
+}

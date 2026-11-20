@@ -55,10 +55,19 @@ final class DeckConsoleScreen extends Screen {
     private double dragX0 = Double.NaN, dragY0, dragX1, dragY1;
     private static final String[] LB_KEYS = { "lb_all", "lb_none", "lb_blue", "lb_white", "lb_red", "lb_green", "lb_beacon", "lb_off", "lb_on" };
 
-    DeckConsoleScreen(BlockPos pos) {
-        super(Component.translatable("block.wmd.deck_console"));
+    private final boolean cockpit;
+
+    DeckConsoleScreen(BlockPos pos) { this(pos, false); }
+
+    DeckConsoleScreen(BlockPos pos, boolean cockpit) {
+        super(Component.translatable(cockpit ? "gui.wmd.deck_console.cockpit_title" : "block.wmd.deck_console"));
         this.pos = pos;
+        this.cockpit = cockpit;
     }
+
+    private int tabs() { return cockpit ? 3 : 2; }
+    private static String tabIcon(int i) { return i == 0 ? "icon_deck" : i == 1 ? "icon_wing" : "icon_process"; }
+    private static String tabTip(int i) { return i == 0 ? "tab_deck" : i == 1 ? "tab_wing" : "tab_stores"; }
 
     BlockPos pos() { return pos; }
 
@@ -73,6 +82,7 @@ final class DeckConsoleScreen extends Screen {
     private int py() { return (height - PH) / 2; }
 
     private DeckConsoleBlockEntity be() {
+        if (cockpit) return DeckConsoleClient.view(pos);
         return minecraft != null && minecraft.level != null && minecraft.level.getBlockEntity(pos) instanceof DeckConsoleBlockEntity b ? b : null;
     }
 
@@ -85,7 +95,7 @@ final class DeckConsoleScreen extends Screen {
     @Override
     public void tick() {
         DeckConsoleBlockEntity b = be();
-        if (b == null || minecraft.player == null || !Reach.within(minecraft.player, pos, Balance.FDC_REACH + 2.0)) { onClose(); return; }
+        if (b == null || minecraft.player == null || (cockpit ? !ClientCockpit.inJetSeat() : !Reach.within(minecraft.player, pos, Balance.FDC_REACH + 2.0))) { onClose(); return; }
         if (ticks++ % Balance.FDC_SCAN_TICKS == Balance.FDC_SCAN_TICKS - 1) ask(DeckConsoleBlockEntity.A_REFRESH, 0L, null, 0);
         rows = deckRows(b);
     }
@@ -168,14 +178,14 @@ final class DeckConsoleScreen extends Screen {
         DeckConsoleBlockEntity b = be();
         if (b == null) return;
         int x = px(), y = py();
-        for (int i = 0; i < 2; i++) if (i != tab) WmdUi.tab(g, x - 23, y + 22 + i * 24, i == 0 ? "icon_deck" : "icon_wing", false, WmdUi.over(mx, my, x - 23, y + 22 + i * 24, 23, 22));
+        for (int i = 0; i < tabs(); i++) if (i != tab) WmdUi.tab(g, x - 23, y + 22 + i * 24, tabIcon(i), false, WmdUi.over(mx, my, x - 23, y + 22 + i * 24, 23, 22));
         WmdUi.panel(g, x, y, PW, PH);
-        WmdUi.tab(g, x - 23, y + 22 + tab * 24, tab == 0 ? "icon_deck" : "icon_wing", true, false);
+        WmdUi.tab(g, x - 23, y + 22 + tab * 24, tabIcon(tab), true, false);
         boolean np = b.noPower() || DeckConsoleClient.noPower(pos);
         List<CompoundTag> wing = DeckConsoleClient.rows(pos);
         Component chip = np ? t("chip_no_power") : tab == 0 ? t("chip_linked", rows.size()) : t("chip_parked", wing.size());
         int kind = np ? WmdUi.K_BAD : (tab == 0 ? rows.isEmpty() : wing.isEmpty()) ? WmdUi.K_IDLE : WmdUi.K_GOOD;
-        WmdUi.header(g, font, x, y, PW, new ItemStack(DeckConsoleBlocks.DECK_CONSOLE_ITEM.get()), Component.translatable("block.wmd.deck_console"), chip, kind, np);
+        WmdUi.header(g, font, x, y, PW, new ItemStack(DeckConsoleBlocks.DECK_CONSOLE_ITEM.get()), title, chip, kind, np);
         if (tab == 0) drawDeck(g, b, x, y, mx, my, pt, np);
         else drawWing(g, x, y, mx, my, wing, np);
 
@@ -319,8 +329,8 @@ final class DeckConsoleScreen extends Screen {
     public void render(GuiGraphics g, int mx, int my, float pt) {
         super.render(g, mx, my, pt);
         int x = px(), y = py();
-        for (int i = 0; i < 2; i++)
-            if (WmdUi.over(mx, my, x - 23, y + 22 + i * 24, 23, 22)) { g.renderTooltip(font, t(i == 0 ? "tab_deck" : "tab_wing"), mx, my); return; }
+        for (int i = 0; i < tabs(); i++)
+            if (WmdUi.over(mx, my, x - 23, y + 22 + i * 24, 23, 22)) { g.renderTooltip(font, t(tabTip(i)), mx, my); return; }
         DeckConsoleBlockEntity b = be();
         if (b == null) return;
         if (tab == 0) {
@@ -366,8 +376,12 @@ final class DeckConsoleScreen extends Screen {
         if (super.mouseClicked(mx, my, button)) return true;
         if (button != 0) return false;
         int x = px(), y = py();
-        for (int i = 0; i < 2; i++)
-            if (WmdUi.over(mx, my, x - 23, y + 22 + i * 24, 23, 22)) { if (tab != i) { tab = i; scroll = 0; selRow = -1; picking = false; WmdUi.tab(); } return true; }
+        for (int i = 0; i < tabs(); i++)
+            if (WmdUi.over(mx, my, x - 23, y + 22 + i * 24, 23, 22)) {
+                if (i == 2) { WmdUi.tab(); ClientCockpit.askStores(); return true; }
+                if (tab != i) { tab = i; scroll = 0; selRow = -1; picking = false; WmdUi.tab(); }
+                return true;
+            }
         DeckConsoleBlockEntity b = be();
         if (b == null) return false;
         boolean np = b.noPower() || DeckConsoleClient.noPower(pos);

@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:exo_boots"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "W W",
+    "A A",
+    "T T"
+  ],
+  "key": {
+    "W": {
+      "tag": "c:plates/tungsten"
+    },
+    "A": {
+      "item": "wmd:armour_plate"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    }
+  },
+  "result": {
+    "id": "wmd:exo_boots",
+    "count": 1
+  }
+}

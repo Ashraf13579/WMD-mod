@@ -17,6 +17,9 @@ final class VeilPost {
     private static boolean shockOn;
     private static float lens;
     private static double lx, ly, lz, lr;
+    private static float dome;
+    private static double dx, dy, dz, dr;
+    private static long domePulseAt = Long.MIN_VALUE / 2;
     private static double sx, sy, sz;
     private static long shockStart;
     private static final double SHOCK_SPEED = 90.0;
@@ -45,6 +48,11 @@ final class VeilPost {
             if (lu != null) lu.setVector((float) lx, (float) ly, (float) lz, (float) lr);
             ShaderUniformAccess lp = pipeline.getUniform("LensParams");
             if (lp != null) lp.setVector(1.7F, lens, 0.0F, 0.0F);
+            ShaderUniformAccess du = pipeline.getUniform("Dome");
+            if (du != null) du.setVector((float) dx, (float) dy, (float) dz, (float) dr);
+            double pa = (System.nanoTime() - domePulseAt) / 1.0E9;
+            ShaderUniformAccess dp = pipeline.getUniform("DomeParams");
+            if (dp != null) dp.setVector(dome, pa >= 0.0 && pa < 1.5 ? (float) pa : -1.0F, 0.0F, 0.0F);
         });
     }
 
@@ -67,6 +75,13 @@ final class VeilPost {
         lens = Math.max(lens, strength);
     }
 
+    static void dome(double x, double y, double z, double r, float strength) {
+        if (strength >= dome) { dx = x; dy = y; dz = z; dr = r; }
+        dome = Math.max(dome, strength);
+    }
+
+    static void domePulse() { domePulseAt = System.nanoTime(); }
+
     static void shock(double x, double y, double z) {
         sx = x; sy = y; sz = z;
         shockStart = System.nanoTime();
@@ -78,8 +93,9 @@ final class VeilPost {
         bloom *= 0.88F;
         haze *= 0.8F;
         lens *= 0.5F;
+        dome *= 0.5F;
         if (shockOn && (System.nanoTime() - shockStart) / 1.0E9 > SHOCK_LIFE) shockOn = false;
-        boolean want = bloom > 0.03F || haze > 0.03F || shockOn || lens > 0.02F;
+        boolean want = bloom > 0.03F || haze > 0.03F || shockOn || lens > 0.02F || dome > 0.02F;
         PostProcessingManager pm = VeilRenderSystem.renderer().getPostProcessingManager();
         if (want) {
             if (!pm.isActive(PIPE)) pm.add(PIPE);
@@ -89,7 +105,7 @@ final class VeilPost {
     }
 
     static void clear() {
-        bloom = 0; haze = 0; shockOn = false; lens = 0;
+        bloom = 0; haze = 0; shockOn = false; lens = 0; dome = 0;
         VeilRenderSystem.renderer().getPostProcessingManager().remove(PIPE);
     }
 }

@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:exo_mod_missiles"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "PXP",
+    " A ",
+    " T "
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "X": {
+      "item": "wmd:chip_rocketry_2"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    }
+  },
+  "result": {
+    "id": "wmd:exo_mod_missiles",
+    "count": 1
+  }
+}

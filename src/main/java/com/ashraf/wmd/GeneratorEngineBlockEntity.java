@@ -27,7 +27,13 @@ import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class GeneratorEngineBlockEntity extends BlockEntity implements GeoBlockEntity, EmpVulnerable, MachinePorts {
+public class GeneratorEngineBlockEntity extends BlockEntity implements GeoBlockEntity, EmpVulnerable, MachinePorts, Owned {
+
+    private final OwnerData ownerData = new OwnerData();
+    @Override public java.util.UUID getOwner() { return ownerData.id(); }
+    @Override public String getOwnerName() { return ownerData.name(); }
+    @Override public void claim(net.minecraft.world.entity.player.Player player) { ownerData.claim(player); setChanged(); }
+    @Override public SecurityData security() { return ownerData.security(); }
 
     public static final int CAPACITY = 10_000_000;
     public static final int FE_PER_SECOND = 15_000;
@@ -208,6 +214,7 @@ public class GeneratorEngineBlockEntity extends BlockEntity implements GeoBlockE
                 int accepted = storage.receiveEnergy(offer, false);
                 if (accepted > 0) {
                     energy.extractEnergy(accepted, false);
+                    PowerMeter.noteOut(level, worldPosition, accepted);
                     changed = true;
                 }
             }
@@ -227,6 +234,7 @@ public class GeneratorEngineBlockEntity extends BlockEntity implements GeoBlockE
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
+        ownerData.write(tag);
         tag.put("energy", energy.serializeNBT(registries));
         tag.put("fuelTank", fuel.writeToNBT(registries, new CompoundTag()));
         tag.putInt("feCredit", feCredit);
@@ -236,6 +244,7 @@ public class GeneratorEngineBlockEntity extends BlockEntity implements GeoBlockE
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
+        if (tag.hasUUID("owner")) ownerData.read(tag);
         if (tag.contains("energy")) energy.deserializeNBT(registries, tag.get("energy"));
         if (tag.contains("fuelTank")) fuel.readFromNBT(registries, tag.getCompound("fuelTank"));
         feCredit = tag.getInt("feCredit");

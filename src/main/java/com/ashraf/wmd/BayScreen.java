@@ -127,13 +127,18 @@ public class BayScreen extends AbstractContainerScreen<BayMenu> {
         g.drawString(font, "x " + made.getCount(), cx + 24, iy + 20, WmdUi.ORANGE, false);
         int ak = menu.mode() == BayModuleBlockEntity.MODE_AIR ? airK() : -1;
         WmdUi.drawFit(g, font, ak >= 0 ? Component.translatable("gui.wmd.bay.air_short." + ak) : made.getHoverName(), cx + 3, iy + 39, COL_W - 6, TEXT, 0.7F);
-        int tier = menu.mode() == BayModuleBlockEntity.MODE_AIR ? Math.max(2, Math.min(3, partTier(0))) : Math.max(1, Math.min(4, partTier(0)));
+        int tier = menu.mode() == BayModuleBlockEntity.MODE_AIR ? Math.max(2, Math.min(4, partTier(0))) : Math.max(1, Math.min(4, partTier(0)));
         if (ih > 60) WmdUi.drawFit(g, font, Component.translatable("gui.wmd.bay.paint_tier." + tier), cx + 3, iy + 50, COL_W - 6, WmdUi.TEXT_MUTED, 0.7F);
     }
 
     private int airK() {
-        boolean jet = menu.slots.get(1).getItem().getItem() instanceof MissilePartItem p && p.isJet();
-        return BayModuleBlockEntity.airKindOf(SeekerModuleItem.kindOf(menu.slots.get(BayMenu.SEEKER_INDEX).getItem()), jet);
+        return BayModuleBlockEntity.airKindOf(SeekerModuleItem.kindOf(menu.slots.get(BayMenu.SEEKER_INDEX).getItem()), BayModuleBlockEntity.motorVariant(menu.slots.get(1).getItem()));
+    }
+
+    private boolean airOnlyIn() {
+        String sk = SeekerModuleItem.kindOf(menu.slots.get(BayMenu.SEEKER_INDEX).getItem());
+        return menu.slots.get(1).getItem().getItem() instanceof MissilePartItem m && m.isAirMotor() || MissileBuild.SEEK_RADAR.equals(sk) || MissileBuild.SEEK_DATALINK.equals(sk)
+                || menu.slots.get(3).getItem().getItem() instanceof MissilePartItem w && w.slot() == 3 && WarheadType.of(w.variant()).airOnly();
     }
 
     private int partTier(int i) { return menu.slots.get(i).getItem().getItem() instanceof MissilePartItem p ? p.tier() : 1; }
@@ -147,7 +152,7 @@ public class BayScreen extends AbstractContainerScreen<BayMenu> {
             int k = airK();
             if (k == BayModuleBlockEntity.AIR_ASHM) return AirGate.AVAILABLE ? new ItemStack(AntiShipItems.ASHM.get(), Balance.ASHM_BAY_YIELD) : ItemStack.EMPTY;
             net.minecraft.world.item.Item it = k < 0 ? null : AamItem.of(k);
-            return it == null ? ItemStack.EMPTY : new ItemStack(it, Balance.BAY_AIR_YIELD);
+            return it == null ? ItemStack.EMPTY : new ItemStack(it, BayModuleBlockEntity.airYield(k));
         }
         if (m == 1) return new ItemStack(Wmd.STAGE_CORE.get());
         if (m == 2) return new ItemStack(Wmd.STAGE_UPPER.get());
@@ -155,9 +160,9 @@ public class BayScreen extends AbstractContainerScreen<BayMenu> {
         if (m == BayModuleBlockEntity.MODE_CRUISE) return new ItemStack(Wmd.CRUISE_MISSILE.get());
         if (m == BayModuleBlockEntity.MODE_SLBM) return new ItemStack(Wmd.SLBM.get());
         int t = Math.max(1, Math.min(3, partTier(0)));
-        boolean icpt = menu.slots.get(3).getItem().getItem() instanceof MissilePartItem w && "interceptor".equals(w.variant());
-        return new ItemStack(icpt ? (t == 1 ? Wmd.INTERCEPTOR_T1.get() : t == 2 ? Wmd.INTERCEPTOR_T2.get() : Wmd.INTERCEPTOR_T3.get())
-                : t == 1 ? Wmd.MISSILE_T1.get() : t == 2 ? Wmd.MISSILE_T2.get() : Wmd.MISSILE_T3.get());
+        boolean icpt = BayModuleBlockEntity.interceptorWarhead(menu.slots.get(3).getItem());
+        if (icpt) return new ItemStack(InterceptorItem.ofTier(partTier(0)));
+        return new ItemStack(t == 1 ? Wmd.MISSILE_T1.get() : t == 2 ? Wmd.MISSILE_T2.get() : Wmd.MISSILE_T3.get());
     }
 
     private List<Component> modeTip(int m) {
@@ -327,9 +332,10 @@ public class BayScreen extends AbstractContainerScreen<BayMenu> {
         if (air) {
             int k = airK();
             Component l1 = k < 0 ? Component.translatable("gui.wmd.bay.air_hint1")
-                    : Component.translatable("gui.wmd.bay.air_need1", Component.translatable("gui.wmd.bay.air_short." + k), BayModuleBlockEntity.AIR_TIER[k]);
+                    : Component.translatable("gui.wmd.bay.air_need1", Component.translatable("gui.wmd.bay.air_short." + k), BayModuleBlockEntity.airTier(k));
             Component l2 = k < 0 ? Component.translatable("gui.wmd.bay.air_hint2")
-                    : Component.translatable(k == BayModuleBlockEntity.AIR_ASHM ? "gui.wmd.bay.air_need2_ashm" : k == AirMissiles.AGM ? "gui.wmd.bay.air_need2_he" : "gui.wmd.bay.air_need2_frag");
+                    : Component.translatable(k == BayModuleBlockEntity.AIR_ASHM ? "gui.wmd.bay.air_need2_ashm" : k == AirMissiles.AGM ? "gui.wmd.bay.air_need2_he"
+                            : k == AirMissiles.METEOR ? "gui.wmd.bay.air_need2_meteor" : k == AirMissiles.HEAVY ? "gui.wmd.bay.air_need2_heavy" : "gui.wmd.bay.air_need2_frag");
             fitted(g, l1, BayMenu.CAM_X + 24, BayMenu.MOD_Y + 1, k < 0 ? WmdUi.TEXT_MUTED : WmdUi.BLUE_LIGHT, 164 - BayMenu.CAM_X - 24);
             fitted(g, l2, BayMenu.CAM_X + 24, BayMenu.MOD_Y + 10, WmdUi.TEXT_MUTED, 164 - BayMenu.CAM_X - 24);
         } else fitted(g, Component.translatable("gui.wmd.bay.modules"), BayMenu.CAM_X + 24, BayMenu.MOD_Y + 5, WmdUi.TEXT_MUTED, 164 - BayMenu.CAM_X - 24);
@@ -344,8 +350,9 @@ public class BayScreen extends AbstractContainerScreen<BayMenu> {
                 : Component.translatable((menu.flags() & BayModuleBlockEntity.FLAG_LINKED) == 0 ? "gui.wmd.bay.not_linked"
                         : (menu.flags() & BayModuleBlockEntity.FLAG_MODE) != 0 ? (menu.mode() != BayModuleBlockEntity.MODE_CRUISE && jetIn() && !(menu.mode() == BayModuleBlockEntity.MODE_AIR && airK() == BayModuleBlockEntity.AIR_ASHM) ? "gui.wmd.bay.jet_needs_cruise"
                                 : menu.mode() == BayModuleBlockEntity.MODE_AIR && BayModuleBlockEntity.airKindOf(SeekerModuleItem.kindOf(menu.slots.get(BayMenu.SEEKER_INDEX).getItem())) < 0 ? "gui.wmd.bay.air_seeker"
-                                : menu.mode() != BayModuleBlockEntity.MODE_AIR && MissileBuild.SEEK_RADAR.equals(SeekerModuleItem.kindOf(menu.slots.get(BayMenu.SEEKER_INDEX).getItem())) ? "gui.wmd.bay.radar_seeker_air"
-                                : menu.mode() == 0 ? "gui.wmd.bay.t4_is_stages" : "gui.wmd.bay.mode_airframe." + menu.mode())
+                                : menu.mode() != BayModuleBlockEntity.MODE_AIR && airOnlyIn() ? "gui.wmd.bay.radar_seeker_air"
+                                : menu.mode() == 0 ? (partTier(0) == 4 && BayModuleBlockEntity.interceptorWarhead(menu.slots.get(3).getItem()) ? "gui.wmd.bay.t4_icpt_parts" : "gui.wmd.bay.t4_is_stages")
+                                : "gui.wmd.bay.mode_airframe." + menu.mode())
                         : (menu.flags() & BayModuleBlockEntity.FLAG_GRADE) != 0 ? "gui.wmd.bay.grade_too_high"
                         : (menu.flags() & BayModuleBlockEntity.FLAG_SIZE) != 0 ? "gui.wmd.bay.size_short"
                         : (menu.flags() & BayModuleBlockEntity.FLAG_NEEDS) != 0 ? "gui.wmd.bay.need_station_short"
@@ -365,7 +372,7 @@ public class BayScreen extends AbstractContainerScreen<BayMenu> {
                 fitted(g, Component.translatable("gui.wmd.bay.air_stats1", Component.translatable("gui.wmd.bay.air_short." + k), String.format("%,d", (int) (as ? Balance.ASHM_RANGE : Balance.AAM_RANGE[k]))),
                         12, 110 + BayMenu.ROW2, TEXT);
                 fitted(g, Component.translatable("gui.wmd.bay.air_stats2", Math.round((as ? Balance.ASHM_SPEED : Balance.AAM_SPEED[k]) * 20), Component.translatable("gui.wmd.bay.air_seek." + k),
-                        Component.translatable("gui.wmd.bay.air_paint." + BayModuleBlockEntity.AIR_TIER[k])), 12, 120 + BayMenu.ROW2, TEXT);
+                        Component.translatable("gui.wmd.bay.air_paint." + BayModuleBlockEntity.airTier(k))), 12, 120 + BayMenu.ROW2, TEXT);
             } else fitted(g, Component.translatable("gui.wmd.bay.air_seeker"), 12, 110 + BayMenu.ROW2, WmdUi.TEXT_MUTED);
         } else if (menu.partsIn() >= 4) {
             fitted(g, Component.translatable("gui.wmd.bay.stats1", String.format("%.1f", menu.statWeight()), String.format("%,d", menu.statRange())), 12, 110 + BayMenu.ROW2, TEXT);
@@ -396,14 +403,17 @@ public class BayScreen extends AbstractContainerScreen<BayMenu> {
     }
 
     static ItemStack airNeed(int i, int k) {
-        boolean t2 = BayModuleBlockEntity.AIR_TIER[k] == 2, he = k == AirMissiles.AGM || k == BayModuleBlockEntity.AIR_ASHM;
+        int tier = BayModuleBlockEntity.airTier(k);
+        boolean t2 = tier == 2, t4 = tier == 4, he = k == AirMissiles.AGM || k == BayModuleBlockEntity.AIR_ASHM;
         net.minecraft.world.item.Item it = switch (i) {
-            case 0 -> t2 ? Wmd.AIRFRAME_T2.get() : Wmd.AIRFRAME_T3.get();
-            case 1 -> k == BayModuleBlockEntity.AIR_ASHM ? Wmd.JET_ENGINE.get() : t2 ? Wmd.MOTOR_T2.get() : Wmd.MOTOR_T3.get();
-            case 2 -> t2 ? Wmd.GUIDANCE_T2.get() : Wmd.GUIDANCE_T3.get();
-            case 3 -> he ? Wmd.WARHEAD_HE_T1.get() : Wmd.WARHEAD_FRAG.get();
+            case 0 -> t2 ? Wmd.AIRFRAME_T2.get() : t4 ? Wmd.AIRFRAME_T4.get() : Wmd.AIRFRAME_T3.get();
+            case 1 -> k == BayModuleBlockEntity.AIR_ASHM ? Wmd.JET_ENGINE.get() : k == AirMissiles.METEOR ? Wmd.MOTOR_RAMJET.get() : k == AirMissiles.HEAVY ? Wmd.MOTOR_HEAVY.get()
+                    : t2 ? Wmd.MOTOR_T2.get() : Wmd.MOTOR_T3.get();
+            case 2 -> t2 ? Wmd.GUIDANCE_T2.get() : t4 ? Wmd.GUIDANCE_T4.get() : Wmd.GUIDANCE_T3.get();
+            case 3 -> he ? Wmd.WARHEAD_HE_T1.get() : k == AirMissiles.HEAVY ? Wmd.WARHEAD_ROD_RING.get() : Wmd.WARHEAD_FRAG.get();
             default -> k == AirMissiles.HEAT ? Wmd.HEAT_SEEKER.get() : k == AirMissiles.ARM ? Wmd.ARM_SEEKER.get() : k == AirMissiles.AGM ? Wmd.LASER_SEEKER.get()
-                    : net.minecraft.core.registries.BuiltInRegistries.ITEM.get(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "radar_seeker"));
+                    : net.minecraft.core.registries.BuiltInRegistries.ITEM.get(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(Wmd.MODID,
+                            k == AirMissiles.HEAVY ? "datalink_seeker" : "radar_seeker"));
         };
         return new ItemStack(it);
     }

@@ -78,6 +78,7 @@ final class NavalFire {
         if (target == null) { say(by, Component.translatable("gui.wmd.fcc.gun.no_target")); return false; }
         String k = l.get(i).consoleOrder(sl, target[0], target[1]);
         say(by, Component.translatable(k));
+        if ("gui.wmd.fcc.gun.ordered".equals(k)) MusicTriggersHook.fire(sl, "wmd:naval_gun_fire", console);
         return "gui.wmd.fcc.gun.ordered".equals(k);
     }
 
@@ -85,6 +86,7 @@ final class NavalFire {
         if (target == null) return 0;
         int n = 0;
         for (NavalGunBlockEntity g : guns(sl, console, owner)) if ("gui.wmd.fcc.gun.ordered".equals(g.consoleOrder(sl, target[0], target[1]))) n++;
+        if (n > 0) MusicTriggersHook.fire(sl, "wmd:naval_gun_fire", console);
         return n;
     }
 

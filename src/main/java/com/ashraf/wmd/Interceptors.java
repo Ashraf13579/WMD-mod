@@ -141,7 +141,7 @@ public final class Interceptors {
                     if (!kill && ctr > 0 && roll < base) { fooled = ctr; at = decoyOf(f, s.id(), s.arrive(), ctr); }
                 }
             }
-            if (kill) { CcBattleLog.onIntercept(level, s.from(), f); mgr.kill(level, f); }
+            if (kill) { java.util.UUID def = CcBattleLog.onIntercept(level, s.from(), f); mgr.kill(level, f); WarScore.intercept(level, def, f); }
             if (f != null && fooled > 0) mgr.counters.remove(f.id());
             PacketDistributor.sendToPlayersNear(level, null, at.x, at.y, at.z, 6000, new InterceptFxPayload(at.x, at.y, at.z, kill, fooled));
             Wmd.LOGGER.info("Interception: interceptor tier {} vs flight {}: {}", s.tier(), s.flightId(), kill ? "KILL" : "miss");

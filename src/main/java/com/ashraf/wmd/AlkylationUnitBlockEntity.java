@@ -96,7 +96,7 @@ public class AlkylationUnitBlockEntity extends ItemProcessBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.ALKYLATION_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.ALKYLATION_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.alkylation", Balance.ALKYLATION_MB_PER_TICK * 20, String.format("%.0f", Balance.ALKYLATE_YIELD * 100.0), String.format("%,d", Balance.ALKY_ACID_LPG_MB)),
                 Component.translatable("gui.wmd.info.alky_canister", String.format("%,d", Balance.ALKYLATE_CANISTER_MB)));
     }

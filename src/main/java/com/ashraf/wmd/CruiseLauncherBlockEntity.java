@@ -418,7 +418,7 @@ public class CruiseLauncherBlockEntity extends ItemProcessBlockEntity implements
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.CRUISE_LAUNCHER_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.CRUISE_LAUNCHER_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.cruise_launcher", Balance.CRUISE_FUEL_CANISTERS, Balance.CRUISE_SALVO_GAP_TICKS / 20.0));
     }
 

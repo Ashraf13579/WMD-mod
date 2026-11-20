@@ -127,8 +127,8 @@ public final class AirCommands {
         String name;
         Vec3 t;
         if (kind == AirMissiles.AGM) {
-            net.minecraft.world.phys.BlockHitResult bh = level.clip(new net.minecraft.world.level.ClipContext(eye, eye.add(look.scale(Balance.AAM_RANGE[kind])),
-                    net.minecraft.world.level.ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE, p));
+            net.minecraft.world.phys.BlockHitResult bh = SableBridge.clipWorld(level, new net.minecraft.world.level.ClipContext(eye, eye.add(look.scale(Balance.AAM_RANGE[kind])),
+                    net.minecraft.world.level.ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE, p), own);
             if (bh.getType() != net.minecraft.world.phys.HitResult.Type.BLOCK) { src.sendFailure(Component.literal("No ground within " + (int) Balance.AAM_RANGE[kind] + " blocks of your look.")); return 0; }
             int spot = LaserSpots.light(level, p.getUUID(), bh.getLocation(), LaserSpots.SRC_DEV);
             String why = AirMissiles.fireAgm(level, p.getUUID(), eye.add(look.scale(3.0)), look, carrier, own, spot, p.getUUID());
@@ -170,9 +170,10 @@ public final class AirCommands {
             }
         }
         AirMissiles.LockSource lock = null;
-        if (kind == AirMissiles.RADAR) {
+        if (AirMissiles.radarLike(kind)) {
             lock = new AirMissiles.PlayerLock(p);
-            if (!AirMissiles.lockable(level, eye, look, t, blocks)) {
+            if (kind != AirMissiles.RADAR && !AirMissiles.lockable(level, eye, look, t, blocks)) lock = null;
+            else if (!AirMissiles.lockable(level, eye, look, t, blocks)) {
                 src.sendFailure(Component.literal(String.format("No radar lock on %s: %.0f blocks (lock range %.0f) / keep it within %.0f deg of your look, no chaff between.", name,
                         eye.distanceTo(t), Balance.AIR_NOSE_LOCK_RANGE * (blocks > 0 ? AirPicture.sizeFactor(blocks) : 1.0), Balance.AIR_NOSE_GIMBAL)));
                 return 0;

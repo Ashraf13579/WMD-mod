@@ -77,8 +77,8 @@ public final class WrenchRotate {
             }
             Owned om = Access.ownerAt(level, ctrl);
             if (om != null && !Access.mayUse(om, player)) { Access.deny(om, player); return; }
-            String why = turnMulti(level, ctrl, player, !(rotMode && player.isShiftKeyDown()));
-            if (why != null) player.displayClientMessage(Component.translatable(why), true);
+            Component why = turnMulti(level, ctrl, player, !(rotMode && player.isShiftKeyDown()));
+            if (why != null) player.displayClientMessage(why, true);
             return;
         }
         Owned o = Access.ownerAt(level, pos);
@@ -86,40 +86,96 @@ public final class WrenchRotate {
         rotate(level, pos, s, !player.isShiftKeyDown());
     }
 
-    private static BlockPos controllerFor(Level level, BlockPos pos) {
+    static BlockPos controllerFor(Level level, BlockPos pos) {
         if (level.getBlockState(pos).getBlock() instanceof MachineBlock) return pos;
         if (level.getBlockEntity(pos) instanceof MachinePartBlockEntity part) return part.getController();
         return null;
     }
 
-    private static boolean turnable(MachineBlock mb) {
-        if (mb instanceof CcModuleBlock || mb instanceof InterceptorSiloBlock || mb instanceof InterceptorSiloT4Block) return false;
-        if (mb instanceof BayModuleBlock b && b.kind != BayKind.CORE) return false;
-        if (mb instanceof LabModuleBlock l && l.kind != LabKind.CORE) return false;
-        return true;
+    static boolean turnable(MachineBlock mb) {
+        return !(mb instanceof CcModuleBlock || mb instanceof InterceptorSiloBlock || mb instanceof InterceptorSiloT4Block);
     }
 
-    static String turnMulti(Level level, BlockPos ctrl, Player player, boolean clockwise) {
-        BlockState s = level.getBlockState(ctrl);
-        if (!(s.getBlock() instanceof MachineBlock mb)) return "message.wmd.wrench.multiblock";
+    static Class<?> family(Block b) {
+        if (b instanceof BayModuleBlock) return BayModuleBlock.class;
+        if (b instanceof LabModuleBlock) return LabModuleBlock.class;
+        if (b instanceof BombLineBlock) return BombLineBlock.class;
+        if (b instanceof TorpedoLineBlock) return TorpedoLineBlock.class;
+        if (b instanceof DroneModuleBlock) return DroneModuleBlock.class;
+        return null;
+    }
+
+    static BlockPos joinedModule(Level level, BlockPos ctrl, MachineBlock mb, Direction f, Direction mount) {
+        Class<?> fam = family(mb);
+        if (fam == null) return null;
+        java.util.Set<BlockPos> own = new java.util.HashSet<>();
+        for (BlockPos l : mb.footprint()) own.add(Machines.toWorld(ctrl, f, mount, l.getX(), l.getY(), l.getZ()));
+        for (BlockPos c : own)
+            for (Direction d : Direction.values()) {
+                BlockPos n = c.relative(d);
+                if (own.contains(n)) continue;
+                BlockPos nc = controllerFor(level, n);
+                if (nc != null && !nc.equals(ctrl) && fam.isInstance(level.getBlockState(nc).getBlock())) return n;
+            }
+        return null;
+    }
+
+    static Direction turnedFacing(BlockState s, boolean clockwise) {
         Direction mount = Machines.mount(s), f = s.getValue(MachineBlock.FACING);
         Direction nf = clockwise ? f.getClockWise(mount.getAxis()) : f.getCounterClockWise(mount.getAxis());
         if (!MachineBlock.FACING.getPossibleValues().contains(nf)) nf = f.getOpposite();
-        if (nf.getAxis() == mount.getAxis() || nf == f || !MachineBlock.FACING.getPossibleValues().contains(nf)) return "message.wmd.wrench.multiblock";
+        if (nf.getAxis() == mount.getAxis() || nf == f || !MachineBlock.FACING.getPossibleValues().contains(nf)) return null;
+        return nf;
+    }
+
+    private static java.util.Set<BlockPos> portLinks(Level level, BlockPos ctrl, MachineBlock mb, Direction f, Direction mount) {
+        java.util.Set<BlockPos> out = new java.util.HashSet<>();
+        if (!(level.getBlockEntity(ctrl) instanceof MachinePorts mp)) return out;
+        java.util.Set<BlockPos> own = new java.util.HashSet<>();
+        for (BlockPos l : mb.footprint()) own.add(Machines.toWorld(ctrl, f, mount, l.getX(), l.getY(), l.getZ()));
+        for (BlockPos c : own)
+            for (Direction d : Direction.values()) {
+                BlockPos n = c.relative(d);
+                if (own.contains(n) || out.contains(n)) continue;
+                boolean port = mp.fluidPort(c, d) != null || mp.energyPort(c, d) != null || mp.itemPort(c, d) != null;
+                if (port && linkable(level, n, d.getOpposite())) out.add(n);
+            }
+        return out;
+    }
+
+    private static boolean linkable(Level level, BlockPos n, Direction toMachine) {
+        if (level.getBlockState(n).isAir()) return false;
+        return level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.FluidHandler.BLOCK, n, toMachine) != null
+                || level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage.BLOCK, n, toMachine) != null
+                || level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.ItemHandler.BLOCK, n, toMachine) != null;
+    }
+
+    static Component turnMulti(Level level, BlockPos ctrl, Player player, boolean clockwise) {
+        BlockState s = level.getBlockState(ctrl);
+        if (!(s.getBlock() instanceof MachineBlock mb)) return Component.translatable("message.wmd.wrench.multiblock");
+        Direction mount = Machines.mount(s), f = s.getValue(MachineBlock.FACING);
+        Direction nf = turnedFacing(s, clockwise);
+        if (nf == null) return Component.translatable("message.wmd.wrench.multiblock");
+
+        BlockPos joined = joinedModule(level, ctrl, mb, f, mount);
+        if (joined != null) return Component.translatable("message.wmd.wrench.turn_line", joined.getX(), joined.getY(), joined.getZ());
         java.util.Set<BlockPos> old = new java.util.HashSet<>();
         for (BlockPos l : mb.footprint()) old.add(Machines.toWorld(ctrl, f, mount, l.getX(), l.getY(), l.getZ()));
         java.util.List<BlockPos> cells = new java.util.ArrayList<>();
         java.util.List<BlockPos> fresh = new java.util.ArrayList<>();
         for (BlockPos l : mb.footprint()) {
             BlockPos p = Machines.toWorld(ctrl, nf, mount, l.getX(), l.getY(), l.getZ());
-            if (!level.isInWorldBounds(p)) return "message.wmd.wrench.turn_blocked";
+            if (!level.isInWorldBounds(p)) return Component.translatable("message.wmd.wrench.turn_bounds");
             cells.add(p);
             if (p.equals(ctrl) || old.contains(p)) continue;
-            if (!level.getBlockState(p).canBeReplaced()) return "message.wmd.wrench.turn_blocked";
+            BlockState in = level.getBlockState(p);
+            if (!in.canBeReplaced()) return Component.translatable("message.wmd.wrench.turn_block", in.getBlock().getName(), p.getX(), p.getY(), p.getZ());
             fresh.add(p);
         }
-        if (PlaceGuard.blocker(level, fresh) != null) return "message.wmd.wrench.turn_blocked";
-        if (!ClaimGuard.mayPlace(level, player, cells, ctrl)) return "message.wmd.wrench.turn_blocked";
+        net.minecraft.world.entity.Entity who = PlaceGuard.blocker(level, fresh);
+        if (who != null) return Component.translatable("message.wmd.wrench.turn_entity", who.getDisplayName());
+        if (!ClaimGuard.mayPlace(level, player, cells, ctrl)) return Component.translatable("message.wmd.wrench.turn_claim");
+        java.util.Set<BlockPos> linked = portLinks(level, ctrl, mb, f, mount);
         MachineBlock.removing = true;
         try {
             for (BlockPos p : old) if (!p.equals(ctrl) && level.getBlockState(p).is(Wmd.MACHINE_PART.get())) level.removeBlock(p, false);
@@ -138,7 +194,12 @@ public final class WrenchRotate {
         level.updateNeighborsAt(ctrl, s.getBlock());
         BlockEntity be = level.getBlockEntity(ctrl);
         if (be != null) { be.setChanged(); BlockState ns = level.getBlockState(ctrl); level.sendBlockUpdated(ctrl, ns, ns, Block.UPDATE_CLIENTS); }
+        if (be instanceof PumpjackBlockEntity pj) pj.turned();
         level.playSound(null, ctrl, WmdSounds.WRENCH_TURN.get(), SoundSource.BLOCKS, 0.7F, clockwise ? 1.1F : 0.95F);
+        if (!linked.isEmpty()) {
+            linked.removeAll(portLinks(level, ctrl, mb, nf, mount));
+            if (!linked.isEmpty()) player.displayClientMessage(Component.translatable("message.wmd.wrench.turn_ports", linked.size()).withStyle(net.minecraft.ChatFormatting.GOLD), true);
+        }
         return null;
     }
 

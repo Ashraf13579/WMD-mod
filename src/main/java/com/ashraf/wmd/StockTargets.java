@@ -59,10 +59,16 @@ final class StockTargets {
             public BlockPos pos() { return st.getBlockPos(); }
             public String group() { return blockId(st); }
             public ItemStack current() { return st.loadedShown() < 0 ? ItemStack.EMPTY : AirStores.stack(st.loadedShown(), 1); }
-            public String fill() { return ""; }
+
+            public String fill() { int c = st.loadedShown() < 0 ? 1 : st.capacity(st.loadedShown()); return c > 1 ? st.countShown() + " / " + c : ""; }
             public boolean accepts(ItemStack one) { int k = AirStores.kindOf(one); return k >= 0 && st.accepts(k); }
-            public boolean full() { return st.loadedShown() >= 0; }
-            public ItemStack pick(Container s) { return full() ? ItemStack.EMPTY : store(s, k -> st.accepts(k)); }
+            public boolean full() { return st.full(); }
+            public ItemStack pick(Container s) {
+                if (full()) return ItemStack.EMPTY;
+                int held = st.loadedShown();
+                return held >= 0 ? store(s, k -> k == held) : store(s, k -> st.accepts(k));
+            }
+            public int roomFor(ItemStack one) { return st.roomFor(AirStores.kindOf(one)); }
             public boolean load(ServerLevel sl, ItemStack one) { int k = AirStores.kindOf(one); return k >= 0 && st.load(k, AirStores.freqOf(one)); }
             public ItemStack unload(ServerLevel sl) { return st.unload(); }
             public boolean unloadable() { return true; }

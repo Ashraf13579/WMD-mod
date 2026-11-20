@@ -234,6 +234,7 @@ public class LandingGearBlockEntity extends ProcessUnitBlockEntity implements Ow
         double[] w = worldPoint(0.0, -0.6, 0.0);
         sl.playSound(null, w[0], w[1], w[2], WmdSounds.HE_DEBRIS.get(), net.minecraft.sounds.SoundSource.BLOCKS, Balance.SND_MECH, 1.3F);
         Wmd.LOGGER.info("Landing gear at {}: hard landing at {} b/s sink, broke off", worldPosition.toShortString(), String.format("%.1f", sink));
+        AirFxPayload.at(sl, AirFxPayload.GEAR_SNAP, new net.minecraft.world.phys.Vec3(w[0], w[1], w[2]), null, (float) sink, Balance.AIRFX_R);
         sl.destroyBlock(worldPosition, false);
         return true;
     }

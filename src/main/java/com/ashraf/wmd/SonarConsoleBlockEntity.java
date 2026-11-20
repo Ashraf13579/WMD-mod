@@ -272,7 +272,7 @@ public class SonarConsoleBlockEntity extends ProcessUnitBlockEntity implements O
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.SONAR_CONSOLE_FE * 20), Component.translatable("gui.wmd.info.sonar_console"));
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.SONAR_CONSOLE_FE), Component.translatable("gui.wmd.info.sonar_console"));
     }
 
     @Override

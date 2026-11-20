@@ -33,7 +33,7 @@ public record CockpitHudPayload(BlockPos cockpit, int seat, int flags, float hea
                 | ((Math.max(0, Math.min(127, spool)) & 127) << 17);
     }
 
-    public static final int F_POWER = 1, F_SHIP = 2, F_RADAR = 4, F_AB = 8, F_EJECTED = 16, F_TANDEM = 32, F_CONTROL = 64, F_NORADAR = 128, F_JAM = 256, F_LOCKJAM = 512, F_AGMGPS = 1024, F_GROWL = 2048, F_SEA = 4096, F_PIP_HIT = 8192, F_PIP_AIR = 16384, F_PODMEM = 32768;
+    public static final int F_POWER = 1, F_SHIP = 2, F_RADAR = 4, F_AB = 8, F_EJECTED = 16, F_TANDEM = 32, F_CONTROL = 64, F_NORADAR = 128, F_JAM = 256, F_LOCKJAM = 512, F_AGMGPS = 1024, F_GROWL = 2048, F_SEA = 4096, F_PIP_HIT = 8192, F_PIP_AIR = 16384, F_PODMEM = 32768, F_SHIELD = 65536, F_ARM_NONE = 131072, F_DATALINK = 262144;
 
     public static final long NONE = Long.MIN_VALUE;
     public boolean lasing() { return !Float.isNaN(px); }

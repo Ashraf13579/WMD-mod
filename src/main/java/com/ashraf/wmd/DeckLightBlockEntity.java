@@ -76,9 +76,20 @@ public class DeckLightBlockEntity extends ProcessUnitBlockEntity implements Owne
         if (!(level instanceof ServerLevel sl)) return false;
         boolean o = sl.hasNeighborSignal(worldPosition) || consoleOff || !AirGate.on();
         if (o != off) { off = o; sync(); }
+        BlockState st = getBlockState();
+        if (st.hasProperty(DeckLightBlock.ON) && st.getValue(DeckLightBlock.ON) == off) sl.setBlock(worldPosition, st.setValue(DeckLightBlock.ON, !off), net.minecraft.world.level.block.Block.UPDATE_CLIENTS);
         Set<Long> b = BEACONS.computeIfAbsent(sl.dimension(), k -> new LinkedHashSet<>());
         if (mode == BEACON && !off && AirGate.on()) b.add(worldPosition.asLong()); else b.remove(worldPosition.asLong());
         return false;
+    }
+
+    @Override
+    protected void jammed(ServerLevel sl) {
+        if (!off) { off = true; sync(); }
+        BlockState st = getBlockState();
+        if (st.hasProperty(DeckLightBlock.ON) && st.getValue(DeckLightBlock.ON)) sl.setBlock(worldPosition, st.setValue(DeckLightBlock.ON, false), net.minecraft.world.level.block.Block.UPDATE_CLIENTS);
+        Set<Long> b = BEACONS.get(sl.dimension());
+        if (b != null) b.remove(worldPosition.asLong());
     }
 
     @Override

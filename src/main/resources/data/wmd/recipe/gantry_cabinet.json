@@ -20,7 +20,7 @@
       "item": "wmd:survey_scanner"
     },
     "C": {
-      "item": "minecraft:chest"
+      "tag": "c:chests/wooden"
     },
     "B": {
       "item": "wmd:engine_repair_kit"

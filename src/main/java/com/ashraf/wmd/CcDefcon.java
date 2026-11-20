@@ -56,7 +56,7 @@ public final class CcDefcon {
         ServerPlayer o = server.getPlayerList().getPlayer(owner);
         if (o != null) m.put(owner, o);
         for (CcBuildingBlockEntity b : CommandCenter.activeBuildings(owner))
-            for (UUID u : b.security().trusted().keySet()) {
+            for (UUID u : Access.sharedWith(b)) {
                 if (m.containsKey(u)) continue;
                 ServerPlayer p = server.getPlayerList().getPlayer(u);
                 if (p != null) m.put(u, p);

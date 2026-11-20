@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:exo_mod_wings"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "LSL",
+    "LAL",
+    "ST "
+  ],
+  "key": {
+    "L": {
+      "tag": "c:plates/aluminum"
+    },
+    "S": {
+      "item": "wmd:superconducting_coil"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    }
+  },
+  "result": {
+    "id": "wmd:exo_mod_wings",
+    "count": 1
+  }
+}

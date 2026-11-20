@@ -78,7 +78,7 @@ public class ServiceArmScreen extends MachineScreen implements WmdUi.Kit {
         WmdUi.header(g, font, x, y, PW, new ItemStack(a.getBlockState().getBlock().asItem()), Component.translatable(a.getBlockState().getBlock().getDescriptionId()),
                 Component.translatable(P + "chip." + st), kind(st), st == ServiceArmBlockEntity.S_WORKING || st == ServiceArmBlockEntity.S_PUMPING);
         WmdUi.drawFit(g, font, Component.translatable(P + "mode_line", Component.translatable(P + "mode." + a.mode())), x + 7, y + 26, tw, WmdUi.TEXT_MUTED);
-        WmdUi.drawFit(g, font, Component.translatable(P + "reach", (int) Balance.SA_REACH, Balance.SA_FUEL_RATE * 20, Balance.SA_GROUND_FE * 20), x + 7, y + 37, tw, WmdUi.TEXT_MUTED);
+        WmdUi.drawFit(g, font, Component.translatable(P + "reach", (int) Balance.SA_REACH_MIN + "-" + (int) Balance.SA_REACH, Balance.SA_FUEL_RATE * 20, Balance.SA_GROUND_FE), x + 7, y + 37, tw, WmdUi.TEXT_MUTED);
         WmdUi.well(g, x + 5, y + 50, PW - 10, 22);
         String t = a.targetText();
         WmdUi.drawFit(g, font, t.isEmpty() ? Component.translatable(P + "no_target") : Component.translatable(P + "target", t), x + 7, y + 52, tw, t.isEmpty() ? WmdUi.TEXT_MUTED : WmdUi.TEXT);
@@ -89,7 +89,15 @@ public class ServiceArmScreen extends MachineScreen implements WmdUi.Kit {
         WmdUi.well(g, x + 5, y + LIST_Y, PW - 10, ROW_H * ServiceArmBlockEntity.LIST + 2);
         List<String> l = a.foundList();
         int hover = rowAt(mouseX, mouseY);
-        if (l.isEmpty()) WmdUi.drawFit(g, font, Component.translatable(P + "no_target"), x + 7, y + LIST_Y + 3, tw, WmdUi.TEXT_DIM);
+        if (l.isEmpty()) {
+            WmdUi.drawFit(g, font, Component.translatable(P + "no_target"), x + 7, y + LIST_Y + 3, tw, WmdUi.TEXT_DIM);
+            String why = a.whyText();
+            int bar = why.indexOf('|');
+            if (bar > 0) {
+                WmdUi.drawFit(g, font, Component.translatable(P + "why_point", why.substring(bar + 1)), x + 7, y + LIST_Y + 3 + ROW_H, tw, WmdUi.TEXT_MUTED);
+                WmdUi.drawFit(g, font, Component.translatable(P + "why." + why.substring(0, bar)), x + 7, y + LIST_Y + 3 + 2 * ROW_H, tw, WmdUi.WARN);
+            }
+        }
         for (int i = 0; i < Math.min(l.size(), ServiceArmBlockEntity.LIST); i++) {
             int ry = y + LIST_Y + 2 + i * ROW_H;
             boolean pin = i == a.pinnedRow();

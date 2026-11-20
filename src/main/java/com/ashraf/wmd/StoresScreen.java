@@ -45,13 +45,28 @@ public class StoresScreen extends Screen {
 
     @Override public boolean isPauseScreen() { return false; }
 
+    private boolean overTab(double mx, double my, int i) { return WmdUi.over(mx, my, x0 - 23, y0 + 22 + i * 24, 23, 22); }
+
+    @Override
+    public boolean mouseClicked(double mx, double my, int button) {
+        if (button == 0 && tag.contains("cockpit") && overTab(mx, my, 1)) {
+            WmdUi.tab();
+            PacketDistributor.sendToServer(new DeckConsolePayloads.Ask(BlockPos.of(tag.getLong("cockpit")), DeckConsoleBlockEntity.A_REFRESH, 0L, null, 1));
+            return true;
+        }
+        return super.mouseClicked(mx, my, button);
+    }
+
     @Override
     public void renderBackground(GuiGraphics g, int mx, int my, float pt) {}
 
     @Override
     public void render(GuiGraphics g, int mx, int my, float pt) {
         super.renderBackground(g, mx, my, pt);
+        boolean deckTab = tag.contains("cockpit");
+        if (deckTab) WmdUi.tab(g, x0 - 23, y0 + 22 + 24, "icon_deck", false, overTab(mx, my, 1));
         WmdUi.panel(g, x0, y0, PW, PH);
+        if (deckTab) WmdUi.tab(g, x0 - 23, y0 + 22, "icon_process", true, false);
         boolean dep = tag.contains("depot");
         WmdUi.header(g, font, x0, y0, PW, new ItemStack(AirBlocks.JET_COCKPIT_ITEM.get()), title,
                 Component.translatable(dep ? (tag.getInt("depotMode") != 0 ? "gui.wmd.stores.chip_stocking" : "gui.wmd.stores.chip_depot") : "gui.wmd.stores.chip_away"),
@@ -78,5 +93,7 @@ public class StoresScreen extends Screen {
         WmdUi.drawFit(g, font, Component.translatable(dep ? (tag.getBoolean("parked") ? "gui.wmd.stores.hint_depot" : "gui.wmd.stores.hint_air") : "gui.wmd.stores.hint_away"),
                 x0 + 8, y0 + PH - 18, PW - 112, WmdUi.TEXT_DIM);
         super.render(g, mx, my, pt);
+        if (deckTab && overTab(mx, my, 1)) g.renderTooltip(font, Component.translatable("gui.wmd.stores.tab_deck"), mx, my);
+        else if (deckTab && overTab(mx, my, 0)) g.renderTooltip(font, Component.translatable("gui.wmd.stores.tab_stores"), mx, my);
     }
 }

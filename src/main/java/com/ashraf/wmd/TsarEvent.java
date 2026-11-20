@@ -61,6 +61,7 @@ public final class TsarEvent {
             Component line = Component.translatable("message.wmd.tsar.incoming", e.tx, e.tz, Math.max(1, left / 20)).withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD);
             for (ServerPlayer p : sl.players()) if (Math.hypot(p.getX() - e.tx, p.getZ() - e.tz) < Balance.TSAR_SEEN_R) p.sendSystemMessage(line);
             MusicTriggersHook.fire(sl, "wmd:tsar_incoming", new BlockPos(e.tx, e.ty, e.tz));
+            MusicTriggersHook.flag(sl, "wmd:tsar_inbound", true, 18000);
         }
         if (!e.soon && left <= MusicTriggersHook.IMPACT_SOON_TICKS) { e.soon = true; MusicTriggersHook.fire(sl, "wmd:tsar_burst_soon", new BlockPos(e.tx, e.ty, e.tz)); }
         if (!TargetSnapshot.has(key(b)) && (now - e.t0) % 200 == 0)
@@ -166,6 +167,7 @@ public final class TsarEvent {
         double r = Missiles.craterRadius(WarheadType.TSAR.tier) * WarheadType.TSAR.crater;
         StrikeLog.report(sl, e != null ? e.owner : b.owner(), "log.wmd.strike.tsar", (int) ground.x, (int) ground.z, r, r * WarheadType.TSAR.depth * Balance.AIRBURST_DEPTH);
         MusicTriggersHook.fire(sl, "wmd:tsar_burst", BlockPos.containing(ground));
+        MusicTriggersHook.flag(sl, "wmd:tsar_inbound", false, 0);
         Component line = Component.translatable("message.wmd.tsar.seen", (int) ground.x, (int) ground.z).withStyle(ChatFormatting.GRAY);
         for (ServerPlayer p : sl.players()) if (Math.hypot(p.getX() - ground.x, p.getZ() - ground.z) < Balance.TSAR_SEEN_R) p.sendSystemMessage(line);
     }

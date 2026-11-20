@@ -8,7 +8,7 @@
   ],
   "key": {
     "S": {
-      "item": "wmd:steel_ingot"
+      "tag": "c:ingots/steel"
     },
     "B": {
       "item": "minecraft:bucket"

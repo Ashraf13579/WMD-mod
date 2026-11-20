@@ -48,6 +48,7 @@ public final class OfflineGuard extends SavedData {
     }
 
     static boolean protects(Level level, BlockPos p) {
+        if (VnBridge.present()) return false;
         List<Zone> z = zones;
         if (z.isEmpty()) return false;
         String dim = level.dimension().location().toString();
@@ -60,6 +61,7 @@ public final class OfflineGuard extends SavedData {
     }
 
     static Component refuse(ServerLevel level, double x, double z) {
+        if (VnBridge.present()) return null;
         List<Zone> zs = zones;
         String dim = level.dimension().location().toString();
         for (Zone q : zs) {

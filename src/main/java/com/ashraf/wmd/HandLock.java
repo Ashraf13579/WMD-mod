@@ -83,6 +83,7 @@ public final class HandLock {
         if (kind == MANPADS) {
             if (SableBridge.active()) {
                 for (SableBridge.ShipInfo s : SableBridge.allShips(level)) {
+                    if (Cloak.hidden(level, s.id())) continue;
                     Vec3 c = s.worldCenter();
 
                     double lim = AirGate.on() && AirPicture.isAircraft(level, s.id()) ? range * AirHeat.factor(level, s.id(), level.getGameTime()) : range;
@@ -110,7 +111,7 @@ public final class HandLock {
         }
 
         List<LivingEntity> near = level.getEntitiesOfClass(LivingEntity.class, new AABB(eye, eye).inflate(range),
-                e -> e != sp && e.isAlive() && (e instanceof Player p ? !p.isSpectator() : e instanceof Mob && e.getBbWidth() * e.getBbWidth() * e.getBbHeight() >= 1.0F));
+                e -> e != sp && e.isAlive() && (e instanceof Player p ? !p.isSpectator() && !Cloak.playerHidden(level, p) : e instanceof Mob && e.getBbWidth() * e.getBbWidth() * e.getBbHeight() >= 1.0F));
         for (LivingEntity e : near) {
             Vec3 c = e.position().add(0, e.getBbHeight() * 0.5, 0);
             double cos = cosTo(eye, look, c);

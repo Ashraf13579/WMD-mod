@@ -159,10 +159,10 @@ public class WaterIntakeBlockEntity extends ItemProcessBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.INTAKE_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.INTAKE_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.intake", Balance.INTAKE_MB_BRONZE * 20, Balance.INTAKE_MB_TITANIUM * 20, Balance.INTAKE_MIN_SOURCES),
                 Component.translatable("gui.wmd.info.intake_life", Balance.INTAKE_LIFE_BRONZE / 1200, Balance.INTAKE_LIFE_TITANIUM / 1200),
-                Component.translatable("gui.wmd.info.heavy_water", Balance.HEAVY_WATER_FEED_PER_LEVEL * 20, Balance.HEAVY_WATER_RATIO, Balance.HEAVY_WATER_FE_PER_LEVEL * 20, Balance.UPGRADE_MAX_LEVEL));
+                Component.translatable("gui.wmd.info.heavy_water", Balance.HEAVY_WATER_FEED_PER_LEVEL * 20, Balance.HEAVY_WATER_RATIO, Balance.HEAVY_WATER_FE_PER_LEVEL, Balance.UPGRADE_MAX_LEVEL));
     }
 
     @Override protected SoundEvent runSound() { return WmdSounds.WI_RUN_LOOP.get(); }

@@ -142,7 +142,7 @@ public class CcSecurityMonitorBlockEntity extends CcModuleBlockEntity implements
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", kind().fe() * 20), Component.translatable("gui.wmd.info.cctv.monitor", frequency, Balance.CCTV_DIRECT));
+        return List.of(Component.translatable("gui.wmd.info.use", kind().fe()), Component.translatable("gui.wmd.info.cctv.monitor", frequency, Balance.CCTV_DIRECT));
     }
 
     @Override

@@ -90,6 +90,11 @@ public final class ClientForcefield {
 
     static void track(ForcefieldBlockEntity be) { LIVE.put(be.getBlockPos().immutable(), be); }
 
+    private record Virtual(BlockPos key, Vec3 c, int r, int state, int pct, long seen) {}
+    private static final Map<BlockPos, Virtual> VIRTUAL = Statics.client(new HashMap<>());
+
+    public static void trackVirtual(BlockPos key, Vec3 c, int r, int state, int pct, long now) { VIRTUAL.put(key, new Virtual(key, c, r, state, pct, now)); }
+
     private record Ripple(BlockPos gen, Vec3 dir, long t0, float power) {}
     private record Crack(BlockPos gen, Vec3 c, int r, Vec3 dir, long t0, List<double[][]> lines) {}
     private static final class Shard {
@@ -111,12 +116,18 @@ public final class ClientForcefield {
         long now = mc.level.getGameTime();
         for (Forcefield.Fx p; (p = Forcefield.PENDING.poll()) != null; ) arrive(mc, p, now);
         LIVE.values().removeIf(be -> be.isRemoved() || be.getLevel() != mc.level);
+        VIRTUAL.values().removeIf(v -> now - v.seen() > 3 || now < v.seen());
+        for (Virtual v : VIRTUAL.values()) {
+            float target = v.state() == ForcefieldBlockEntity.UP || v.state() == ForcefieldBlockEntity.CRACK ? 1.0F : 0.0F;
+            float f = FADE.getOrDefault(v.key(), 0.0F);
+            FADE.put(v.key(), f + (target - f) * (target > f ? 0.2F : 0.08F));
+        }
         for (Map.Entry<BlockPos, ForcefieldBlockEntity> e : LIVE.entrySet()) {
             float target = shown(e.getValue(), now) ? 1.0F : 0.0F;
             float f = FADE.getOrDefault(e.getKey(), 0.0F);
             FADE.put(e.getKey(), f + (target - f) * (target > f ? 0.2F : 0.08F));
         }
-        FADE.keySet().removeIf(k -> !LIVE.containsKey(k));
+        FADE.keySet().removeIf(k -> !LIVE.containsKey(k) && !VIRTUAL.containsKey(k));
         RIPPLES.removeIf(r -> now - r.t0() > 40);
         CRACKS.removeIf(c -> now - c.t0() > Balance.FF_CRACK_TICKS + 10);
         SHATTERS.removeIf(s -> now - s.t0() > Balance.FF_SHARD_TICKS);
@@ -294,21 +305,27 @@ public final class ClientForcefield {
             if (fade < 0.01F) continue;
             any |= dome(bb, cam, e.getValue(), fade, now);
         }
+        for (Virtual v : VIRTUAL.values()) {
+            float fade = FADE.getOrDefault(v.key(), 0.0F);
+            if (fade < 0.01F) continue;
+            any |= domeAt(bb, cam, v.c(), v.r(), v.state(), 1000.0, v.pct(), v.key(), fade, now);
+        }
         for (Shatter s : SHATTERS) any |= shatter(bb, cam, s, now);
         ClientBlastGeo.draw(event, bb, any, true);
     }
 
     private static boolean dome(BufferBuilder bb, Vec3 cam, ForcefieldBlockEntity be, float fade, double now) {
-        Vec3 c = be.centre();
-        int r = be.radius(), st = be.state();
-        double t = be.shownTicks(now);
+        return domeAt(bb, cam, be.centre(), be.radius(), be.state(), be.shownTicks(now), be.pct(), be.getBlockPos(), fade, now);
+    }
+
+    private static boolean domeAt(BufferBuilder bb, Vec3 cam, Vec3 c, int r, int st, double t, int pct, BlockPos key, float fade, double now) {
         double grow = st == ForcefieldBlockEntity.BOOT ? Mth.clamp((t - 140.0) / 80.0, 0.0, 1.0) : 1.0;
-        boolean low = st == ForcefieldBlockEntity.UP && be.pct() < Balance.FF_LOW_PCT;
+        boolean low = st == ForcefieldBlockEntity.UP && pct < Balance.FF_LOW_PCT;
         long tick = (long) now;
         List<Ripple> rips = new ArrayList<>();
-        for (Ripple rp : RIPPLES) if (rp.gen().equals(be.getBlockPos())) rips.add(rp);
+        for (Ripple rp : RIPPLES) if (rp.gen().equals(key)) rips.add(rp);
         Crack crack = null;
-        for (Crack k : CRACKS) if (k.gen().equals(be.getBlockPos())) crack = k;
+        for (Crack k : CRACKS) if (k.gen().equals(key)) crack = k;
         double crackAge = crack != null ? now - crack.t0() : -1.0;
         float flick = low ? 0.65F + 0.35F * (float) hash(7, tick / 2) : 1.0F;
         if (st == ForcefieldBlockEntity.CRACK) flick *= 0.8F + 0.2F * (float) hash(9, tick);

@@ -73,7 +73,7 @@ public class ElectrolyserBlockEntity extends ItemProcessBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.ELECTRO_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.ELECTRO_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.electrolyser", Balance.ELECTRO_BAUXITE_PER_CYCLE, Balance.ELECTRO_ALU_PER_CYCLE, Balance.ELECTRO_CYCLE_TICKS / 20),
                 Component.translatable("gui.wmd.info.items_hint"));
     }

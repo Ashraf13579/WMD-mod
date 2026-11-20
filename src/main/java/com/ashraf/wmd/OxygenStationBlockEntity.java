@@ -60,7 +60,7 @@ public class OxygenStationBlockEntity extends ItemProcessBlockEntity implements 
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.O2_STATION_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.O2_STATION_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.oxygen_station", Balance.O2_STATION_FILL_TICKS / 20,
                         Balance.O2_FULL / Balance.O2_STATION_FILL / Balance.O2_STATION_WATER_EVERY * Balance.O2_STATION_WATER_MB),
                 Component.translatable("gui.wmd.info.oxygen_station.item", item.stack.isEmpty() ? "-" : EvaSuitItem.clock(EvaSuitItem.oxygen(item.stack))));

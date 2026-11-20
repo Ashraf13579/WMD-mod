@@ -7,11 +7,13 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
@@ -100,6 +102,15 @@ public class GantryCabinetRenderer implements BlockEntityRenderer<GantryCabinetB
         }
         ps.pushPose();
         ps.translate(0.0F, -mast, 0.0F);
+        if (be.clientNano()) {
+            head(be, pt, ps, buffers, lt, overlay);
+            ps.popPose();
+            ps.popPose();
+            ps.popPose();
+            ps.popPose();
+            if (be.clientPhase() == GantryCabinetBlockEntity.WELD) swarm(be, level, o.add(step(ud).scale(u)).add(step(vd).scale(vm)).add(0.0, (FOOT - mast - HEAD_JETS) / 16.0, 0.0), ps, buffers, pt);
+            return;
+        }
         part(kit, "wrist", ps, buffers, lt, overlay);
         float a = (float) Math.toRadians(arm);
         rotZAbout(ps, MX, FOOT - 3.6F, a);
@@ -129,6 +140,70 @@ public class GantryCabinetRenderer implements BlockEntityRenderer<GantryCabinetB
         ps.popPose();
 
         if (be.clientPhase() == GantryCabinetBlockEntity.WELD) weld(be, level, o, ud, vd, u, vm, mast, a);
+    }
+
+    private static final float HEAD_JETS = 18.5F, VANE_R = 6.2F, VANE_Y = -11.0F, VANE_OPEN = 62.0F;
+
+    private static void head(GantryCabinetBlockEntity be, float pt, PoseStack ps, MultiBufferSource buffers, int lt, int overlay) {
+        MeshModel h = MeshModel.named("nanite_head");
+        if (!h.has("nhead")) return;
+        ps.translate(MX, FOOT, 0.0F);
+        part(h, "nhead", ps, buffers, lt, overlay);
+        ps.pushPose();
+        ps.mulPose(Axis.YP.rotationDegrees(be.clientSpin(pt)));
+        part(h, "nspin", ps, buffers, lt, overlay);
+        ps.popPose();
+        float open = (float) Math.toRadians(VANE_OPEN * be.clientVane(pt));
+        for (int k = 0; k < 6; k++) {
+            ps.pushPose();
+            ps.mulPose(Axis.YP.rotationDegrees(60.0F * k));
+            rotZAbout(ps, VANE_R, VANE_Y, open);
+            part(h, "vane" + k, ps, buffers, lt, overlay);
+            ps.popPose();
+        }
+    }
+
+    private static void swarm(GantryCabinetBlockEntity be, Level level, Vec3 jets, PoseStack ps, MultiBufferSource buffers, float pt) {
+        int[] b = be.clientBatch();
+        if (b.length < 3) return;
+        double tt = level.getGameTime() + pt;
+        BlockPos bp = be.getBlockPos();
+        VeilBridge.machineGlow(0x6B00_0000_0000_0000L ^ bp.asLong(), jets.x, jets.y, jets.z, 0.25F, 0.75F, 1.0F, 6.0F, 2.0F, level.getGameTime());
+        VertexConsumer q = buffers.getBuffer(RenderType.lightning());
+        Matrix4f m = ps.last().pose();
+        float fill = (float) ((tt % Balance.NFORGE_BATCH_TICKS) / Balance.NFORGE_BATCH_TICKS);
+        for (int c = 0; c + 2 < b.length; c += 3) {
+            Vec3 cell = new Vec3(b[c] / 16.0, b[c + 1] / 16.0, b[c + 2] / 16.0);
+            Vec3 d = cell.subtract(jets);
+            Vec3 side = d.cross(new Vec3(0.0, 1.0, 0.0));
+            if (side.lengthSqr() < 1.0E-4) side = new Vec3(1.0, 0.0, 0.0);
+            side = side.normalize();
+            Vec3 up = side.cross(d).normalize();
+            for (int i = 0; i < 28; i++) {
+                double t = ((tt * 0.07 + i / 28.0 + c * 0.13) % 1.0);
+                double a = tt * 0.35 + i * 2.39, r = 0.35 * Math.sin(Math.PI * t);
+                Vec3 p = jets.add(d.scale(t)).add(side.scale(Math.cos(a) * r)).add(up.scale(Math.sin(a) * r)).subtract(bp.getX(), bp.getY(), bp.getZ());
+                float s = 0.035F + 0.02F * (float) Math.sin(a * 1.7);
+                int alpha = (int) (200 * Math.sin(Math.PI * t)) + 40;
+                int col = (alpha << 24) | (i % 3 == 0 ? 0xA0F0FF : 0x40A8FF);
+                mote(q, m, (float) p.x, (float) p.y, (float) p.z, s, col);
+            }
+
+            float x0 = (float) (cell.x - bp.getX() - 0.5), y0 = (float) (cell.y - bp.getY() - 0.5), z0 = (float) (cell.z - bp.getZ() - 0.5);
+            float yf = y0 + fill;
+            int glow = 0x9040C8FF;
+            CcRenderers.quad(q, m, x0, yf, z0, x0, yf, z0 + 1.0F, x0 + 1.0F, yf, z0 + 1.0F, x0 + 1.0F, yf, z0, 0x5040A0FF);
+            for (int e = 0; e < 4; e++) {
+                float ex = x0 + ((e & 1) == 0 ? 0.0F : 1.0F), ez = z0 + ((e & 2) == 0 ? 0.0F : 1.0F), w = 0.02F;
+                CcRenderers.quad(q, m, ex - w, y0, ez, ex + w, y0, ez, ex + w, yf, ez, ex - w, yf, ez, glow);
+                CcRenderers.quad(q, m, ex, y0, ez - w, ex, y0, ez + w, ex, yf, ez + w, ex, yf, ez - w, glow);
+            }
+        }
+    }
+
+    private static void mote(VertexConsumer q, Matrix4f m, float x, float y, float z, float s, int col) {
+        CcRenderers.quad(q, m, x - s, y - s, z, x + s, y - s, z, x + s, y + s, z, x - s, y + s, z, col);
+        CcRenderers.quad(q, m, x, y - s, z - s, x, y - s, z + s, x, y + s, z + s, x, y + s, z - s, col);
     }
 
     private static void part(MeshModel kit, String bone, PoseStack ps, MultiBufferSource buffers, int lt, int overlay) {

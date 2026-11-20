@@ -14,7 +14,7 @@
       "item": "wmd:machine_casing"
     },
     "H": {
-      "item": "minecraft:chest"
+      "tag": "c:chests/wooden"
     },
     "S": {
       "tag": "c:ingots/steel"

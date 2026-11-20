@@ -86,8 +86,9 @@ public final class Mlrs {
     private static void burst(ServerLevel level, FlightManager fm, ArtShell s, int gx, int gy, int gz) {
         double r = Balance.MLRS_HE_RADIUS;
         Vec3 pos = new Vec3(gx + 0.5, gy, gz + 0.5);
+        WmdApiImpl.blast(level, pos.x, pos.y, pos.z, r, "rocket", "he", hasOwner(s.owner()) ? s.owner() : null);
         WarheadFx.hurt(level, pos, r, 3.5, 0.6, 0.9, 0.6, 3, hasOwner(s.owner()) ? s.owner() : null);
-        Crater crater = new Crater(gx, gy, gz, r, 0.6, 0.4, 0.0, HOLD);
+        Crater crater = new Crater(gx, gy, gz, r, 0.6, 0.4, 0.0, HOLD).owner(hasOwner(s.owner()) ? s.owner() : null);
         fm.craters.add(crater);
         MapFeed.hit(level, "m270 rocket", 0, false, gx + 0.5, gy, gz + 0.5, r, hasOwner(s.owner()) ? s.owner() : null);
         Debris.blast(level, gx, gy, gz, r, crater);

@@ -133,7 +133,7 @@ public class WeaponsBayBlockEntity extends ProcessUnitBlockEntity implements Own
     }
 
     boolean accepts(int kind) { BombType b = AirStores.bomb(kind); if (b != null) return !b.heavy || b == BombType.PENETRATOR;
-        return kind == AirMissiles.HEAT || kind == AirMissiles.RADAR || kind == AirMissiles.ARM || kind == AirMissiles.AGM || AirStores.isDrop(kind); }
+        return kind == AirMissiles.HEAT || kind == AirMissiles.RADAR || kind == AirMissiles.METEOR || kind == AirMissiles.ARM || kind == AirMissiles.AGM || AirStores.isDrop(kind); }
 
     boolean load(int kind) { return load(kind, 1); }
 
@@ -211,7 +211,7 @@ public class WeaponsBayBlockEntity extends ProcessUnitBlockEntity implements Own
             if (chk != null) return chk;
             pendGlide = glide[0];
             if (AirStores.isAshm(loaded)) { String pre = AntiShipMissiles.precheck(sl, getOwner()); if (pre != null) return pre; }
-            if (!ShipPower.draw(sl, ship, Balance.STATION_LAUNCH_FE)) return "no charge in the power core";
+            if (!ShipPower.draw(this, sl, ship, Balance.STATION_LAUNCH_FE)) return "no charge in the power core";
             pending = true; pendTarget = AirStores.isAshm(loaded) ? target : null; pendEmitter = null; pendLock = null; pendName = "";
             fireAt = now;
             firedKind = loaded;
@@ -224,8 +224,13 @@ public class WeaponsBayBlockEntity extends ProcessUnitBlockEntity implements Own
         String name = "";
         BlockPos emitter = null;
         if (loaded == AirMissiles.RADAR && lock == null) return "a radar missile needs a radar lock";
-        if (target != null && loaded != AirMissiles.ARM && AirPicture.get(sl, target) == null) {
-            if (loaded == AirMissiles.RADAR) return "the radar lock is not an aircraft (radar in SEA mode)";
+        if (AirMissiles.dlKind(loaded)) {
+            if (target == null) return "needs a radar lock or a datalink target (R)";
+            if (lock == null && !AirMissiles.datalink(sl, getOwner(), target, now)) return "your radars no longer track that target";
+        }
+        if (target != null && loaded != AirMissiles.ARM && AirPicture.get(sl, target) == null
+                && !(AirMissiles.dlKind(loaded) && AirMissiles.datalink(sl, getOwner(), target, now))) {
+            if (loaded == AirMissiles.RADAR || AirMissiles.dlKind(loaded)) return "the radar lock is not an aircraft (radar in SEA mode)";
             target = null;
             lock = null;
         }
@@ -260,7 +265,7 @@ public class WeaponsBayBlockEntity extends ProcessUnitBlockEntity implements Own
             if (loaded == AirMissiles.HEAT && ac != null && !AirHeat.rearAspect(sl, target, ac.pos(), ac.vel(), from, now))
                 return "no tail aspect (a heat seeker locks only from behind)";
         }
-        if (!ShipPower.draw(sl, ship, Balance.STATION_LAUNCH_FE)) return "no charge in the power core";
+        if (!ShipPower.draw(this, sl, ship, Balance.STATION_LAUNCH_FE)) return "no charge in the power core";
         pending = true;
         pendTarget = target;
         pendEmitter = emitter;
@@ -288,6 +293,8 @@ public class WeaponsBayBlockEntity extends ProcessUnitBlockEntity implements Own
         pendLock = null;
         if (r != null) {
             Wmd.LOGGER.info("Weapons bay at {}: launch refused after the doors opened: {}", worldPosition, r);
+            if (getOwner() != null && sl.getServer().getPlayerList().getPlayer(getOwner()) instanceof net.minecraft.server.level.ServerPlayer op)
+                op.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wmd.wbay.refused", r), true);
             playOnce(sl, WmdSounds.CC_PING.get(), Balance.SND_CLICK, 0.6F);
             sync();
             return;

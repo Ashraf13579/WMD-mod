@@ -151,11 +151,8 @@ public class LaidMineEntity extends Entity {
     private java.util.UUID ownShip;
 
     static boolean ownShipHit(ServerLevel sl, java.util.UUID ownShip, BlockHitResult hit, Vec3 from, Vec3 to) {
-        if (ownShip == null || hit.getType() != HitResult.Type.BLOCK) return false;
-        BlockPos b = hit.getBlockPos();
-        if (!sl.getBlockState(b).getCollisionShape(sl, b).isEmpty()) return false;
-        for (SableBridge.ShipInfo s : SableBridge.shipsAlongSegment(sl, from, to)) if (s.id().equals(ownShip)) return true;
-        return false;
+        if (ownShip == null || hit == null || hit.getType() != HitResult.Type.BLOCK) return false;
+        return ownShip.equals(SableBridge.shipIdAt(sl, hit.getBlockPos()));
     }
 
     private boolean ownLauncher(ServerLevel sl, BlockPos p) {
@@ -188,7 +185,7 @@ public class LaidMineEntity extends Entity {
         }
         wasWet = wet;
         Vec3 next = pos.add(vel);
-        BlockHitResult hit = sl.clip(new ClipContext(pos, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+        BlockHitResult hit = SableBridge.clipWorld(sl, new ClipContext(pos, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this), ownShip);
         if (hit.getType() == HitResult.Type.BLOCK && age <= Balance.DC_SOURCE_PASS_TICKS && ownLauncher(sl, hit.getBlockPos())) hit = BlockHitResult.miss(next, hit.getDirection(), BlockPos.containing(next));
         if (ownShipHit(sl, ownShip, hit, pos, next)) hit = BlockHitResult.miss(next, hit.getDirection(), BlockPos.containing(next));
         if (hit.getType() == HitResult.Type.BLOCK) {

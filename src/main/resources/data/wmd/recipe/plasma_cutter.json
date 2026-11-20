@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:plasma_cutter"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "WSW",
+    "CXC",
+    " T "
+  ],
+  "key": {
+    "W": {
+      "tag": "c:plates/tungsten"
+    },
+    "S": {
+      "item": "wmd:superconducting_coil"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "X": {
+      "item": "wmd:chip_defence_2"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    }
+  },
+  "result": {
+    "id": "wmd:plasma_cutter",
+    "count": 1
+  }
+}

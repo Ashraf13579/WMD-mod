@@ -85,7 +85,7 @@ public final class SatelliteFacilityCategory implements IRecipeCategory<Satellit
         var font = Minecraft.getInstance().font;
         g.drawString(font, "->", madeArrowX(), 10, GREY, false);
         g.drawString(font, Component.translatable("jei.wmd.time", String.format("%.1f", Balance.SATFAC_TICKS / 20.0)), 4, 28, GREY, false);
-        g.drawString(font, Component.translatable("jei.wmd.power", Balance.SATFAC_FE_PER_TICK * 20), 4, 40, GREY, false);
+        g.drawString(font, Component.translatable("jei.wmd.power", Balance.SATFAC_FE_PER_TICK), 4, 40, GREY, false);
         Component note = Component.translatable("jei.wmd.satfac.type", Component.translatable("gui.wmd.satfac.type." + r.type()));
         g.drawString(font, note, W - 4 - font.width(note), 28, 0xFF1F4E9A, false);
     }

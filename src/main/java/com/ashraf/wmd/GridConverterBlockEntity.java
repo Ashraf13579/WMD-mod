@@ -76,7 +76,7 @@ public class GridConverterBlockEntity extends ProcessUnitBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.converter", Config.GRID_CONVERTER_MAX.get() * 20, Config.GRID_CONVERTER_EFFICIENCY.get()),
+        return List.of(Component.translatable("gui.wmd.info.converter", Config.GRID_CONVERTER_MAX.get(), Config.GRID_CONVERTER_EFFICIENCY.get()),
                 Component.translatable("gui.wmd.info.converter_hint"));
     }
 

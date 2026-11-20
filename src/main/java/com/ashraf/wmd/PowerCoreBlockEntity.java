@@ -56,7 +56,10 @@ public class PowerCoreBlockEntity extends ProcessUnitBlockEntity implements CcAn
         if (at == null || at.isEmpty()) return false;
         for (Long p : new ArrayList<>(at)) {
             if (!level.isLoaded(BlockPos.of(p))) continue;
-            if (level.getBlockEntity(BlockPos.of(p)) instanceof PowerCoreBlockEntity c && !c.isRemoved() && c.take(fe)) return true;
+            if (level.getBlockEntity(BlockPos.of(p)) instanceof PowerCoreBlockEntity c && !c.isRemoved() && c.take(fe)) {
+                PowerMeter.noteOut(level, c.getBlockPos(), fe);
+                return true;
+            }
         }
         return false;
     }
@@ -349,7 +352,7 @@ public class PowerCoreBlockEntity extends ProcessUnitBlockEntity implements CcAn
     @Override
     public List<Component> guiInfo() {
         return List.of(Component.translatable("gui.wmd.info.core", String.format("%,d", Balance.CORE_BUFFER_FE)),
-                Component.translatable(cApu ? "gui.wmd.info.core_apu_on" : "gui.wmd.info.core_apu", Balance.CORE_APU_FE * 20));
+                Component.translatable(cApu ? "gui.wmd.info.core_apu_on" : "gui.wmd.info.core_apu", Balance.CORE_APU_FE));
     }
 
     @Override

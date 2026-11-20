@@ -13,6 +13,8 @@ public final class Artillery {
 
     public static final int ROCKET = 2, SUPER_GUN = 3;
 
+    public static final int PLASMA = 4, PLASMA_BALL = 17;
+
     public static final int HE = 0, SMOKE = 1, ILLUM = 2, CLUSTER = 3;
 
     public static final int GUIDED = 4;
@@ -32,6 +34,7 @@ public final class Artillery {
         if (isSpecial(type)) return SPECIAL[type - SPECIAL_BASE];
         if (type == SUPER_NUKE) return "nuke";
         if (type == GUNSHIP_105) return "gunship";
+        if (type == PLASMA_BALL) return "plasma";
         return TYPES[clampType(type)];
     }
 
@@ -54,6 +57,7 @@ public final class Artillery {
     public static String shellId(int gun, int type) {
         if (gun == ROCKET) return type == GUIDED ? "mlrs_pod_guided" : "mlrs_pod";
         if (gun == SUPER_GUN) return type == SUPER_NUKE ? "shell_super_nuke" : SuperGun.SHELL;
+        if (gun == PLASMA) return "plasma_ball";
         if (isSpecial(type)) return "shell_howitzer_" + SPECIAL[type - SPECIAL_BASE];
         if (type == GUNSHIP_105) return "shell_howitzer_gunship";
         return "shell_" + GUNS[gun] + "_" + TYPES[clampType(type)];
@@ -61,6 +65,7 @@ public final class Artillery {
 
     public static String gunBlock(int gun) {
         if (gun == SUPER_GUN) return SuperGun.BLOCK;
+        if (gun == PLASMA) return "plasma_mortar";
         return gun >= 0 && gun < GUNS.length ? GUNS[gun] : null;
     }
 
@@ -71,6 +76,7 @@ public final class Artillery {
 
     public static boolean canFire(int gun, int type) {
         if (gun == SUPER_GUN) return type == HE || type == SUPER_NUKE;
+        if (gun == PLASMA) return type == PLASMA_BALL;
         if (gun == ROCKET) return type == HE || type == GUIDED;
         if (isSpecial(type)) return gun == HOWITZER;
         return type >= 0 && type < TYPES.length;
@@ -78,15 +84,15 @@ public final class Artillery {
 
     public static int clampType(int t) { return Math.max(0, Math.min(TYPES.length - 1, t)); }
 
-    public static int knownType(int t) { return t >= 0 && (t < TYPES.length || isSpecial(t) || t == SUPER_NUKE || t == GUNSHIP_105) ? t : clampType(t); }
+    public static int knownType(int t) { return t >= 0 && (t < TYPES.length || isSpecial(t) || t == SUPER_NUKE || t == GUNSHIP_105 || t == PLASMA_BALL) ? t : clampType(t); }
 
     public static Item shellItem(int gun, int type) { return ItemProcessBlockEntity.wmd(shellId(gun, type)); }
 
-    public static int range(int gun) { if (gun == ROCKET) return Balance.MLRS_RANGE; return gun == MORTAR ? Balance.MORTAR_RANGE : Balance.HOWITZER_RANGE; }
+    public static int range(int gun) { if (gun == PLASMA) return Balance.PMORT_RANGE; if (gun == ROCKET) return Balance.MLRS_RANGE; return gun == MORTAR ? Balance.MORTAR_RANGE : Balance.HOWITZER_RANGE; }
 
-    public static int minRange(int gun) { if (gun == ROCKET) return Balance.MLRS_MIN; return gun == MORTAR ? Balance.MORTAR_MIN : Balance.HOWITZER_MIN; }
+    public static int minRange(int gun) { if (gun == PLASMA) return Balance.PMORT_MIN; if (gun == ROCKET) return Balance.MLRS_MIN; return gun == MORTAR ? Balance.MORTAR_MIN : Balance.HOWITZER_MIN; }
 
-    public static int reload(int gun) { if (gun == ROCKET) return Balance.MLRS_RIPPLE_TICKS; return gun == MORTAR ? Balance.MORTAR_RELOAD_TICKS : Balance.HOWITZER_RELOAD_TICKS; }
+    public static int reload(int gun) { if (gun == PLASMA) return Balance.PMORT_RELOAD; if (gun == ROCKET) return Balance.MLRS_RIPPLE_TICKS; return gun == MORTAR ? Balance.MORTAR_RELOAD_TICKS : Balance.HOWITZER_RELOAD_TICKS; }
 
     public static double velocity(int gun, int charge) {
         if (gun == ROCKET) return Mlrs.velocity(charge);

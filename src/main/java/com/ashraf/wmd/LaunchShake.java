@@ -19,6 +19,9 @@ public final class LaunchShake {
     static void onCamera(ViewportEvent.ComputeCameraAngles event) {
         Vec3 cam = event.getCamera().getPosition();
         float strength = ImpactFx.shake(cam);
+        strength = Math.max(strength, ClientVapourCone.shake());
+        strength = Math.max(strength, ClientAirFx.shake(cam));
+        strength = Math.max(strength, ClientPulseEmp.shake(cam));
         for (double[] l : LaunchTerminalBlockEntity.CLIENT_LAUNCHES.values()) {
             double d = cam.distanceTo(new Vec3(l[0], l[1], l[2]));
             if (d > REACH) continue;

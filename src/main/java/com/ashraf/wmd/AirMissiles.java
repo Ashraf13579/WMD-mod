@@ -33,11 +33,28 @@ public final class AirMissiles {
     private AirMissiles() {}
 
     public static final int HEAT = 0, RADAR = 1, ARM = 2, AGM = 3;
-    public static final String[] NAMES = { "heat", "radar", "arm", "agm" };
 
-    static final String HIT = "hit", MISS = "self-destruct", DUD = "hit the ground", LOST = "lost the lock", DECOYED = "decoyed", GONE = "target gone";
+    public static final int METEOR = 4, HEAVY = 5;
+    public static final String[] NAMES = { "heat", "radar", "arm", "agm", "meteor", "heavy" };
 
-    static boolean warns(int kind) { return kind == RADAR; }
+    static final String HIT = "hit", MISS = "self-destruct", DUD = "hit the ground", LOST = "lost the lock", DECOYED = "decoyed", GONE = "target gone", SHIELDED = "stopped by a forcefield", SHOT_DOWN = "shot down by a CIWS";
+
+    static boolean warns(int kind) { return radarLike(kind); }
+
+    public static boolean dlKind(int kind) { return kind == METEOR || kind == HEAVY; }
+
+    public static boolean radarLike(int kind) { return kind == RADAR || kind == METEOR || kind == HEAVY; }
+
+    static boolean datalink(ServerLevel level, UUID owner, UUID target, long now) {
+        return owner != null && target != null && TrackNet.trackedBy(level, owner, now).contains(target);
+    }
+
+    static boolean guided(ServerLevel level, Shot s, Vec3 t, long now) {
+        if (s.lock != null && s.lock.holds(level, s, t, now)) return true;
+        if (s.kind == RADAR) return false;
+        if (now - s.dlAt >= Balance.AAM_DL_TICKS || s.dlAt == Long.MIN_VALUE) { s.dl = datalink(level, s.owner, s.ship, now); s.dlAt = now; }
+        return s.dl;
+    }
 
     public static int kindOf(String name) {
         for (int i = 0; i < NAMES.length; i++) if (NAMES[i].equalsIgnoreCase(name)) return i;
@@ -105,6 +122,8 @@ public final class AirMissiles {
         Vec3 gpsAim;
         final int drop;
         final boolean refined;
+        boolean dl;
+        long dlAt = Long.MIN_VALUE;
 
         Shot(long id, int kind, UUID owner, ResourceKey<Level> dim, long launch, UUID ownShip, UUID ship, UUID entity, BlockPos emitter, LockSource lock,
              UUID devPlayer, String targetName, Vec3 pos, Vec3 vel, Vec3 aim) {
@@ -112,7 +131,7 @@ public final class AirMissiles {
             this.entity = entity; this.emitter = emitter; this.lock = lock; this.devPlayer = devPlayer; this.targetName = targetName;
             this.pos = pos; this.vel = vel; this.aim = aim; this.lastSeen = aim; this.speed = vel.length(); this.launchSpeed = this.speed;
             this.refined = nextRefined;
-            this.drop = nextDrop;
+            this.drop = kind == HEAVY ? Math.max(nextDrop, Balance.AAM_HEAVY_DROP) : nextDrop;
         }
         public long id() { return id; }
         public int kind() { return kind; }
@@ -126,6 +145,21 @@ public final class AirMissiles {
 
     private static final Map<UUID, Long> LAST_DECOY = Statics.server(new HashMap<>());
     private static boolean warned;
+
+    static Shot flying(ServerLevel level, long id) {
+        for (Shot s : SHOTS) if (s.id == id && s.dim == level.dimension() && s.end == null && s.pos != null) return s;
+        return null;
+    }
+
+    static boolean shootDown(ServerLevel level, long id, UUID by) {
+        Shot s = flying(level, id);
+        if (s == null) return false;
+        if (s.kind == AGM) agmBlast(level, s.pos, s);
+        else AirFrag.burst(level, s.pos, s.vel == null ? Vec3.ZERO : s.vel, s.kind, s.owner, null, null, null, s.refined);
+        s.end = SHOT_DOWN;
+        Wmd.LOGGER.info("Air missile {} ({}) shot down by a CIWS of {}", s.id, NAMES[s.kind], by);
+        return true;
+    }
 
     public static List<Shot> inFlight(ServerLevel level) {
         List<Shot> out = new ArrayList<>();
@@ -152,24 +186,28 @@ public final class AirMissiles {
     public static String fire(ServerLevel level, int kind, UUID owner, Vec3 from, Vec3 dir, Vec3 carrierVel, UUID ownShip,
                               UUID ship, UUID entity, BlockPos emitter, LockSource lock, UUID devPlayer, String targetName) {
         if (!AirGate.on()) return "1.2 air battles are off (AirGate)";
-        if (kind < 0 || kind > 2) return "unknown seeker";
+        if (kind < 0 || kind >= NAMES.length || kind == AGM) return "unknown seeker";
         if (tooMany(level, owner)) return "too many missiles in the air";
         Vec3 t = targetPoint(level, ship, entity, emitter);
         if (t == null) return "no target";
         if (from.distanceTo(t) > Balance.AAM_RANGE[kind]) return "out of range (" + (int) from.distanceTo(t) + " > " + (int) Balance.AAM_RANGE[kind] + ")";
         if (kind == RADAR && lock == null) return "a radar missile needs a launcher that holds a lock";
+        long now0 = level.getGameTime();
+        if ((kind == METEOR || kind == HEAVY) && lock == null && !datalink(level, owner, ship, now0)) return "no lock and no radar track (datalink)";
+        if (kind == HEAVY && from.distanceTo(t) < Balance.AAM_HEAVY_MIN_RANGE) return "too close for the heavy missile (min " + (int) Balance.AAM_HEAVY_MIN_RANGE + ")";
         Vec3 v = dir.normalize().scale(Balance.AAM_LAUNCH_SPEED).add(carrierVel == null ? Vec3.ZERO : carrierVel);
         long now = level.getGameTime();
         Shot s = new Shot(FlightManager.get(level).nextShotId(), kind, owner, level.dimension(), now, ownShip, ship, entity, emitter, lock, devPlayer,
                 targetName == null ? "" : targetName, from, v, t);
         SableBridge.ShipInfo si = ship == null ? null : SableBridge.shipInfo(level, ship);
         s.blocks = si == null ? 0 : si.blockCount();
-        if (kind == RADAR && !lock.holds(level, s, t, now)) return "no lock";
+        if (radarLike(kind) && !guided(level, s, t, now)) return "no lock";
         SHOTS.add(s);
         if (ship != null && warns(kind)) Rwr.launch(level, ship, s.id, from, owner, "mrm", false, now);
-        level.playSound(null, from.x, from.y, from.z, WmdSounds.AAM_LAUNCH.get(), net.minecraft.sounds.SoundSource.HOSTILE,
-                Balance.SND_RELEASE, 1.1F);
+        level.playSound(null, from.x, from.y, from.z, kind == HEAVY ? WmdSounds.AAM_HEAVY_LAUNCH.get() : WmdSounds.AAM_LAUNCH.get(), net.minecraft.sounds.SoundSource.HOSTILE,
+                Balance.SND_RELEASE, kind == HEAVY ? 1.0F : 1.1F);
         Wmd.LOGGER.info("Air missile {} ({}) fired at {} ({} blocks)", s.id, NAMES[kind], s.targetName, (int) from.distanceTo(t));
+        MusicTriggersHook.fire(level, "wmd:aam_fire", BlockPos.containing(from));
         return null;
     }
 
@@ -194,6 +232,7 @@ public final class AirMissiles {
         SHOTS.add(s);
         level.playSound(null, from.x, from.y, from.z, WmdSounds.AAM_LAUNCH.get(), net.minecraft.sounds.SoundSource.HOSTILE, Balance.SND_RELEASE, 0.9F);
         Wmd.LOGGER.info("Air missile {} (agm) fired at {} ({} blocks)", s.id, s.targetName, (int) from.distanceTo(t));
+        MusicTriggersHook.fire(level, "wmd:agm_fire", BlockPos.containing(from));
         return null;
     }
 
@@ -212,6 +251,7 @@ public final class AirMissiles {
         SHOTS.add(s);
         level.playSound(null, from.x, from.y, from.z, WmdSounds.AAM_LAUNCH.get(), net.minecraft.sounds.SoundSource.HOSTILE, Balance.SND_RELEASE, 0.9F);
         Wmd.LOGGER.info("Air missile {} (agm GPS, miss {}) fired at {} ({} blocks)", s.id, String.format("%.1f", miss), s.targetName, (int) from.distanceTo(point));
+        MusicTriggersHook.fire(level, "wmd:agm_fire", BlockPos.containing(from));
         return null;
     }
 
@@ -358,9 +398,12 @@ public final class AirMissiles {
 
     private static void ended(ServerLevel level, Shot s) {
         if (s.pos != null) {
-            boolean kill = s.kind != AGM && (HIT.equals(s.end) || DUD.equals(s.end));
+            boolean kill = s.kind != AGM && (HIT.equals(s.end) || DUD.equals(s.end) || SHOT_DOWN.equals(s.end));
             double r2 = Balance.AAM_FX_RANGE * Balance.AAM_FX_RANGE;
-            AamBurstPayload p = new AamBurstPayload(s.id, s.pos.x, s.pos.y, s.pos.z, kill);
+
+            float rad = !kill || (s.kind == ARM && s.ship == null) ? 0.0F
+                    : (float) (Balance.AAM_FRAG_RADIUS[Math.min(s.kind, Balance.AAM_FRAG_RADIUS.length - 1)] * refinedFactor(s.refined));
+            AamBurstPayload p = new AamBurstPayload(s.id, s.pos.x, s.pos.y, s.pos.z, kill, rad);
             for (net.minecraft.server.level.ServerPlayer sp : level.players()) if (worldDistSq(level, sp, s.pos) <= r2) net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(sp, p);
         }
         if (s.ship != null) Rwr.missileGone(s.ship, s.id);
@@ -388,6 +431,7 @@ public final class AirMissiles {
             Vec3 to = s.pos.add(s.vel);
             BlockPos tb = BlockPos.containing(to);
             if (level.getChunkSource().getChunkNow(tb.getX() >> 4, tb.getZ() >> 4) == null && !AirRockets.reach(level, to)) { s.end = MISS; return; }
+            if (shell(level, s, s.pos, to, Double.MAX_VALUE)) return;
             s.flown += s.vel.length();
             s.pos = to;
             s.speed = s.vel.length();
@@ -410,18 +454,19 @@ public final class AirMissiles {
             switch (s.kind) {
                 case HEAT -> renew = inGimbal(s, t) && !SmokeScreens.insideColumn(level, t.x, t.z)
                         && (s.ship == null || s.pos.distanceTo(t) <= Balance.AAM_FUZE[HEAT] || AirHeat.rearAspect(level, s.ship, t, tv, s.pos, now));
-                case RADAR -> {
+                case RADAR, METEOR, HEAVY -> {
                     if (!s.pitbull) {
-                        renew = !s.lockLost && s.lock.holds(level, s, t, now);
-                        if (!renew && !s.lockLost) { s.lockLost = true; Wmd.LOGGER.info("Air missile {} (radar) lost its launcher's lock before pitbull", s.id); }
+                        renew = !s.lockLost && guided(level, s, t, now);
+                        if (!renew && !s.lockLost) { s.lockLost = true; Wmd.LOGGER.info("Air missile {} ({}) lost its launcher's lock before pitbull", s.id, NAMES[s.kind]); }
                         if (renew && s.ship != null && (now + s.id) % 10 == 0) {
-                            Vec3 la = s.lock.at(level);
+                            Vec3 la = s.lock == null ? null : s.lock.at(level);
                             if (la != null) { Rwr.lock(level, s.ship, la, s.lock.owner(), s.lock.label(), s.id, now); Rwr.launch(level, s.ship, s.id, la, s.owner, "mrm", false, now); }
+                            else Rwr.launch(level, s.ship, s.id, s.pos, s.owner, "mrm", false, now);
                         }
                         if (renew && s.pos.distanceTo(t) <= Balance.AAM_PITBULL) {
                             s.pitbull = true;
                             if (s.ship != null) Rwr.launch(level, s.ship, s.id, s.pos, s.owner, "mrm", true, now);
-                            Wmd.LOGGER.info("Air missile {} (radar) PITBULL at {} blocks", s.id, (int) s.pos.distanceTo(t));
+                            Wmd.LOGGER.info("Air missile {} ({}) PITBULL at {} blocks", s.id, NAMES[s.kind], (int) s.pos.distanceTo(t));
                         }
                     } else {
                         renew = inGimbal(s, t) && !FlightManager.get(level).chaffHides(s.pos.x, s.pos.z, t.x, t.z);
@@ -429,7 +474,8 @@ public final class AirMissiles {
                     }
                 }
                 case ARM -> {
-                    BlockEntity be = level.getBlockEntity(s.emitter);
+
+                    BlockEntity be = level.getChunkSource().getChunkNow(s.emitter.getX() >> 4, s.emitter.getZ() >> 4) == null ? null : level.getBlockEntity(s.emitter);
                     renew = !s.armQuiet && be != null && RadarEmit.emitting(be);
                     if (!renew && !s.armQuiet) { s.armQuiet = true; s.aimVel = Vec3.ZERO; Wmd.LOGGER.info("Air missile {} (arm): the radar went quiet, flying to its last spot", s.id); }
                 }
@@ -443,23 +489,26 @@ public final class AirMissiles {
         if (renew) { s.aim = t; s.aimVel = s.aimVel.scale(0.5).add(tv.scale(0.5)); }
         else if (s.decoy == null) s.aim = s.aim.add(s.aimVel);
         if (t != null) s.lastSeen = t;
-        if (s.kind == RADAR && s.lockLost && s.pos.distanceTo(s.aim) < Math.max(8.0, s.speed * 1.5)) { selfDestruct(level, s); s.end = LOST; return; }
+        if (radarLike(s.kind) && s.lockLost && s.pos.distanceTo(s.aim) < Math.max(8.0, s.speed * 1.5)) { selfDestruct(level, s); s.end = LOST; return; }
 
         s.speed = speedAt(s.kind, age, s.speed, s.launchSpeed);
         if (age >= Balance.AAM_BOOST_TICKS && s.speed < Balance.AAM_MIN_SPEED) { selfDestruct(level, s); s.end = MISS; return; }
-        s.vel = steer(s.pos, s.vel, s.aim, s.aimVel, s.speed, Balance.AAM_LAT[s.kind]);
+        s.vel = steer(s.pos, s.vel, loftAim(s), s.aimVel, s.speed, Balance.AAM_LAT[s.kind]);
 
         Vec3 from = s.pos, to = s.pos.add(s.vel);
 
         if (level.getChunkSource().getChunkNow(BlockPos.containing(to).getX() >> 4, BlockPos.containing(to).getZ() >> 4) == null && !AirRockets.reach(level, to)) { s.end = MISS; return; }
+        if (CraftShield.stopsFlight(level, from, to, s.ownShip, s.kind == AGM ? Balance.CSH_AGM_R : Balance.AAM_FRAG_RADIUS[Math.min(s.kind, Balance.AAM_FRAG_RADIUS.length - 1)],
+                WarheadType.HE, 1, "an air missile (" + NAMES[s.kind] + ")")) { s.pos = to; s.end = HIT; return; }
         double hitFrac = 1.0;
-        BlockHitResult hit = level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty()));
+        BlockHitResult hit = SableBridge.clipWorld(level, new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty()), null);
         UUID hitShip = null;
         if (hit.getType() == HitResult.Type.BLOCK) {
             hitShip = SableBridge.shipIdAt(level, hit.getBlockPos());
             if (hitShip != null && hitShip.equals(s.ownShip) && age < 20) hit = null;
             else hitFrac = Math.max(0.0, Math.min(1.0, hit.getLocation().distanceTo(from) / Math.max(1.0E-6, to.distanceTo(from))));
         } else hit = null;
+        if (shell(level, s, from, to, hit == null ? Double.MAX_VALUE : from.distanceTo(hit.getLocation()))) return;
         if (s.decoy == null && s.aim != null) {
             double fuze = s.kind == ARM ? Balance.AAM_CONTACT : Math.max(Balance.AAM_CONTACT, Balance.AAM_FUZE[s.kind]);
             int n = Math.max(1, (int) Math.ceil(s.speed * hitFrac));
@@ -500,6 +549,12 @@ public final class AirMissiles {
         s.flown += s.speed;
         s.pos = to;
         if (s.flown > Balance.AAM_RANGE[s.kind] * Balance.AAM_REACH_SPARE) { selfDestruct(level, s); s.end = MISS; return; }
+    }
+
+    static Vec3 loftAim(Shot s) {
+        if (s.kind != HEAVY || s.pitbull || s.aim == null || s.decoy != null) return s.aim;
+        double h = Math.hypot(s.aim.x - s.pos.x, s.aim.z - s.pos.z);
+        return h > Balance.AAM_LOFT_END ? s.aim.add(0.0, Math.min(Balance.AAM_LOFT_MAX, h * Balance.AAM_LOFT_K), 0.0) : s.aim;
     }
 
     private static boolean inGimbal(Shot s, Vec3 t) {
@@ -550,6 +605,17 @@ public final class AirMissiles {
     static double distToBox(AABB b, Vec3 p) {
         double dx = Math.max(Math.max(b.minX - p.x, 0.0), p.x - b.maxX), dy = Math.max(Math.max(b.minY - p.y, 0.0), p.y - b.maxY), dz = Math.max(Math.max(b.minZ - p.z, 0.0), p.z - b.maxZ);
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
+    private static boolean shell(ServerLevel level, Shot s, Vec3 from, Vec3 to, double blockDist) {
+        if (ForcefieldBlockEntity.LOADED.isEmpty()) return false;
+        Forcefield.Crossing c = Forcefield.crossing(level, from, to);
+        if (c == null || from.distanceTo(c.at()) > blockDist) return false;
+        if (!Forcefield.shellHit(level, c, 1, s.kind == AGM ? WarheadType.HE : WarheadType.FRAG)) return false;
+        s.flown += from.distanceTo(c.at());
+        s.pos = c.at();
+        s.end = SHIELDED;
+        return true;
     }
 
     private static void selfDestruct(ServerLevel level, Shot s) { AirFrag.puff(level, s.pos); }

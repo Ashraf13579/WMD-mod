@@ -49,6 +49,6 @@ final class BaySabotage {
             if (rack != null && !modules.contains(rack)) modules.add(rack);
         }
         Forcefield.inside(() -> WarheadFx.detonate(level, mgr, at.getX(), at.getY(), at.getZ(), 1, blast, 0.0, 1.0, false));
-        for (BayModuleBlockEntity m : modules) level.destroyBlock(m.getBlockPos(), false);
+        for (BayModuleBlockEntity m : modules) BlastWrites.destroy(level, m.getBlockPos(), false);
     }
 }

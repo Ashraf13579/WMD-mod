@@ -66,8 +66,7 @@ public final class Logistics {
 
     private static final java.util.function.Supplier<Set<Item>> ROBOT_LOADS = com.google.common.base.Suppliers.memoize(() -> {
         Set<Item> s = new java.util.HashSet<>();
-        s.add(Wmd.INTERCEPTOR_T1.get());
-        s.add(Wmd.INTERCEPTOR_T2.get());
+        for (int t = 1; t <= 4; t++) s.add(InterceptorItem.ofTier(t));
         for (int g = 0; g < 4; g++) for (int t = 0; t < Artillery.TYPES.length; t++) {
             try { Item it = Artillery.shellItem(g, t); if (it != null && it != net.minecraft.world.item.Items.AIR) s.add(it); } catch (RuntimeException ignored) {}
         }

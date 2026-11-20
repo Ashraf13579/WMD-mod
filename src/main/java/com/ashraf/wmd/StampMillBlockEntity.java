@@ -83,7 +83,7 @@ public class StampMillBlockEntity extends ItemProcessBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.SM_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.SM_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.stamp_mill", Balance.SM_YIELD, Balance.SM_CYCLE_TICKS / 20.0F),
                 Component.translatable("gui.wmd.info.items_hint"));
     }

@@ -32,6 +32,7 @@ final class CcTweakedCompat {
 
     private static IPeripheral peripheral(BlockEntity be) {
         if (be instanceof MachinePartBlockEntity part && part.getController() != null && be.getLevel() != null) be = be.getLevel().getBlockEntity(part.getController());
+        if (be instanceof BlinkGatePieceBlockEntity piece && piece.core() != null && be.getLevel() != null) be = be.getLevel().getBlockEntity(piece.core());
         return be instanceof GuiMachine ? new Machine(be) : null;
     }
 
@@ -93,6 +94,77 @@ final class CcTweakedCompat {
 
         @LuaFunction(mainThread = true)
         public final double getProgress() { int p = m.guiProgress(); return p < 0 ? -1 : p / 1000.0; }
+
+        @LuaFunction(mainThread = true)
+        public final Map<String, Object> getPulseEmp() {
+            if (!(be instanceof PulseEmpBlockEntity e)) return null;
+            Map<String, Object> o = new java.util.HashMap<>();
+            String[] st = { "cold", "charging", "ready", "firing", "cooling" };
+            o.put("state", st[Math.max(0, Math.min(st.length - 1, e.empState()))]);
+            o.put("charge", e.chargePermille() / 1000.0);
+            o.put("cooldown", e.coolSecondsLeft());
+            o.put("contacts", e.contacts());
+            o.put("inCone", e.inCone());
+            o.put("rule", e.rule());
+            return o;
+        }
+
+        @LuaFunction(mainThread = true)
+        public final boolean firePulseEmp() { return be instanceof PulseEmpBlockEntity e && e.remoteFire(); }
+
+        @LuaFunction(mainThread = true)
+        public final Map<String, Object> getBlinkGate() {
+            if (!(be instanceof BlinkGateCoreBlockEntity g)) return null;
+            Map<String, Object> o = new java.util.HashMap<>();
+            String[] st = { "off", "deploying", "powering", "forming", "open", "closing", "cooling" };
+            String[] why = { "", "not_trusted", "does_not_fit", "partner_not_ready", "exit_blocked", "no_power" };
+            o.put("state", st[Math.max(0, Math.min(st.length - 1, g.gateState()))]);
+            o.put("status", g.gateStatus());
+            o.put("formed", g.formed());
+            o.put("size", g.size());
+            if (g.partner() != null) { Map<String, Object> pp = new LinkedHashMap<>(); pp.put("x", g.partner().getX()); pp.put("y", g.partner().getY()); pp.put("z", g.partner().getZ()); o.put("partner", pp); }
+            o.put("auto", g.auto());
+            o.put("buffer", g.bufferPermille() / 1000.0);
+            o.put("cooldown", g.coolSecondsLeft());
+            o.put("jumps", g.jumpCount());
+            o.put("lastRefusal", why[Math.max(0, Math.min(why.length - 1, g.lastWhy()))]);
+            o.put("rfChannel", g.rfChannel());
+            o.put("rfIn", g.rfRate());
+            return o;
+        }
+
+        @LuaFunction(mainThread = true)
+        public final boolean armBlinkGate() { return be instanceof BlinkGateCoreBlockEntity g && g.arm(); }
+
+        @LuaFunction(mainThread = true)
+        public final void closeBlinkGate() { if (be instanceof BlinkGateCoreBlockEntity g) g.close(); }
+
+        @LuaFunction(mainThread = true)
+        public final Map<String, Object> getStormGenerator() {
+            if (!(be instanceof StormGeneratorBlockEntity sg)) return null;
+            Map<String, Object> o = new java.util.HashMap<>();
+            String[] st = { "no_owner", "no_target", "out_of_range", "charging", "ready", "building", "raining", "ending", "cooling" };
+            String[] ph = { "idle", "build", "storm", "end", "cool" };
+            o.put("status", st[Math.max(0, Math.min(st.length - 1, sg.stormStatus()))]);
+            o.put("phase", ph[Math.max(0, Math.min(ph.length - 1, sg.phase()))]);
+            o.put("charge", sg.chargePermille() / 1000.0);
+            if (sg.hasTarget()) o.put("target", Map.of("x", sg.targetX(), "z", sg.targetZ()));
+            o.put("distance", sg.hasTarget() ? sg.distance() : 0);
+            o.put("bearing", sg.hasTarget() ? sg.bearing() : 0);
+            o.put("radius", sg.radius());
+            o.put("secondsLeft", sg.secondsLeft());
+            return o;
+        }
+
+        @LuaFunction(mainThread = true)
+        public final boolean setStormTarget(int x, int z) {
+            if (!(be instanceof StormGeneratorBlockEntity sg)) return false;
+            sg.setTarget(x, z);
+            return true;
+        }
+
+        @LuaFunction(mainThread = true)
+        public final boolean fireStorm() { return be instanceof StormGeneratorBlockEntity sg && sg.remoteFire(); }
 
         @LuaFunction(mainThread = true)
         public final List<Map<String, Object>> getUpgrades() {

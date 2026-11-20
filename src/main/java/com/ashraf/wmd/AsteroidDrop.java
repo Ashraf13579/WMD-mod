@@ -131,7 +131,7 @@ public final class AsteroidDrop {
         if (sl == null) return;
         int tx = (int) f[AsteroidRedirect.T_TX], tz = (int) f[AsteroidRedirect.T_TZ];
         if (left <= 0) { impact(orbit, sl, d, slot, m, t, f); return; }
-        if (!ForcefieldBlockEntity.LOADED.isEmpty() && sl.hasChunk(tx >> 4, tz >> 4)) {
+        if ((!ForcefieldBlockEntity.LOADED.isEmpty() || CraftShield.anyUp()) && sl.hasChunk(tx >> 4, tz >> 4)) {
             Vec3 tgt = new Vec3(tx + 0.5, sl.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, tx, tz), tz + 0.5);
 
             int pieces = (int) Math.max(1, f[AsteroidRedirect.T_PIECES]);
@@ -140,14 +140,20 @@ public final class AsteroidDrop {
             double was = Math.min(Balance.ASTEROID_FALL_TICKS, left + 20);
             java.util.Set<ForcefieldBlockEntity> hitDomes = new java.util.HashSet<>();
             for (int i = 0; i < pieces && tier(pieces) > 1; i++) {
-                Forcefield.Crossing c = Forcefield.crossing(sl, piecePos(tgt, f[AsteroidRedirect.T_SEED], was, i, pieces, splitLeft), piecePos(tgt, f[AsteroidRedirect.T_SEED], left, i, pieces, splitLeft));
-                if (c != null && hitDomes.add(c.be())) Forcefield.shellHit(sl, c, tier(pieces), WarheadType.ASTEROID);
+                Vec3 a = piecePos(tgt, f[AsteroidRedirect.T_SEED], was, i, pieces, splitLeft), b = piecePos(tgt, f[AsteroidRedirect.T_SEED], left, i, pieces, splitLeft);
+                if (!ForcefieldBlockEntity.LOADED.isEmpty()) {
+                    Forcefield.Crossing c = Forcefield.crossing(sl, a, b);
+                    if (c != null && hitDomes.add(c.be())) Forcefield.shellHit(sl, c, tier(pieces), WarheadType.ASTEROID);
+                }
+                if (CraftShield.anyUp()) CraftShield.stopsFlight(sl, a, b,
+                        null, Missiles.craterRadius(Math.max(1, tier(pieces))), WarheadType.ASTEROID, tier(pieces), "an asteroid piece");
             }
         }
         long gnow = sl.getGameTime(), impactG = gnow + left;
         if (el < 20 || WARN.remove(slot)) {
             warnAll(server, sl, slot, tx, tz, gnow, impactG, left);
             MusicTriggersHook.fire(sl, "wmd:asteroid_incoming", new BlockPos(tx, groundY(sl, tx, tz), tz));
+            MusicTriggersHook.flag(sl, "wmd:asteroid_inbound", true, 18000);
         }
         if (left <= MusicTriggersHook.IMPACT_SOON_TICKS && SOON.add(slot)) MusicTriggersHook.fire(sl, "wmd:asteroid_impact_soon", new BlockPos(tx, groundY(sl, tx, tz), tz));
         if (el % 100 < 20) sendFall(sl, slot, f, 1, impactG, false);
@@ -324,12 +330,14 @@ public final class AsteroidDrop {
             int px = tx + (int) Math.round(o.x), pz = tz + (int) Math.round(o.z);
             int py = sl.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, px, pz);
             mgr.holdForTest(sl, px, pz, WarheadFx.holdRadius(tier, WarheadType.ASTEROID));
-            WarheadFx.detonate(sl, mgr, px, py, pz, tier, WarheadType.ASTEROID, 0.0, 1.0);
+            java.util.UUID prevShooter = ShipStrike.begin(Orbit.OrbitSlots.get(sl.getServer()).ownerOf(slot));
+            try { WarheadFx.detonate(sl, mgr, px, py, pz, tier, WarheadType.ASTEROID, 0.0, 1.0); } finally { ShipStrike.end(prevShooter); }
         }
         Wmd.LOGGER.info("[asteroid] the rock of slot {} strikes {} {} ({} piece(s), tier {}, sea {})", slot, tx, tz, n, tier, sea);
         double rr = Missiles.craterRadius(tier) * WarheadType.ASTEROID.crater;
         StrikeLog.report(sl, Orbit.OrbitSlots.get(server).ownerOf(slot), n > 1 ? "log.wmd.strike.asteroid_split" : "log.wmd.strike.asteroid", tx, tz, rr, rr * WarheadType.ASTEROID.depth);
         MusicTriggersHook.fire(sl, "wmd:asteroid_impact", new BlockPos(tx, top, tz));
+        MusicTriggersHook.flag(sl, "wmd:asteroid_inbound", false, 0);
         sendFall(sl, slot, f, 3, sl.getGameTime(), sea);
         if (sea) { WAVES.add(new double[] { tx + 0.5, top, tz + 0.5, sl.getGameTime() }); WAVE_DIMS.add(sl.dimension()); }
 

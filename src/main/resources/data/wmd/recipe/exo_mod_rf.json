@@ -1,0 +1,34 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:exo_mod_rf"
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:rf_receiver"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "W",
+    "R",
+    "A"
+  ],
+  "key": {
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "R": {
+      "item": "wmd:rf_receiver"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:exo_mod_rf",
+    "count": 1
+  }
+}

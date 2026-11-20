@@ -8,7 +8,6 @@ import java.util.Map;
 
 import foundry.veil.api.client.render.VeilRenderSystem;
 import foundry.veil.api.client.render.light.data.PointLightData;
-import foundry.veil.api.client.render.light.data.SpotLightData;
 import foundry.veil.api.client.render.light.renderer.LightRenderHandle;
 
 final class VeilLights {
@@ -35,13 +34,12 @@ final class VeilLights {
 
     private static final Map<Long, Entry> LIGHTS = Statics.client(new HashMap<>());
 
-    private static final Map<Long, SpotEntry> SPOTS = Statics.client(new HashMap<>());
+    static final boolean SPOTS_OK = has("foundry.veil.api.client.render.light.data.SpotLightData");
 
-    private static final class SpotEntry {
-        final LightRenderHandle<SpotLightData> handle;
-        long seen;
+    private static boolean inscatterOk = true;
 
-        SpotEntry(LightRenderHandle<SpotLightData> handle) { this.handle = handle; }
+    private static boolean has(String cls) {
+        try { Class.forName(cls, false, VeilLights.class.getClassLoader()); return true; } catch (Throwable t) { return false; }
     }
     private static final List<Flash> FLASHES = Statics.client(new ArrayList<>());
 
@@ -79,7 +77,9 @@ final class VeilLights {
         data.setRadius(radius);
         data.setColor(r, g, b);
         data.setBrightness(brightness);
-        if (inscatter > 0.0F) data.setInscatteringStrength(inscatter);
+        if (inscatter > 0.0F && inscatterOk) {
+            try { data.setInscatteringStrength(inscatter); } catch (NoSuchMethodError e) { inscatterOk = false; }
+        }
         return VeilRenderSystem.renderer().getLightRenderer().addLight(data);
     }
 
@@ -103,30 +103,9 @@ final class VeilLights {
     }
 
     static void spot(long key, double x, double y, double z, double dx, double dy, double dz, float r, float g, float b, float angle, float distance, float brightness, long gameTime) {
+        if (!SPOTS_OK) return;
         hold(gameTime);
-        SpotEntry e = SPOTS.get(key);
-        if (e != null && !e.handle.isValid()) { SPOTS.remove(key); e = null; }
-        SpotLightData d;
-        if (e == null) {
-            d = new SpotLightData();
-            e = new SpotEntry(VeilRenderSystem.renderer().getLightRenderer().addLight(d));
-            SPOTS.put(key, e);
-        }
-        d = e.handle.getLightData();
-        d.getPositionMutable().set(x, y, z);
-        org.joml.Vector3f dir = new org.joml.Vector3f((float) dx, (float) dy, (float) dz);
-        if (dir.lengthSquared() > 1.0E-9F) {
-            dir.normalize();
-            org.joml.Vector3f up = Math.abs(dir.y) > 0.98F ? new org.joml.Vector3f(0.0F, 0.0F, 1.0F) : new org.joml.Vector3f(0.0F, 1.0F, 0.0F);
-            d.getOrientationMutable().identity().lookAlong(dir.mul(-1.0F), up);
-        }
-        d.setAngle(angle);
-        d.setDistance(distance);
-        d.setColor(r, g, b);
-        d.setBrightness(brightness);
-        d.markDirty();
-        e.handle.markDirty();
-        e.seen = gameTime;
+        VeilSpots.spot(key, x, y, z, dx, dy, dz, r, g, b, angle, distance, brightness, gameTime);
     }
 
     static void flash(double x, double y, double z, float r, float g, float b, float radius, float brightness, float inscatter, int duration, long gameTime) {
@@ -143,11 +122,7 @@ final class VeilLights {
                 it.remove();
             }
         }
-        Iterator<SpotEntry> sp = SPOTS.values().iterator();
-        while (sp.hasNext()) {
-            SpotEntry e = sp.next();
-            if (gameTime - e.seen > 5 || gameTime < e.seen) { e.handle.free(); sp.remove(); }
-        }
+        if (SPOTS_OK) VeilSpots.sweep(gameTime);
         Iterator<Flash> fl = FLASHES.iterator();
         while (fl.hasNext()) {
             Flash f = fl.next();
@@ -164,7 +139,7 @@ final class VeilLights {
             d.markDirty();
             f.handle.markDirty();
         }
-        if (holding && LIGHTS.isEmpty() && SPOTS.isEmpty() && FLASHES.isEmpty() && (gameTime - lastUsed > BUFFER_HOLD_TICKS || gameTime < lastUsed)) release();
+        if (holding && LIGHTS.isEmpty() && (!SPOTS_OK || VeilSpots.isEmpty()) && FLASHES.isEmpty() && (gameTime - lastUsed > BUFFER_HOLD_TICKS || gameTime < lastUsed)) release();
     }
 
     private static boolean gridOk = true;
@@ -190,8 +165,7 @@ final class VeilLights {
         release();
         for (Entry e : LIGHTS.values()) e.handle.free();
         LIGHTS.clear();
-        for (SpotEntry e : SPOTS.values()) e.handle.free();
-        SPOTS.clear();
+        if (SPOTS_OK) VeilSpots.clear();
         for (Flash f : FLASHES) f.handle.free();
         FLASHES.clear();
     }

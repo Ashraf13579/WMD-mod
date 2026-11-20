@@ -26,6 +26,8 @@ public record MissileBuild(int airframe, int motor, int guidance, int warhead, S
 
     public static final String SEEK_RADAR = "radar";
 
+    public static final String SEEK_DATALINK = "datalink";
+
     public MissileBuild(int airframe, int motor, int guidance, int warhead, String warheadType, boolean uplink, boolean divert, boolean refined, boolean staged, int boosters, int kind,
                         boolean camPod) {
         this(airframe, motor, guidance, warhead, warheadType, uplink, divert, refined, staged, boosters, kind, camPod, "");

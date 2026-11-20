@@ -106,6 +106,7 @@ public final class ArtilleryManager extends SavedData {
             ArtShell s = it.next();
             if (s.id() != id) continue;
             it.remove();
+            if (hasOwner(s.owner())) WarScore.intercept(level, shooter, s.owner());
             StrikeToasts.shellDone(level, s, false);
             Vec3 p = s.position(level.getGameTime());
             PacketDistributor.sendToPlayersNear(level, null, p.x, p.y, p.z, NEAR, new ArtImpactPayload(s.id(), s.gun(), s.type(), p.x, p.y, p.z, ArtImpactPayload.SHOT_DOWN));
@@ -143,6 +144,21 @@ public final class ArtilleryManager extends SavedData {
         long now = level.getGameTime();
         if (now % SHELL_SYNC == 0 && !shells.isEmpty()) shareNew(level, now, shells);
 
+        if (CraftShield.anyUp()) for (int i = 0; i < shells.size(); i++) {
+            ArtShell s = shells.get(i);
+            if (now <= s.start()) continue;
+            boolean sg = s.gun() == Artillery.SUPER_GUN, pm = s.gun() == Artillery.PLASMA;
+            WarheadType wt = pm ? WarheadType.PLASMA_BALL : WarheadType.HE;
+            int tier = sg ? Balance.SUPER_GUN_BLAST_TIER : 1;
+            double r = sg ? Missiles.craterRadius(tier) : pm ? Missiles.craterRadius(1) * WarheadType.PLASMA_BALL.crater : Balance.CSH_SHELL_R;
+            if (!CraftShield.stopsFlight(level, s.position(now - 1), s.position(now), null, r, wt, tier, pm ? "a plasma mortar shell" : "a shell")) continue;
+            Vec3 at = s.position(now);
+            shells.remove(i--);
+            setDirty();
+            gone(level, s, at);
+            if (s.last()) logDone(level, s, (int) Math.floor(at.x), (int) Math.floor(at.z));
+        }
+
         for (ProjectilePath.ShellHit h : ProjectilePath.shells(level, shells, now)) endEarly(level, h.shell(), h.hit(), now);
 
         if (Debris.anyLive(level)) for (int i = 0; i < shells.size(); i++) {
@@ -158,7 +174,8 @@ public final class ArtilleryManager extends SavedData {
             ArtShell s = shells.get(i);
             if (now <= s.start()) continue;
             Forcefield.Crossing c = Forcefield.crossing(level, s.position(now - 1), s.position(now));
-            if (c == null || !Forcefield.shellHit(level, c, s.gun() == Artillery.SUPER_GUN ? Balance.SUPER_GUN_BLAST_TIER : 1, WarheadType.HE)) continue;
+            boolean pm = s.gun() == Artillery.PLASMA;
+            if (c == null || !Forcefield.shellHit(level, c, s.gun() == Artillery.SUPER_GUN ? Balance.SUPER_GUN_BLAST_TIER : 1, pm ? WarheadType.PLASMA_BALL : WarheadType.HE)) continue;
             shells.remove(i--);
             setDirty();
             gone(level, s, c.at());
@@ -273,11 +290,27 @@ public final class ArtilleryManager extends SavedData {
         return on;
     }
 
-    private static boolean needsGround(ArtShell s) { return s.gun() == Artillery.ROCKET || s.gun() == Artillery.SUPER_GUN || s.type() == Artillery.HE || s.type() == Artillery.GUIDED || s.type() == Artillery.GUNSHIP_105 || SpecialShells.groundEffect(s.type()); }
+    boolean gravityBend(ServerLevel level, long id, double nx, double nz, long now) {
+        for (int i = 0; i < shells.size(); i++) {
+            ArtShell s = shells.get(i);
+            if (s.id() != id) continue;
+            if (now >= s.endTime()) return false;
+            int gx = (int) Math.floor(nx), gz = (int) Math.floor(nz);
+            double ny = (needsGround(s) || s.type() == Artillery.SMOKE) && level.hasChunk(gx >> 4, gz >> 4)
+                    ? level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gx, gz) : s.ty();
+            shells.set(i, relaunch(level, s, s.position(now), nx, ny, nz, (int) Math.max(10L, s.endTime() - now), now));
+            setDirty();
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean needsGround(ArtShell s) { return s.gun() == Artillery.ROCKET || s.gun() == Artillery.SUPER_GUN || s.gun() == Artillery.PLASMA || s.type() == Artillery.HE || s.type() == Artillery.GUIDED || s.type() == Artillery.GUNSHIP_105 || SpecialShells.groundEffect(s.type()); }
 
     private static double holdArea(ArtShell s) {
         if (s.gun() == Artillery.ROCKET) return Mlrs.HOLD;
         if (s.gun() == Artillery.SUPER_GUN) return SuperGunServer.holdRadius();
+        if (s.gun() == Artillery.PLASMA) return PlasmaMortarServer.holdRadius();
         return holdRadius(s);
     }
 
@@ -291,6 +324,7 @@ public final class ArtilleryManager extends SavedData {
         MusicTriggersHook.artillery(level, s);
         if (s.gun() == Artillery.ROCKET) { Mlrs.impact(this, level, s, now); return; }
         if (s.gun() == Artillery.SUPER_GUN) { SuperGunServer.impact(level, s, now); return; }
+        if (s.gun() == Artillery.PLASMA) { PlasmaMortarServer.impact(level, s, now); return; }
         int gx = (int) Math.floor(s.tx()), gz = (int) Math.floor(s.tz());
         FlightManager fm = FlightManager.get(level);
         if (Artillery.isSpecial(s.type())) {
@@ -338,10 +372,11 @@ public final class ArtilleryManager extends SavedData {
         Vec3 pos = new Vec3(gx + 0.5, gy, gz + 0.5);
         WarheadFx.hurt(level, pos, r, g105 ? Balance.GUNSHIP_HE_REACH : 3.5, g105 ? Balance.GUNSHIP_HE_LETHAL : 0.6, g105 ? Balance.GUNSHIP_HE_DMG : s.gun() == Artillery.MORTAR ? 0.5 : 0.8, 0.6, 3,
                 hasOwner(s.owner()) ? s.owner() : null);
+        WmdApiImpl.blast(level, pos.x, pos.y, pos.z, r, "artillery", "he", hasOwner(s.owner()) ? s.owner() : null);
         FusionReactorBlockEntity.blastAt(level, pos, r);
         AntimatterStoreBlockEntity.blastAt(level, pos, r);
         RailgunBlockEntity.blastAt(level, pos, r);
-        Crater crater = new Crater(gx, gy, gz, r, 0.6, 0.4, 0.0, holdRadius(s));
+        Crater crater = new Crater(gx, gy, gz, r, 0.6, 0.4, 0.0, holdRadius(s)).owner(hasOwner(s.owner()) ? s.owner() : null);
         fm.craters.add(crater);
         DamageRings.queue(level, crater, WarheadType.HE);
         MapFeed.hit(level, g105 ? "gunship 105" : s.gun() == Artillery.MORTAR ? "mortar he" : "howitzer he", 0, false, gx + 0.5, gy, gz + 0.5, r, hasOwner(s.owner()) ? s.owner() : null);
@@ -367,6 +402,7 @@ public final class ArtilleryManager extends SavedData {
         UUID owner = hasOwner(s.owner()) ? s.owner() : null;
         ProjectilePath.log("shell #" + s.id() + " (" + itemKey(s) + ")", hit);
         if (s.gun() == Artillery.SUPER_GUN) SuperGunServer.endedEarly(level, s, p, now);
+        else if (s.gun() == Artillery.PLASMA) PlasmaMortarServer.endedEarly(level, s, p, now);
         else if (s.gun() == Artillery.ROCKET) Mlrs.burstAt(level, s, p);
         else {
             switch (s.type()) {
@@ -424,7 +460,7 @@ public final class ArtilleryManager extends SavedData {
             double r = b.gun() == Artillery.MORTAR ? 1.2 : 1.5;
             WarheadFx.hurt(level, pos, r, 3.0, 0.6, 0.45, 1.0, 3, hasOwner(b.owner()) ? b.owner() : null);
             FlightManager fm = FlightManager.get(level);
-            Crater crater = new Crater(bx, by, bz, r, 0.5, 0.5, 0.0, r * 1.5 + 16.0);
+            Crater crater = new Crater(bx, by, bz, r, 0.5, 0.5, 0.0, r * 1.5 + 16.0).owner(hasOwner(b.owner()) ? b.owner() : null);
             fm.craters.add(crater);
             DamageRings.queue(level, crater, WarheadType.CLUSTER);
             Debris.blast(level, bx, by, bz, r, crater, Balance.DEBRIS_BOMBLET_SHARE, false);

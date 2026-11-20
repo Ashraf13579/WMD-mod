@@ -1,0 +1,46 @@
+{
+  "display": {
+    "icon": {
+      "id": "wmd:missile_t1"
+    },
+    "title": {
+      "translate": "advancements.wmd.root.title"
+    },
+    "description": {
+      "translate": "advancements.wmd.root.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false,
+    "background": "wmd:textures/block/steel_block.png"
+  },
+  "criteria": {
+    "has_field_manual": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wmd:field_manual"
+          }
+        ]
+      }
+    },
+    "has_steel_ingot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wmd:steel_ingot"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_field_manual",
+      "has_steel_ingot"
+    ]
+  ]
+}

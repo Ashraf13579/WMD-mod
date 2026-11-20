@@ -153,13 +153,13 @@ public final class AreaView {
         double half = n / 2.0;
         long now = level.getGameTime();
         for (ServerPlayer sp : level.players())
-            if (in(sp.getX(), sp.getZ(), cx, cz, half)) l.add(new AreaMarkersPayload.Marker(AreaMarkersPayload.PLAYER, (float) sp.getX(), (float) sp.getY(), (float) sp.getZ(), 0.6F));
+            if (in(sp.getX(), sp.getZ(), cx, cz, half) && !Cloak.playerHidden(level, sp)) l.add(new AreaMarkersPayload.Marker(AreaMarkersPayload.PLAYER, (float) sp.getX(), (float) sp.getY(), (float) sp.getZ(), 0.6F));
         for (SableBridge.ShipInfo s : SableBridge.largeShipsNear(level, cx, cz, half * 1.5))
-            l.add(new AreaMarkersPayload.Marker(AreaMarkersPayload.AIRSHIP, (float) s.worldCenter().x, (float) s.worldCenter().y, (float) s.worldCenter().z,
+            if (!Cloak.hidden(level, s.id())) l.add(new AreaMarkersPayload.Marker(AreaMarkersPayload.AIRSHIP, (float) s.worldCenter().x, (float) s.worldCenter().y, (float) s.worldCenter().z,
                     (float) Math.max(s.size().x, s.size().z) * 0.5F));
         if (AirGate.on())
             for (AirPicture.Aircraft a : AirPicture.all(level))
-                if (a.blocks() < Config.Server.largeShipMinBlocks() && in(a.pos().x, a.pos().z, cx, cz, half))
+                if (a.blocks() < Config.Server.largeShipMinBlocks() && in(a.pos().x, a.pos().z, cx, cz, half) && !Cloak.hidden(level, a.id()))
                     l.add(new AreaMarkersPayload.Marker(AreaMarkersPayload.AIRSHIP, (float) a.pos().x, (float) a.pos().y, (float) a.pos().z,
                             (float) Math.max(a.bounds().getXsize(), a.bounds().getZsize()) * 0.5F));
         for (Flight f : FlightManager.get(level).flights()) {

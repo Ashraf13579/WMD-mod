@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:exo_mod_maggrip"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "W W",
+    "PAP"
+  ],
+  "key": {
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:exo_mod_maggrip",
+    "count": 1
+  }
+}

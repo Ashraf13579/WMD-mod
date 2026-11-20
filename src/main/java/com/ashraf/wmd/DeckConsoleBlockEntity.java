@@ -56,9 +56,54 @@ public class DeckConsoleBlockEntity extends ProcessUnitBlockEntity implements Ow
     private float lidT;
     private double lastT = Double.NaN;
 
+    private boolean remote;
+    private UUID remoteBase;
+    private BlockPos remoteKey;
+
     public DeckConsoleBlockEntity(BlockPos pos, BlockState state) {
         super(DeckConsoleBlocks.DECK_CONSOLE_BE.get(), pos, state, Balance.FDC_FE);
     }
+
+    static DeckConsoleBlockEntity remote(ServerLevel sl, UUID jet, ServerPlayer pilot, BlockPos cockpit, DeckConsoleBlockEntity old) {
+        SableBridge.ShipInfo j = jet == null ? null : SableBridge.shipInfo(sl, jet);
+        if (j == null || j.worldBounds() == null) return null;
+        AABB wb = j.worldBounds();
+        AABB below = new AABB(wb.minX, wb.minY - Balance.DFC_DOWN, wb.minZ, wb.maxX, wb.minY + 1.0, wb.maxZ);
+
+        UUID base = null;
+        int best = 0;
+        for (SableBridge.ShipInfo s : SableBridge.shipsIntersecting(sl, below))
+            if (!s.id().equals(jet) && s.blockCount() > best && under(sl, s.id(), wb)) { best = s.blockCount(); base = s.id(); }
+        Vec3 local = base == null ? j.worldCenter() : SableBridge.toShip(sl, base, j.worldCenter());
+        if (local == null) { base = null; local = j.worldCenter(); }
+        BlockPos anchor = BlockPos.containing(local);
+        if (old != null && old.remote && Objects.equals(old.remoteBase, base) && old.worldPosition.closerThan(anchor, 4.0) && pilot.getUUID().equals(old.getOwner())) {
+            old.remoteKey = cockpit;
+            return old;
+        }
+        Wmd.LOGGER.info("[deck view] jet {}: deck = {} (anchor {})", jet, base == null ? "the ground" : "craft " + base, anchor.toShortString());
+        DeckConsoleBlockEntity d = new DeckConsoleBlockEntity(anchor, DeckConsoleBlocks.DECK_CONSOLE.get().defaultBlockState());
+        d.setLevel(sl);
+        d.remote = true;
+        d.remoteBase = base;
+        d.remoteKey = cockpit;
+        d.unfolded = true;
+        d.ownerData.claim(pilot);
+        return d;
+    }
+
+    private static boolean under(ServerLevel sl, UUID ship, AABB wb) {
+        double cx = (wb.minX + wb.maxX) * 0.5, cz = (wb.minZ + wb.maxZ) * 0.5;
+        double[][] xz = { { cx, cz }, { wb.minX + 0.5, wb.minZ + 0.5 }, { wb.maxX - 0.5, wb.minZ + 0.5 }, { wb.minX + 0.5, wb.maxZ - 0.5 }, { wb.maxX - 0.5, wb.maxZ - 0.5 } };
+        for (double[] c : xz)
+            for (double dy = 0.5; dy <= Balance.DFC_DOWN + 0.5; dy += 1.0) {
+                Vec3 l = SableBridge.toShip(sl, ship, new Vec3(c[0], wb.minY - dy, c[1]));
+                if (l != null && !sl.getBlockState(BlockPos.containing(l)).isAir()) return true;
+            }
+        return false;
+    }
+
+    void remoteMarks(ListTag m) { marks = m == null ? new ListTag() : m; }
 
     @Override public UUID getOwner() { return ownerData.id(); }
     @Override public String getOwnerName() { return ownerData.name(); }
@@ -77,6 +122,7 @@ public class DeckConsoleBlockEntity extends ProcessUnitBlockEntity implements Ow
     }
 
     private void sync() {
+        if (remote) return;
         setChanged();
         if (level != null && !level.isClientSide) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
     }
@@ -103,7 +149,7 @@ public class DeckConsoleBlockEntity extends ProcessUnitBlockEntity implements Ow
         if (!(level instanceof ServerLevel sl)) return;
         boolean asked = sl.getGameTime() < openUntil && AirGate.on();
         UUID ship = asked ? SableBridge.shipIdAt(sl, worldPosition) : null;
-        lid(sl, ship != null && ShipPower.draw(sl, ship, Balance.FDC_FE));
+        lid(sl, ship != null && ShipPower.draw(this, sl, ship, Balance.FDC_FE));
     }
 
     private void lid(ServerLevel sl, boolean power) {
@@ -135,10 +181,11 @@ public class DeckConsoleBlockEntity extends ProcessUnitBlockEntity implements Ow
         t.put("sum", sum.copy());
         t.putString("msg", msg);
         t.putBoolean("np", noPower);
-        net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(sp, new DeckConsolePayloads.Wing(worldPosition, open, t));
+        if (remote) { t.put("marks", marks.copy()); t.putBoolean("cockpit", true); }
+        net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(sp, new DeckConsolePayloads.Wing(remote ? remoteKey : worldPosition, open, t));
     }
 
-    private UUID base(ServerLevel sl) { return SableBridge.shipIdAt(sl, worldPosition); }
+    private UUID base(ServerLevel sl) { return remote ? remoteBase : SableBridge.shipIdAt(sl, worldPosition); }
 
     private Vec3 rel(ServerLevel sl, UUID base, Vec3 world) {
         Vec3 p = base == null ? world : SableBridge.toShip(sl, base, world);

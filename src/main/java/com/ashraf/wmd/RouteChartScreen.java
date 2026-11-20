@@ -17,6 +17,9 @@ public class RouteChartScreen extends Screen {
 
     private static final ResourceLocation TERRAIN = ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "dynamic/route_chart_terrain");
     private DynamicTexture terrainTex;
+
+    private WorldMapLayer wmap;
+    private int wmapSize;
     private int terrainShown = -1;
     private int[] asked;
     private long askedAt;
@@ -64,6 +67,7 @@ public class RouteChartScreen extends Screen {
         size = Math.max(120, Math.min(width - 40, height - 74));
         x0 = (width - size) / 2;
         y0 = 26;
+        if (wmap == null || wmapSize != size) { if (wmap != null) wmap.close(); wmap = new WorldMapLayer("route", size, size); wmapSize = size; }
         if (bpp < 0) {
             viewX = site.at().getX() + 0.5;
             viewZ = site.at().getZ() + 0.5;
@@ -93,6 +97,7 @@ public class RouteChartScreen extends Screen {
         if (texture != null) { minecraft.getTextureManager().release(TEX); texture = null; }
         texReady = false;
         if (terrainTex != null) { minecraft.getTextureManager().release(TERRAIN); terrainTex = null; }
+        if (wmap != null) { wmap.close(); wmap = null; }
     }
 
     private void askTerrain() {
@@ -255,10 +260,12 @@ public class RouteChartScreen extends Screen {
         WmdHelp.button(g, x0 + size - 10, 7);
         g.enableScissor(x0, y0, x0 + size, y0 + size);
 
-        askTerrain();
-        if (ChartTerrainView.version != terrainShown) rebuildTerrain();
+        boolean worldMap = wmap != null && wmap.update(viewX, viewZ, bpp, 1.0F);
+        if (worldMap) { wmap.draw(g, x0, y0); g.fill(x0, y0, x0 + size, y0 + size, 0x38000814); wmap.drawStatus(g, font, x0 + 3, y0 + size - 11); }
+        else askTerrain();
+        if (!worldMap && ChartTerrainView.version != terrainShown) rebuildTerrain();
         ChartTerrainPayload tt = ChartTerrainView.tile;
-        if (terrainTex != null && tt != null) {
+        if (!worldMap && terrainTex != null && tt != null) {
             int cs = tt.cell();
             int ax = (int) Math.round(sx(tt.x0())), az = (int) Math.round(sy(tt.z0()));
             int pw = (int) Math.round(tt.w() * cs / bpp), ph = (int) Math.round(tt.h() * cs / bpp);

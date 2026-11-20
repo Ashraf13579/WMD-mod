@@ -16,7 +16,7 @@
       "tag": "c:plates/steel"
     },
     "I": {
-      "item": "wmd:steel_ingot"
+      "tag": "c:ingots/steel"
     },
     "R": {
       "item": "minecraft:rail"

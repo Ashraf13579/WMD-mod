@@ -37,8 +37,15 @@ public class InterceptorSiloT4Block extends MachineBlock {
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
 
+    private static List<BlockPos> full;
+
+    static List<BlockPos> cells() {
+        if (full == null) full = ModelFootprint.extend(FOOTPRINT, "silo_t4", -HALF, HALF, 2, 0, SIZE - 1);
+        return full;
+    }
+
     @Override
-    protected List<BlockPos> footprint() { return FOOTPRINT; }
+    protected List<BlockPos> footprint() { return cells(); }
 
     @Override
     public VoxelShape machineShape() { return Shapes.block(); }

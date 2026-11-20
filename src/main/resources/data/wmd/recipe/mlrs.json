@@ -17,7 +17,7 @@
       "item": "wmd:aluminium_casing"
     },
     "S": {
-      "item": "wmd:steel_block"
+      "tag": "c:storage_blocks/steel"
     },
     "X": {
       "item": "wmd:chip_rocketry_2"

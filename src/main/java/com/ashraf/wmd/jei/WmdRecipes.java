@@ -26,6 +26,7 @@ import com.ashraf.wmd.BombType;
 import com.ashraf.wmd.DroneRecipes;
 import com.ashraf.wmd.DroneType;
 import com.ashraf.wmd.GeneratorEngineBlockEntity;
+import com.ashraf.wmd.InterceptorItem;
 import com.ashraf.wmd.LabModuleBlockEntity;
 import com.ashraf.wmd.LabRecipes;
 import com.ashraf.wmd.MissilePartItem;
@@ -117,9 +118,9 @@ public final class WmdRecipes {
                 time(600), uses(Balance.PUMPJACK_FE_PER_TICK), note("jei.wmd.note.pumpjack"))));
         machine("feed_pump", List.of(p(List.of(fluid(f(WmdFluids.CRUDE_OIL), 1000)), List.of(fluid(f(WmdFluids.CRUDE_OIL), 1000)),
                 flow(Balance.FEED_PUMP_MB_PER_TICK), uses(Balance.FEED_PUMP_FE_PER_TICK), note("jei.wmd.note.feed_pump"))));
-        int brine = (int) Math.round(1000 * (1.0 - Balance.DESALTER_YIELD));
+        int brine = (int) Math.round(1000 * Balance.DESALTER_BRINE), desalted = (int) Math.round(1000 * Balance.DESALTER_YIELD);
         machine("desalter", List.of(p(List.of(fluid(f(WmdFluids.CRUDE_OIL), 1000)),
-                List.of(fluid(f(WmdFluids.DESALTED_CRUDE), 1000 - brine), fluid(f(WmdFluids.BRINE), brine)),
+                List.of(fluid(f(WmdFluids.DESALTED_CRUDE), desalted), fluid(f(WmdFluids.BRINE), brine)),
                 flow(Balance.DESALTER_MB_PER_TICK), uses(Balance.DESALTER_FE_PER_TICK), note("jei.wmd.note.desalter"))));
         machine("furnace", List.of(p(List.of(fluid(f(WmdFluids.DESALTED_CRUDE), 1000)), List.of(fluid(f(WmdFluids.HOT_CRUDE), 1000)),
                 flow(Balance.FURNACE_MB_PER_TICK), uses(Balance.FURNACE_FE_PER_TICK))));
@@ -213,7 +214,7 @@ public final class WmdRecipes {
         machine("coal_generator", coal);
 
         machine("blast_furnace", List.of(p(List.of(item("minecraft:iron_ingot", Balance.BF_STEEL_IRON), anyOf(Balance.BF_STEEL_COAL, "minecraft:coal", "minecraft:charcoal")),
-                List.of(item("steel_ingot", 1)), time(Balance.BF_STEEL_TICKS), note("jei.wmd.note.blast_furnace_fuel", Balance.BF_SMELT_PER_COAL), note("jei.wmd.note.blast_furnace", Balance.BF_BLOWER_SPEED, n(Balance.BF_BLOWER_FE * 20L))),
+                List.of(item("steel_ingot", 1)), time(Balance.BF_STEEL_TICKS), note("jei.wmd.note.blast_furnace_fuel", Balance.BF_SMELT_PER_COAL), note("jei.wmd.note.blast_furnace", Balance.BF_BLOWER_SPEED, n(Balance.BF_BLOWER_FE))),
                 p(List.of(item("minecraft:iron_ingot", Balance.BF_STEEL_IRON), item("coke", Balance.BF_STEEL_COKE)), List.of(item("steel_ingot", 1)), time(Balance.BF_STEEL_TICKS)),
                 p(List.of(item("minecraft:copper_ingot", Balance.BF_BRONZE_COPPER), item("tin_ingot", Balance.BF_BRONZE_TIN), anyOf(1, "minecraft:coal", "minecraft:charcoal")),
                         List.of(item("bronze_ingot", Balance.BF_BRONZE_OUT)), time(Balance.BF_BRONZE_TICKS))));
@@ -325,27 +326,26 @@ public final class WmdRecipes {
     private static boolean plain(String v) { return v.isEmpty(); }
 
     private static boolean ground(String v) {
-        return !v.equals("interceptor") && !v.startsWith(Satellites.PREFIX) && !v.equals("asat") && !v.equals("cubesat");
+        return !v.equals("interceptor") && !v.startsWith(Satellites.PREFIX) && !v.equals("asat") && !v.equals("cubesat") && !WarheadType.of(v).airOnly();
     }
 
     private static Component bayTime(int stations) {
-        return Component.translatable("jei.wmd.bay.time", sec(Balance.bayRunTicks(stations)), n(Balance.bayRunFe(stations) / 1000L), n(Balance.BAY_FE_PER_TICK * 20L));
+        return Component.translatable("jei.wmd.bay.time", sec(Balance.bayRunTicks(stations)), n(Balance.bayRunFe(stations) / 1000L), n(Balance.BAY_FE_PER_TICK));
     }
 
     private static void bay() {
         List<Proc> l = new ArrayList<>();
         ItemStack[] missiles = { new ItemStack(Wmd.MISSILE_T1.get()), new ItemStack(Wmd.MISSILE_T2.get()), new ItemStack(Wmd.MISSILE_T3.get()) };
-        ItemStack[] interceptors = { new ItemStack(Wmd.INTERCEPTOR_T1.get()), new ItemStack(Wmd.INTERCEPTOR_T2.get()), new ItemStack(Wmd.INTERCEPTOR_T3.get()) };
         for (int t = 1; t <= 3; t++) {
             final int tier = t;
-            l.add(p(List.of(any(parts(0, t, t, WmdRecipes::plain)), any(parts(1, t, t, v -> !v.equals(MissilePartItem.JET))), any(parts(2, t, t, WmdRecipes::plain)),
+            l.add(p(List.of(any(parts(0, t, t, WmdRecipes::plain)), any(parts(1, t, t, v -> !v.equals(MissilePartItem.JET) && !v.equals(MissilePartItem.RAMJET) && !v.equals(MissilePartItem.HEAVY))), any(parts(2, t, t, WmdRecipes::plain)),
                             any(parts(3, 1, t, v -> ground(v) || (tier >= 3 && v.equals("cubesat"))))),
                     List.of(item(missiles[t - 1])), bayTime(t - 1), note("jei.wmd.bay.stations", t - 1), note("jei.wmd.bay.missile", t)));
         }
-        for (int t = 1; t <= 3; t++)
-            l.add(p(List.of(any(parts(0, t, t, WmdRecipes::plain)), any(parts(1, t, t, v -> !v.equals(MissilePartItem.JET))), any(parts(2, t, t, WmdRecipes::plain)),
+        for (int t = 1; t <= 4; t++)
+            l.add(p(List.of(any(parts(0, t, t, WmdRecipes::plain)), any(parts(1, t, t, v -> !v.equals(MissilePartItem.JET) && !MissilePartItem.RAMJET.equals(v) && !MissilePartItem.HEAVY.equals(v))), any(parts(2, t, t, WmdRecipes::plain)),
                             item(new ItemStack(Wmd.WARHEAD_INTERCEPTOR.get()))),
-                    List.of(item(interceptors[t - 1])), bayTime(t - 1), note("jei.wmd.bay.stations", t - 1), note("jei.wmd.bay.interceptor")));
+                    List.of(item(new ItemStack(InterceptorItem.ofTier(t)))), bayTime(t - 1), note("jei.wmd.bay.stations", t - 1), note("jei.wmd.bay.interceptor")));
         l.add(p(List.of(any(parts(0, 4, 4, WmdRecipes::plain)), any(parts(1, 4, 4, WmdRecipes::plain))), List.of(item(new ItemStack(Wmd.STAGE_CORE.get()))),
                 bayTime(3), note("jei.wmd.bay.stations", 3), note("jei.wmd.bay.core")));
         l.add(p(List.of(any(parts(0, 4, 4, WmdRecipes::plain)), any(parts(1, 4, 4, WmdRecipes::plain)), any(parts(2, 4, 4, WmdRecipes::plain)),
@@ -358,14 +358,16 @@ public final class WmdRecipes {
                 List.of(item(new ItemStack(Wmd.CRUISE_MISSILE.get()))), bayTime(1), note("jei.wmd.bay.stations_range", 1, 2),
                 note("jei.wmd.bay.cruise", Balance.CRUISE_FUEL_CANISTERS)));
 
-        String[] aam = { "aam_heat", "aam_radar", "aam_arm", "aam_agm" }, seek = { "heat_seeker", "radar_seeker", "arm_seeker", "laser_seeker" };
-        for (int k = 0; k < 4; k++) {
-            ItemStack out = stack(aam[k], Balance.BAY_AIR_YIELD);
+        String[] aam = { "aam_heat", "aam_radar", "aam_arm", "aam_agm", "aam_meteor", "aam_heavy" },
+                seek = { "heat_seeker", "radar_seeker", "arm_seeker", "laser_seeker", "radar_seeker", "datalink_seeker" };
+        for (int k = 0; k < aam.length; k++) {
+            ItemStack out = stack(aam[k], BayModuleBlockEntity.airYield(k));
             if (out.isEmpty() || stack(seek[k], 1).isEmpty()) continue;
-            int t = BayModuleBlockEntity.AIR_TIER[k];
+            int t = BayModuleBlockEntity.airTier(k);
             boolean agm = k == 3;
-            l.add(p(List.of(any(parts(0, t, t, WmdRecipes::plain)), any(parts(1, t, t, WmdRecipes::plain)), any(parts(2, t, t, WmdRecipes::plain)),
-                            item(agm ? "warhead_he_t1" : "warhead_frag", 1), item(seek[k], 1)),
+            String motor = BayModuleBlockEntity.airMotor(k).isEmpty() ? null : "motor_" + BayModuleBlockEntity.airMotor(k);
+            l.add(p(List.of(any(parts(0, t, t, WmdRecipes::plain)), motor == null ? any(parts(1, t, t, WmdRecipes::plain)) : item(motor, 1), any(parts(2, t, t, WmdRecipes::plain)),
+                            item("warhead_" + (agm ? "he_t1" : BayModuleBlockEntity.airWarhead(k)), 1), item(seek[k], 1)),
                     List.of(item(out)), bayTime(t - 1), note("jei.wmd.bay.stations", t - 1), note("jei.wmd.bay.air")));
         }
         List<ItemStack> cat = new ArrayList<>();

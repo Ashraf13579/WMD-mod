@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " C ",
+    "WMW",
+    "TCT"
+  ],
+  "key": {
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "W": {
+      "tag": "c:ingots/tungsten"
+    },
+    "M": {
+      "item": "wmd:motor_t3"
+    },
+    "T": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "result": {
+    "id": "wmd:motor_divert",
+    "count": 1
+  }
+}

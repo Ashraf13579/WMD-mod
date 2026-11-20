@@ -28,6 +28,7 @@ public final class ClientMushroom {
     private record Show(double x, double y, double z, double g0, double r, long start, float[] seed) {}
 
     private static final List<Show> SHOWS = new ArrayList<>();
+    private static final List<Puff> PUFFS = new ArrayList<>(1600);
 
     static void start(double x, double y, double z, double g0, double r) {
         Minecraft mc = Minecraft.getInstance();
@@ -40,7 +41,7 @@ public final class ClientMushroom {
     }
 
     @SubscribeEvent
-    static void onLogout(ClientPlayerNetworkEvent.LoggingOut event) { SHOWS.clear(); }
+    static void onLogout(ClientPlayerNetworkEvent.LoggingOut event) { SHOWS.clear(); PUFFS.clear(); }
 
     private static double clamp01(double v) { return v < 0.0 ? 0.0 : v > 1.0 ? 1.0 : v; }
 
@@ -57,13 +58,17 @@ public final class ClientMushroom {
         Vec3 cam = camera.getPosition();
         Vector3f left = camera.getLeftVector(), up = camera.getUpVector();
         float sky = 0.25F + 0.75F * level.getSkyDarken(event.getPartialTick().getGameTimeDeltaPartialTick(false));
-        List<Puff> puffs = new ArrayList<>(1600);
+        var fr = event.getFrustum();
+        List<Puff> puffs = PUFFS;
+        puffs.clear();
         for (Iterator<Show> it = SHOWS.iterator(); it.hasNext(); ) {
             Show s = it.next();
             double age = now - s.start();
             if (age > LIFE) { it.remove(); continue; }
             if (age < 0.0) continue;
             if (DhBridge.ready && Math.hypot(cam.x - s.x(), cam.z - s.z()) > ClientBlastGeo.FAR_VIEW) continue;
+            double maxR = s.r() * 4.0 + 32.0;
+            if (fr != null && !fr.isVisible(new net.minecraft.world.phys.AABB(s.x() - maxR, s.g0() - 16.0, s.z() - maxR, s.x() + maxR, s.g0() + maxR * 1.6, s.z() + maxR))) continue;
             build(s, age, sky, cam, puffs);
         }
         if (puffs.isEmpty()) return;

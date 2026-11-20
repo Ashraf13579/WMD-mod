@@ -70,7 +70,7 @@ public class DeadHandBlockEntity extends ProcessUnitBlockEntity implements Owned
                 boolean was = armed();
                 if (cmd == CMD_KEY0) { key0 = !key0; keyAt0 = now; } else { key1 = !key1; keyAt1 = now; }
                 sound(WmdSounds.DH_KEY.get(), 1.0F);
-                if (armed() && !was) { sound(WmdSounds.DH_ARMED.get(), 2.0F); Wmd.LOGGER.info("[deadhand] {} ARMED by {} ({} pads)", worldPosition.toShortString(), sp.getGameProfile().getName(), pads.size()); }
+                if (armed() && !was) { WmdTrigger.fire(sp, "deadhand"); sound(WmdSounds.DH_ARMED.get(), 2.0F); Wmd.LOGGER.info("[deadhand] {} ARMED by {} ({} pads)", worldPosition.toShortString(), sp.getGameProfile().getName(), pads.size()); }
                 if (!armed() && was && alarmAt >= 0) sound(WmdSounds.DH_CANCEL.get(), 2.0F);
             }
             case CMD_CANCEL -> { if (DeadHand.cancel(sl, worldPosition)) sound(WmdSounds.DH_CANCEL.get(), 2.0F); }

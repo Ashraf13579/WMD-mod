@@ -1,0 +1,38 @@
+{
+  "parent": "wmd:fusion",
+  "display": {
+    "icon": {
+      "id": "wmd:chip_antimatter_1"
+    },
+    "title": {
+      "translate": "advancements.wmd.antimatter.title"
+    },
+    "description": {
+      "translate": "advancements.wmd.antimatter.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_chip_antimatter_1": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wmd:chip_antimatter_1"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_chip_antimatter_1"
+    ]
+  ],
+  "rewards": {
+    "experience": 150
+  }
+}

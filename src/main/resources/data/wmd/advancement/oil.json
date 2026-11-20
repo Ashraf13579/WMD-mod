@@ -1,0 +1,35 @@
+{
+  "parent": "wmd:steel",
+  "display": {
+    "icon": {
+      "id": "wmd:oil_detector"
+    },
+    "title": {
+      "translate": "advancements.wmd.oil.title"
+    },
+    "description": {
+      "translate": "advancements.wmd.oil.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_oil_detector": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wmd:oil_detector"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_oil_detector"
+    ]
+  ]
+}

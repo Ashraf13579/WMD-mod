@@ -230,9 +230,9 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
         if (m != null && !m.guiInfo().isEmpty()) tabs.add(new Tab("info", "icon_info", Component.translatable("gui.wmd.kit.tab.info"), null));
         if (m != null && m.guiUpgrades()) tabs.add(new Tab("upgrades", "icon_upgrades", Component.translatable("gui.wmd.kit.tab.upgrades"), null));
         if (m instanceof RadarLinked rl && m instanceof net.minecraft.world.level.block.entity.BlockEntity rbe)
-            addActionTab("icon_freq", Component.translatable(m instanceof RfLinkBlockEntity ? "gui.wmd.rf.tab" : "gui.wmd.kit.tab.freq"), () -> minecraft.setScreen(new FrequencyScreen(this, rl::getFrequency,
+            addActionTab("icon_freq", Component.translatable(rfChannel(m) ? "gui.wmd.rf.tab" : "gui.wmd.kit.tab.freq"), () -> minecraft.setScreen(new FrequencyScreen(this, rl::getFrequency,
                     f -> net.neoforged.neoforge.network.PacketDistributor.sendToServer(new SetMachineFrequencyPayload(rbe.getBlockPos(), f)),
-                    m instanceof RfLinkBlockEntity ? "gui.wmd.rf.title" : "gui.wmd.frequency.title", m instanceof RfLinkBlockEntity ? "gui.wmd.rf.label" : "gui.wmd.frequency.label")));
+                    rfChannel(m) ? "gui.wmd.rf.title" : "gui.wmd.frequency.title", rfChannel(m) ? "gui.wmd.rf.label" : "gui.wmd.frequency.label")));
         tab = tabs.stream().anyMatch(t -> t.id().equals(lastTab)) ? lastTab : "process";
         shownDrawer = tab;
         for (int i = 0; i < tankS.length; i++) if (tankS[i] == null) tankS[i] = new WmdUi.Smooth(8.0F);
@@ -244,6 +244,8 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
             addRenderableWidget(lb);
         }
     }
+
+    static boolean rfChannel(GuiMachine m) { return m instanceof RfLinkBlockEntity || m instanceof BlinkGateCoreBlockEntity; }
 
     static final int BULK_W = 48, BULK_Y = 79;
 
@@ -426,7 +428,7 @@ public class MachineScreen extends AbstractContainerScreen<MachineMenu> {
         else if (GuiMachine.lowPower(st)) { l1 = Component.translatable("gui.wmd.state.low_power", GuiMachine.lowPowerPct(st)); c1 = WmdUi.WARN; }
         else if (st >= 2) { l1 = Component.translatable("gui.wmd.state." + stateKey(st)); c1 = chipKind(st, false) == WmdUi.K_BAD ? WmdUi.BAD : WmdUi.WARN; }
         else if (m.guiEnergy() != null && m.guiFeUse() > 0) {
-            int rated = m.guiFeUse() * 20, now = menu.running() ? rated : 0;
+            int rated = m.guiFeUse(), now = menu.running() ? rated : 0;
             l1 = Component.translatable("gui.wmd.power.rate", String.format("%,d", now), String.format("%,d", rated));
             c1 = menu.running() ? WmdUi.GOOD : WmdUi.TEXT_MUTED;
         } else if (!m.guiInfo().isEmpty() && m.guiEnergy() == null) l1 = m.guiInfo().get(0);

@@ -26,7 +26,8 @@ public final class UnderwaterBlast {
         double depth = NavalLayer.depthBelowSurface(sl, at);
         int top = NavalLayer.waterTop(sl, Mth.floor(at.x), Mth.floor(at.z));
         hurt(sl, at, power, owner, source);
-        crater(sl, at, power, wet && top != NavalLayer.NO_WATER ? top : Crater.NO_SEA);
+        WmdApiImpl.blast(sl, at.x, at.y, at.z, power, "torpedo", type == MINE ? "mine" : type == DEPTH_CHARGE ? "depth_charge" : "torpedo", owner);
+        crater(sl, at, power, wet && top != NavalLayer.NO_WATER ? top : Crater.NO_SEA, owner);
         NoiseNet.pulse(sl, at, Balance.TORP_DB + 40.0, NoiseNet.Kind.BLAST, owner, 60);
         if (wet) SeaMines.shock(sl, at, power);
         UnderwaterBlastPayload p = new UnderwaterBlastPayload(at.x, at.y, at.z, type, power, (float) depth, wet && top != NavalLayer.NO_WATER ? top + 1.0F : Float.NaN);
@@ -46,7 +47,7 @@ public final class UnderwaterBlast {
         return best == null ? at : Vec3.atCenterOf(best);
     }
 
-    private static void crater(ServerLevel sl, Vec3 at, float power, int seaTop) {
+    private static void crater(ServerLevel sl, Vec3 at, float power, int seaTop, UUID owner) {
         double r = Balance.UW_CRATER_PER_POWER * power + 1.0;
         int x = Mth.floor(at.x), y = Mth.floor(at.y), z = Mth.floor(at.z);
         FusionReactorBlockEntity.blastAt(sl, at, r);
@@ -54,7 +55,7 @@ public final class UnderwaterBlast {
         RailgunBlockEntity.blastAt(sl, at, r);
         FlightManager fm = FlightManager.get(sl);
         boolean sea = seaTop != Crater.NO_SEA;
-        Crater c = new Crater(x, y, z, r, Balance.UW_CRATER_DEPTH, sea ? 0.0 : 0.4, 0.0, r * 1.5 + 16.0).sea(seaTop);
+        Crater c = new Crater(x, y, z, r, Balance.UW_CRATER_DEPTH, sea ? 0.0 : 0.4, 0.0, r * 1.5 + 16.0).sea(seaTop).owner(owner);
         fm.craters.add(c);
         DamageRings.queue(sl, c, WarheadType.HE);
         if (!sea) Debris.blast(sl, x, y, z, r, c);

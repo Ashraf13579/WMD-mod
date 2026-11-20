@@ -260,6 +260,7 @@ public final class Swarm {
                 if (p == null) continue;
                 if (now == launchTick(s, k)) sl.playSound(null, p.x, p.y, p.z, WmdSounds.SW_LAUNCH.get(), SoundSource.BLOCKS, 1.6F, 0.9F + sl.random.nextFloat() * 0.2F);
                 Vec3 was = path(s, k, now - 1, null);
+                if (was != null && CraftShield.stopsFlight(sl, was, p, null, Balance.CSH_SHELL_R, WarheadType.HE, 1, "a swarm drone")) { kill(l, k, p, false); continue; }
                 if (was != null && !ForcefieldBlockEntity.LOADED.isEmpty()) {
                     Forcefield.Crossing c = Forcefield.crossing(sl, was, p);
                     if (c != null && !Forcefield.mayCross(c.be(), s.owner()) && Forcefield.shellHit(sl, c, 1, WarheadType.HE)) { kill(l, k, c.at(), false); continue; }

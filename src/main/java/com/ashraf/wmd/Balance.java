@@ -140,6 +140,8 @@ public final class Balance {
     public static final int DESALTER_TANK_MB = 4000, DESALTER_BRINE_TANK_MB = 4000, FURNACE_TANK_MB = 16_000;
     public static final double DESALTER_YIELD = 0.95;
 
+    public static final double DESALTER_BRINE = 0.0625;
+
     public static final int RADAR_FE_PER_TICK = RadarBlockEntity.FE_PER_TICK;
 
     public static final int DESALTER_MB_PER_TICK = 5, DESALTER_FE_PER_TICK = 200;
@@ -287,6 +289,8 @@ public final class Balance {
             BAY_ROLL_CRYO_TICKS = 60, BAY_CRYO_TICKS = 640, BAY_RETURN_PER_STATION = 120;
 
     public static final int BAY_AIR_YIELD = 2;
+
+    public static final int BAY_AIR_HEAVY_YIELD = 1;
     public static final double BAY_AIR_TIME = 0.6;
     public static final int[] BAY_STATION_TICKS = { BAY_ROLL_CLEAN_TICKS + BAY_CLEAN_TICKS, BAY_ROLL_PAINT_TICKS + BAY_PAINT_TICKS, BAY_ROLL_CRYO_TICKS + BAY_CRYO_TICKS };
 
@@ -319,6 +323,7 @@ public final class Balance {
             case "interceptor" -> 0.3;
             case "he", "incendiary" -> 0.5;
             case "frag" -> 0.6;
+            case "rod_ring" -> 0.9;
             case "chaff" -> 0.8;
             case "breacher", "emp" -> 0.9;
             case "cluster" -> 1.0;
@@ -379,6 +384,9 @@ public final class Balance {
     public static final double CIWS_RANGE = 1800.0, CIWS_HIT_CLOSE = 0.22, CIWS_HIT_FAR = 0.03, CIWS_AZ_RATE = 6.0, CIWS_EL_RATE = 4.0;
     public static final int CIWS_ROUNDS_PER_TICK = 5, CIWS_DRUM = 1000, CIWS_BOX = 500, CIWS_FIRE_FE = 1_600, CIWS_MOVE_FE = 100;
     public static final float CIWS_DAMAGE = 6.0F;
+
+    public static final double CIWS_AIR_RANGE = 600.0, CIWS_ASHM_HIT = 0.55, CIWS_ASHM_HIT_DOME = 0.90;
+    public static final double[] CIWS_AIR_HIT = { 0.30, 0.25, 0.40, 0.50, 0.25, 0.35 }, CIWS_AIR_HIT_DOME = { 0.70, 0.65, 0.80, 0.85, 0.65, 0.75 };
 
     public static final double CIWS_SHIP_RANGE = 600.0, CIWS_SHIP_MAX_HARDNESS = 5.0;
     public static final int CIWS_SHIP_BLOCKS = 5,
@@ -451,6 +459,17 @@ public final class Balance {
 
     public static final int TRIPOD_BUFFER = 300_000, TRIPOD_FE_PER_TICK = 50, TRIPOD_RECEIVE = 2_000, TRIPOD_REACH = 6, TRIPOD_IDLE = 40,
             LWR_RADIUS = 128, LWR_FE_PER_TICK = 5, LWR_BUFFER = 50_000, LWR_RECEIVE = 500, TABLET_RANGE = 5_000;
+
+    public static final int TABLET_SLOTS = 4, TABLET_FLIGHTS = 6, TABLET_PRESS_GAP = 10;
+
+    public static final int TABLET_HOLD_TICKS = 200, TABLET_MISSION_HOLD = 6_000, TABLET_WAKE_TICKS = 100;
+    public static final double DRONE_POINT_R = 48.0;
+
+    public static final int WAR_BLOCKS_PER_POINT = 50, WAR_BLAST_CAP = 200, WAR_PTS_T1 = 10, WAR_PTS_T2 = 25, WAR_PTS_T3 = 50, WAR_PTS_T4 = 100, WAR_PTS_BIG = 100,
+            WAR_PTS_CC_CORE = 250, WAR_PTS_CC_MODULE = 25, WAR_PTS_KILL = 25, WAR_PTS_INTERCEPT = 10, WAR_PTS_INTERCEPT_BIG = 20, WAR_PTS_AIRCRAFT = 50,
+            WAR_PTS_SHIP = 50, WAR_SHIP_BLOCKS = 500, WAR_PTS_SHIP_MAX = 300, WAR_PTS_BREACH = -100, WAR_WIN_MIN = 100;
+    public static final long WAR_BLAST_WINDOW_MS = 60_000L, WAR_KILL_REPEAT_MS = 300_000L;
+    public static final double WAR_WIN_MARGIN = 1.25;
 
     public static final double HYPER_SPEED = 9.0, HYPER_APEX = 0.4, HYPER_RANGE = 1.0,       HYPER_CIWS = 0.2;
 
@@ -1189,6 +1208,10 @@ public final class Balance {
 
     public static final int SA_JET_MB = 16_000, SA_DIESEL_MB = 8_000, SA_FUEL_RATE = 25, SA_GROUND_FE = 2_000, SA_FE_MOVE = 400, SA_FE_PUMP = 100,
             SA_BUFFER_FE = 400_000, SA_RECEIVE_FE = 4_000, SA_PARK_TICKS = 60, SA_SCAN_TICKS = 20, SA_BREAK_COOLDOWN = 100, SA_FULL_TICKS = 40;
+
+    public static final int SA_TOPUP_MB = 1_000;
+
+    public static final double SA_REACH_MIN = 3.0;
     public static final double SA_REACH = 15.0, SA_PARK_MOVE = 0.6, SA_BREAK_DIST = 1.5, SA_BREAK_STEP = 0.4;
 
     public static final float SA_SLEW = 1.5F, SA_LUFF = 1.125F, SA_KNUCKLE = 2.25F, SA_TELE = 2.25F, SA_WRIST = 3.0F, SA_LID = 0.0225F;
@@ -1232,10 +1255,31 @@ public final class Balance {
 
     public static final double COCKPIT_LEAVE_SPEED = 2.0;
 
+    public static final double JET_BOOM_SPEED = 70.0, JET_BOOM_REARM = 60.0, JET_BOOM_R = 320.0;
+    public static final int JET_BOOM_GAP = 100;
+
+    public static final double JET_VAPOUR_R = 600.0, JET_VAPOUR_PULL_COS = 0.999;
+    public static final int JET_VAPOUR_PULL_EVERY = 8;
+
+    public static final double AIRFX_CRASH_R = 400.0, AIRFX_R = 200.0;
+    public static final int AIRFX_CRASH_SMOKE = 400;
+
+    public static final int AIRBURST_FLASH = 4, AIRBURST_BALL = 22, AIRBURST_PUFF = 240, AIRBURST_FRAGS_SMALL = 7, AIRBURST_FRAGS_BIG = 12,
+            AIRBURST_FRAG_LIFE = 60, AIRBURST_FRAG_SPREAD = 40;
+    public static final double AIRBURST_BIG_R = 7.0, AIRBURST_DRIFT = 0.03, AIRBURST_DRAG = 0.95, AIRBURST_GRAV = 0.035, AIRBURST_NEAR = 60.0, AIRBURST_FAR_MAX = 5.0;
+
+    public static final double CRASH_FIRE_MIN = 25.0, CRASH_FIRE_SIZE = 4.0, CRASH_FIRE_FUEL_REF = 4_000.0, CRASH_FIRE_R = 4.0, CRASH_FIRE_NEAR_SND = 64.0;
+    public static final int CRASH_FIRE_BALL = 44, CRASH_FIRE_BURN = 300, CRASH_FIRE_SMOKE = 600, CRASH_FIRE_SECONDS = 4;
+
+    public static final int CRASH_FIRE_SHOT_WINDOW = 2_400;
+    public static final float CRASH_FIRE_VOLUME = 4.0F;
+
+    public static final double AIRFX_PING_R = 160.0, AIRFX_NEAR_R = 96.0;
+
     public static final float COCKPIT_PULLUP_AGL = 60.0F, COCKPIT_PULLUP_TTI = 4.0F;
 
-    public static final int EJECT_HOLD_TICKS = 20, EJECT_ROCKET_TICKS = 6, EJECT_CHUTE_OPEN_TICKS = 16, EJECT_PROP_TICKS = 600, EJECT_MAX_TICKS = 2400;
-    public static final double EJECT_KICK = 0.75, EJECT_ROCKET_ACC = 0.11, EJECT_GRAVITY = 0.06, EJECT_CHUTE_FALL = 0.12, EJECT_CANOPY_KICK = 0.9;
+    public static final int EJECT_HOLD_TICKS = 20, EJECT_ROCKET_TICKS = 8, EJECT_CHUTE_OPEN_TICKS = 16, EJECT_PROP_TICKS = 600, EJECT_MAX_TICKS = 2400;
+    public static final double EJECT_KICK = 1.0, EJECT_ROCKET_ACC = 0.15, EJECT_GRAVITY = 0.06, EJECT_CHUTE_FALL = 0.12, EJECT_CANOPY_KICK = 1.2;
 
     public static final double AP_BANK_MAX = 30.0, AP_ORBIT_BANK_MAX = 50.0, AP_PITCH_MAX = 15.0, AP_LOOKAHEAD = 4.0, AP_MIN_SPEED_K = 1.35,
             AP_MIN_SPEED_FALLBACK = 35.0, AP_STALL_LETGO = 1.05, AP_WP_REACH = 32.0, AP_WP_REACH_S = 1.2, AP_ORBIT_R_MIN = 48.0, AP_ORBIT_R_MAX = 400.0,
@@ -1280,9 +1324,15 @@ public final class Balance {
     public static final double AIR_MIN_AGL = 6.0, AIR_MIN_SPEED = 8.0, AIR_SIZE_REF = 400.0, AIR_SIZE_MIN = 0.6, AIR_SIZE_MAX = 1.5, AIR_DETECT_BASE = 1_500.0,
             AIR_NOSE_LOCK_RANGE = 2_000.0, AIR_NOSE_GIMBAL = 60.0;
 
-    public static final double[] AAM_SPEED = { 7.0, 9.0, 8.0, 6.0 }, AAM_RANGE = { 800.0, 2_000.0, 2_500.0, 2_500.0 }, AAM_LAT = { 1.6, 1.0, 0.5, 0.6 },
-            AAM_FUZE = { 4.0, 6.0, 0.0, 0.0 }, AAM_DECAY = { 0.015, 0.01, 0.01, 0.01 };
-    public static final int[] AAM_BURN = { 70, 170, 240, 350 };
+    public static final double[] AAM_SPEED = { 7.0, 9.0, 8.0, 6.0, 9.0, 12.0 }, AAM_RANGE = { 800.0, 2_000.0, 2_500.0, 2_500.0, 3_000.0, 4_000.0 },
+            AAM_LAT = { 1.6, 1.0, 0.5, 0.6, 1.0, 0.4 }, AAM_FUZE = { 4.0, 6.0, 0.0, 0.0, 6.0, 8.0 }, AAM_DECAY = { 0.015, 0.01, 0.01, 0.01, 0.0, 0.005 };
+    public static final int[] AAM_BURN = { 70, 170, 240, 350, 440, 260 };
+
+    public static final int AAM_DL_TICKS = 10, AAM_HEAVY_DROP = 9;
+    public static final double AAM_HEAVY_MIN_RANGE = 250.0, AAM_LOFT_K = 0.35, AAM_LOFT_MAX = 400.0, AAM_LOFT_END = 350.0;
+
+    public static final int AAM_RAMJET_BOOST = 16;
+    public static final double AAM_RAMJET_SMOKE_SIZE = 0.3, AAM_RAMJET_SMOKE_STEP = 2.4, AAM_HEAVY_SMOKE_SIZE = 1.5, AAM_HEAVY_SMOKE_STEP = 0.9, AAM_HEAVY_COAST_SIZE = 0.6;
 
     public static final double TPOD_RANGE = 3_000.0, TPOD_GIMBAL_UP = 30.0;
 
@@ -1356,6 +1406,8 @@ public final class Balance {
     public static final int TT_MIN = 7, TT_MAX = 31, TT_TICKS_90 = 80, TT_FE = 40, TT_BUFFER = 300_000, TT_RECEIVE = 2_000, TT_SCAN_TICKS = 100, TT_CHECK_TICKS = 5;
     public static final double TT_R_REF = 5.0, TT_LAG_DEG = 10.0, TT_EDGE = 0.25, TT_CLEAR_R = 28.0, TT_MENU_REACH = 48.0;
 
+    public static final double TT_AIR_GAP = 0.3;
+
     public static final double AGM_CONE = 30.0;
 
     public static final double AGM_GPS_MISS = 8.0, AGM_INS_MISS = 20.0;
@@ -1388,7 +1440,11 @@ public final class Balance {
             FLARE_FX_CORE = 0.35, FLARE_FX_HALO = 3.0, FLARE_FX_NEAR = 60.0, FLARE_FX_RANGE = 1_024.0, FLARE_FX_TRAIL_W0 = 0.10, FLARE_FX_TRAIL_GROW = 0.006,
             FLARE_FX_TRAIL_ALPHA = 0.8;
 
-    public static final double[] AAM_FRAG_RADIUS = { 6.0, 8.0, 5.0, 5.0 }, AAM_FRAG_POWER = { 3.0, 4.0, 4.5, 4.5 }, AAM_FRAG_DAMAGE = { 18.0, 22.0, 24.0, 24.0 };
+    public static final double[] AAM_FRAG_RADIUS = { 6.0, 8.0, 5.0, 5.0, 8.0, 10.0 }, AAM_FRAG_POWER = { 3.0, 4.0, 4.5, 4.5, 4.0, 5.0 },
+            AAM_FRAG_DAMAGE = { 18.0, 22.0, 24.0, 24.0, 22.0, 26.0 };
+
+    public static final int AAM_ROD_RAYS = 32, AAM_ROD_BLOCKS = 3, AAM_ROD_FX_LIFE = 24;
+    public static final double AAM_ROD_RADIUS = 12.0, AAM_ROD_BURST_VIS = 1.4;
     public static final int AAM_FRAG_RAYS = 6, AAM_FRAG_BLOCKS = 2;
     public static final double AAM_FRAG_CONE = 35.0, AAM_FRAG_DEPTH = 3.0;
 
@@ -1535,9 +1591,13 @@ public final class Balance {
     public static final int HDOOR_FE_PER_CELL = 100, HDOOR_BUFFER = 20_000, HDOOR_RECEIVE = 2_000;
     public static final int HDOOR_SCAN_TICKS = 20, HDOOR_BLOCKED_RECHECK = 5, HDOOR_CLICK_GAP = 6, HDOOR_HEAVY_FROM = 10;
 
-    public static final double FDC_RANGE = 64.0, FDC_RANGE_Y = 32.0, FDC_REACH = 8.0;
-    public static final int FDC_FE = 20, FDC_SCAN_TICKS = 40, FDC_FOLD_TICKS = 200, FDC_MAX_CRAFT = 12, FDC_MAX_LIGHTS = 96, FDC_MAX_EACH = 16, FDC_PRESS_GAP = 10,
+    public static final double FDC_RANGE = 160.0, FDC_RANGE_Y = 32.0, FDC_REACH = 8.0;
+    public static final int FDC_FE = 20, FDC_SCAN_TICKS = 40, FDC_FOLD_TICKS = 200, FDC_MAX_CRAFT = 12, FDC_MAX_LIGHTS = 192, FDC_MAX_EACH = 16, FDC_PRESS_GAP = 10,
             FDC_CONFIRM_TICKS = 40, FDC_LID_TICKS = 26;
+
+    public static final double DFC_DOWN = 3.0;
+
+    public static final int SIREN_TICKS = 424;
 
     public static final int NGUN_RACK = 12, NGUN_RELOAD_TICKS = 60, NGUN_HOIST_TICKS = 24, NGUN_FE_LAY = 20, NGUN_FE_SHOT = 400, NGUN_ORDER_TICKS = 200,
             NGUN_CRANE_STACK = 12;
@@ -1564,4 +1624,160 @@ public final class Balance {
 
     public static final int CHART_FE = 20, CHART_GLASS_W = 42, CHART_GLASS_D = 18, CHART_SYNC_TICKS = 20, CHART_PAGE_W = 840, CHART_PAGE_D = 360;
     public static final double CHART_REACH = 8.0, CHART_PAGE_EDGE = 0.40, CHART_RANGE = 2_048.0;
+
+    public static final int WB_RANGE = 2_500, WB_MIN_FROM_SPAWN = 500, WB_TRIES = 16, WB_ROUGH_MAX = 16, WB_LAY_MIN_COLUMNS = 4;
+    public static final long WB_RESPAWN_MS = 24L * 60 * 60 * 1000;
+
+    public static final float WARDEN_HP = 6_000.0F, WARDEN_HIT_CAP = 300.0F, WARDEN_SCALE_PER_PLAYER = 0.5F, WARDEN_SCALE_MAX = 5.0F, WARDEN_FIRE_MUL = 0.25F,
+            WARDEN_LEG_MUL = 0.6F, WARDEN_SHUT_MUL = 0.3F, WARDEN_BAY_MUL = 1.8F, WARDEN_CORE_MUL = 2.5F, WARDEN_STAGE2 = 0.66F, WARDEN_STAGE3 = 0.33F,
+            WARDEN_TURN = 2.0F;
+    public static final double WARDEN_SPEED_1 = 0.05, WARDEN_SPEED_2 = 0.08, WARDEN_SPEED_3 = 0.035, WARDEN_KEEP = 14.0, WARDEN_AGGRO = 96.0,
+            WARDEN_SCALE_R = 128.0, WARDEN_WAKE_R = 160.0;
+
+    public static final int WARDEN_HUG_TICKS = 100, WARDEN_HUG_CROUCH = 26;
+    public static final double WARDEN_HUG_R = 7.0;
+    public static final int WARDEN_RESET_TICKS = 12_000, WARDEN_KLAXON_TICKS = 120, WARDEN_HATCH_STEP = 4, WARDEN_LIFT_STEP = 6, WARDEN_DOOR_STEP = 10,
+            WARDEN_DYING_TICKS = 120;
+
+    public static final int WARDEN_MUSIC_REFIRE = 200;
+
+    public static final float WARDEN_VENT_MUL = 1.5F, WARDEN_LEG_ARMOR = 500.0F, WARDEN_LEG_SLOW = 0.15F, WARDEN_FAST_MUL = 0.6F,
+            WARDEN_CIWS_HIT_CLOSE = 0.2F, WARDEN_CIWS_HIT_FAR = 0.04F, WARDEN_CIWS_DMG = 1.0F;
+    public static final double WARDEN_CIWS_RANGE = 80.0, WARDEN_ROCKET_RANGE = 120.0, WARDEN_ROCKET_MIN = 16.0, WARDEN_ROCKET_SCATTER = 4.0,
+            WARDEN_MORTAR_MIN = 12.0, WARDEN_MORTAR_SPREAD = 6.0, WARDEN_MORTAR_APEX = 10.0;
+    public static final int WARDEN_CIWS_BURST = 40, WARDEN_CIWS_PERIOD = 100, WARDEN_CIWS_ROUNDS = 3, WARDEN_CIWS_DEAL = 10, WARDEN_ROCKETS = 6,
+            WARDEN_ROCKET_PERIOD = 160, WARDEN_MORTARS = 4, WARDEN_MORTAR_PERIOD = 240, WARDEN_MORTAR_FLIGHT = 50;
+
+    public static final int WARDEN_CIWS_SPINUP = 12, WARDEN_ROCKET_LOCK = 24, WARDEN_EYE_PERIOD = 260, WARDEN_EYE_CHARGE = 70, WARDEN_EYE_LOCK = 14;
+    public static final float WARDEN_EYE_DMG = 9.0F;
+    public static final double WARDEN_EYE_W = 1.2, WARDEN_EYE_RANGE = 70.0;
+
+    public static final int WARDEN_DRONES = 6, WARDEN_DRONE_PERIOD = 320, WARDEN_DRONE_RISE = 15, WARDEN_DRONE_LIFE = 400, WARDEN_EMP_PERIOD = 440,
+            WARDEN_EMP_TICKS = 200, WARDEN_SLAM_PERIOD = 380, WARDEN_SLAM_CROUCH = 12, WARDEN_SLAM_AIR = 34, WARDEN_NAPALM_PERIOD = 300,
+            WARDEN_NAPALM_LEN = 26, WARDEN_NAPALM_W = 3;
+    public static final double WARDEN_PLATE_KICK = 0.6, WARDEN_DRONE_SPEED = 0.45, WARDEN_DRONE_STEER = 0.15, WARDEN_DRONE_HIT = 1.6,
+            WARDEN_DRONE_R = 1.5, WARDEN_DRONE_DMG = 0.6, WARDEN_EMP_R = 14.0, WARDEN_SLAM_MIN = 10.0, WARDEN_SLAM_MAX = 30.0, WARDEN_SLAM_H = 7.0,
+            WARDEN_SLAM_R = 4.0, WARDEN_SLAM_PUSH_R = 10.0, WARDEN_SLAM_PUSH = 1.2;
+
+    public static final float WARDEN_SHIELD_HP = 1_500.0F, WARDEN_SHIELD_CRACK = 0.4F, WARDEN_NODE_REGEN = 0.01F, WARDEN_SHIELD_REUP = 0.25F,
+            WARDEN_RAIL_BREAK = 250.0F, WARDEN_RAIL_DMG = 40.0F;
+    public static final int WARDEN_SHIELD_R = 15, WARDEN_SHIELD_DOWN = 800, WARDEN_RAIL_PERIOD = 500, WARDEN_RAIL_CHARGE = 140, WARDEN_RAIL_LOCK = 20,
+            WARDEN_ENRAGE_TICKS = 3_600;
+    public static final double WARDEN_RAIL_W = 2.5, WARDEN_RAIL_R = 5.0, WARDEN_RAIL_RANGE = 80.0, WARDEN_PURGE_R = 36.0;
+
+    public static final float WARDEN_PURGE_DMG = 200.0F, WARDEN_BLAST_CAP = 1_200.0F;
+    public static final double WARDEN_BLAST_SIZE = 16.0, WARDEN_BLAST_SIZE_MAX = 6.0, WARDEN_LEG_DROP = 3.0;
+
+    public static final double WARDEN_CINE_R = 128.0;
+    public static final int WARDEN_CINE_OVERDRIVE = 100, WARDEN_CINE_MELTDOWN = 120, WARDEN_PLATE_FIRST = 16, WARDEN_PLATE_GAP = 8, WARDEN_CINE_ROOF = 40,
+            WARDEN_CINE_DOME = 60;
+
+    public static final double PEMP_RANGE = 250.0, PEMP_HALF_ANGLE = 25.0, PEMP_SLEW_DEG = 2.0, PEMP_RAISE_DEG = 1.0, PEMP_EL_MIN = 15.0, PEMP_EL_MAX = 60.0,
+            PEMP_AIM_TOL = 1.5, PEMP_RECOIL = 3.0;
+    public static final int PEMP_FE_PER_TICK = 20_000, PEMP_CHARGE_TICKS = 3_000, PEMP_BUFFER_FE = 400_000, PEMP_RECEIVE_FE = 40_000, PEMP_HOLD_FE = 200,
+            PEMP_IDLE_FE = 40, PEMP_ARM_TICKS = 40, PEMP_BUILDUP = 10, PEMP_COOLDOWN = 12_000, PEMP_BLACKOUT = 400, PEMP_ARC_TICKS = 60, PEMP_AUTO_CONTACTS = 3,
+            PEMP_AUTO_SALVO = 4, PEMP_SCAN_TICKS = 10;
+    public static final long PEMP_CHARGE_FE = (long) PEMP_FE_PER_TICK * PEMP_CHARGE_TICKS;
+
+    public static final int CLOAK_FE = 1_200, CLOAK_BUFFER_FE = 120_000, CLOAK_RECEIVE_FE = 4_000, CLOAK_COVER_BLOCKS = 600, CLOAK_PETAL_TICKS = 16,
+            CLOAK_LIFT_TICKS = 24, CLOAK_MAST_TICKS = 16, CLOAK_SPIN_TICKS = 32, CLOAK_SHIMMER_TICKS = 24, CLOAK_RECHARGE_TICKS = 100, CLOAK_SYNC_TICKS = 10,
+            CLOAK_HOLD_TICKS = 10;
+    public static final int CLOAK_ENGAGE_TICKS = CLOAK_PETAL_TICKS + CLOAK_LIFT_TICKS + CLOAK_MAST_TICKS + CLOAK_SPIN_TICKS;
+    public static final double CLOAK_FIELD_R = 16.0, CLOAK_HAZE_R = 24.0, CLOAK_CRAFT_PAD = 2.0;
+    public static final float CLOAK_RING_AMP = 40.0F, CLOAK_RING_A = 0.13F, CLOAK_RING_B = 0.17F, CLOAK_LIFT_PX = 14.0F, CLOAK_MAST_PX = 10.0F;
+
+    public static final int QR_FE = 6_000, QR_SWEEP_TICKS = 80, QR_MAX_CONTACTS = 12, QR_REVEAL_TICKS = 100, QR_PANEL_TICKS = 28, QR_PANEL_STAGGER = 4,
+            QR_SPIN_UP = 32, QR_SPIN_DOWN = 80, QR_PULSE_TICKS = 20;
+    public static final double QR_RANGE = 1_500.0, QR_PLAYER_RANGE = 192.0;
+    public static final float QR_PANEL_OPEN = 35.0F;
+
+    public static final int GWG_R_MIN = 32, GWG_R_MAX = 128, GWG_R_STEP = 16, GWG_R_DEFAULT = 96, GWG_BUFFER_FE = 20_000_000, GWG_RECEIVE_FE = 40_000,
+            GWG_IDLE_FE = 40, GWG_START_PCT = 25, GWG_SPINUP = 300, GWG_SPINDOWN = 200, GWG_COAST = 400, GWG_LOCKOUT = 1_200, GWG_BEND_FE = 300_000,
+            GWG_SHELL_FE = 100_000, GWG_CRAFT_FE = 2_000, GWG_BEND_STEPS = 3, GWG_BEND_GAP = 4, GWG_DRONE_TICKS = 40, GWG_SURGE_TICKS = 30;
+    public static final double GWG_MARGIN = 16.0, GWG_BOMB_PUSH = 0.12, GWG_AIRBORNE = 3.0, GWG_DRAG_G = 0.5, GWG_BLEED_SLOW = 0.03, GWG_BLEED_FAST = 0.01,
+            GWG_SLOW = 25.0, GWG_FX_RANGE = 400.0, GWG_SURGE = 0.4;
+    public static final float GWG_SPIN_O = 4.5F, GWG_SPIN_M = 6.9F, GWG_SPIN_I = 9.9F, GWG_SPIN_CORE = 15.9F;
+
+    public static final int PMORT_RANGE = 5_000, PMORT_MIN = 300, PMORT_SHOT_FE = 1_000_000, PMORT_RECEIVE_FE = 25_000, PMORT_IDLE_FE = 20,
+            PMORT_H2_MB = 250, PMORT_TANK_MB = 4_000, PMORT_RELOAD = 1_200, PMORT_LAY = 60, PMORT_SEAL = 20, PMORT_VENT = 300, PMORT_BURN = 1_200,
+            PMORT_FIRE_RENEW = 400, PMORT_BURN_SEC = 6;
+    public static final double PMORT_EL = 65.0, PMORT_SPREAD_MUL = 0.6, PMORT_MELT_R = 6.5, PMORT_FIRE_R = 10.0, PMORT_BURN_DMG = 2.0,
+            PMORT_BALL_R = 0.9;
+
+    public static final double TT_RANGE = 24.0, TT_STORM_RANGE = 36.0, TT_JUMP = 8.0, TT_MISSILE_R = 12.0;
+    public static final int TT_CHAIN = 5, TT_CHARGE_TICKS = 30, TT_STRIKE_FE = 50_000, TT_BUFFER_FE = 400_000, TT_RECEIVE_FE = 20_000, TT_IDLE_FE = 40,
+            TT_DOOR_HOLD = 60, TT_ARC_TICKS = 6;
+    public static final float TT_DMG = 8.0F;
+
+    public static final int BG_JUMP_FE = 5_000_000, BG_BLOCK_FE = 25_000, BG_BUFFER_FE = 50_000_000, BG_RECEIVE_FE = 40_000, BG_OPEN_FE = 2_000,
+            BG_IDLE_FE = 20, BG_EXIT_MIN_FE = 1_000_000, BG_DEPLOY = 60, BG_POWER = 40, BG_PORTAL = 30, BG_DOWN = 60, BG_COOL = 1_200, BG_STOW = 60,
+            BG_IDLE_CLOSE = 600, BG_BUILD_GAP = 4, BG_IMMUNE = 60, BG_EXIT_SCAN = 60_000;
+    public static final double BG_AUTO_R = 64.0, BG_AUTO_MIN_SPEED = 1.0, BG_AUTO_CONE = 30.0, BG_FX_RANGE = 256.0, BG_DOOR_OPEN = 6.6, BG_KEY_UP = 2.4;
+    public static final float BG_JAW_IN = 2.5F, BG_ROTOR_DEG = 24.0F;
+
+    public static final int[] EXO_ARMOR = { 5, 10, 7, 4 };
+    public static final float EXO_TOUGH = 5.0F, EXO_KB = 0.1F;
+    public static final int EXO_DUR = 37, EXO_ENCHANT = 15;
+    public static final int EXO_FE_CAP = 5_000_000, EXO_DRAIN = 10, EXO_DRAIN_SPRINT = 40, EXO_EMP_LOCK = 400;
+    public static final double EXO_LOW = 0.15, EXO_LOW_THRUST = 0.5, EXO_EMPTY_SLOW = -0.15;
+    public static final int EXO_BOOST_FE = 25_000, EXO_HOVER_FE = 1_500, EXO_HOVER_MAX = 80, EXO_HOVER_COOL = 80, EXO_LEAP_FE = 15_000, EXO_LEAP_CHARGE = 20,
+            EXO_FALL_FE = 1_000, EXO_FALL_FREE = 3, EXO_NOZZLE_COOL = 80;
+    public static final double EXO_BOOST_VY = 1.0, EXO_HOVER_VY = 0.03, EXO_LEAP_VY = 0.95, EXO_LEAP_FWD = 0.8, EXO_BRAKE_VY = -0.15, EXO_BRAKE_SPEED = 0.6,
+            EXO_BRAKE_H = 3.0, EXO_MELEE = 4.0, EXO_MINING = 0.25, EXO_STEP = 0.4, EXO_REACH = 1.0, EXO_FX_RANGE = 96.0;
+    public static final float EXO_CORE_IDLE = 9.0F, EXO_CORE_JET = 36.0F, EXO_CORE_LOW = 3.0F, EXO_SHIN_PX = 1.4F, EXO_SHOULDER_PX = 1.2F,
+            EXO_JET_BOOST_DEG = 22.0F, EXO_JET_HOVER_DEG = 10.0F;
+    public static final int RACK_BUFFER_FE = 1_000_000, RACK_RECEIVE_FE = 20_000, RACK_CHARGE_FE = 20_000, RACK_ARM_TICKS = 12;
+
+    public static final int EXO_THERMAL_FE = 20, EXO_REBREATH_FE = 10, EXO_CANNON_FE = 400_000, EXO_CANNON_CHARGE = 30, EXO_CANNON_COOL = 80,
+            EXO_MSL_SALVO = 6, EXO_MSL_FE = 30_000, EXO_MSL_GAP = 3, EXO_MSL_LIFE = 60, EXO_MSL_COOL = 40, EXO_WING_FE = 2_500, EXO_WING_GLIDE_FE = 100,
+            EXO_WING_HOVER_FE = 1_500, EXO_WING_UNFOLD = 8, EXO_CLOAK_FE = 400, EXO_CLOAK_REARM = 100, EXO_RF_FE = 5_000, EXO_BARRIER_FE = 1_000,
+            EXO_BARRIER_FLASH = 6, EXO_MAG_FE = 10;
+    public static final double EXO_SWIM = 0.3, EXO_CANNON_MIN = 0.25, EXO_CANNON_RANGE = 64.0, EXO_CANNON_DMG = 30.0, EXO_CANNON_BLAST_R = 2.5,
+            EXO_CANNON_BLAST_DMG = 8.0, EXO_CANNON_WEAK = 1.5, EXO_MSL_RANGE = 48.0, EXO_MSL_DMG = 6.0, EXO_MSL_SPEED = 1.4, EXO_MSL_TURN = 0.25,
+            EXO_WING_THRUST = 0.08, EXO_WING_SPEED = 2.25, EXO_WING_HOVER_SPEED = 0.35, EXO_BARRIER_MIN = 0.10, EXO_BARRIER_BLAST = 0.5,
+            EXO_MAG_CLIMB = 0.2, EXO_MAG_CREEP = 0.06;
+
+    public static final double EXO_CANNON_SPEED = 3.0, EXO_CANNON_BALL_R = 0.14, EXO_CANNON_BALL_K = 0.22;
+
+    public static final double ION_THRUST = 10_000.0, ION_AIRFLOW = 95.0, ION_STEER_MAX = 12.0, ION_STEER_RATE = 40.0, ION_NOISE_DB = 0.0,
+            ION_BEAM_MIN = 4.0, ION_BEAM_MAX = 10.0, ION_IRIS_CLOSED = -70.0;
+    public static final int ION_FE_IDLE = 100, ION_FE_LOAD = 6_000, ION_SPOOL_UP = 100, ION_SPOOL_DOWN = 60, ION_COAST = 40;
+
+    public static final int CSH_FE = 400, CSH_HIT_FE = 250_000, CSH_PER_R2 = 2_500, CSH_ROUND_FE = 3_000, CSH_EMP_FE = 1_500_000, CSH_ARC_FE = 50_000,
+            CSH_COOLDOWN = 1_200, CSH_RISE_TICKS = 100, CSH_HOLD_TICKS = 10, CSH_BOX_TICKS = 40, CSH_SYNC_TICKS = 10, CSH_FX_RANGE = 512, CSH_GAUGE_TICKS = 20,
+            CSH_RIPPLE_TICKS = 30, CSH_SHARD_TICKS = 40, CSH_LOW_PCT = 25, CSH_BUFFER_FE = 400_000, CSH_RECEIVE_FE = 2_000;
+    public static final double CSH_PAD = 2.0, CSH_MAX_HALF = 40.0, CSH_FLOOR = 0.10, CSH_SHELL_R = 4.0, CSH_AGM_R = 10.0;
+    public static final float CSH_FIN_DEG = 102.0F, CSH_RING_LIFT_PX = 2.0F, CSH_RING_SPIN = 14.0F;
+
+    public static final int STGEN_BUFFER_FE = 5_000_000, STGEN_RECEIVE_FE = 40_000, STGEN_MIN_RANGE = 200, STGEN_MAX_RANGE = 2_500,
+            STGEN_SPIN = 60, STGEN_RAISE = 120, STGEN_OPEN = 40, STGEN_SEED = 80, STGEN_STORM = 1_800, STGEN_STRIKE_TICKS = 20, STGEN_FADE = 200,
+            STGEN_FOLD = 40, STGEN_LOWER = 120, STGEN_COOLDOWN = 6_000, STGEN_STEAM = 600, STGEN_JAM_AFTER = 200, STGEN_FIRE_TICKS = 160,
+            STGEN_RESEND = 100, STGEN_BOLT_TICKS = 8;
+    public static final int[] STGEN_RADII = { 32, 40, 48 };
+    public static final double STGEN_HIT_R = 3.0, STGEN_AIMED = 0.5, STGEN_CLOUD_H = 60.0, STGEN_FX_RANGE = 640.0;
+    public static final float STGEN_DMG = 6.0F, STGEN_THUNDER_VOL = 12.0F;
+
+    public static final int HTOOL_RECEIVE = 20_000, HTOOL_SUIT_FE = 2_000;
+    public static final double HTOOL_SUIT_MIN = 0.2;
+    public static final int TRB_FE_CAP = 2_000_000, TRB_SEARCH_FE = 50, TRB_HOLD_FE = 300, TRB_TUG_FE = 3_000, TRB_THROW_FE = 20_000, TRB_COOLDOWN = 40,
+            TRB_CRAFT_MAX_BLOCKS = 350, TRB_FX_EVERY = 4;
+    public static final double TRB_RANGE = 32.0, TRB_SLACK = 4.0, TRB_AIM_GROW = 0.6, TRB_PULL_MIN = 3.0, TRB_PULL_RATE = 0.4, TRB_HOLD_K = 0.35, TRB_HOLD_VMAX = 1.2,
+            TRB_THROW_SPEED = 1.5, TRB_TUG_GAIN = 1.5, TRB_TUG_VMAX = 8.0, TRB_TUG_DV = 1.2, TRB_TUG_REF = 60.0, TRB_THROW_CRAFT = 14.0;
+    public static final int PCU_FE_CAP = 1_000_000, PCU_CUT_FE = 400, PCU_BREACH_FE = 1_500, PCU_BREACH_DEPTH = 3, PCU_HEAT_MAX = 100, PCU_HEAT_CUT = 1,
+            PCU_HEAT_BREACH = 2, PCU_COOL = 3, PCU_OVERHEAT_TICKS = 100, PCU_HARDENED_TICKS = 40, PCU_DMG_EVERY = 5, PCU_FIRE_SECS = 3, PCU_FX_EVERY = 4;
+    public static final double PCU_REACH = 5.0, PCU_BURN_REACH = 3.0, PCU_HARD_EXP = 0.657;
+    public static final float PCU_BASE_TICKS = 5.0F, PCU_BREACH_MULT = 0.6F, PCU_DMG = 1.5F;
+
+    public static final int NFORGE_FE = 12_000, NFORGE_BUFFER = 2_000_000, NFORGE_RECEIVE = 20_000, NFORGE_BLOCK_FE = 2_000, NFORGE_ENGINE_FE = 20_000,
+            NFORGE_BATCH_TICKS = 8, NFORGE_BATCH = 9, NFORGE_MIN_FE = NFORGE_BATCH * NFORGE_BLOCK_FE + 20 * NFORGE_FE, NFORGE_LOAD_TICKS = 30,
+            NFORGE_SPINDOWN = 60;
+    public static final double NFORGE_PATCH = 1.01;
+    public static final float NFORGE_SPEED = 2.0F, NFORGE_SWIRL = 1.5F, NFORGE_HATCH_OPEN = 100.0F, NFORGE_LIFT = 7.0F;
+
+    public static final int HOLOT_FE = 4_000, HOLOT_GRID = 128, HOLOT_LOCAL_SPAN = 256, HOLOT_LOCAL_MS = 5_000, HOLOT_TRACK_TICKS = 20, HOLOT_MAX_TRACKS = 48, HOLOT_SLEEP_TICKS = 600, HOLOT_SCAN_TICKS = 60,
+            HOLOT_ALT_TOP = 400;
+    public static final int[] HOLOT_SPANS = { 128, 256, 1_024, 4_096 }, HOLOT_LEVELS = { 0, 0, 2, 4 };
+    public static final float[] HOLOT_EXAG = { 1.5F, 2.0F, 4.0F, 8.0F };
+    public static final double HOLOT_PAN = 0.25, HOLOT_WAKE_R = 12.0;
+    public static final float HOLOT_RELIEF = 9.0F, HOLOT_ALT_PX = 8.0F, HOLOT_PICK_PX = 2.5F, HOLOT_PYL_UP = 11.0F;
 }

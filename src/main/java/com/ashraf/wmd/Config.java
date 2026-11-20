@@ -37,6 +37,12 @@ public class Config {
 
     public static boolean salvageSites() { return !SPEC.isLoaded() || SALVAGE_SITES.get(); }
 
+    public static final ModConfigSpec.BooleanValue WARDEN_BUNKER = BUILDER
+            .comment("World generation: one WARDEN boss bunker per world, at a random spot within 2,500 blocks of world spawn (mostly underground; antenna masts and smoking vents show where it is). false = none is built on its own (an admin can still place it with /wmd boss place; one already built stays).")
+            .define("wardenBunker", true);
+
+    public static boolean wardenBunker() { return !SPEC.isLoaded() || WARDEN_BUNKER.get(); }
+
     static final java.util.List<String> ORE_IDS = java.util.List.of("tin", "lead", "silver", "platinum", "bauxite", "titanium", "tungsten", "nitrate", "rutile_deposit", "wolframite_deposit", "uraninite_deposit", "oil");
     public static final ModConfigSpec.ConfigValue<List<? extends String>> DISABLED_ORE_GEN = BUILDER
             .comment("World generation: WMD ores that are NOT generated in new chunks (for modpacks that already have them): tin, lead, silver, platinum, bauxite, titanium, tungsten, nitrate, rutile_deposit, wolframite_deposit, uraninite_deposit, oil.")
@@ -269,6 +275,69 @@ public class Config {
         public static final ModConfigSpec.IntValue BLUEMAP_UPDATE_SECONDS = B
                 .comment("How often the BlueMap markers are refreshed (seconds). Machines are re-scanned over several ticks, never in one go.")
                 .defineInRange("blueMapUpdateSeconds", 3, 1, 60);
+
+        static { B.pop(); B.comment("War system (needs Open Parties and Claims: a nation is a party; its owner and admins lead it). Players use /war.").push("war"); }
+        public static final ModConfigSpec.BooleanValue WAR_ENABLED = B
+                .comment("Nations may declare war on each other (/war declare). false = no new wars (running ones still end normally).")
+                .define("enabled", true);
+        public static final ModConfigSpec.IntValue WAR_DECLARE_MINUTES = B
+                .comment("Minutes between a declaration and the start of the war (time to prepare). Allies may join in this time and during the war.")
+                .defineInRange("declareMinutes", 10, 1, 10_080);
+        public static final ModConfigSpec.IntValue WAR_MINUTES = B
+                .comment("How long a war lasts (minutes) unless it ends earlier by peace or surrender.")
+                .defineInRange("warMinutes", 60, 5, 43_200);
+        public static final ModConfigSpec.IntValue WAR_COOLDOWN_MINUTES = B
+                .comment("Minutes after a war ends before the same two nations may declare war on each other again.")
+                .defineInRange("cooldownMinutes", 180, 0, 100_000);
+        public static final ModConfigSpec.BooleanValue WAR_NEED_CC = B
+                .comment("A nation needs a working command center (a loaded, powered command center building of one of its members) to declare war.")
+                .define("needCommandCenter", true);
+        public static final ModConfigSpec.IntValue WAR_TERRITORY_CHUNKS = B
+                .comment("Claimed chunks the winner may take from the loser after a surrender (/war take, standing in the chunk). Never the loser's last chunk or a chunk with its command center.")
+                .defineInRange("territoryChunks", 16, 0, 1024);
+
+        public static final ModConfigSpec.ConfigValue<String> WAR_OPEN_MODE = B
+                .comment("When a nation's claims are OPEN to its enemies during an active war (blasts, mining, chests, TNT): ONLINE = while at least one of its members is online "
+                        + "(+ graceMinutes after the last one leaves), WINDOW = only inside the daily window, BOTH = both must be true. Outside that its claims stay protected.")
+                .define("openMode", "ONLINE", v -> v instanceof String s && (s.equals("ONLINE") || s.equals("WINDOW") || s.equals("BOTH")));
+        public static final ModConfigSpec.ConfigValue<String> WAR_WINDOW = B
+                .comment("The daily window (server clock, 24 h, \"HH:MM-HH:MM\", may pass midnight like \"22:00-02:00\") used by openMode WINDOW / BOTH.")
+                .define("window", "18:00-23:00", v -> v instanceof String s && s.matches("\\d{1,2}:\\d{2}-\\d{1,2}:\\d{2}"));
+        public static final ModConfigSpec.IntValue WAR_GRACE_MINUTES = B
+                .comment("openMode ONLINE / BOTH: minutes a nation's claims stay open after its last member logs off.")
+                .defineInRange("graceMinutes", 10, 0, 1440);
+        public static final ModConfigSpec.IntValue WAR_TAKE_MINUTES = B
+                .comment("Minutes after a surrender in which the winner may take its chunks.")
+                .defineInRange("takeMinutes", 30, 1, 10_080);
+        public static final ModConfigSpec.IntValue WAR_TREATY_NOTICE_HOURS = B
+                .comment("Hours a nation stays bound by the nuclear test ban treaty after it announces its withdrawal (/war treaty withdraw).")
+                .defineInRange("treatyNoticeHours", 24, 0, 8760);
+        public static final ModConfigSpec.IntValue WAR_TREATY_MARK_HOURS = B
+                .comment("Hours a nation that broke the test ban is marked TREATY BREAKER on the scoreboard and the War Room.")
+                .defineInRange("treatyBreakerHours", 168, 1, 87600);
+        public static final ModConfigSpec.BooleanValue WAR_HEAL = B
+                .comment("After a war, everything WMD weapons destroyed in the claims of its nations during the war is rebuilt (gradually; blocks a player changed since stay as they are; machines come back empty). Chunks the winner took stay as they are.")
+                .define("healAfterWar", true);
+        public static final ModConfigSpec.IntValue WAR_HEAL_MINUTES = B
+                .comment("Minutes after the end of a war (after a surrender: after the take time) before its damage is rebuilt.")
+                .defineInRange("healMinutes", 5, 0, 10_080);
+        static { B.pop(); B.comment("Rollback of WMD blast damage: every block a WMD weapon changes is logged (world/wmd_rollback) so it can be put back: after a war, by /wmd rollback, or the wilderness heal.").push("rollback"); }
+        public static final ModConfigSpec.BooleanValue ROLLBACK_LOG = B
+                .comment("Log what WMD blasts change (needed for every kind of rollback). false = nothing is logged, nothing can be put back.")
+                .define("log", true);
+
+        public static final ModConfigSpec.BooleanValue ROLLBACK_LOG_ALL = B
+                .comment("false (default) = log only what a heal will use: claims of nations in an active war (the war heal) and, with wildernessHeal on, land outside every claim. true = log every WMD block change everywhere, so /wmd rollback can undo damage anywhere (more disk use).")
+                .define("logEverywhere", false);
+        public static final ModConfigSpec.IntValue ROLLBACK_KEEP_DAYS = B
+                .comment("Days the log is kept; older damage can no longer be put back.")
+                .defineInRange("keepDays", 7, 1, 365);
+        public static final ModConfigSpec.BooleanValue WILD_HEAL = B
+                .comment("Craters OUTSIDE every claim heal by themselves after wildernessHealHours: the exact old blocks come back (never generated terrain); blocks a player changed since stay.")
+                .define("wildernessHeal", false);
+        public static final ModConfigSpec.IntValue WILD_HEAL_HOURS = B
+                .comment("Hours after a blast before the wilderness heal puts it back.")
+                .defineInRange("wildernessHealHours", 24, 1, 8760);
         static { B.pop(); B.comment("Commands.").push("commands"); }
 
         public static final ModConfigSpec.BooleanValue TEST_COMMANDS = B
@@ -276,6 +345,20 @@ public class Config {
                         + "they spawn machines, missiles, satellites and stations, fake enemy launches and skip timers. false = off (a normal server); true = a test server. "
                         + "The server admin tools (/wmd admin ...) are always there. Players see a change after they log in again.")
                 .define("testCommands", false);
+
+        static { B.pop(); B.comment("World map: the terrain of the whole pre-generated world for the map screens (autopilot, planner, drone route chart, sea chart). Terrain only, never players or machines.").push("worldMap"); }
+        public static final ModConfigSpec.BooleanValue WORLD_MAP = B
+                .comment("Build the world map from the saved region files (a background thread, reads only terrain, loads and generates nothing). false = the map screens show only what the game has loaded / explored, as before.")
+                .define("enabled", true);
+        public static final ModConfigSpec.IntValue WORLD_MAP_RADIUS = B
+                .comment("Blocks from the map centre (0,0) that the map covers. 0 = the world border (an unlimited border is capped at 30000).")
+                .defineInRange("radius", 0, 0, 30_000_000);
+        public static final ModConfigSpec.IntValue WORLD_MAP_CHUNKS_PER_SECOND = B
+                .comment("Work budget: chunks read from the region files per second (about 1 ms of the disk thread each). Lower = gentler on a busy server, the map fills slower.")
+                .defineInRange("chunksPerSecond", 150, 10, 2000);
+        public static final ModConfigSpec.BooleanValue WORLD_MAP_PREBUILD = B
+                .comment("Build the whole radius in the background, starting at the world spawn. false = only the areas a map screen asks for are built.")
+                .define("prebuild", true);
         static { B.pop(); }
 
         public static final ModConfigSpec SPEC = B.build();
@@ -286,6 +369,31 @@ public class Config {
         }
 
         private static boolean on() { return SPEC.isLoaded(); }
+
+        public static boolean worldMap() { return !on() || WORLD_MAP.get(); }
+        public static int worldMapRadius() { return on() ? WORLD_MAP_RADIUS.get() : 0; }
+        public static int worldMapChunksPerSecond() { return on() ? WORLD_MAP_CHUNKS_PER_SECOND.get() : 150; }
+        public static boolean worldMapPrebuild() { return !on() || WORLD_MAP_PREBUILD.get(); }
+
+        public static boolean warEnabled() { return (!on() || WAR_ENABLED.get()) && !VnBridge.present(); }
+        public static int warDeclareMinutes() { return on() ? WAR_DECLARE_MINUTES.get() : 10; }
+        public static int warMinutes() { return on() ? WAR_MINUTES.get() : 60; }
+        public static int warCooldownMinutes() { return on() ? WAR_COOLDOWN_MINUTES.get() : 180; }
+        public static boolean warNeedCommandCenter() { return !on() || WAR_NEED_CC.get(); }
+        public static int warTerritoryChunks() { return on() ? WAR_TERRITORY_CHUNKS.get() : 16; }
+        public static int warTakeMinutes() { return on() ? WAR_TAKE_MINUTES.get() : 30; }
+        public static String warOpenMode() { return on() ? WAR_OPEN_MODE.get() : "ONLINE"; }
+        public static String warWindow() { return on() ? WAR_WINDOW.get() : "18:00-23:00"; }
+        public static int warGraceMinutes() { return on() ? WAR_GRACE_MINUTES.get() : 10; }
+        public static boolean warHeal() { return !on() || WAR_HEAL.get(); }
+        public static int warTreatyNoticeHours() { return on() ? WAR_TREATY_NOTICE_HOURS.get() : 24; }
+        public static int warTreatyMarkHours() { return on() ? WAR_TREATY_MARK_HOURS.get() : 168; }
+        public static int warHealMinutes() { return on() ? WAR_HEAL_MINUTES.get() : 5; }
+        public static boolean rollbackLog() { return !on() || ROLLBACK_LOG.get(); }
+        public static boolean rollbackLogAll() { return on() && ROLLBACK_LOG_ALL.get(); }
+        public static int rollbackKeepDays() { return on() ? ROLLBACK_KEEP_DAYS.get() : 7; }
+        public static boolean wildernessHeal() { return on() && WILD_HEAL.get(); }
+        public static int wildernessHealHours() { return on() ? WILD_HEAL_HOURS.get() : 24; }
 
         public static boolean blockDamage() { return !on() || EXPLOSION_BLOCK_DAMAGE.get(); }
         public static boolean damageRings() { return on() && DAMAGE_RINGS.get(); }
@@ -381,6 +489,8 @@ public class Config {
             return net.minecraft.network.chat.Component.translatable("message.wmd.server.warhead_disabled", net.minecraft.network.chat.Component.translatable("item.wmd." + t.id));
         }
 
+        public static boolean gateNeeded() { return protectSpawnRadius() > 0 || respectClaims() || offlineProtection(); }
+
         public static boolean canBreak(net.minecraft.world.level.Level level, net.minecraft.core.BlockPos p) {
             if (!blockDamage()) return false;
             int r = protectSpawnRadius();
@@ -391,7 +501,7 @@ public class Config {
             }
             if (OfflineGuard.protects(level, p)) return false;
 
-            return !(respectClaims() && level instanceof net.minecraft.server.level.ServerLevel sl && ClaimGuard.protectedAt(sl, p));
+            return !(respectClaims() && level instanceof net.minecraft.server.level.ServerLevel sl && ClaimGuard.protectedAt(sl, p) && !WarGate.blastAllowed(sl, p));
         }
 
         public static boolean canBreakShip(net.minecraft.world.level.Level level, net.minecraft.core.BlockPos p) {

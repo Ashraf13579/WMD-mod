@@ -213,6 +213,10 @@ final class SableShips {
 
     static boolean onShip(Level level, BlockPos pos) { return containing(level, pos) != null; }
 
+    static boolean inPlotGrid(Level level, Vec3 p) {
+        return SableCompanion.INSTANCE.isInPlotGrid(level, net.minecraft.util.Mth.floor(p.x) >> 4, net.minecraft.util.Mth.floor(p.z) >> 4);
+    }
+
     static UUID idAt(Level level, BlockPos pos) {
         SubLevelAccess a = containing(level, pos);
         return a == null ? null : a.getUniqueId();

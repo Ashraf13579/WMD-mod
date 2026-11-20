@@ -40,8 +40,21 @@ final class AirCrash {
         for (Object[] e : todo) {
             ServerLevel sl = (ServerLevel) e[0];
             BlockPos p = (BlockPos) e[1];
-            if (sl.isLoaded(p) && !sl.getBlockState(p).isAir()) sl.destroyBlock(p, false);
+            if (sl.isLoaded(p) && !sl.getBlockState(p).isAir()) BlastWrites.destroy(sl, p, false);
         }
+    }
+
+    private static final Map<UUID, Long> SHOT = Statics.server(new HashMap<>());
+
+    static void shotAt(UUID ship, long now) {
+        if (ship == null) return;
+        if (SHOT.size() > 512) SHOT.entrySet().removeIf(e -> now - e.getValue() > Balance.CRASH_FIRE_SHOT_WINDOW);
+        SHOT.put(ship, now);
+    }
+
+    static boolean shotDown(UUID ship, long now, boolean engineHurt) {
+        Long t = ship == null ? null : SHOT.get(ship);
+        return engineHurt || (t != null && now - t <= Balance.CRASH_FIRE_SHOT_WINDOW);
     }
 
     private static void breakLater(ServerLevel sl, BlockPos p) { PENDING.add(new Object[] { sl, p.immutable() }); }
@@ -120,10 +133,12 @@ final class AirCrash {
         Vec3 hitPlot = sumP.scale(1.0 / n), hitWorld = sumW.scale(1.0 / n);
 
         if (!touching(sl, ship, hitWorld, dir)) {
-            Wmd.LOGGER.debug("Air crash: craft {} stopped hard at {} b/s with nothing in front (a tool / push): ignored", ship, String.format("%.1f", impact));
+
+            Wmd.LOGGER.info("Air crash: craft {} stopped hard at {} b/s with nothing in front (a tool / push): ignored", ship, String.format("%.1f", impact));
             return;
         }
         double r = Math.min(Balance.CRASH_R_MAX, Balance.CRASH_R_MIN + (impact - Balance.CRASH_MIN) * Balance.CRASH_R_PER);
+        boolean engineHurt = AirEngineBlockEntity.systemsAboard(sl, ship)[1] > 0;
         int broken = 0;
 
         for (BlockPos p : plot) {
@@ -165,10 +180,30 @@ final class AirCrash {
                 hurt++;
             }
         }
+
+        AirFxPayload.send(sl, hitWorld, Balance.AIRFX_CRASH_R, new AirFxPayload(AirFxPayload.CRASH, ship, hitWorld, dir, new Vec3(r, 0.0, 0.0), (float) impact));
+
+        boolean shot = shotDown(ship, sl.getGameTime(), engineHurt);
+        int fuel = impact >= Balance.CRASH_FIRE_MIN && shot ? ShipPower.fuelAboard(sl, ship)[0] : 0;
+        int burning = fuel > 0 ? fuelFire(sl, ship, hitWorld, dir, r, fuel, impact) : -1;
         float loud = Math.min(Balance.SND_RELEASE, Balance.SND_MECH * (float) (impact / Balance.CRASH_MIN));
         sl.playSound(null, hitWorld.x, hitWorld.y, hitWorld.z, WmdSounds.HE_DEBRIS.get(), SoundSource.BLOCKS, loud, 1.1F);
-        Wmd.LOGGER.info("Air crash: craft {} hit at {} b/s (radius {}), {} craft blocks off, {} world blocks broken, {} crew hurt{}", ship, String.format("%.1f", impact),
-                String.format("%.1f", r), broken, worldBroken, hurt, spared > 0 ? " (" + spared + " in creative / spectator: spared)" : "");
+        Wmd.LOGGER.info("Air crash: craft {} hit at {} b/s (radius {}), {} craft blocks off, {} world blocks broken, {} crew hurt{}{}", ship, String.format("%.1f", impact),
+                String.format("%.1f", r), broken, worldBroken, hurt, spared > 0 ? " (" + spared + " in creative / spectator: spared)" : "",
+                burning >= 0 ? ", FUEL FIRE (" + fuel + " mB aboard, " + burning + " set alight)"
+                        : impact < Balance.CRASH_FIRE_MIN ? "" : !shot ? ", not shot down: no fire" : ", no fuel aboard: no fire");
+    }
+
+    private static int fuelFire(ServerLevel sl, UUID ship, Vec3 at, Vec3 dir, double r, int fuel, double impact) {
+        AirFxPayload.send(sl, at, Balance.AIRFX_CRASH_R, new AirFxPayload(AirFxPayload.FUEL_FIRE, ship, at, dir, new Vec3(r, fuel, 0.0), (float) impact));
+        if (!Config.Server.crashHurtsCrew()) return 0;
+        int n = 0;
+        for (net.minecraft.world.entity.LivingEntity e : sl.getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class, new AABB(at, at).inflate(Balance.CRASH_FIRE_R))) {
+            if (e.position().distanceTo(at) > Balance.CRASH_FIRE_R || e.fireImmune() || (e instanceof ServerPlayer pl && (pl.isCreative() || pl.isSpectator()))) continue;
+            e.igniteForSeconds(Balance.CRASH_FIRE_SECONDS);
+            n++;
+        }
+        return n;
     }
 
     private static double plotGap(BlockPos p, Vec3 c) {

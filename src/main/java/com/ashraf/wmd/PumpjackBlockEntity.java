@@ -26,7 +26,13 @@ import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class PumpjackBlockEntity extends BlockEntity implements GeoBlockEntity, MachinePorts, GuiMachine, EmpVulnerable {
+public class PumpjackBlockEntity extends BlockEntity implements GeoBlockEntity, MachinePorts, GuiMachine, EmpVulnerable, Owned {
+
+    private final OwnerData ownerData = new OwnerData();
+    @Override public java.util.UUID getOwner() { return ownerData.id(); }
+    @Override public String getOwnerName() { return ownerData.name(); }
+    @Override public void claim(net.minecraft.world.entity.player.Player player) { ownerData.claim(player); setChanged(); }
+    @Override public SecurityData security() { return ownerData.security(); }
 
     private static class Buffer extends EnergyStorage {
         Buffer() { super(200_000, 20_000, 0); }
@@ -43,6 +49,8 @@ public class PumpjackBlockEntity extends BlockEntity implements GeoBlockEntity, 
     private boolean running;
     private long lastRun = -100;
     private List<BlockPos> cluster;
+
+    void turned() { cluster = null; nextScan = 0L; }
     private long nextScan;
     private boolean noOil;
 
@@ -76,7 +84,7 @@ public class PumpjackBlockEntity extends BlockEntity implements GeoBlockEntity, 
     @Override public int guiFeUse() { return Balance.PUMPJACK_FE_PER_TICK; }
     @Override public boolean guiRunning() { return running; }
     @Override public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.PUMPJACK_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.PUMPJACK_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.pumpjack", Balance.PUMPJACK_MB_PER_30S / 1000, 30),
                 noOil ? Component.translatable("gui.wmd.info.pumpjack_no_oil").withStyle(net.minecraft.ChatFormatting.RED)
                       : Component.translatable("gui.wmd.info.pumpjack_area"));
@@ -96,7 +104,27 @@ public class PumpjackBlockEntity extends BlockEntity implements GeoBlockEntity, 
         return l.getX() == 0 && l.getY() == 0 && l.getZ() == 7 && side == Machines.dirToWorld(facing, Machines.mount(getBlockState()), Direction.SOUTH) ? store : null;
     }
 
+    private boolean healed;
+
+    void healParts() {
+        if (healed || level == null || level.isClientSide) return;
+        healed = true;
+        BlockState st = getBlockState();
+        Direction facing = st.getValue(MachineBlock.FACING), mount = Machines.mount(st);
+        int n = 0;
+        for (BlockPos l : PumpjackBlock.cells()) {
+            if (l.getY() < 1) continue;
+            BlockPos p = Machines.toWorld(worldPosition, facing, mount, l.getX(), l.getY(), l.getZ());
+            if (!level.hasChunkAt(p) || !level.getBlockState(p).isAir() || PlaceGuard.blocker(level, p) != null) continue;
+            level.setBlock(p, Waterlog.part(level, p), 3);
+            if (level.getBlockEntity(p) instanceof MachinePartBlockEntity pe) pe.setController(worldPosition);
+            n++;
+        }
+        if (n > 0) Wmd.LOGGER.info("[pumpjack] {}: added {} upper part block(s) (the tall parts now have a hitbox)", worldPosition.toShortString(), n);
+    }
+
     public static void serverTick(Level level, BlockPos pos, BlockState state, PumpjackBlockEntity be) {
+        be.healParts();
         if (level instanceof net.minecraft.server.level.ServerLevel empSl && EmpField.jammed(empSl, pos)) {
             if (be.running) { be.running = false; be.setChanged(); level.sendBlockUpdated(pos, state, state, 3); }
             return;
@@ -149,6 +177,7 @@ public class PumpjackBlockEntity extends BlockEntity implements GeoBlockEntity, 
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
+        ownerData.write(tag);
         tank.writeToNBT(registries, tag);
         tag.putInt("energy", store.getEnergyStored());
         tag.putDouble("progress", progress);
@@ -159,6 +188,7 @@ public class PumpjackBlockEntity extends BlockEntity implements GeoBlockEntity, 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
+        if (tag.hasUUID("owner")) ownerData.read(tag);
         tank.readFromNBT(registries, tag);
         store.set(tag.getInt("energy"));
         progress = tag.getDouble("progress");

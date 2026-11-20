@@ -31,6 +31,7 @@ public final class EmpField {
     }
 
     public static boolean jammed(ServerLevel level, BlockPos pos) {
+        if (StormField.shorted(level, pos)) return true;
         FlightManager mgr = FlightManager.get(level);
         if (mgr.tasks.isEmpty()) return false;
         boolean inside = false;

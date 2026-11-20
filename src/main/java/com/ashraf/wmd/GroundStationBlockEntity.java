@@ -162,7 +162,7 @@ public class GroundStationBlockEntity extends ProcessUnitBlockEntity implements 
         synchronized (STATIONS) {
             for (GroundStationBlockEntity s : STATIONS) {
                 if (s.isRemoved() || s.level != level || !s.jamming || s.getOwner() == null) continue;
-                if (attacker != null && (attacker.equals(s.getOwner()) || s.security().trusted().containsKey(attacker))) continue;
+                if (attacker != null && (attacker.equals(s.getOwner()) || s.security().trusted().containsKey(attacker) || Access.listedFriend(s, attacker))) continue;
                 net.minecraft.world.phys.Vec3 sw = SableBridge.worldPos(level, s.worldPosition);
                 double dx = sw.x - x, dz = sw.z - z, d = dx * dx + dz * dz;
                 if (d <= bd) { bd = d; best = s; }
@@ -230,7 +230,7 @@ public class GroundStationBlockEntity extends ProcessUnitBlockEntity implements 
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.GROUND_STATION_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.GROUND_STATION_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.ground_station"));
     }
 

@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:exo_micro_missiles"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "PWP",
+    "H H"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "W": {
+      "item": "wmd:copper_wire"
+    },
+    "H": {
+      "item": "wmd:he_charge"
+    }
+  },
+  "result": {
+    "id": "wmd:exo_micro_missiles",
+    "count": 1
+  }
+}

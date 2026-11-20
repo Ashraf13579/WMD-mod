@@ -43,7 +43,7 @@ final class JetHud {
             stations(g, font, cx, h - 22, d);
             rwrScope(g, font, w - 78, h - 82, rwr, d.heading());
         }
-        if (d.locked()) lockBox(g, font, w, h, new Vec3(d.lx(), d.ly(), d.lz()), d.lockDist(), d.has(CockpitHudPayload.F_LOCKJAM));
+        if (d.locked()) lockBox(g, font, w, h, new Vec3(d.lx(), d.ly(), d.lz()), d.lockDist(), d.has(CockpitHudPayload.F_LOCKJAM), d.has(CockpitHudPayload.F_DATALINK));
         if (d.lasing() && !ClientPodCam.active()) podBox(g, font, w, h, new Vec3(d.px(), d.py(), d.pz()));
         if (d.bombAim() && !ClientPodCam.active()) {
             if (d.stnKind() == AirStores.GUN) gunAim(g, font, w, h, new Vec3(d.ix(), d.iy(), d.iz()), d);
@@ -51,12 +51,18 @@ final class JetHud {
                 rocketAim(g, font, w, h, new Vec3(d.ix(), d.iy(), d.iz()));
                 if (d.lead()) leadMark(g, font, w, h, new Vec3(d.qx(), d.qy(), d.qz()));
             }
+            else if (d.stnKind() == AirMissiles.ARM) armAim(g, font, w, h, new Vec3(d.ix(), d.iy(), d.iz()));
             else bombAim(g, font, w, h, new Vec3(d.ix(), d.iy(), d.iz()));
+        }
+        if (d.stnKind() == AirMissiles.ARM && d.has(CockpitHudPayload.F_ARM_NONE) && !ClientPodCam.active()) {
+            Component none = Component.translatable("hud.wmd.jet.arm_none");
+            g.drawString(font, none, w / 2 - font.width(none) / 2, h / 2 + 30, AMBER, false);
         }
         gear(g, font, cx - 128, cy + 26, d.gear());
         systems(g, font, cx - 128, cy + 48, d);
         if (d.beacon() && !minimal) meatball(g, font, cx + 128 + 6, cy - 40, d.bDev(), d.bDist(), d.bSide());
         if (d.has(CockpitHudPayload.F_JAM)) { Component jm = Component.translatable("hud.wmd.jet.jam"); g.drawString(font, jm, cx + 92, cy - 22, AMBER, false); }
+        if (d.has(CockpitHudPayload.F_SHIELD)) g.drawString(font, Component.translatable("hud.wmd.jet.shield"), cx + 92, cy - 32, GREEN, false);
         if (ClientCockpit.pullUp(d) && WmdUi.pulse(0.5F) > 0.4F) {
             Component pu = Component.translatable("hud.wmd.jet.pull_up");
             g.drawString(font, pu, cx - font.width(pu) / 2, cy + 34, RED, false);
@@ -120,7 +126,7 @@ final class JetHud {
         g.drawString(font, label, left ? x : x + bw - font.width(label), y - 10, GREEN_DIM, false);
     }
 
-    private static void lockBox(GuiGraphics g, Font font, int w, int h, Vec3 target, float dist, boolean jammed) {
+    private static void lockBox(GuiGraphics g, Font font, int w, int h, Vec3 target, float dist, boolean jammed, boolean datalink) {
         Minecraft mc = Minecraft.getInstance();
         Camera cam = mc.gameRenderer.getMainCamera();
         Vec3 v = target.subtract(cam.getPosition());
@@ -142,7 +148,7 @@ final class JetHud {
                     long t = System.currentTimeMillis() / 60L;
                     for (int k = 0; k < 14; k++) { long hsh = (t * 31 + k * 7919) * 2654435761L; int nx = sx - r + (int) Math.floorMod(hsh >> 8, 2 * r + 1), ny = sy - r + (int) Math.floorMod(hsh >> 20, 2 * r + 1); g.fill(nx, ny, nx + 1, ny + 1, AMBER); }
                 }
-                Component lk = Component.translatable(jammed ? "hud.wmd.jet.lock_jam" : "hud.wmd.jet.lock");
+                Component lk = Component.translatable(datalink ? "hud.wmd.jet.lock_dl" : jammed ? "hud.wmd.jet.lock_jam" : "hud.wmd.jet.lock");
                 g.drawString(font, lk, sx - font.width(lk) / 2, sy - r - 10, GREEN, false);
                 return;
             }
@@ -187,6 +193,32 @@ final class JetHud {
         if (!Float.isNaN(d.fuel())) g.drawString(font, Component.translatable("hud.wmd.jet.fuel", Math.round(d.fuel() * 100.0F)), x, y, d.fuel() < 0.2F ? AMBER : GREEN_DIM, false);
     }
 
+    private static void armAim(GuiGraphics g, Font font, int w, int h, Vec3 target) {
+        Minecraft mc = Minecraft.getInstance();
+        Vec3 camPos = mc.gameRenderer.getMainCamera().getPosition();
+        int dist = (int) Math.round(target.distanceTo(camPos));
+        int[] s = screen(w, h, target);
+        boolean edge = s == null || s[0] < 12 || s[0] > w - 12 || s[1] < 12 || s[1] > h - 50;
+        if (s == null) {
+            Camera cam = mc.gameRenderer.getMainCamera();
+            Vec3 v = target.subtract(camPos);
+            org.joml.Vector3f uv = cam.getUpVector(), lv = cam.getLeftVector();
+            double x = -v.dot(new Vec3(lv.x(), lv.y(), lv.z())), y = -v.dot(new Vec3(uv.x(), uv.y(), uv.z()));
+            double l = Math.max(1.0E-6, Math.hypot(x, y));
+            s = new int[] { (int) Math.round(w * 0.5 + x / l * w), (int) Math.round(h * 0.5 + y / l * h) };
+        }
+        int sx = edge ? Mth.clamp(s[0], 12, w - 12) : s[0], sy = edge ? Mth.clamp(s[1], 12, h - 50) : s[1];
+        int r = 6, col = GREEN;
+        for (int i = -r; i <= r; i++) {
+            int k = r - Math.abs(i);
+            g.fill(sx + i, sy - k, sx + i + 1, sy - k + 1, col);
+            g.fill(sx + i, sy + k, sx + i + 1, sy + k + 1, col);
+        }
+        g.fill(sx - 1, sy - 1, sx + 1, sy + 1, col);
+        Component lbl = Component.translatable("hud.wmd.jet.arm_cue", dist);
+        g.drawString(font, lbl, sx - font.width(lbl) / 2, sy + r + 3, edge ? GREEN_DIM : col, false);
+    }
+
     private static void bombAim(GuiGraphics g, Font font, int w, int h, Vec3 target) {
         Minecraft mc = Minecraft.getInstance();
         Camera cam = mc.gameRenderer.getMainCamera();
@@ -210,7 +242,23 @@ final class JetHud {
             g.fill(px, py, px + 1, py + 1, col);
         }
         g.fill(sx - 1, sy - 1, sx + 1, sy + 1, col);
-        for (int y = h / 2 + 12; y < sy - r - 2; y += 4) g.fill(w / 2, y, w / 2 + 1, y + 2, GREEN_DIM);
+
+        double rise = cam.getPosition().y - target.y;
+        int[] top = null;
+        for (double k = 1.0; top == null && k > 0.1 && rise > 1.0; k *= 0.5) top = screen(w, h, target.add(0.0, rise * k, 0.0));
+        if (top != null) {
+            double ddx = top[0] - sx, ddy = top[1] - sy, len = Math.sqrt(ddx * ddx + ddy * ddy);
+            if (len > r + 3) {
+                double ux = ddx / len, uy = ddy / len;
+                for (double s = r + 3; s < len; s += 4) {
+                    for (double t = s; t < Math.min(len, s + 2); t += 1.0) {
+                        int px = (int) Math.round(sx + ux * t), py = (int) Math.round(sy + uy * t);
+                        if (px < 0 || px >= w || py < 0 || py >= h) { s = len; break; }
+                        g.fill(px, py, px + 1, py + 1, GREEN_DIM);
+                    }
+                }
+            }
+        }
         String rg = Component.translatable("hud.wmd.jet.bomb").getString() + " " + Math.round(v.length());
         g.drawString(font, rg, sx + r + 3, sy - 4, col, false);
     }

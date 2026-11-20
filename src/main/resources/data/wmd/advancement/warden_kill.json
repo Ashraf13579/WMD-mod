@@ -1,0 +1,34 @@
+{
+  "parent": "wmd:warden_wake",
+  "display": {
+    "icon": {
+      "id": "wmd:warden_core"
+    },
+    "title": {
+      "translate": "advancements.wmd.warden_kill.title"
+    },
+    "description": {
+      "translate": "advancements.wmd.warden_kill.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "done": {
+      "trigger": "wmd:event",
+      "conditions": {
+        "id": "warden_kill"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "rewards": {
+    "experience": 150
+  }
+}

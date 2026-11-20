@@ -39,7 +39,7 @@ final class CookOff {
             BlockPos at = be.getBlockPos();
             Wmd.LOGGER.info("Cook-off: the armoury at {} was hit, its weakest missile ({}) goes off as {}", at, s.getHoverName().getString(), blast.id);
             Forcefield.inside(() -> WarheadFx.detonate(level, mgr, at.getX(), at.getY(), at.getZ(), blast.tier, blast, 0.0, 1.0, false));
-            if (!be.isRemoved()) level.destroyBlock(at, false);
+            if (!be.isRemoved()) BlastWrites.destroy(level, at, false);
         }
     }
 

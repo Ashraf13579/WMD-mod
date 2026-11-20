@@ -151,7 +151,14 @@ public final class MachineInfoProvider implements IBlockComponentProvider, IServ
         if (energy != null && energy.getMaxEnergyStored() > 0) {
             t.putInt("fe", energy.getEnergyStored());
             t.putInt("feMax", energy.getMaxEnergyStored());
-            if (feUse > 0) t.putInt("feUse", feUse);
+            t.putByte("io", (byte) ((energy.canReceive() ? 1 : 0) | (energy.canExtract() ? 2 : 0)));
+        }
+        if (feUse > 0) t.putInt("feUse", feUse);
+
+        long[] meter = com.ashraf.wmd.PowerMeter.perSecond(level, ctl);
+        if (meter != null) {
+            t.putLong("mIn", meter[0]); t.putLong("mOut", meter[1]);
+            if (energy == null && energyCap(level, ctl) == null) t.putBoolean("core", true);
         }
         extras(t, be, level);
         if (be instanceof Owned o && o.getOwner() != null) {
@@ -169,6 +176,10 @@ public final class MachineInfoProvider implements IBlockComponentProvider, IServ
             t.putInt("sayKind", st == ArtilleryGunBlockEntity.S_READY || st == ArtilleryGunBlockEntity.S_FIRING ? 1
                     : st == ArtilleryGunBlockEntity.S_LAYING || st == ArtilleryGunBlockEntity.S_RELOADING ? 3 : st == ArtilleryGunBlockEntity.S_NO_TARGET ? 0 : 2);
             if (g.hasTarget()) { t.putInt("tx", g.targetX()); t.putInt("tz", g.targetZ()); }
+            if (g instanceof com.ashraf.wmd.PlasmaMortarBlockEntity pm) {
+                line(t, level, Component.translatable("gui.wmd.pmort.charge").append(" " + Math.round(pm.charge01() * 100) + "%"));
+                line(t, level, Component.translatable("gui.wmd.pmort.hydrogen", String.format("%,d", pm.hydrogenMb()), pm.shotsInTank()));
+            }
         } else if (be instanceof CruiseLauncherBlockEntity c) {
             int st = c.launcherStatus();
             t.putString("say", "gui.wmd.cruise.st." + st);
@@ -201,6 +212,12 @@ public final class MachineInfoProvider implements IBlockComponentProvider, IServ
             line(t, level, Component.translatable("gui.wmd.swarm.loaded", sw.loaded(), com.ashraf.wmd.Balance.SW_CELLS));
             if (sw.hasTarget()) line(t, level, Component.translatable("gui.wmd.railgun.target", sw.targetX(), sw.targetZ()));
             if (sw.firing()) { t.putString("say", "gui.wmd.swarm.st.firing"); t.putInt("sayKind", 3); }
+        } else if (be instanceof com.ashraf.wmd.StormGeneratorBlockEntity sg) {
+            int st = sg.stormStatus();
+            t.putString("say", "gui.wmd.storm.st." + st);
+            t.putInt("sayKind", st == com.ashraf.wmd.StormGeneratorBlockEntity.ST_READY ? 0 : st == com.ashraf.wmd.StormGeneratorBlockEntity.ST_STORM ? 2 : 3);
+            if (sg.hasTarget()) line(t, level, Component.translatable("gui.wmd.storm.target", sg.targetX(), sg.targetZ(), String.format("%,d", sg.distance()), sg.bearing()));
+            line(t, level, Component.translatable("gui.wmd.storm.radius_line", sg.radius()));
         } else if (be instanceof com.ashraf.wmd.DeadHandBlockEntity dh) {
             int left = dh.secondsLeft();
             t.putString("say", left >= 0 ? "jade.wmd.deadhand.count" : dh.armed() ? "gui.wmd.deadhand.st.armed" : "gui.wmd.deadhand.st.safe");
@@ -376,8 +393,9 @@ public final class MachineInfoProvider implements IBlockComponentProvider, IServ
         if (pr > 0 || (pr == 0 && t.getInt("st") == 1)) tip.add(Component.translatable("jade.wmd.progress", Math.round(pr / 10.0F)));
         if (t.contains("feMax")) {
             tip.add(Component.translatable("jade.wmd.power", String.format("%,d", t.getInt("fe")), String.format("%,d", t.getInt("feMax"))));
-            if (t.contains("feUse")) tip.add(Component.translatable("jade.wmd.power_use", String.format("%,d", t.getInt("feUse"))));
         }
+        Component rate = rateLine(t);
+        if (rate != null) tip.add(rate);
         for (Tag raw : t.getList("tanks", Tag.TAG_COMPOUND)) {
             CompoundTag c = (CompoundTag) raw;
             Fluid f = BuiltInRegistries.FLUID.get(ResourceLocation.parse(c.getString("f")));
@@ -401,6 +419,24 @@ public final class MachineInfoProvider implements IBlockComponentProvider, IServ
                     : trusted > 0 ? Component.translatable("jade.wmd.private_trusted", trusted) : Component.translatable("jade.wmd.private");
             tip.add(Component.translatable("jade.wmd.owner", t.getString("owner"), lock));
         }
+    }
+
+    private static Component rateLine(CompoundTag t) {
+        boolean metered = t.contains("mIn"), store = t.contains("feMax");
+        long in = t.getLong("mIn"), out = t.getLong("mOut");
+        int io = store ? t.getByte("io") : 1, rated = t.getInt("feUse");
+        if (!metered && !store && rated <= 0) return null;
+        if (io == 2) return Component.translatable("jade.wmd.power_makes", fe20(out));
+        if (io == 3 && (out > 0 || !t.contains("feUse"))) return Component.translatable("jade.wmd.power_both", fe20(in), fe20(out));
+        if (t.getBoolean("core")) return Component.translatable("jade.wmd.power_core", fe20(in));
+        return rated > 0 ? Component.translatable("jade.wmd.power_now_rated", fe20(in), String.format("%,d", rated))
+                : Component.translatable("jade.wmd.power_now", fe20(in));
+    }
+
+    private static String fe20(long perSecond) {
+        if (perSecond % 20 == 0) return String.format("%,d", perSecond / 20);
+        double v = perSecond / 20.0;
+        return v < 10 ? String.format(java.util.Locale.ROOT, "%.1f", v) : String.format("%,d", Math.round(v));
     }
 
     private static String stateKey(int st) {

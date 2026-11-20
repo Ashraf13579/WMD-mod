@@ -155,7 +155,7 @@ public abstract class SonarSensorBlockEntity extends ProcessUnitBlockEntity impl
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", feCostShown() * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", feCostShown()),
                 Component.translatable("gui.wmd.info.sonar", String.format("%,d", (int) range())));
     }
 

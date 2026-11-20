@@ -86,6 +86,7 @@ public final class SonarNet {
         double r = Balance.SONAR_PING_RANGE;
         for (SableBridge.ShipInfo s : SableBridge.shipsIntersecting(level, new net.minecraft.world.phys.AABB(ear, ear).inflate(r))) {
             if (s.id().equals(ownShip) || s.worldCenter().distanceTo(ear) > r * Anechoic.pingFactor(level, s.id()) || !NavalLayer.inWater(level, s)) continue;
+            if (Cloak.hidden(level, s.id())) continue;
             boolean sub = NavalLayer.submerged(level, s);
             raw.put(s.id(), new Fix(s.worldCenter().x, s.worldCenter().y, s.worldCenter().z, 0.0, (DeepSeasBridge.isSub(s.id()) ? "sub" : "ship") + ":" + s.blockCount(),
                     sub, NavalLayer.shipDepth(level, s), now + Balance.SONAR_PING_SHOW, s.id()));

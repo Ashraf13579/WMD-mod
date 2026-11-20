@@ -440,7 +440,7 @@ public class FireControlConsoleBlockEntity extends ProcessUnitBlockEntity implem
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.FCC_FE * 20), Component.translatable("gui.wmd.info.fire_control_console"));
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.FCC_FE), Component.translatable("gui.wmd.info.fire_control_console"));
     }
 
     @Override

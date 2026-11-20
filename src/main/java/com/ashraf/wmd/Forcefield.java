@@ -112,7 +112,7 @@ public final class Forcefield {
     public static boolean mayWalkThrough(ForcefieldBlockEntity be, net.minecraft.world.entity.player.Player p) {
         if (p.isSpectator() || p.isCreative() || be.getOwner() == null) return true;
         java.util.UUID id = p.getUUID();
-        return id.equals(be.getOwner()) || be.security().allows(id);
+        return id.equals(be.getOwner()) || be.security().allows(id) || Access.listedFriend(be, id);
     }
 
     static ForcefieldBlockEntity domeOver(ServerLevel sl, Vec3 at) {

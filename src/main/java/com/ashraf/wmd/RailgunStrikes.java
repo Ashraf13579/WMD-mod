@@ -63,7 +63,8 @@ public final class RailgunStrikes {
             Wmd.LOGGER.info("[railgun] {}'s slug lands at {} {} {}", s.owner(), s.x(), y, s.z());
             FlightManager mgr = FlightManager.get(sl);
             mgr.holdForTest(sl, s.x(), s.z(), WarheadFx.holdRadius(4, WarheadType.RAILGUN));
-            WarheadFx.detonate(sl, mgr, s.x(), y, s.z(), 4, WarheadType.RAILGUN, 0.0, 1.0);
+            java.util.UUID prevShooter = ShipStrike.begin(s.ownerId());
+            try { WarheadFx.detonate(sl, mgr, s.x(), y, s.z(), 4, WarheadType.RAILGUN, 0.0, 1.0); } finally { ShipStrike.end(prevShooter); }
             double rr = Missiles.craterRadius(4) * WarheadType.RAILGUN.crater;
             StrikeLog.report(sl, s.ownerId(), "log.wmd.strike.railgun", s.x(), s.z(), rr, rr * WarheadType.RAILGUN.depth + Balance.RG_SHAFT_DEPTH);
             MusicTriggersHook.fire(sl, "wmd:railgun_impact", new net.minecraft.core.BlockPos(s.x(), y, s.z()));

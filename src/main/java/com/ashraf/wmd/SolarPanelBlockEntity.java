@@ -184,7 +184,7 @@ public class SolarPanelBlockEntity extends ProcessUnitBlockEntity {
                 : Component.translatable("gui.wmd.info.solar_array", m.size, m.size, m.size * m.size);
         int sunPct = level == null ? 0 : (int) Math.round(sun(level) * 100.0);
         return List.of(shape,
-                Component.translatable("gui.wmd.info.solar_output", m.fePerTickNow * 20, Balance.SOLAR_ARRAY_FE[m.size] * 20, sunPct),
+                Component.translatable("gui.wmd.info.solar_output", m.fePerTickNow, Balance.SOLAR_ARRAY_FE[m.size], sunPct),
                 Component.translatable("gui.wmd.info.solar_sky", m.skyTiles, m.size * m.size),
                 Component.translatable(m == this ? (m.size > 1 ? "gui.wmd.info.solar_socket_here" : "gui.wmd.info.solar_socket_alone") : "gui.wmd.info.solar_socket"));
     }

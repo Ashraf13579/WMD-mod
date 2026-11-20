@@ -191,18 +191,36 @@ public class BayModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
 
     public static int airKindOf(String seeker) {
         return MissileBuild.SEEK_HEAT.equals(seeker) ? AirMissiles.HEAT : MissileBuild.SEEK_RADAR.equals(seeker) ? AirMissiles.RADAR
-                : MissileBuild.SEEK_ARM.equals(seeker) ? AirMissiles.ARM : MissileBuild.SEEK_LASER.equals(seeker) ? AirMissiles.AGM : -1;
+                : MissileBuild.SEEK_ARM.equals(seeker) ? AirMissiles.ARM : MissileBuild.SEEK_LASER.equals(seeker) ? AirMissiles.AGM
+                : MissileBuild.SEEK_DATALINK.equals(seeker) ? AirMissiles.HEAVY : -1;
     }
 
-    public static final int AIR_ASHM = 4;
+    public static final int AIR_ASHM = 9;
 
-    public static int airKindOf(String seeker, boolean jet) { int k = airKindOf(seeker); return k == AirMissiles.RADAR && jet ? AIR_ASHM : k; }
+    public static int airKindOf(String seeker, String motorVariant) {
+        int k = airKindOf(seeker);
+        if (k != AirMissiles.RADAR) return k;
+        return MissilePartItem.JET.equals(motorVariant) ? AIR_ASHM : MissilePartItem.RAMJET.equals(motorVariant) ? AirMissiles.METEOR : k;
+    }
+
+    static String motorVariant(ItemStack s) { return s.getItem() instanceof MissilePartItem p && p.slot() == 1 ? p.variant() : ""; }
 
     public static int airArt(int k) { return k == AIR_ASHM ? AirMissiles.RADAR : k; }
 
-    public static final int[] AIR_TIER = { 2, 3, 3, 2, 3 };
+    public static int airTier(int k) { return k == AirMissiles.HEAT || k == AirMissiles.AGM ? 2 : k == AirMissiles.HEAVY ? 4 : 3; }
 
-    public int airKind() { return airKindOf(SeekerModuleItem.kindOf(seekerSlot.getStackInSlot(0)), jetIn()); }
+    public static String airMotor(int k) { return k == AIR_ASHM ? MissilePartItem.JET : k == AirMissiles.METEOR ? MissilePartItem.RAMJET : k == AirMissiles.HEAVY ? MissilePartItem.HEAVY : ""; }
+
+    public static int airYield(int k) { return k == AIR_ASHM ? Balance.ASHM_BAY_YIELD : k == AirMissiles.HEAVY ? Balance.BAY_AIR_HEAVY_YIELD : Balance.BAY_AIR_YIELD; }
+    public int airKind() { return airKindOf(SeekerModuleItem.kindOf(seekerSlot.getStackInSlot(0)), motorVariant(parts.getStackInSlot(1))); }
+
+    public static String airWarhead(int k) { return k == AirMissiles.AGM || k == AIR_ASHM ? "he" : k == AirMissiles.HEAVY ? WarheadType.ROD_RING.id : "frag"; }
+
+    public boolean airOnlyPartIn() {
+        String sk = SeekerModuleItem.kindOf(seekerSlot.getStackInSlot(0));
+        return parts.getStackInSlot(1).getItem() instanceof MissilePartItem m && m.isAirMotor() || MissileBuild.SEEK_RADAR.equals(sk) || MissileBuild.SEEK_DATALINK.equals(sk)
+                || parts.getStackInSlot(3).getItem() instanceof MissilePartItem w && WarheadType.of(w.variant()).airOnly() && w.slot() == 3;
+    }
 
     private int runAir = -1;
     public int runAir() { return runAir; }
@@ -223,12 +241,15 @@ public class BayModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
         int a = partTier(0);
         if (mode == MODE_AIR) {
             int k = airKind();
-            if (k < 0 || a != AIR_TIER[k] || (k != AIR_ASHM && partTier(1) != a) || partTier(2) != a || jetIn() != (k == AIR_ASHM)) return false;
+            if (k < 0 || a != airTier(k) || partTier(2) != a) return false;
+
+            String mv = motorVariant(parts.getStackInSlot(1));
+            if (!mv.equals(airMotor(k)) || (k != AIR_ASHM && partTier(1) != a)) return false;
             String w = parts.getStackInSlot(3).getItem() instanceof MissilePartItem p ? (p.variant().isEmpty() ? "he" : p.variant()) : "";
-            String mv = parts.getStackInSlot(1).getItem() instanceof MissilePartItem m ? m.variant() : "";
-            return !mv.equals("divert") && !mv.equals("hypersonic") && w.equals(k == AirMissiles.AGM || k == AIR_ASHM ? "he" : "frag");
+
+            return w.equals(airWarhead(k));
         }
-        if (MissileBuild.SEEK_RADAR.equals(SeekerModuleItem.kindOf(seekerSlot.getStackInSlot(0)))) return false;
+        if (airOnlyPartIn()) return false;
         if (mode == MODE_CRUISE) {
             String w = parts.getStackInSlot(3).getItem() instanceof MissilePartItem p ? p.variant() : "he";
             return a >= 2 && a <= 3 && jetIn() && !w.equals("interceptor") && !w.startsWith(Satellites.PREFIX) && !w.equals(Asat.ID) && !w.equals(Cubesat.ID);
@@ -239,8 +260,19 @@ public class BayModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
             return a == 3 && partTier(1) == 3 && !jetIn() && !mv.equals("divert") && !mv.equals("hypersonic") && !(parts.getStackInSlot(3).getItem() instanceof MirvBusItem) && groundWarhead(w);
         }
         if (jetIn()) return false;
-        return switch (mode) { case 1, 2 -> a >= 4 && partTier(1) >= 4; case 3 -> a >= 2 && a <= 3; default -> a <= 3; };
+        return switch (mode) { case 1, 2 -> a >= 4 && partTier(1) >= 4; case 3 -> a >= 2 && a <= 3; default -> a <= 3 || t4Interceptor(); };
     }
+
+    public boolean t4Interceptor() {
+        return mode == 0 && t4InterceptorParts(parts.getStackInSlot(0), parts.getStackInSlot(1), parts.getStackInSlot(2), parts.getStackInSlot(3));
+    }
+
+    public static boolean t4InterceptorParts(ItemStack air, ItemStack motor, ItemStack guid, ItemStack war) {
+        return tierOf(air) == 4 && tierOf(motor) == 4 && tierOf(guid) == 4 && interceptorWarhead(war);
+    }
+
+    public static boolean interceptorWarhead(ItemStack war) { return war.getItem() instanceof MissilePartItem w && "interceptor".equals(w.variant()); }
+    private static int tierOf(ItemStack s) { return s.getItem() instanceof MissilePartItem p ? p.tier() : 1; }
     public boolean storing() { return storing; }
     public int storeSlot() { return storeSlot; }
     public int storeRack() { return storeRack; }
@@ -523,13 +555,13 @@ public class BayModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
         if (runMode == MODE_AIR) {
             net.minecraft.world.item.Item it = AamItem.of(runAir);
             if (it == null) return ItemStack.EMPTY;
-            ItemStack aam = new ItemStack(it, Balance.BAY_AIR_YIELD);
+            ItemStack aam = new ItemStack(it, airYield(runAir));
             if (build.refined()) aam.set(WmdComponents.WARHEAD_GRADE.get(), 1);
             return aam;
         }
         if (build.warheadType().equals("interceptor"))
         {
-            ItemStack made = new ItemStack(outTier <= 1 ? Wmd.INTERCEPTOR_T1.get() : outTier == 2 ? Wmd.INTERCEPTOR_T2.get() : Wmd.INTERCEPTOR_T3.get());
+            ItemStack made = new ItemStack(InterceptorItem.ofTier(outTier));
             if (build.refined()) made.set(WmdComponents.WARHEAD_GRADE.get(), 1);
             return made;
         }
@@ -607,9 +639,10 @@ public class BayModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
         if ((flags & FLAG_LINKED) == 0) return Component.translatable("gui.wmd.bay.not_linked");
         if (!partsReady()) return Component.translatable("gui.wmd.bay.need_parts");
         if (mode == MODE_AIR && airKind() < 0) return Component.translatable("gui.wmd.bay.air_seeker");
-        if (mode != MODE_AIR && MissileBuild.SEEK_RADAR.equals(SeekerModuleItem.kindOf(seekerSlot.getStackInSlot(0)))) return Component.translatable("gui.wmd.bay.radar_seeker_air");
+        if (mode != MODE_AIR && airOnlyPartIn()) return Component.translatable("gui.wmd.bay.radar_seeker_air");
         if (mode != MODE_CRUISE && jetIn() && !(mode == MODE_AIR && airKind() == AIR_ASHM)) return Component.translatable("gui.wmd.bay.jet_needs_cruise");
-        if (mode == 0 && maxPartTier() >= 4) return Component.translatable("gui.wmd.bay.t4_is_stages");
+        if (mode == 0 && maxPartTier() >= 4 && !t4Interceptor())
+            return Component.translatable(partTier(0) == 4 && interceptorWarhead(parts.getStackInSlot(3)) ? "gui.wmd.bay.t4_icpt_parts" : "gui.wmd.bay.t4_is_stages");
         if (!gradesOk()) return Component.translatable("gui.wmd.bay.grade_too_high");
         if (!modeOk()) return Component.translatable("gui.wmd.bay.mode_airframe." + mode);
         if (tooSmall()) return Component.translatable("gui.wmd.bay.size_too_small", BayCalibre.clamp(partTier(0)), sizeLevel);
@@ -825,7 +858,7 @@ public class BayModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
         tag.putInt("stations", stations);
         tag.putInt("outTier", outTier);
         tag.putInt("sizeLevel", sizeLevel);
-        tag.putInt("mode", mode); tag.putInt("runMode", runMode); tag.putInt("runAir", runAir);
+        tag.putInt("mode", mode); tag.putInt("runMode", runMode); tag.putInt("runAir", runAir); tag.putInt("airV", 2);
         tag.put("build", build.save());
         tag.putInt("stock", stockMask);
         tag.putBoolean("storing", storing);
@@ -858,6 +891,7 @@ public class BayModuleBlockEntity extends BlockEntity implements Owned, GeoBlock
         outTier = Math.max(1, tag.getInt("outTier"));
         sizeLevel = tag.contains("sizeLevel") ? Math.max(1, Math.min(BayCalibre.MAX, tag.getInt("sizeLevel"))) : 1;
         mode = Mth.clamp(tag.getInt("mode"), 0, MODES - 1); runMode = Mth.clamp(tag.getInt("runMode"), 0, MODES - 1); runAir = tag.contains("runAir") ? tag.getInt("runAir") : -1;
+        if (runAir == 4 && !tag.contains("airV")) runAir = AIR_ASHM;
         build = MissileBuild.load(tag.getCompound("build"), outTier);
         stockMask = tag.getInt("stock");
         storing = tag.getBoolean("storing");

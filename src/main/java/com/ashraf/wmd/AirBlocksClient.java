@@ -34,6 +34,7 @@ final class AirBlocksClient {
 
     static void renderers(EntityRenderersEvent.RegisterRenderers event) {
         ServiceBlocksClient.renderers(event);
+        NaniteBlocksClient.renderers(event);
         GunnerRenderers.register(event);
         RocketPodsClient.renderers(event);
         CargoBlocksClient.renderers(event);
@@ -44,6 +45,12 @@ final class AirBlocksClient {
         AnchorBlocksClient.renderers(event);
         ChartTableBlocksClient.renderers(event);
         RfPowerBlocksClient.renderers(event);
+        PulseEmpBlocksClient.renderers(event);
+        CloakBlocksClient.renderers(event);
+        IonBlocksClient.renderers(event);
+        GravityWellBlocksClient.renderers(event);
+        PlasmaMortarBlocksClient.renderers(event);
+        BlinkGateBlocksClient.renderers(event);
 
         MountedRenderer.register(event, AirBlocks.SAM_SITE_BE.get(), context -> new CopycatUnitRenderer<SamSiteBlockEntity>("sam_site", 4, 2, SAM_HOUSING));
 

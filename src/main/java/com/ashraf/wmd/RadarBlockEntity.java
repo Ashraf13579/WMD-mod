@@ -271,6 +271,7 @@ public class RadarBlockEntity extends BlockEntity implements Owned, GeoBlockEnti
         java.util.List<ShipFaction.Relation> rels = new java.util.ArrayList<>();
         for (SableBridge.ShipInfo si : near) {
             if (si.id().equals(own)) continue;
+            if (Cloak.hidden(level, si.id())) continue;
             Vec3 p = si.worldCenter();
             if (fm.chaffHides(wc.x, wc.z, p.x, p.z)) continue;
             shown.add(si);
@@ -294,6 +295,7 @@ public class RadarBlockEntity extends BlockEntity implements Owned, GeoBlockEnti
             double hl = Math.sqrt(v.x * v.x + v.z * v.z);
             float hx = hl > 1.0E-3 ? (float) (v.x / hl) : 0.0F, hz = hl > 1.0E-3 ? (float) (v.z / hl) : 0.0F;
             String n = si.name() == null ? "" : si.name();
+            if (VnBridge.present()) { String vc = VnBridge.countryOf(Crafts.owner(level, si.id())); if (vc != null) n = "[" + VnBridge.plainName(vc) + "] " + n; }
             boolean locked = keep.contains(si.id());
             boolean mast = Masts.mastOnly(level, si);
             out.add(new ShipContact(si.id(), Math.round(c.x * 10.0) / 10.0, Math.round(c.y * 10.0) / 10.0, Math.round(c.z * 10.0) / 10.0,
@@ -319,6 +321,7 @@ public class RadarBlockEntity extends BlockEntity implements Owned, GeoBlockEnti
         for (Flight f : FlightManager.get(level).flights()) {
             if (now < f.start() || now > f.endTime()) continue;
             if (f.isOwnedBy(owner, ownerName)) continue;
+            if (VnBridge.present() && VnBridge.spares(owner, CcBattleLog.ownerOf(level.getServer(), f))) continue;
             if (Hypersonic.hidden(f, now)) continue;
             Vec3 p = f.position(now);
             double dx = p.x - cx, dz = p.z - cz;

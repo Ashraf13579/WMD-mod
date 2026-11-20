@@ -1,0 +1,28 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:motor_heavy"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "wmd:motor_t4"
+    },
+    {
+      "item": "wmd:rocket_engine"
+    },
+    {
+      "item": "wmd:heat_shield_tile"
+    },
+    {
+      "item": "wmd:heat_shield_tile"
+    }
+  ],
+  "result": {
+    "id": "wmd:motor_heavy",
+    "count": 1
+  }
+}

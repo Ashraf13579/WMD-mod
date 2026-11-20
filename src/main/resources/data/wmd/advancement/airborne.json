@@ -1,0 +1,34 @@
+{
+  "parent": "wmd:jet",
+  "display": {
+    "icon": {
+      "id": "wmd:jet_cockpit"
+    },
+    "title": {
+      "translate": "advancements.wmd.airborne.title"
+    },
+    "description": {
+      "translate": "advancements.wmd.airborne.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "done": {
+      "trigger": "wmd:event",
+      "conditions": {
+        "id": "airborne"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  }
+}

@@ -127,6 +127,7 @@ public final class ClientArtillery {
     private static void muzzle(ClientLevel level, ArtShell s, Vec3 cam) {
         if (s.gun() == Artillery.ROCKET) { MlrsClient.launch(level, s, cam); return; }
         if (s.gun() == Artillery.SUPER_GUN) { SuperGunClient.muzzle(level, s, cam); return; }
+        if (s.gun() == Artillery.PLASMA) { ClientPlasmaMortar.muzzle(level, s, cam); return; }
         Vec3 m = new Vec3(s.ox(), s.oy(), s.oz());
         if (ClientGunner.ownShot(m)) { if (OWN.size() < 64) OWN.add(s.id()); return; }
         double d = m.distanceTo(cam);
@@ -190,6 +191,7 @@ public final class ClientArtillery {
 
     private static void impact(ClientLevel level, ArtImpactPayload p, Vec3 cam, long now) {
         if (p.gun() == Artillery.SUPER_GUN) return;
+        if (p.gun() == Artillery.PLASMA) { if (p.stage() == ArtImpactPayload.IMPACT) ClientPlasmaMortar.landed(new Vec3(p.x(), p.y(), p.z()), level.getGameTime()); if (p.stage() != ArtImpactPayload.SHOT_DOWN) return; }
         Vec3 at = new Vec3(p.x(), p.y(), p.z());
         if (OWN.contains(p.id())) {
             ArtShell own = ArtilleryView.SHELLS.get(p.id());
@@ -281,6 +283,7 @@ public final class ClientArtillery {
         for (ArtShell s : ArtilleryView.SHELLS.values()) {
             if (t < s.start() + 1 || t > s.endTime()) continue;
             if (s.gun() == Artillery.ROCKET) { drew |= MlrsClient.drawRocket(s, t, cam, ps, buffers, level, near); continue; }
+            if (s.gun() == Artillery.PLASMA) continue;
             Vec3 p = s.position(t);
             if (p.distanceTo(cam) > near) continue;
             Vec3 v = s.velocity(t);

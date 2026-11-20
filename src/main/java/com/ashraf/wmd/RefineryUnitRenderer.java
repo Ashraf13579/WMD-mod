@@ -30,6 +30,11 @@ public class RefineryUnitRenderer<T extends ProcessUnitBlockEntity> extends GeoB
         @Override public ResourceLocation getTextureResource(T be) { return rl("textures/block/" + name + ".png"); }
         @Override public ResourceLocation getAnimationResource(T be) { return rl("animations/block/" + name + ".animation.json"); }
 
+        private static final String[] ELEC_BONES = { "elec0", "elec1", "elec2" };
+        private static final String[] ANODE_BONES = { "anode0", "anode1", "anode2", "anode3", "anode4", "anode5" };
+        private static final String[] LAMP_BONES = { "lamp", "lamp1", "lamp2", "lamp3", "lamp4" };
+        private static final String[] GLOW_BONES = { "glow", "glow1", "glow2" };
+
         @Override
         public void setCustomAnimations(T be, long instanceId, AnimationState<T> state) {
 
@@ -56,12 +61,12 @@ public class RefineryUnitRenderer<T extends ProcessUnitBlockEntity> extends GeoB
 
             for (int k = 0; k < 3; k++) {
                 final float ph = k * 2.1F;
-                getBone("elec" + k).ifPresent(b -> b.setPosY(run * (-8.0F + 2.2F * (float) Math.sin(tt * 0.31 + ph) + 1.0F * (float) Math.sin(tt * 1.7 + ph * 2.0))));
+                getBone(ELEC_BONES[k]).ifPresent(b -> b.setPosY(run * (-8.0F + 2.2F * (float) Math.sin(tt * 0.31 + ph) + 1.0F * (float) Math.sin(tt * 1.7 + ph * 2.0))));
             }
 
             for (int k = 0; k < 6; k++) {
                 final float ph = k * 1.1F;
-                getBone("anode" + k).ifPresent(b -> b.setPosY(run * (-0.5F + 1.6F * (float) Math.sin(tt * 0.16 + ph) + 0.5F * (float) Math.sin(tt * 0.9 + ph * 2.0))));
+                getBone(ANODE_BONES[k]).ifPresent(b -> b.setPosY(run * (-0.5F + 1.6F * (float) Math.sin(tt * 0.16 + ph) + 0.5F * (float) Math.sin(tt * 0.9 + ph * 2.0))));
             }
 
             getBone("agit").ifPresent(b -> b.setRotY(a * 0.8F));
@@ -73,9 +78,10 @@ public class RefineryUnitRenderer<T extends ProcessUnitBlockEntity> extends GeoB
             getBone("motor").ifPresent(b -> { b.setPosY(run * 0.12F * (float) Math.sin(tt * 2.1)); b.setPosZ(run * 0.08F * (float) Math.cos(tt * 1.7)); });
 
             final float pulse = 0.78F + 0.22F * (float) Math.sin(tt * 0.35);
-            for (String ln : new String[] { "lamp", "lamp1", "lamp2", "lamp3", "lamp4" })
+            for (String ln : LAMP_BONES)
                 getBone(ln).ifPresent(b -> b.setHidden(!be.isRunning() || ClientHemp.darkAt(be.getBlockPos().getX() + 0.5, be.getBlockPos().getZ() + 0.5)));
-            getBone("beacon").ifPresent(b -> b.setHidden(!be.isRunning() || ((long) tt) % 40 > 20));            for (String gn : new String[] { "glow", "glow1", "glow2" }) getBone(gn).ifPresent(b -> b.setHidden(!be.isRunning() || ClientHemp.darkAt(be.getBlockPos().getX() + 0.5, be.getBlockPos().getZ() + 0.5)));
+            getBone("beacon").ifPresent(b -> b.setHidden(!be.isRunning() || ((long) tt) % 40 > 20));
+            for (String gn : GLOW_BONES) getBone(gn).ifPresent(b -> b.setHidden(!be.isRunning() || ClientHemp.darkAt(be.getBlockPos().getX() + 0.5, be.getBlockPos().getZ() + 0.5)));
             if (name.equals("rolling_mill")) millStock(be, tt);
             getBone("pulley").ifPresent(b -> b.setRotX(a * 0.8F));
 
@@ -389,17 +395,34 @@ public class RefineryUnitRenderer<T extends ProcessUnitBlockEntity> extends GeoB
 
     private final Map<String, Matrix4f> attachPoses = new HashMap<>();
     private final Map<String, Matrix3f> attachNormals = new HashMap<>();
+    private final PoseStack scratchPose = new PoseStack();
+    private final java.util.List<Matrix4f> poolM4 = new java.util.ArrayList<>();
+    private final java.util.List<Matrix3f> poolM3 = new java.util.ArrayList<>();
+    private int poolIdx;
+
+    private Matrix4f borrowM4(Matrix4f src) {
+        Matrix4f m = poolIdx < poolM4.size() ? poolM4.get(poolIdx) : null;
+        if (m == null) { m = new Matrix4f(); poolM4.add(m); }
+        return m.set(src);
+    }
+
+    private Matrix3f borrowM3(Matrix3f src) {
+        Matrix3f m = poolIdx < poolM3.size() ? poolM3.get(poolIdx) : null;
+        if (m == null) { m = new Matrix3f(); poolM3.add(m); }
+        poolIdx++;
+        return m.set(src);
+    }
 
     @Override
     public void renderCubesOfBone(PoseStack poseStack, GeoBone bone, VertexConsumer buffer, int packedLight, int packedOverlay, int colour) {
         if (!bone.isHidden() && attachBones().contains(bone.getName())) {
-            attachPoses.put(bone.getName(), new Matrix4f(poseStack.last().pose()));
-            attachNormals.put(bone.getName(), new Matrix3f(poseStack.last().normal()));
+            attachPoses.put(bone.getName(), borrowM4(poseStack.last().pose()));
+            attachNormals.put(bone.getName(), borrowM3(poseStack.last().normal()));
         }
         if (mesh != null && mesh.has(bone.getName())) {
             if (!bone.isHidden()) {
-                meshPoses.put(bone.getName(), new Matrix4f(poseStack.last().pose()));
-                meshNormals.put(bone.getName(), new Matrix3f(poseStack.last().normal()));
+                meshPoses.put(bone.getName(), borrowM4(poseStack.last().pose()));
+                meshNormals.put(bone.getName(), borrowM3(poseStack.last().normal()));
             }
             return;
         }
@@ -409,17 +432,18 @@ public class RefineryUnitRenderer<T extends ProcessUnitBlockEntity> extends GeoB
     @Override
     public void render(T be, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         mesh = MeshModel.named(name);
+        poolIdx = 0;
         meshPoses.clear();
         meshNormals.clear();
         attachPoses.clear();
         attachNormals.clear();
         super.render(be, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
+        PoseStack.Pose sp = scratchPose.last();
         for (Map.Entry<String, Matrix4f> e : meshPoses.entrySet()) {
             if (drawsItself(e.getKey())) continue;
-            PoseStack ps = new PoseStack();
-            ps.last().pose().set(e.getValue());
-            ps.last().normal().set(meshNormals.get(e.getKey()));
-            mesh.draw(e.getKey(), ps.last(), bufferSource, packedLight, packedOverlay);
+            sp.pose().set(e.getValue());
+            sp.normal().set(meshNormals.get(e.getKey()));
+            mesh.draw(e.getKey(), sp, bufferSource, packedLight, packedOverlay);
         }
         if (!attachPoses.isEmpty()) drawAttached(be, attachPoses, attachNormals, bufferSource, packedLight, packedOverlay);
         meshPoses.clear();
@@ -432,12 +456,28 @@ public class RefineryUnitRenderer<T extends ProcessUnitBlockEntity> extends GeoB
         super(new UnitModel<T>(name, up));
         this.up = up;
         this.name = name;
-        addRenderLayer(new AutoGlowingGeoLayer<>(this));
+        addRenderLayer(new AutoGlowingGeoLayer<>(this) {
+            @Override
+            public void render(PoseStack ps, T animatable, software.bernie.geckolib.cache.object.BakedGeoModel bakedModel,
+                    net.minecraft.client.renderer.RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer,
+                    float partialTick, int packedLight, int packedOverlay) {
+                if (mesh != null && mesh.hasAny()) return;
+                super.render(ps, animatable, bakedModel, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
+            }
+        });
     }
 
     @Override
     public AABB getRenderBoundingBox(T be) {
-        return new AABB(be.getBlockPos()).inflate(6, 0, 6).expandTowards(0, up + 1, 0).expandTowards(0, -8, 0);
+        int down = "water_intake".equals(name) ? -8 : 0;
+        if (be.getBlockState().getBlock() instanceof MachineBlock mb) {
+            var fp = mb.footprint();
+            if (fp.size() <= 1 && up <= 1 && down == 0) return new AABB(be.getBlockPos());
+            int maxXZ = 1;
+            for (var c : fp) maxXZ = Math.max(maxXZ, Math.max(Math.abs(c.getX()), Math.abs(c.getZ())));
+            return new AABB(be.getBlockPos()).inflate(maxXZ + 1, 0, maxXZ + 1).expandTowards(0, up + 1, 0).expandTowards(0, down, 0);
+        }
+        return new AABB(be.getBlockPos()).inflate(6, 0, 6).expandTowards(0, up + 1, 0).expandTowards(0, down, 0);
     }
 
     @Override

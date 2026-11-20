@@ -43,7 +43,7 @@ public final class BombLineRecipes {
             case DAISY -> List.of(plates(8), he(4), alu(4));
             case TALLBOY -> List.of(plates(6), he(4), alu(2), tungsten(2));
             case BOUNCING -> List.of(plates(8), he(3));
-            case TSAR -> List.of(plates(16), wmd("warhead_thermo", 3), wmd("plutonium", 4), tungsten(6));
+            case TSAR -> List.of(plates(16), wmd("warhead_thermo", 3), wmd("plutonium", 4), tungsten(6), wmd("warden_core", 1));
         };
     }
 

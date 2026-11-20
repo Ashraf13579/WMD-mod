@@ -64,7 +64,7 @@ public class HeliTurboshaftBlockEntity extends AirEngineBlockEntity implements C
             airBeat(sl);
             report(sl, spool, spool > 0.2F, 0.0, 0.0);
         }
-        boolean want = Math.abs(throttle) > 0.02 && damageStage() < 3 && dry && ship != null && ShipPower.draw(sl, ship, Balance.TURBO_FE);
+        boolean want = Math.abs(throttle) > 0.02 && damageStage() < 3 && dry && ship != null && ShipPower.draw(this, sl, ship, Balance.TURBO_FE);
         spool = approach(spool, want ? 1.0F : 0.0F, 1.0F / (want ? Balance.TURBO_SPOOL_UP : Balance.TURBO_SPOOL_DOWN));
         if (ship != null) {
             double[] d = DRIVE.get(ship);

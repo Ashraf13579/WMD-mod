@@ -4,7 +4,7 @@
   "pattern": [
     "SPS",
     "CWC",
-    "LLL"
+    "LXL"
   ],
   "key": {
     "S": {
@@ -21,6 +21,9 @@
     },
     "L": {
       "tag": "c:plates/steel"
+    },
+    "X": {
+      "item": "wmd:screw_propeller"
     }
   },
   "result": {

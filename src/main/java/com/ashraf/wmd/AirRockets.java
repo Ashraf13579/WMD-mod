@@ -139,7 +139,7 @@ public final class AirRockets {
                 continue;
             }
             ground = sl.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, bp.getX(), bp.getZ());
-            BlockHitResult hit = sl.clip(new ClipContext(p, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, CollisionContext.empty()));
+            BlockHitResult hit = SableBridge.clipWorld(sl, new ClipContext(p, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, CollisionContext.empty()), flown < Balance.RPOD_ARM ? ownShip : null);
             if (hit.getType() == HitResult.Type.BLOCK) {
                 UUID hs = SableBridge.shipIdAt(sl, hit.getBlockPos());
                 if (!(hs != null && hs.equals(ownShip) && flown < Balance.RPOD_ARM)) return hit.getLocation();
@@ -192,7 +192,8 @@ public final class AirRockets {
         Vec3 from = s.pos, to = from.add(s.vel);
         BlockPos bp = BlockPos.containing(to);
         if (!sl.hasChunkAt(bp) && !reach(sl, to)) { s.ended = true; return; }
-        BlockHitResult hit = sl.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, CollisionContext.empty()));
+        if (CraftShield.stopsFlight(sl, from, to, s.ownShip, Balance.CSH_SHELL_R, WarheadType.HE, 1, "an air rocket")) { s.pos = to; s.ended = true; return; }
+        BlockHitResult hit = SableBridge.clipWorld(sl, new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, CollisionContext.empty()), null);
         double hitDist = Double.MAX_VALUE;
         UUID hitShip = null;
         if (hit.getType() == HitResult.Type.BLOCK) {
@@ -203,9 +204,20 @@ public final class AirRockets {
         Entity hitEntity = null;
         if (s.flown >= Balance.RPOD_ARM) {
             AABB box = new AABB(from, to).inflate(0.6);
-            for (Entity e : sl.getEntities((Entity) null, box, e -> e instanceof LivingEntity && e.isAlive() && !e.isSpectator())) {
+            for (Entity e : sl.getEntities((Entity) null, box, e -> e instanceof LivingEntity && e.isAlive() && !e.isSpectator()
+                    && !(e instanceof WardenEntity && WardenFight.WARDEN_OWNER.equals(s.owner)))) {
                 var o = e.getBoundingBox().inflate(0.3).clip(from, to);
                 if (o.isPresent()) { double dd = o.get().distanceTo(from); if (dd < hitDist) { hitDist = dd; hitEntity = e; hitShip = null; } }
+            }
+        }
+
+        if (!ForcefieldBlockEntity.LOADED.isEmpty() && !WardenFight.WARDEN_OWNER.equals(s.owner)) {
+            Forcefield.Crossing fc = Forcefield.crossing(sl, from, to);
+            if (fc != null && from.distanceTo(fc.at()) <= hitDist && Forcefield.shellHit(sl, fc, 1, WarheadType.HE)) {
+                s.flown += from.distanceTo(fc.at());
+                s.pos = fc.at();
+                s.ended = true;
+                return;
             }
         }
         if (hitDist < Double.MAX_VALUE) {

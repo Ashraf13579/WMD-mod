@@ -107,7 +107,7 @@ public class EarlyWarningArrayBlockEntity extends ProcessUnitBlockEntity impleme
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.EWA_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.EWA_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.early_warning_array", String.format("%,d", Balance.EWA_RANGE)));
     }
 

@@ -122,6 +122,9 @@ public class CcScreen extends MachineScreen implements WmdUi.Kit {
                 }));
 
                 addRenderableWidget(new WmdUi.KitButton(x + 6, y0 + SAT_BTN_Y + 116, PW - 12, 16, Component.translatable("gui.wmd.cc.sat.replay"), b -> ClientReplay.play())).active = ClientReplay.available();
+
+                addRenderableWidget(new WmdUi.KitButton(x + 6, y0 + SAT_BTN_Y + 136, PW - 12, 16, Component.translatable("gui.wmd.cc.sat.war_room"),
+                        b -> net.neoforged.neoforge.network.PacketDistributor.sendToServer(new WarRoomPayloads.Ask(WarRoomPayloads.A_REFRESH, null, 0, 0, true))));
             } else if (tab == TAB_DRONES) {
                 recallButton = addRenderableWidget(new WmdUi.KitButton(x + 6, y0 + DR_BTN_Y, 58, 14, Component.translatable("gui.wmd.cc.drones.recall"), b -> action(t, CcActionPayload.DRONE_RECALL, selDrone, 0)));
                 watchButton = addRenderableWidget(new WmdUi.KitButton(x + 68, y0 + DR_BTN_Y, PW - 74, 14, Component.translatable("gui.wmd.cc.drones.watch"), b -> action(t, CcActionPayload.DRONE_WATCH, selDrone, 0)));

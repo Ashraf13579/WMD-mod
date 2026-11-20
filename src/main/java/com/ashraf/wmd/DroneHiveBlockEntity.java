@@ -120,6 +120,31 @@ public class DroneHiveBlockEntity extends BlockEntity implements Owned, GeoBlock
         if (fly) p.closeContainer();
     }
 
+    public int readyBay(DroneType t) {
+        for (int i = 0; i < BAYS; i++) if (out[i] == 0 && docked(i) == t && charge[i] >= Balance.DRONE_CHARGE_FE) return i;
+        return -1;
+    }
+
+    public Component tabletLaunch(DroneType t, ServerPlayer p, boolean point, int x, int z) {
+        int bay = readyBay(t);
+        if (bay < 0) return Component.translatable("gui.wmd.tablet.why.no_drone", t.tier);
+        if (level instanceof ServerLevel sl && EmpField.jammed(sl, worldPosition)) return Component.translatable("message.wmd.hive.jammed");
+        int[] id = new int[1];
+        Component why = StrikeDrones.launch((ServerLevel) level, this, bay, t, p, false, id, point ? new double[] { x + 0.5, z + 0.5 } : null);
+        if (why != null) return why;
+        out[bay] = id[0];
+        bays.setStackInSlot(bay, ItemStack.EMPTY);
+        charge[bay] = 0;
+        openLid(bay);
+        return null;
+    }
+
+    public int recallAll(ServerPlayer p) {
+        int n = 0;
+        for (int i = 0; i < BAYS; i++) if (out[i] != 0) { StrikeDrones.recall(p.server, out[i]); n++; }
+        return n;
+    }
+
     boolean dock(int bay, int droneId, DroneType t) {
         if (bay < 0 || bay >= BAYS || !bays.getStackInSlot(bay).isEmpty()) return false;
         if (out[bay] == droneId) out[bay] = 0;

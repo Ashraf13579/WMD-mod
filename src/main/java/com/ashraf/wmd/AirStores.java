@@ -114,14 +114,15 @@ final class AirStores {
             ground = sl.getChunkSource().getChunkNow(cx >> 4, cz >> 4) != null
                     ? sl.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, cx, cz)
                     : sl.getChunkSource().getGenerator().getBaseHeight(cx, cz, net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE_WG, sl, sl.getChunkSource().randomState());
-            double h = Math.max(0.0, from.y - ground), d = -vy;
-            double tt = Math.max(1.0, (-d + Math.sqrt(d * d + 2.0 * g * h)) / g);
-            x = from.x + v.x * tt; z = from.z + v.z * tt;
+            double h = Math.max(0.0, from.y - ground);
+            double drift = BombEntity.driftFactor(BombEntity.landTicks(h, vy));
+            x = from.x + v.x * drift; z = from.z + v.z * drift;
         }
         return new Vec3(x, ground, z);
     }
 
     static String bombCheck(ServerLevel sl, int kind, UUID owner, UUID ship, Vec3 from, Vec3 dir, int[][] glide) {
+        if (SableBridge.inPlotGrid(sl, from)) return "the drop point is inside the craft (its place in the world could not be worked out): nothing dropped, try again";
         BombType t = bomb(kind);
         if (t == null) return null;
         if (!Config.Server.bombAllowed(t)) return "that bomb is switched off on this server";
@@ -142,10 +143,12 @@ final class AirStores {
     }
 
     static String release(ServerLevel sl, int kind, int freq, Vec3 at, Vec3 carrier, UUID owner, UUID ownShip, BlockPos source, Vec3 fwd, int[] glide) {
+
+        if (SableBridge.inPlotGrid(sl, at)) return "the drop point is inside the craft (its place in the world could not be worked out): nothing dropped, try again";
         Vec3 v = carrier.add(0.0, -Balance.STORE_DROP_KICK, 0.0);
         if (isBomb(kind)) {
             if (!Config.Server.bombAllowed(bomb(kind))) return "that bomb is switched off on this server";
-            BombEntity.release(sl, bomb(kind), at, v, owner, glide, null, ownShip);
+            if (BombEntity.release(sl, bomb(kind), at, v, owner, glide, null, ownShip) == null) return "the drop point is inside the craft (its place in the world could not be worked out): nothing dropped, try again";
             return null;
         }
         if (isTorpedo(kind)) TorpedoEntity.airDrop(sl, torpedo(kind), at, v, fwd, owner, ownShip);

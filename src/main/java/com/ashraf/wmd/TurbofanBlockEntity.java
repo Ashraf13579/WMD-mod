@@ -74,7 +74,7 @@ public class TurbofanBlockEntity extends AirEngineBlockEntity {
                 if (wantRun && dry && fuel.getFluidAmount() > 0) { state = STARTING; stateTicks = 0; }
             }
             case STARTING -> {
-                boolean starter = useExtraEnergy(Balance.TF_STARTER_FE) || ShipPower.draw(sl, ship, Balance.TF_STARTER_FE);
+                boolean starter = useExtraEnergy(Balance.TF_STARTER_FE) || ShipPower.draw(this, sl, ship, Balance.TF_STARTER_FE);
                 if (!starter || !dry || fuel.getFluidAmount() <= 0) { state = OFF; stateTicks = 0; break; }
                 n1 = Math.min(idle, n1 + idle / Balance.TF_START_TICKS);
                 if (n1 >= idle - 1.0E-4) { state = RUNNING; stateTicks = 0; }
@@ -191,6 +191,8 @@ public class TurbofanBlockEntity extends AirEngineBlockEntity {
     @Override protected void runStarted(Level lv) { playOnce(lv, WmdSounds.TURBOFAN_START.get(), Balance.SND_RELEASE, 1.0F); }
     @Override protected SoundEvent runSound() { return WmdSounds.TURBOFAN_LOOP.get(); }
     @Override protected float soundVolume() { return Balance.SND_GIANT * (0.35F + 0.65F * cN1); }
+    @Override protected SoundEvent overlaySound() { return AirGate.AVAILABLE ? WmdSounds.JET_AB_LOOP.get() : null; }
+    @Override protected float overlayVolume() { return AirGate.AVAILABLE && cAb ? Balance.SND_GIANT * cN1 : 0.0F; }
     @Override protected float soundPitch() { return 0.8F + 0.4F * cN1; }
     @Override protected boolean soundAlive() { return cState != OFF || cN1 > 0.05F; }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 1, 2); }
@@ -205,7 +207,7 @@ public class TurbofanBlockEntity extends AirEngineBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.tf_use", Balance.TF_STARTER_FE * 20, Math.round(Balance.TF_FUEL_FULL * 20 * 10) / 10.0),
+        return List.of(Component.translatable("gui.wmd.info.tf_use", Balance.TF_STARTER_FE, Math.round(Balance.TF_FUEL_FULL * 20 * 10) / 10.0),
                 Component.translatable("gui.wmd.screw.order", Component.translatable("gui.wmd.prop.step" + cStep), sourceName(cSource)),
                 Component.translatable("gui.wmd.tf.state" + cState, Math.round(cN1 * 100.0F), Math.round(cYaw), Math.round(cPitch)),
                 Component.translatable(!SableBridge.loaded() ? "gui.wmd.screw.no_sable" : "gui.wmd.air.air_rule"));

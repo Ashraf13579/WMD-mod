@@ -44,7 +44,7 @@ public class ChartScreen extends Screen {
 
     private ResourceLocation tex;
     private DynamicTexture dyn;
-    private int tx0, tz0, tCell, tw, th, askX0, askZ0, askCell = -1;
+    private int tx0, tz0, tCell, tw, th, askX0, askZ0, askCell = -1, retry;
 
     public ChartScreen(BlockPos src, boolean fromHelm) {
         super(Component.translatable(fromHelm ? P + "title_helm" : P + "title"));
@@ -192,7 +192,9 @@ public class ChartScreen extends Screen {
         int cell = (int) bpp() * 2;
         double halfW = MAP_W / 2.0 * bpp(), halfH = MAP_H / 2.0 * bpp();
         boolean covered = askCell == cell && vx - halfW >= askX0 && vz - halfH >= askZ0 && vx + halfW <= askX0 + TILE_W * cell && vz + halfH <= askZ0 + TILE_H * cell;
-        if (covered || ticks - lastTile < 10) return;
+        boolean again = covered && retry < 2 && ticks - lastTile >= (retry == 0 ? 40 : 100);
+        if ((covered && !again) || ticks - lastTile < 10) return;
+        if (again) retry++; else retry = 0;
         askCell = cell;
         askX0 = Mth.floor((vx - TILE_W * cell / 2.0) / cell) * cell;
         askZ0 = Mth.floor((vz - TILE_H * cell / 2.0) / cell) * cell;

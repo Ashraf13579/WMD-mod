@@ -19,7 +19,23 @@ public class CoalGeneratorBlock extends UnitBlock {
 
     public CoalGeneratorBlock(Properties properties) {
         super(properties, -2, 2, 0, 3, 0, 2);
-        for (int y = 4; y <= 7; y++) footprint().add(new BlockPos(-2, y, 1));
+        for (int y = 4; y <= 7; y++) super.footprint().add(new BlockPos(-2, y, 1));
+    }
+
+    private java.util.List<BlockPos> full;
+
+    java.util.List<BlockPos> cells() {
+        if (full == null) full = ModelFootprint.extend(super.footprint(), "coal_generator", -2, 2, 4, 0, 2);
+        return full;
+    }
+
+    @Override
+    protected java.util.List<BlockPos> footprint() { return cells(); }
+
+    @Override
+    public net.minecraft.world.phys.shapes.VoxelShape machineShape(BlockPos local, net.minecraft.core.Direction facing) {
+        if (local.getY() >= 4 && generated(local, facing) == null) return net.minecraft.world.phys.shapes.Shapes.empty();
+        return super.machineShape(local, facing);
     }
 
     @Override

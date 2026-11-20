@@ -46,6 +46,16 @@ public class HackingDeviceItem extends Item {
         Player p = ctx.getPlayer();
         Level level = ctx.getLevel();
         if (p == null) return InteractionResult.PASS;
+
+        if (level.isClientSide ? level.getBlockState(ctx.getClickedPos()).getBlock() instanceof WardenTerminalBlock
+                : WardenFight.isUplink((ServerLevel) level, ctx.getClickedPos())) {
+            if (!level.isClientSide) {
+                synchronized (HackingDeviceItem.class) { PENDING.put(p.getUUID(), ctx.getClickedPos().immutable()); }
+                level.playSound(null, p.blockPosition(), SoundEvents.BEACON_ACTIVATE, SoundSource.PLAYERS, 0.4F, 2.0F);
+            }
+            p.startUsingItem(ctx.getHand());
+            return InteractionResult.CONSUME;
+        }
         Owned o = Access.ownerAt(level, ctx.getClickedPos());
         if (!(o instanceof BlockEntity be) || o.getOwner() == null) {
             if (!level.isClientSide) p.displayClientMessage(Component.translatable("message.wmd.hack.nothing"), true);
@@ -74,15 +84,17 @@ public class HackingDeviceItem extends Item {
     public void onUseTick(Level level, LivingEntity e, ItemStack s, int left) {
         if (level.isClientSide || !(e instanceof Player p)) return;
         BlockPos target = pending(p.getUUID());
-        if (target == null || !level.isLoaded(target) || !(level.getBlockEntity(target) instanceof Owned)
+        if (target == null || !level.isLoaded(target) || !(level.getBlockEntity(target) instanceof Owned || level instanceof ServerLevel wl && WardenFight.isUplink(wl, target))
                 || SableBridge.distSqWithShips(level, p.position(), Vec3.atCenterOf(target)) > (Balance.HACK_REACH + 1.5) * (Balance.HACK_REACH + 1.5)) {
             p.displayClientMessage(Component.translatable("message.wmd.hack.lost"), true);
+            if (target != null) hackFx(level, target, 0.0F, 2);
             done(p.getUUID());
             p.stopUsingItem();
             return;
         }
         int done = Balance.HACK_USE - left;
         if (done % 20 == 0) p.displayClientMessage(Component.translatable("message.wmd.hack.progress", done * 100 / Balance.HACK_USE), true);
+        if (done % 20 == 0) hackFx(level, target, done / (float) Balance.HACK_USE, 0);
         if (done % 80 == 0) level.playSound(null, p.blockPosition(), WmdSounds.HACK_LOOP.get(), SoundSource.PLAYERS, 0.6F, 1.0F);
     }
 
@@ -91,20 +103,32 @@ public class HackingDeviceItem extends Item {
         if (level instanceof ServerLevel sl && e instanceof Player p) {
             BlockPos target = pending(p.getUUID());
             done(p.getUUID());
-            if (target != null) {
+            if (target != null && WardenFight.isUplink(sl, target) && p instanceof net.minecraft.server.level.ServerPlayer sp) {
+                sl.playSound(null, p.blockPosition(), WmdSounds.HACK_DONE.get(), SoundSource.PLAYERS, 0.9F, 1.0F);
+                WardenFight.hacked(sl, sp);
+                p.getCooldowns().addCooldown(this, Balance.HACK_COOLDOWN);
+            } else if (target != null) {
                 Hacks.grant(sl, target, p.getUUID(), sl.getGameTime() + Balance.HACK_TICKS);
                 boolean weapon = level.getBlockEntity(target) instanceof Owned ow && Hacks.weapon(ow);
                 p.displayClientMessage(Component.translatable(weapon ? "message.wmd.hack.done_weapon" : "message.wmd.hack.done", Balance.HACK_TICKS / 20 / 60), true);
                 sl.playSound(null, p.blockPosition(), WmdSounds.HACK_DONE.get(), SoundSource.PLAYERS, 0.9F, 1.0F);
+                hackFx(sl, target, 1.0F, 1);
                 p.getCooldowns().addCooldown(this, Balance.HACK_COOLDOWN);
             }
         }
         return s;
     }
 
+    private static void hackFx(Level level, BlockPos target, float progress, int state) {
+        if (!(level instanceof ServerLevel sl) || target == null) return;
+        Vec3 c = SableBridge.toWorld(sl, Vec3.atCenterOf(target));
+        if (c != null) AirFxPayload.send(sl, c, Balance.AIRFX_NEAR_R, new AirFxPayload(AirFxPayload.HACK, null, c, Vec3.ZERO, new Vec3(state, 0.0, 0.0), progress));
+    }
+
     @Override
     public void releaseUsing(ItemStack s, Level level, LivingEntity e, int left) {
         if (!level.isClientSide && e instanceof Player p && pending(p.getUUID()) != null) {
+            hackFx(level, pending(p.getUUID()), 0.0F, 2);
             done(p.getUUID());
             p.displayClientMessage(Component.translatable("message.wmd.hack.aborted"), true);
         }

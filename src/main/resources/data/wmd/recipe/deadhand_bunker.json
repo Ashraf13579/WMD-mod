@@ -23,7 +23,7 @@
       "item": "wmd:battery_t1"
     },
     "T": {
-      "item": "wmd:tungsten_block"
+      "tag": "c:storage_blocks/tungsten"
     }
   },
   "result": {

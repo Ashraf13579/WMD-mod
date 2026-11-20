@@ -189,6 +189,7 @@ public class CoastalBatteryBlockEntity extends ItemProcessBlockEntity implements
         double bd = Balance.COASTAL_PICK;
         if (SableBridge.active()) {
             for (SableBridge.ShipInfo s : SableBridge.shipsIntersecting(sl, new AABB(a, a).inflate(Balance.COASTAL_PICK, 256.0, Balance.COASTAL_PICK))) {
+                if (Cloak.hidden(sl, s.id())) continue;
                 double d = Math.hypot(s.worldCenter().x - a.x, s.worldCenter().z - a.z);
                 if (d < bd) { bd = d; best = s; }
             }
@@ -451,7 +452,7 @@ public class CoastalBatteryBlockEntity extends ItemProcessBlockEntity implements
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.COASTAL_FE * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.COASTAL_FE),
                 Component.translatable("gui.wmd.info.coastal_battery", Balance.CRUISE_FUEL_CANISTERS, (int) Balance.COASTAL_SKIM_ALT));
     }
 

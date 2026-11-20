@@ -310,7 +310,7 @@ public class ShellPressBlockEntity extends ItemProcessBlockEntity implements Own
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.SHELL_PRESS_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.SHELL_PRESS_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.shell_press", Balance.SHELL_PRESS_TICKS / 20), Component.translatable("gui.wmd.info.items_hint"));
     }
 

@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public record LaunchSoundPayload(int kind, double x, double y, double z) implements CustomPacketPayload {
 
-    public static final int IGNITE = 0, ASCENT = 10, CRUISE = 20, BOOM = 30, DRONE = 40;
+    public static final int IGNITE = 0, ASCENT = 10, CRUISE = 20, BOOM = 30, DRONE = 40, JET_BOOM = 50;
 
     public static final Type<LaunchSoundPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Wmd.MODID, "launch_sound"));
 

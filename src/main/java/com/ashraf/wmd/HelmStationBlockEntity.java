@@ -274,7 +274,7 @@ public class HelmStationBlockEntity extends ProcessUnitBlockEntity implements Cc
     @Override protected SoundEvent runSound() { return WmdSounds.HELM_STEP.get(); }
     @Override protected float soundVolume() { return 0.0F; }
     @Override protected BlockPos soundLocal() { return BlockPos.ZERO; }
-    @Override public List<Component> guiInfo() { return List.of(Component.translatable("gui.wmd.info.use", Balance.HELM_FE * 20)); }
+    @Override public List<Component> guiInfo() { return List.of(Component.translatable("gui.wmd.info.use", Balance.HELM_FE)); }
 
     @Override
     public Component status() {

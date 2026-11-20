@@ -111,6 +111,7 @@ final class FiringGroups {
         t.putBoolean("stores", true);
         t.putUUID("ship", ship);
         t.putInt("sel", selected);
+        t.putLong("cockpit", c.getBlockPos().asLong());
         ListTag gs = new ListTag();
         for (int g = 0; g < LoadoutPlan.GROUPS; g++) {
             CompoundTag e = new CompoundTag();

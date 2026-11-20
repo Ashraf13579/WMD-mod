@@ -8,7 +8,7 @@
   ],
   "key": {
     "B": {
-      "item": "wmd:tungsten_block"
+      "tag": "c:storage_blocks/tungsten"
     },
     "C": {
       "item": "wmd:tungsten_alloy_casing"

@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:exo_legs"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "ATA",
+    "S S",
+    "A A"
+  ],
+  "key": {
+    "A": {
+      "item": "wmd:armour_plate"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "S": {
+      "item": "wmd:superconducting_coil"
+    }
+  },
+  "result": {
+    "id": "wmd:exo_legs",
+    "count": 1
+  }
+}

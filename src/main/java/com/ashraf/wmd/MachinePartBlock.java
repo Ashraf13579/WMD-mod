@@ -111,7 +111,11 @@ public class MachinePartBlock extends BaseEntityBlock implements net.minecraft.w
         if (ShipRelink.shipMove(level, movedByPiston)) { super.onRemove(state, level, pos, newState, movedByPiston); return; }
         if (!level.isClientSide && !newState.is(this) && !MachineBlock.removing) {
             BlockPos c = controllerOf(level, pos);
-            if (c != null && level.getBlockState(c).getBlock() instanceof MachineBlock) level.destroyBlock(c, true);
+            if (c != null && level.getBlockState(c).getBlock() instanceof MachineBlock) {
+                if (BlastWrites.inBlast() && level instanceof net.minecraft.server.level.ServerLevel sl && RollbackLog.willLog(sl, c)) BlastWrites.destroy(level, c, false);
+                else if (BlastWrites.inBlast()) BlastWrites.destroy(level, c, true);
+                else level.destroyBlock(c, true);
+            }
         }
         super.onRemove(state, level, pos, newState, movedByPiston);
     }

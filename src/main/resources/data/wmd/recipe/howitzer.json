@@ -20,7 +20,7 @@
       "item": "minecraft:piston"
     },
     "S": {
-      "item": "wmd:steel_block"
+      "tag": "c:storage_blocks/steel"
     },
     "X": {
       "item": "wmd:chip_defence_2"

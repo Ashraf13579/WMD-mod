@@ -63,7 +63,7 @@ public class NitrationReactorBlockEntity extends ItemProcessBlockEntity implemen
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.NITRO_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.NITRO_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.nitration", Balance.NITRO_DUST_PER_CYCLE, Balance.NITRO_NAPHTHA_MB, Balance.NITRO_HE_PER_CYCLE, Balance.NITRO_CYCLE_TICKS / 20),
                 Component.translatable("gui.wmd.info.items_hint"));
     }

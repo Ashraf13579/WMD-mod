@@ -189,6 +189,8 @@ public class ArrestingWireBlockEntity extends ProcessUnitBlockEntity implements 
             stateAt = now;
             h.caught(sl, 10);
             playOnce(sl, WmdSounds.WIRE_CATCH.get(), Balance.SND_MECH, 1.0F);
+            Vec3 w0 = SableBridge.toWorld(sl, e[0]), w1 = SableBridge.toWorld(sl, e[1]), wx = SableBridge.toWorld(sl, x);
+            if (w0 != null && w1 != null && wx != null) AirFxPayload.send(sl, wx, Balance.AIRFX_R, new AirFxPayload(AirFxPayload.WIRE, jet, w0, w1, wx, (float) v0));
             Wmd.LOGGER.info("Arresting wire at {}: caught {} at {} b/s", worldPosition, jet, String.format("%.1f", v0));
             sync();
             return;

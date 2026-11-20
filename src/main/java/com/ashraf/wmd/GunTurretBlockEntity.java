@@ -312,7 +312,7 @@ public class GunTurretBlockEntity extends ProcessUnitBlockEntity implements Owne
         boolean want = claimKind != 0 && now - lastClaim <= Balance.GTUR_STOW_DELAY;
         boolean moving = false;
         float step = 1.0F / Balance.GTUR_DEPLOY_TICKS;
-        boolean power = want && ShipPower.draw(sl, ship, Balance.GTUR_FE_MOVE);
+        boolean power = want && ShipPower.draw(this, sl, ship, Balance.GTUR_FE_MOVE);
         if (want && deploy < 1.0F) {
             if (power) {
                 if (deploy <= 0.0F) playOnce(sl, WmdSounds.GT_DEPLOY.get(), Balance.SND_MECH, 1.0F);
@@ -351,7 +351,7 @@ public class GunTurretBlockEntity extends ProcessUnitBlockEntity implements Owne
         if (shoot) {
             shotAcc += Balance.GTUR_RATE / 20.0;
             while (shotAcc >= 1.0 && rounds > 0) {
-                if (!ShipPower.draw(sl, ship, Balance.GTUR_FE_FIRE)) { shoot = false; shotAcc = 0.0; break; }
+                if (!ShipPower.draw(this, sl, ship, Balance.GTUR_FE_FIRE)) { shoot = false; shotAcc = 0.0; break; }
                 fire(sl, now);
                 shotAcc -= 1.0;
             }
@@ -422,7 +422,7 @@ public class GunTurretBlockEntity extends ProcessUnitBlockEntity implements Owne
                 if (!other.equals(ship) && !ShipStrike.spare(sl, other, getOwner()) && sl.random.nextDouble() < Balance.GTUR_CHEW_CHANCE)
                     ShipStrike.chew(sl, other, m, to.add(dir.scale(0.8)), 1, (float) Balance.CIWS_SHIP_MAX_HARDNESS, getOwner());
                 kind = HIT_TARGET;
-            } else if (g != null) { to = (Vec3) g[0]; kind = HIT_GROUND; AirGuns.chewGround(sl, to, dir, 1, 1); }
+            } else if (g != null) { to = (Vec3) g[0]; kind = HIT_GROUND; AirGuns.chewGround(sl, to, dir, 1, 1, getOwner()); }
             else { to = m.add(dir.scale(Balance.GTUR_RANGE)); kind = HIT_NONE; }
         }
         if (kind == HIT_TARGET) lastHitAt = now;

@@ -261,7 +261,7 @@ public class SnorkelMastBlockEntity extends ProcessUnitBlockEntity implements Na
     @Override protected List<String> labelKeys() { return List.of(); }
     @Override protected int rateMbPerTick() { return 1; }
     @Override public PortMap guiPortMap() { return PORT_MAP; }
-    @Override public List<Component> guiInfo() { return List.of(Component.translatable("gui.wmd.info.use", Balance.SN_FE * 20), Component.translatable("gui.wmd.info.snorkel_mast")); }
+    @Override public List<Component> guiInfo() { return List.of(Component.translatable("gui.wmd.info.use", Balance.SN_FE), Component.translatable("gui.wmd.info.snorkel_mast")); }
     @Override protected SoundEvent runSound() { return WmdSounds.SNORKEL_AIR.get(); }
     @Override protected float soundVolume() { return Balance.SND_SMALL; }
     @Override protected boolean soundAlive() { return exhaust && fullyUp(); }

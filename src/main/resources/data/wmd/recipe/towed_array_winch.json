@@ -17,7 +17,7 @@
       "item": "wmd:copper_wire"
     },
     "S": {
-      "item": "wmd:steel_block"
+      "tag": "c:storage_blocks/steel"
     },
     "P": {
       "tag": "c:plates/steel"

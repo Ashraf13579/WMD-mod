@@ -3,6 +3,7 @@ package com.ashraf.wmd;
 import dev.ryanhcode.sable.companion.ClientSubLevelAccess;
 import dev.ryanhcode.sable.companion.SableCompanion;
 import dev.ryanhcode.sable.companion.SubLevelAccess;
+import dev.ryanhcode.sable.companion.math.BoundingBox3dc;
 import dev.ryanhcode.sable.companion.math.Pose3dc;
 import dev.ryanhcode.sable.api.sublevel.ClientSubLevelContainer;
 import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
@@ -83,6 +84,43 @@ final class SableClient {
         SubLevel s = c.getSubLevel(id);
         if (!(s instanceof ClientSubLevel cs) || cs.isRemoved()) return null;
         return cs.renderPose(pt).bakeIntoMatrix(new org.joml.Matrix4d());
+    }
+
+    static double[] craftBox(Level level, UUID id) {
+        SubLevelContainer c = SubLevelContainer.getContainer(level);
+        if (!(c instanceof ClientSubLevelContainer)) return null;
+        SubLevel s = c.getSubLevel(id);
+        if (!(s instanceof ClientSubLevel cs) || cs.isRemoved() || cs.boundingBox() == null) return null;
+        var b = cs.boundingBox();
+        return new double[] { b.minX(), b.minY(), b.minZ(), b.maxX(), b.maxY(), b.maxZ() };
+    }
+
+    static long signature(Level level, UUID id) {
+        SubLevelContainer c = SubLevelContainer.getContainer(level);
+        if (!(c instanceof ClientSubLevelContainer)) return Long.MIN_VALUE;
+        SubLevel s = c.getSubLevel(id);
+        if (!(s instanceof ClientSubLevel cs) || cs.isRemoved()) return Long.MIN_VALUE;
+        long sig = 17L;
+        int bes = 0;
+        for (PlotChunkHolder h : cs.getPlot().getLoadedChunks()) {
+            LevelChunk ch = h.getChunk();
+            if (ch == null) continue;
+            sig += 31L * System.identityHashCode(ch);
+            bes += ch.getBlockEntities().size();
+        }
+        return sig * 1_000_003L + bes;
+    }
+
+    static double distSq(Level level, UUID id, double x, double y, double z) {
+        SubLevelContainer c = SubLevelContainer.getContainer(level);
+        if (!(c instanceof ClientSubLevelContainer)) return Double.NaN;
+        SubLevel s = c.getSubLevel(id);
+        if (!(s instanceof ClientSubLevel cs) || cs.isRemoved() || cs.boundingBox() == null) return Double.NaN;
+        BoundingBox3dc b = cs.boundingBox();
+        double dx = Math.max(0.0, Math.max(b.minX() - x, x - b.maxX()));
+        double dy = Math.max(0.0, Math.max(b.minY() - y, y - b.maxY()));
+        double dz = Math.max(0.0, Math.max(b.minZ() - z, z - b.maxZ()));
+        return dx * dx + dy * dy + dz * dz;
     }
 
     static boolean redraw(Level level, UUID id) {

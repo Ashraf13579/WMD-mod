@@ -16,7 +16,7 @@ public final class DefenceTargets {
     public static boolean trusted(ServerLevel sl, Owned o, Player p) {
         if (o == null || o.getOwner() == null) return false;
         UUID id = p.getUUID();
-        if (id.equals(o.getOwner()) || o.security().trusted().containsKey(id)) return true;
+        if (id.equals(o.getOwner()) || o.security().trusted().containsKey(id) || Access.listedFriend(o, id)) return true;
         String on = o.getOwnerName();
         PlayerTeam t = on == null || on.isEmpty() ? null : sl.getScoreboard().getPlayersTeam(on);
         return t != null && t == p.getTeam();
@@ -26,6 +26,7 @@ public final class DefenceTargets {
         if (!e.isAlive() || e.isInvulnerable()) return false;
         if (e instanceof Player p) {
             if (p.isCreative() || p.isSpectator() || sl.getDifficulty() == Difficulty.PEACEFUL) return false;
+            if (Cloak.shieldsFrom(sl, p, o)) return false;
             return !trusted(sl, o, p);
         }
         return e instanceof Enemy;

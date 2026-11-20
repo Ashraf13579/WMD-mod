@@ -532,6 +532,7 @@ public class LaunchTerminalBlockEntity extends BlockEntity implements Owned, Geo
         }
         launcherName = name;
         launcherId = id;
+        if (level instanceof ServerLevel vsl) VnLaunch.warnTarget(vsl, id, targetX, targetZ);
         if (Satellites.toOrbit(loadedBuild)) {
             Vec3 c = padCentreWorld();
             launchX = (int) Math.floor(c.x) + Balance.SAT_DOWNRANGE;
@@ -728,6 +729,10 @@ public class LaunchTerminalBlockEntity extends BlockEntity implements Owned, Geo
                 if (stageTicks % 20 == 0 && !(crewCount && left <= 100)) sound(level, WmdSounds.LP_COUNT.get(), 3.0F, left <= 60 ? 1.3F : 1.0F);
                 if (stageTicks >= Missiles.COUNTDOWN_TICKS) {
                     setStage(Stage.LAUNCHING);
+                    if (level instanceof net.minecraft.server.level.ServerLevel adv) {
+                        WmdTrigger.fire(adv.getServer(), getOwner(), "first_launch");
+                        if (getTier() >= 4) WmdTrigger.fire(adv.getServer(), getOwner(), "icbm");
+                    }
                     launchSound(level, LaunchSoundPayload.IGNITE);
                 }
             }

@@ -29,7 +29,20 @@ public class DeckLightBlock extends UnitBlock implements WrenchUse {
 
     public static final MapCodec<DeckLightBlock> CODEC = simpleCodec(DeckLightBlock::new);
 
-    public DeckLightBlock(Properties properties) { super(properties, 0, 0, 0, 0, 0, 0); }
+    public static final net.minecraft.world.level.block.state.properties.BooleanProperty ON = net.minecraft.world.level.block.state.properties.BooleanProperty.create("on");
+
+    public DeckLightBlock(Properties properties) {
+        super(properties, 0, 0, 0, 0, 0, 0);
+        registerDefaultState(defaultBlockState().setValue(ON, true));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(net.minecraft.world.level.block.state.StateDefinition.Builder<net.minecraft.world.level.block.Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(ON);
+    }
+
+    public static int lightOf(BlockState s) { return s.hasProperty(ON) && !s.getValue(ON) ? 0 : 10; }
 
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }

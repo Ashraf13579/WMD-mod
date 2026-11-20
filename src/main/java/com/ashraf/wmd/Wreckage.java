@@ -89,6 +89,6 @@ public final class Wreckage {
         BlockState below = level.getBlockState(up.below());
         if (level.random.nextFloat() < Balance.WRECK_FIRE && level.getBlockState(up).isAir() && below.isFaceSturdy(level, up.below(), net.minecraft.core.Direction.UP)
                 && BlockRules.blastMay(level, up))
-            level.setBlock(up, Blocks.FIRE.defaultBlockState(), 3);
+            BlastWrites.set(level, up, Blocks.FIRE.defaultBlockState(), 3);
     }
 }

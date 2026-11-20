@@ -19,6 +19,8 @@ final class DeckConsoleClient {
     private static long msgAt;
     private static boolean noPower;
 
+    private static DeckConsoleBlockEntity view;
+
     static void onWing(DeckConsolePayloads.Wing p) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) return;
@@ -31,8 +33,15 @@ final class DeckConsoleClient {
         noPower = p.data().getBoolean("np");
         String m = p.data().getString("msg");
         if (!m.isEmpty()) { msg = m; msgAt = mc.level.getGameTime(); }
-        if (p.open() && !(mc.screen instanceof DeckConsoleScreen s && s.pos().equals(pos))) mc.setScreen(new DeckConsoleScreen(pos));
+        boolean cockpit = p.data().getBoolean("cockpit");
+        if (cockpit) {
+            if (view == null || !view.getBlockPos().equals(pos)) view = new DeckConsoleBlockEntity(pos, DeckConsoleBlocks.DECK_CONSOLE.get().defaultBlockState());
+            view.remoteMarks(p.data().getList("marks", Tag.TAG_COMPOUND));
+        }
+        if (p.open() && !(mc.screen instanceof DeckConsoleScreen s && s.pos().equals(pos))) mc.setScreen(new DeckConsoleScreen(pos, cockpit));
     }
+
+    static DeckConsoleBlockEntity view(BlockPos at) { return view != null && at.equals(pos) && view.getBlockPos().equals(at) ? view : null; }
 
     static List<CompoundTag> rows(BlockPos at) { return at.equals(pos) ? rows : List.of(); }
     static CompoundTag sum(BlockPos at) { return at.equals(pos) ? sum : new CompoundTag(); }

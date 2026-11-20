@@ -64,13 +64,13 @@ public record Proc(List<Ing> in, List<Ing> out, List<Component> lines) {
 
     public static Component time(int ticks) { return Component.translatable("jei.wmd.time", sec(ticks)); }
 
-    public static Component uses(int fePerTick) { return Component.translatable("jei.wmd.power", n(fePerTick * 20L)); }
+    public static Component uses(int fePerTick) { return Component.translatable("jei.wmd.power", n(fePerTick)); }
 
     public static Component flow(int mbPerTick) {
         return Component.translatable("jei.wmd.flow", sec(1000 / Math.max(1, mbPerTick)), n(mbPerTick * 20L));
     }
 
-    public static Component makes(int fePerTick) { return Component.translatable("jei.wmd.makes", n(fePerTick * 20L)); }
+    public static Component makes(int fePerTick) { return Component.translatable("jei.wmd.makes", n(fePerTick)); }
 
     public static Component note(String key, Object... args) { return Component.translatable(key, args); }
 }

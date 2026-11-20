@@ -140,7 +140,7 @@ public class CoalGeneratorBlockEntity extends ProcessUnitBlockEntity implements 
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.gen_output", Balance.COAL_GEN_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.gen_output", Balance.COAL_GEN_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.gen_hint"));
     }
 

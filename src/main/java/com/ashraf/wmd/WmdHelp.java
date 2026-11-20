@@ -72,11 +72,19 @@ public final class WmdHelp {
             Map.entry("pump_jet", "pump_jet"), Map.entry("sub_diesel", "sub_diesel"), Map.entry("snorkel_mast", "snorkel_mast"),
             Map.entry("ducted_fan", "ducted_fan"), Map.entry("turbofan", "turbofan"), Map.entry("jato_rack", "jato_rack"), Map.entry("jato_booster", "jato_rack"),
             Map.entry("single_jet", "jet_engines"), Map.entry("twin_jet", "jet_engines"), Map.entry("stealth_jet", "jet_engines"),
-            Map.entry("air_search_radar", "air_search_radar"), Map.entry("sam_site", "sam_site"), Map.entry("ammo_depot", "loadout"), Map.entry("ordnance_loader", "loadout"), Map.entry("heavy_loader", "loadout"), Map.entry("loader_track", "loadout"), Map.entry("jet_power_core", "jet_power_core"), Map.entry("pylon", "air_stations"), Map.entry("launch_rail", "air_stations"), Map.entry("countermeasure_dispenser", "countermeasure_dispenser"), Map.entry("wing_section", "wing"), Map.entry("control_surface", "wing"), Map.entry("jet_cockpit", "jet_cockpit"), Map.entry("jet_cockpit_tandem", "jet_cockpit"), Map.entry("flight_deck", "flight_deck"), Map.entry("nose_radar", "nose_radar"), Map.entry("weapons_bay", "weapons_bay"), Map.entry("jammer_pod", "jammer_pod"),
+            Map.entry("air_search_radar", "air_search_radar"), Map.entry("sam_site", "sam_site"), Map.entry("pulse_emp", "pulse_emp"), Map.entry("tesla_tower", "tesla_tower"), Map.entry("suit_rack", "exo_suit"), Map.entry("ammo_depot", "loadout"), Map.entry("ordnance_loader", "loadout"), Map.entry("heavy_loader", "loadout"), Map.entry("loader_track", "loadout"), Map.entry("jet_power_core", "jet_power_core"), Map.entry("pylon", "air_stations"), Map.entry("launch_rail", "air_stations"), Map.entry("countermeasure_dispenser", "countermeasure_dispenser"), Map.entry("wing_section", "wing"), Map.entry("control_surface", "wing"), Map.entry("jet_cockpit", "jet_cockpit"), Map.entry("jet_cockpit_tandem", "jet_cockpit"), Map.entry("flight_deck", "flight_deck"), Map.entry("nose_radar", "nose_radar"), Map.entry("weapons_bay", "weapons_bay"), Map.entry("jammer_pod", "jammer_pod"),
             Map.entry("service_arm", "service_arm"), Map.entry("service_receptacle", "service_arm"),
             Map.entry("deck_console", "deck_console"),
             Map.entry("turntable", "turntable"),
             Map.entry("rf_sender", "rf_power"), Map.entry("rf_receiver", "rf_power"),
+            Map.entry("active_cloak", "active_cloak"), Map.entry("quantum_radar", "quantum_radar"),
+            Map.entry("ion_thruster", "ion_thruster"), Map.entry("craft_shield", "craft_shield"),
+            Map.entry("gravity_well", "gravity_well"),
+            Map.entry("tractor_beam", "hand_tools"), Map.entry("plasma_cutter", "hand_tools"),
+            Map.entry("plasma_mortar", "plasma_mortar"),
+            Map.entry("storm_generator", "storm_generator"),
+            Map.entry("nanite_forge", "nanite_forge"), Map.entry("holo_table", "holo_table"), Map.entry("access_terminal", "access_terminal"),
+            Map.entry("blink_gate_core", "blink_gate"), Map.entry("blink_gate_corner", "blink_gate"), Map.entry("blink_gate_segment", "blink_gate"),
             Map.entry("anchor_windlass", "anchor_windlass"), Map.entry("hawse_pipe", "anchor_windlass"),
             Map.entry("chart_table", "chart_table"),
             Map.entry("cargo_ramp", "cargo_ramp"), Map.entry("cargo_pallet", "cargo_ramp"), Map.entry("cargo_pallet_heavy", "cargo_ramp"),
@@ -134,6 +142,7 @@ public final class WmdHelp {
         else if (s instanceof UplinkScreen) page = "uplink";
         else if (s instanceof ReconMapScreen) page = "recon_map";
         else if (s instanceof LaserTabletScreen) page = "laser";
+        else if (s instanceof WarRoomScreen) page = "war";
         else if (s instanceof AreaViewScreen) page = "designator";
         else if (s instanceof SecurityMonitorScreen) page = "cctv";
         else if (s instanceof FlightCheckScreen) page = "flight_check";
@@ -146,6 +155,9 @@ public final class WmdHelp {
         else if (s instanceof ChartScreen) page = "chart_table";
         else if (s instanceof LoadoutScreen || s instanceof AmmoDepotScreen) page = "loadout";
         else if (s instanceof StoresScreen) page = "loadout_screen";
+        else if (s instanceof SuitRackScreen) page = "exo_modules";
+        else if (s instanceof HoloControlScreen) page = "holo_table";
+        else if (s instanceof AccessTerminalScreen) page = "access_terminal";
         else if (s instanceof SeaMineScreen sm) page = sm.page();
         else return null;
         return page != null ? page : "contents";

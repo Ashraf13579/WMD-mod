@@ -223,6 +223,7 @@ public final class MapFeed {
             if (admin) airSea(l, dim, tl);
             if (war || admin) for (SableBridge.ShipInfo si : SableBridge.allShips(l)) {
                 if (!si.isLarge()) continue;
+                if (!admin && Cloak.hidden(l, si.id())) continue;
                 sl.add(new Ship(dim, si.id().toString(), si.name(), si.worldCenter().x, si.worldCenter().y, si.worldCenter().z, si.blockCount(), si.maxSize()));
             }
         }

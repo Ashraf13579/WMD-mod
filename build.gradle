@@ -126,6 +126,9 @@ dependencies {
     compileOnly "cc.tweaked:cc-tweaked-1.21.1-common-api:1.120.2"
     compileOnly "cc.tweaked:cc-tweaked-1.21.1-core-api:1.120.2"
 
+    compileOnly "maven.modrinth:open-parties-and-claims:neoforge-1.21.1-0.33.0"
+    localRuntime "maven.modrinth:open-parties-and-claims:neoforge-1.21.1-0.33.0"
+
     localRuntime "maven.modrinth:spark:1.10.124-neoforge-1.21.1"
 
     compileOnly "mezz.jei:jei-1.21.1-common-api:19.64.0.455"
@@ -135,6 +138,13 @@ dependencies {
 
     compileOnly("foundry.veil:veil-neoforge-1.21.1:4.5.2") { exclude group: 'maven.modrinth'; exclude group: 'me.fallenbreath' }
     localRuntime("foundry.veil:veil-neoforge-1.21.1:4.5.2") { exclude group: 'maven.modrinth'; exclude group: 'me.fallenbreath' }
+
+    def wmdLdlApi = file('libs/ldl_compile/lambdynamiclights-api-4.8.11+1.21.1-mojmap.jar')
+
+    if (wmdLdlApi.exists()) {
+        compileOnly files(wmdLdlApi)
+        sourceSets.main.java.srcDir 'src/ldl/java'
+    }
 
     compileOnly("dev.ryanhcode.sable:sable-common-1.21.1:2.0.6") { transitive = false }
     compileOnly "dev.ryanhcode.sable-companion:sable-companion-common-1.21.1:1.6.0"

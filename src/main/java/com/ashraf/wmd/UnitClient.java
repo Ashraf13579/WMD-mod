@@ -11,6 +11,7 @@ final class UnitClient {
     private UnitClient() {}
 
     static void ensureSound(ProcessUnitBlockEntity be) {
+        ensureOverlay(be);
 
         if (be.soundHandle instanceof Loop l && !l.isStopped()) {
             if (be.clientAge() - l.born < LOOP_RETRY || Minecraft.getInstance().getSoundManager().isActive(l)) return;
@@ -18,27 +19,40 @@ final class UnitClient {
         }
         if (be.mufflerFactor() <= 0) return;
         if (be.soundVolume() <= 0.0F) return;
-        Loop loop = new Loop(be);
+        Loop loop = new Loop(be, false);
         be.soundHandle = loop;
         Minecraft.getInstance().getSoundManager().play(loop);
     }
 
     static final int LOOP_RETRY = 20;
 
+    private static void ensureOverlay(ProcessUnitBlockEntity be) {
+        if (be.overlayHandle instanceof Loop l && !l.isStopped()) {
+            if (be.clientAge() - l.born < LOOP_RETRY || Minecraft.getInstance().getSoundManager().isActive(l)) return;
+            l.halt();
+        }
+        if (be.mufflerFactor() <= 0 || be.overlaySound() == null || be.overlayVolume() <= 0.01F) return;
+        Loop loop = new Loop(be, true);
+        be.overlayHandle = loop;
+        Minecraft.getInstance().getSoundManager().play(loop);
+    }
+
     private static class Loop extends AbstractTickableSoundInstance {
         private final ProcessUnitBlockEntity be;
+        private final boolean over;
         final int born;
 
         void halt() { stop(); }
 
-        Loop(ProcessUnitBlockEntity be) {
-            super(be.runSound(), SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
+        Loop(ProcessUnitBlockEntity be, boolean over) {
+            super(over ? be.overlaySound() : be.runSound(), SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
             this.be = be;
+            this.over = over;
             this.born = be.clientAge();
             this.looping = true;
             this.delay = 0;
-            this.volume = be.soundVolume() * be.mufflerFactor();
-            this.pitch = be.soundPitch();
+            this.volume = (over ? be.overlayVolume() : be.soundVolume()) * be.mufflerFactor();
+            this.pitch = over ? be.overlayPitch() : be.soundPitch();
             updatePos();
         }
 
@@ -63,10 +77,12 @@ final class UnitClient {
         @Override
         public void tick() {
             if (be.isRemoved() || !be.soundAlive() || be.mufflerFactor() <= 0) { stop(); return; }
-            if (!be.runSound().getLocation().equals(this.location)) { stop(); return; }
-            this.volume = be.soundVolume() * be.mufflerFactor();
+            net.minecraft.sounds.SoundEvent want = over ? be.overlaySound() : be.runSound();
+            if (want == null || !want.getLocation().equals(this.location)) { stop(); return; }
+            if (over && be.overlayVolume() <= 0.01F) { stop(); return; }
+            this.volume = (over ? be.overlayVolume() : be.soundVolume()) * be.mufflerFactor();
             updatePos();
-            this.pitch = be.soundPitch();
+            this.pitch = over ? be.overlayPitch() : be.soundPitch();
         }
     }
 }

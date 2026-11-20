@@ -92,7 +92,7 @@ public class SinterPressBlockEntity extends ItemProcessBlockEntity implements Mo
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.SINTER_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.SINTER_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.sinter_press", Balance.SINTER_INGOT_POWDER, Balance.SINTER_ROD_POWDER, Balance.SINTER_CYCLE_TICKS / 20),
                 Component.translatable("gui.wmd.info.items_hint"));
     }

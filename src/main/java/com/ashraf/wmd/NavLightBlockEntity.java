@@ -72,6 +72,7 @@ public class NavLightBlockEntity extends BlockEntity {
 
     private boolean work(ServerLevel sl) {
         if (!AirGate.on() || power == OFF) return false;
+        if (EmpField.jammed(sl, worldPosition)) return false;
         UUID ship = SableBridge.shipIdAt(sl, worldPosition);
         if (ship != null) ABOARD.put(ship, sl.getGameTime());
         if (power == ON) return true;

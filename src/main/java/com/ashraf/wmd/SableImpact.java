@@ -62,6 +62,7 @@ final class SableImpact {
         for (SableBridge.ShipInfo s : ships) {
             double d = distToBox(s.worldBounds(), pos);
             if (d > reach || ShipStrike.spare(level, s.id(), shooter)) continue;
+            if (CraftShield.blastStopped(level, s.id(), pos, crater)) continue;
             cands.add(new Cand(s, d));
         }
         if (cands.isEmpty()) return 0;
@@ -69,6 +70,7 @@ final class SableImpact {
         if (cands.size() > Math.max(1, Balance.SHIP_BLAST_MAX_SHIPS)) cands = new ArrayList<>(cands.subList(0, Math.max(1, Balance.SHIP_BLAST_MAX_SHIPS)));
         Set<UUID> allowed = new HashSet<>();
         for (Cand c : cands) if (SubHits.mayHole(level, c.s())) allowed.add(c.s().id());
+        for (Cand c : cands) AirCrash.shotAt(c.s().id(), level.getGameTime());
         for (Cand c : cands) ShipBreakup.hit(level, c.s(), c.d() <= near ? pos : closest(c.s().worldBounds(), pos), power);
         for (Cand c : cands) SubHits.hit(level, c.s(), c.d() <= near ? pos : closest(c.s().worldBounds(), pos), power, c.d());
         int n = 0;
@@ -95,7 +97,10 @@ final class SableImpact {
         if (p == null) { Wmd.LOGGER.info("[ship-blast] underwater: no plot point for ship {} at {}", ship.id(), world); return; }
 
         int n = carve(level, ship.id(), p, power);
-        if (n > 0) level.playSound(null, world.x, world.y, world.z, WmdSounds.HULL_BREACH.get(), net.minecraft.sounds.SoundSource.BLOCKS, 3.0F, 1.0F);
+        if (n > 0) {
+            level.playSound(null, world.x, world.y, world.z, WmdSounds.HULL_BREACH.get(), net.minecraft.sounds.SoundSource.BLOCKS, 3.0F, 1.0F);
+            AirFxPayload.at(level, AirFxPayload.BREACH, world, null, power, Balance.AIRFX_R);
+        }
         Wmd.LOGGER.info("[ship-blast] underwater: ship {} power {} at {} (plot {}) -> {} block(s) broken", ship.id(), power, BlockPos.containing(world).toShortString(),
                 BlockPos.containing(p).toShortString(), n);
     }
@@ -231,7 +236,7 @@ final class SableImpact {
         for (BlockPos p : SableBridge.blockEntitiesOn(level, ship)) {
             if (!(level.getBlockEntity(p) instanceof Owned o) || o.getOwner() == null) continue;
             any = true;
-            if (!Access.trusts(o, shooter) && !ShipStrike.sameSide(shooter, o.getOwner())) { all = false; break; }
+            if (!Access.trusts(o, shooter) && !Access.listedFriend(o, shooter) && !ShipStrike.sameSide(shooter, o.getOwner())) { all = false; break; }
         }
         if (all) for (ServerPlayer pl : level.players()) {
             if (pl.isSpectator() || !ship.equals(SableBridge.shipUnder(pl))) continue;
@@ -297,6 +302,17 @@ final class SableImpact {
         if (hit == null) for (SableBridge.ShipInfo s : ships) if (s.worldBounds().inflate(1.0).contains(loc)) { hit = s; break; }
         if (hit == null) return null;
         return new ProjectilePath.PathHit(loc, ProjectilePath.Kind.SHIP, hit.id(), hit.name(), "clip");
+    }
+
+    static BlockHitResult clipWorld(ServerLevel level, ClipContext ctx, UUID ignore) {
+        if (ignore != null) ((ClipContextExtension) (Object) ctx).sable$setSubLevelIgnoring(s -> s != null && ignore.equals(s.getUniqueId()));
+        BlockHitResult r = level.clip(ctx);
+        Vec3 to = ctx.getTo();
+        if (r == null) return BlockHitResult.miss(to, net.minecraft.core.Direction.UP, BlockPos.containing(to));
+        if (r.getType() != HitResult.Type.BLOCK || !SableShips.inPlotGrid(level, r.getLocation())) return r;
+        Vec3 w = SableShips.toWorld(level, r.getLocation());
+        if (w == null || SableShips.inPlotGrid(level, w)) return BlockHitResult.miss(to, r.getDirection(), BlockPos.containing(to));
+        return new BlockHitResult(w, r.getDirection(), r.getBlockPos(), r.isInside());
     }
 
     private static ProjectilePath.PathHit viaWalk(ServerLevel level, Vec3 from, Vec3 to, List<SableBridge.ShipInfo> ships) {

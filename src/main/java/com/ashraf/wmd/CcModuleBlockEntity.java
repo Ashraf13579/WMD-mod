@@ -141,7 +141,7 @@ public abstract class CcModuleBlockEntity extends ProcessUnitBlockEntity impleme
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", kind().fe() * 20), Component.translatable("gui.wmd.info.cc_module"));
+        return List.of(Component.translatable("gui.wmd.info.use", kind().fe()), Component.translatable("gui.wmd.info.cc_module"));
     }
 
     @Override protected String detail() { return running ? "online" : (building == null ? "offline: not installed in a command center" : "offline: the command center has no power"); }

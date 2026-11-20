@@ -105,6 +105,12 @@ public final class ShipFrame {
         catch (Throwable t) { SableBridge.fail(t); return null; }
     }
 
+    public static double[] craftBox(Level level, java.util.UUID id) {
+        if (level == null || id == null || !level.isClientSide || !SableBridge.active()) return null;
+        try { return SableClient.craftBox(level, id); }
+        catch (Throwable t) { SableBridge.fail(t); return null; }
+    }
+
     public static Vec3 drawnWorld(Level level, BlockPos pos, Vec3 p, float pt) {
         if (level == null || pos == null || p == null || !level.isClientSide || !SableBridge.active()) return p;
         try {

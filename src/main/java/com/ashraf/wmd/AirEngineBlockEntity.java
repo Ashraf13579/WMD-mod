@@ -23,6 +23,8 @@ import net.minecraft.world.phys.Vec3;
 
 public abstract class AirEngineBlockEntity extends ProcessUnitBlockEntity implements CcAnimated, ShipEngine {
 
+    @Override public boolean ownable() { return false; }
+
     static final int STOP = Balance.PROP_STEP_STOP;
 
     static final float RX = 1.0F, RY = 1.0F, RZ = 1.0F;
@@ -166,7 +168,7 @@ public abstract class AirEngineBlockEntity extends ProcessUnitBlockEntity implem
         force = new double[] { p.x, p.y, p.z, f.x, f.y, f.z };
     }
 
-    @Override public double[] engineForce() { return force; }
+    @Override public double[] engineForce() { return EmpBlackout.out(level, ship) ? null : force; }
 
     protected void report(ServerLevel sl, double share, boolean running, double rudderDeg, double planesDeg) {
         if (ship != null) ShipControl.answer(sl, ship, worldPosition, ShipControl.stepOf(share), running, share, rudderDeg, planesDeg);
@@ -225,6 +227,7 @@ public abstract class AirEngineBlockEntity extends ProcessUnitBlockEntity implem
         double[] w = worldPoint(t[0], t[1], t[2]);
         if (now == 2) sl.playSound(null, w[0], w[1], w[2], net.minecraft.sounds.SoundEvents.FIRECHARGE_USE, net.minecraft.sounds.SoundSource.BLOCKS, Balance.SND_MECH, 0.8F);
         if (now == 3) sl.playSound(null, w[0], w[1], w[2], net.minecraft.sounds.SoundEvents.FIRE_EXTINGUISH, net.minecraft.sounds.SoundSource.BLOCKS, Balance.SND_MECH, 0.6F);
+        if (now >= 2) AirFxPayload.at(sl, AirFxPayload.ENGINE_HIT, new net.minecraft.world.phys.Vec3(w[0], w[1], w[2]), null, now, Balance.AIRFX_R);
         Wmd.LOGGER.info("Air engine at {}: hit, {} HP, stage {}", worldPosition.toShortString(), hp, now);
         syncNow();
     }
@@ -270,7 +273,7 @@ public abstract class AirEngineBlockEntity extends ProcessUnitBlockEntity implem
         for (AirEngineBlockEntity e : live(sl)) {
             double reach = radius + Balance.ENGINE_BLAST_PAD + e.hitSize();
             double d = e.hitPoint().distanceTo(pos);
-            if (d < reach) e.damage(sl, Balance.ENGINE_BLAST_DMG * power * (1.0 - d / reach));
+            if (d < reach && !CraftShield.blastStopped(sl, e.ship, pos, radius)) e.damage(sl, Balance.ENGINE_BLAST_DMG * power * (1.0 - d / reach));
         }
     }
 

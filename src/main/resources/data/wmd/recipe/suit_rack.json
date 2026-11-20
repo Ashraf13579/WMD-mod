@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:suit_rack"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PCP",
+    "TXT",
+    "PBP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "C": {
+      "item": "wmd:superconducting_coil"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "X": {
+      "item": "wmd:advanced_circuit"
+    },
+    "B": {
+      "item": "wmd:busbar"
+    }
+  },
+  "result": {
+    "id": "wmd:suit_rack",
+    "count": 1
+  }
+}

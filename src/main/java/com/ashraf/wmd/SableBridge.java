@@ -79,6 +79,13 @@ public final class SableBridge {
         return new DuctedFanBlockEntity(pos, state);
     }
 
+    public static IonThrusterBlockEntity newIonThruster(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        if (loaded() && !failed) {
+            try { return SableEngines.ionThruster(pos, state); } catch (Throwable t) { fail(t); }
+        }
+        return new IonThrusterBlockEntity(pos, state);
+    }
+
     public static LiftFanBlockEntity newLiftFan(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
         if (loaded() && !failed) {
             try { return SableEngines.liftFan(pos, state); } catch (Throwable t) { fail(t); }
@@ -238,6 +245,16 @@ public final class SableBridge {
     public static ProjectilePath.PathHit exactHit(ServerLevel level, Vec3 from, Vec3 to, List<ShipInfo> ships) {
         if (level == null || from == null || to == null || ships == null || ships.isEmpty() || !active()) return null;
         try { return SableImpact.exact(level, from, to, ships); } catch (Throwable t) { fail(t); return null; }
+    }
+
+    public static net.minecraft.world.phys.BlockHitResult clipWorld(ServerLevel level, net.minecraft.world.level.ClipContext ctx, UUID ignoreShip) {
+        if (!active()) return level.clip(ctx);
+        try { return SableImpact.clipWorld(level, ctx, ignoreShip); } catch (Throwable t) { fail(t); return level.clip(ctx); }
+    }
+
+    public static boolean inPlotGrid(Level level, Vec3 p) {
+        if (level == null || p == null || !loaded()) return false;
+        try { return SableShips.inPlotGrid(level, p); } catch (Throwable t) { return false; }
     }
 
     public static ShipInfo shipInfo(ServerLevel level, UUID id) {
@@ -431,5 +448,15 @@ public final class SableBridge {
     public static List<DebrisScan> debrisScan(ServerLevel level) {
         if (level == null || !debrisActive()) return List.of();
         try { return SableDebris.scan(level); } catch (Throwable t) { debrisFail(t); return List.of(); }
+    }
+
+    public static Vec3 shipPosition(ServerLevel level, UUID id) {
+        if (level == null || id == null || !active()) return null;
+        try { return SableGate.position(level, id); } catch (Throwable t) { fail(t); return null; }
+    }
+
+    public static boolean gateJump(ServerLevel level, UUID id, Vec3 from, Vec3 to, double theta) {
+        if (level == null || id == null || !active()) return false;
+        try { return SableGate.jump(level, id, from, to, theta); } catch (Throwable t) { fail(t); return false; }
     }
 }

@@ -62,6 +62,14 @@ public abstract class ArtilleryGunBlockEntity extends ItemProcessBlockEntity imp
         }
     }
 
+    protected ArtilleryGunBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int fePerTick, int bufferFe, int receivePerTick) {
+        super(type, pos, state, fePerTick, bufferFe, receivePerTick);
+        for (int t = 0; t < shellSlots.length; t++) {
+            final int k = t;
+            shellSlots[t] = new Slot(magazine(), false, s -> s.is(Artillery.shellItem(gun(), k)));
+        }
+    }
+
     public abstract int gun();
 
     protected abstract int magazine();
@@ -558,7 +566,7 @@ public abstract class ArtilleryGunBlockEntity extends ItemProcessBlockEntity imp
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse() * 20), Component.translatable("gui.wmd.info.art_gun", minRange(), range()));
+        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse()), Component.translatable("gui.wmd.info.art_gun", minRange(), range()));
     }
 
     @Override

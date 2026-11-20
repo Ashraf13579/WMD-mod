@@ -63,7 +63,7 @@ public class GeneratorScreen extends AbstractContainerScreen<GeneratorMenu> {
         int colour;
         if (menu.isBurning()) {
             status = Component.translatable("block.wmd.generator_engine.output",
-                    String.format("%,d", GeneratorEngineBlockEntity.FE_PER_SECOND));
+                    String.format("%,d", GeneratorEngineBlockEntity.FE_PER_SECOND / 20));
             colour = WmdUi.GOOD;
         } else if (menu.getFuelMb() < 1) {
             status = Component.translatable("block.wmd.generator_engine.no_fuel");

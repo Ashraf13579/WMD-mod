@@ -300,7 +300,7 @@ public class DockCraneBlockEntity extends ProcessUnitBlockEntity implements Owne
         if (now - phaseStart < phaseDur) return true;
         switch (phase) {
             case P_SWING_PICK -> { float[] p = solve(pickAt); if (p == null) go(P_RETURN, ts, tl, 0.0F, 10); else go(P_LOWER_PICK, p[0], p[1], p[2], 10); }
-            case P_LOWER_PICK -> { sl.playSound(null, pickAt.x, pickAt.y, pickAt.z, SoundEvents.CHAIN_PLACE, SoundSource.BLOCKS, 1.0F, 0.8F); go(P_LATCH, ts, tl, td, Balance.CRANE_LATCH_TICKS); }
+            case P_LOWER_PICK -> { sl.playSound(null, pickAt.x, pickAt.y, pickAt.z, SoundEvents.CHAIN_PLACE, SoundSource.BLOCKS, 1.0F, 0.8F); AirFxPayload.at(sl, AirFxPayload.CRANE, pickAt, null, 0.0F, Balance.AIRFX_NEAR_R); go(P_LATCH, ts, tl, td, Balance.CRANE_LATCH_TICKS); }
             case P_LATCH -> {
                 carried = takeFromSource(sl);
                 if (carried.isEmpty()) { jobText = ""; go(P_RETURN, ts, tl, 0.0F, 10); }
@@ -312,6 +312,7 @@ public class DockCraneBlockEntity extends ProcessUnitBlockEntity implements Owne
             case P_RELEASE -> {
                 if (giveToReceiver(sl)) {
                     sl.playSound(null, dropAt.x, dropAt.y, dropAt.z, WmdSounds.TP_RELOAD.get(), SoundSource.BLOCKS, Balance.SND_MECH, 1.0F);
+                    AirFxPayload.at(sl, AirFxPayload.CRANE, dropAt, null, 1.0F, Balance.AIRFX_NEAR_R);
                     Wmd.LOGGER.info("Dock crane {} loaded {} into {}", worldPosition.toShortString(), jobText, dstPos.toShortString());
                     jobText = "";
                 } else status = S_HOLDING;
@@ -370,7 +371,7 @@ public class DockCraneBlockEntity extends ProcessUnitBlockEntity implements Owne
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.CRANE_FE * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.CRANE_FE),
                 Component.translatable("gui.wmd.info.dock_crane", String.format("%.1f", reachMin()), String.format("%.1f", reachMax()), (int) Balance.CRANE_DROP));
     }
 

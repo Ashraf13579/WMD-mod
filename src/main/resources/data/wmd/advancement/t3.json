@@ -1,0 +1,38 @@
+{
+  "parent": "wmd:bay",
+  "display": {
+    "icon": {
+      "id": "wmd:airframe_t3"
+    },
+    "title": {
+      "translate": "advancements.wmd.t3.title"
+    },
+    "description": {
+      "translate": "advancements.wmd.t3.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_airframe_t3": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wmd:airframe_t3"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_airframe_t3"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  }
+}

@@ -125,6 +125,10 @@ public class HangarDoorBlockEntity extends ProcessUnitBlockEntity implements Own
 
     public static HangarDoorBlockEntity at(Level level, BlockPos pos) { return HangarDoorBlock.headOf(level, pos); }
 
+    public void bunkerLock(UUID owner) { if (!owner.equals(ownerData.id())) { ownerData.set(owner, "The Warden"); setChanged(); } }
+
+    public void bunkerPower() { energy().receiveEnergy(Balance.HDOOR_RECEIVE, false); }
+
     public boolean isOpen() { return doorState() == S_OPEN; }
 
     public boolean isClosed() { return doorState() == S_CLOSED; }
@@ -157,6 +161,7 @@ public class HangarDoorBlockEntity extends ProcessUnitBlockEntity implements Own
     static void click(Level level, BlockPos at, Player player, BlockHitResult hit, boolean curtain) {
         HangarDoorBlockEntity head = HangarDoorBlock.headOf(level, at);
         if (head == null) { player.displayClientMessage(Component.translatable("message.wmd.hdoor.no_head"), true); return; }
+        if (WardenFight.WARDEN_OWNER.equals(head.getOwner())) { player.displayClientMessage(Component.translatable("message.wmd.warden.door_locked"), true); return; }
         if (!MachineBlock.gate(level, head.getBlockPos(), player, head)) return;
         if (CopycatState.interact(level, player, hit.getBlockPos(), curtain ? head.slatsHost : head)) return;
         if (player.isShiftKeyDown()) { player.displayClientMessage(head.status(), true); return; }
@@ -376,7 +381,7 @@ public class HangarDoorBlockEntity extends ProcessUnitBlockEntity implements Own
     private boolean pay(ServerLevel sl, int cells) {
         int cost = cells * Balance.HDOOR_FE_PER_CELL;
         UUID ship = SableBridge.shipIdAt(sl, worldPosition);
-        if (ship != null && ShipPower.draw(sl, ship, cost)) return true;
+        if (ship != null && ShipPower.draw(this, sl, ship, cost)) return true;
         return useExtraEnergy(cost);
     }
 

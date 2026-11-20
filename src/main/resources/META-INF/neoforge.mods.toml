@@ -110,6 +110,14 @@ config="${mod_id}.mixins.json"
     ordering="NONE"
     side="BOTH"
 
+# Open Parties and Claims is optional: when present, its parties are WMD nations for the war system (declarations, open wars, territory).
+[[dependencies.${mod_id}]]
+    modId="openpartiesandclaims"
+    type="optional"
+    versionRange="[0.33,)"
+    ordering="AFTER"
+    side="BOTH"
+
 # Sable (Create Aeronautics physics ships) is optional: when present, machines standing on a ship measure their ranges from the ship's
 # real position (SableBridge). WMD runs without it.
 [[dependencies.${mod_id}]]
@@ -152,6 +160,22 @@ config="${mod_id}.mixins.json"
     ordering="NONE"
     side="CLIENT"
 
+# 18 Nov: LambDynamicLights is optional: when present, WMD's lights give block light while a shaderpack is on (LdlLights, its Yumi entrypoint below).
+[[dependencies.${mod_id}]]
+    modId="lambdynlights"
+    type="optional"
+    versionRange="[4.8,)"
+    ordering="NONE"
+    side="CLIENT"
+
+# 18 Nov: Veil Iris Lights Compat (VILC) is optional: when present, WMD's Veil lights stay on with Iris (VeilBridge.vilc).
+[[dependencies.${mod_id}]]
+    modId="ymvilc"
+    type="optional"
+    versionRange="[1.6,)"
+    ordering="NONE"
+    side="CLIENT"
+
 # CC:Tweaked is optional: when present, WMD machines get CC peripherals (CcTweakedCompat, built against 1.120). Audit 1 Nov: declared.
 [[dependencies.${mod_id}]]
     modId="computercraft"
@@ -165,3 +189,7 @@ config="${mod_id}.mixins.json"
 # stop your mod loading on the server for example.
 #[features.${mod_id}]
 #openGLVersion="[3.2,)"
+
+# 18 Nov: LambDynamicLights (4.8, Yumi) builds this class at start-up and hands it its light manager (LdlLights). Ignored without LambDynamicLights.
+[[modproperties.${mod_id}."yumi:entrypoints"."lambdynlights:initializer"]]
+    value = "com.ashraf.wmd.LdlLights"

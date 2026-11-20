@@ -35,10 +35,12 @@ public class ServiceArmBlockEntity extends ProcessUnitBlockEntity implements Own
 
     static final float P0F = 6.0F, P0Y = 23.0F, LIFT = 30.0F, L1 = 74.0F, KH = 13.0F, W0 = 72.0F, TELE = 44.0F, LH = 21.0F;
     static final float J0F = 16.0F, J0Y = 9.5F, LUGS = 44.0F, LUGH = -6.0F, GEAR_R = 7.4F, PIN_R = 2.5F;
-    static final float A1_MIN = 8.0F, A1_MAX = 75.0F, BETA_MIN = -70.0F;
+    static final float A1_MIN = 8.0F, A1_MAX = 75.0F, BETA_MIN = -160.0F;
+
+    static final float BX2 = 16.0F;
     static final float LE = (float) Math.hypot(L1, KH), PHI = (float) Math.atan2(KH, L1);
 
-    static final float[] HOSE_A = { -18.5F, 36.0F, -9.4F }, HOSE_B = { -7.2F, 36.0F, 2.5F };
+    static final float[] HOSE_A = { 16.0F, 27.9F, -9.4F }, HOSE_B = { 16.0F, 28.8F, 2.5F };
 
     static final float SX = 1.0F, SY = 1.0F, SZ = 1.0F;
 
@@ -86,6 +88,8 @@ public class ServiceArmBlockEntity extends ProcessUnitBlockEntity implements Own
     private List<String> foundText = new ArrayList<>();
     private int pinIdx = -1;
     private int idleTicks;
+    private UUID doneShip;
+    private BlockPos donePos;
     private int comparator;
     private long coolUntil;
 
@@ -222,13 +226,16 @@ public class ServiceArmBlockEntity extends ProcessUnitBlockEntity implements Own
     }
 
     static Vec3 planeToLocal(double f, double y, double slewDeg) {
-        double s = Math.toRadians(slewDeg);
-        return new Vec3(-Math.sin(s) * f / 16.0, y / 16.0, -Math.cos(s) * f / 16.0);
+        double s = Math.toRadians(slewDeg), c = Math.cos(s), n = Math.sin(s);
+        return new Vec3((c * BX2 - n * f) / 16.0, y / 16.0, (-n * BX2 - c * f) / 16.0);
     }
 
     static float[] solve(Vec3 p, Vec3 n, double off) {
         Vec3 t = p.add(n.scale(off));
-        double slew = Math.toDegrees(Math.atan2(-t.x, -t.z));
+        double r = Math.hypot(t.x, t.z), bx = BX2 / 16.0;
+        if (r <= bx + 0.05) return null;
+
+        double slew = Math.toDegrees(Math.atan2(-t.x, -t.z) + Math.atan2(bx, Math.sqrt(r * r - bx * bx)));
         double hx = -Math.sin(Math.toRadians(slew)), hz = -Math.cos(Math.toRadians(slew));
         double f = (t.x * hx + t.z * hz) * 16.0, y = t.y * 16.0;
         if (Math.hypot(t.x, t.z) > Balance.SA_REACH + 1.0) return null;
@@ -322,15 +329,20 @@ public class ServiceArmBlockEntity extends ProcessUnitBlockEntity implements Own
         return h == null ? 0 : h.fill(new FluidStack(fluid, mb), simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
     }
 
-    private boolean wants(ServerLevel sl, BlockEntity be, int kind) {
-        if (jet.getFluidAmount() > 0 && give(sl, be, kind, jet.getFluid().getFluid(), Balance.SA_FUEL_RATE, true) > 0) return true;
-        if (diesel.getFluidAmount() > 0 && give(sl, be, kind, diesel.getFluid().getFluid(), Balance.SA_FUEL_RATE, true) > 0) return true;
+    private boolean wants(ServerLevel sl, UUID ship, BlockEntity be, int kind) {
+
+        boolean topUp = mode == M_AUTO && ship.equals(doneShip) && be.getBlockPos().equals(donePos);
+        for (FluidTank t : new FluidTank[] { jet, diesel }) {
+            if (t.getFluidAmount() <= 0) continue;
+            int need = topUp ? Math.min(Balance.SA_TOPUP_MB, t.getFluidAmount()) : 1;
+            if (give(sl, be, kind, t.getFluid().getFluid(), topUp ? need : Balance.SA_FUEL_RATE, true) >= need) return true;
+        }
         if (energy().getEnergyStored() < Balance.SA_GROUND_FE * 4) return false;
         IEnergyStorage core = coreOf(be, kind);
-        if (core != null) return core.receiveEnergy(Balance.SA_GROUND_FE, true) > 0;
+        if (core != null) return topUp ? core.getEnergyStored() < core.getMaxEnergyStored() * Balance.CORE_APU_START : core.receiveEnergy(Balance.SA_GROUND_FE, true) > 0;
         if (kind == 0 && be instanceof ServiceReceptacleBlockEntity r && r.craft() != null) {
             int[] c = PowerCoreBlockEntity.chargeOf(sl, r.craft());
-            return c[1] > 0 && c[0] < c[1] - Balance.SA_GROUND_FE;
+            return c[1] > 0 && (topUp ? c[0] < c[1] * Balance.CORE_APU_START : c[0] < c[1] - Balance.SA_GROUND_FE);
         }
         return false;
     }
@@ -341,29 +353,52 @@ public class ServiceArmBlockEntity extends ProcessUnitBlockEntity implements Own
 
     private List<Cand> candidates(ServerLevel sl) {
         List<Cand> out = new ArrayList<>();
+        String miss = "";
+        double missDist = Double.MAX_VALUE;
         if (!SableBridge.active() || !AirGate.on()) return out;
         Vec3 c = wp(0, 1, 0);
         double r = Balance.SA_REACH + 3.0;
         AABB box = new AABB(c.x - r, c.y - 6.0, c.z - r, c.x + r, c.y + 14.0, c.z + r);
         UUID mine = SableBridge.shipIdAt(sl, worldPosition);
+        boolean doneHere = false;
         for (SableBridge.ShipInfo s : SableBridge.shipsIntersecting(sl, box)) {
             if (s.id().equals(mine)) continue;
+            if (s.id().equals(doneShip)) doneHere = true;
             UUID own = craftOwner(sl, s.id());
-            if (own != null && getOwner() != null && !ShipStrike.sameSide(getOwner(), own)) continue;
+            if (own != null && getOwner() != null && !ShipStrike.sameSide(getOwner(), own)) {
+                if (missDist == Double.MAX_VALUE) { missDist = Double.MAX_VALUE / 2; miss = "side|" + (s.name() == null || s.name().isBlank() ? "?" : s.name()); }
+                continue;
+            }
             for (BlockPos p : SableBridge.blockEntitiesOn(sl, s.id())) {
                 BlockEntity be = sl.getBlockEntity(p);
                 int kind = kindOf(be);
-                if (kind < 0 || !exposed(sl, be, kind) || !wants(sl, be, kind)) continue;
+                if (kind < 0) continue;
                 Vec3[] pt = pointOf(sl, be, kind);
                 if (pt == null) continue;
                 Vec3 lp = toLocal(pt[0]), ln = dirToLocal(pt[1]);
-                if (solve(lp, ln, 1.25) == null || solve(lp, ln, 0.05) == null) continue;
-                out.add(new Cand(s.id(), be, kind, lp, Math.hypot(lp.x, lp.z) + (kind == 0 ? 0.0 : 100.0)));
+                double hd = Math.hypot(lp.x, lp.z);
+                String why = !exposed(sl, be, kind) ? "covered" : !wants(sl, s.id(), be, kind) ? "full"
+                        : solve(lp, ln, 1.25) == null || solve(lp, ln, 0.05) == null ? (hd < Balance.SA_REACH_MIN + 0.5 ? "close" : "reach") : null;
+                if (why != null) {
+                    if (hd < missDist) { missDist = hd; miss = why + "|" + be.getBlockState().getBlock().getName().getString() + String.format(" %.1f", hd); }
+                    continue;
+                }
+                out.add(new Cand(s.id(), be, kind, lp, hd + (kind == 0 ? 0.0 : 100.0)));
             }
         }
+        if (!doneHere) { doneShip = null; donePos = null; }
         out.sort((a, b) -> Double.compare(a.dist(), b.dist()));
+        if (out.isEmpty() && !miss.equals(whyText)) {
+            if (!miss.isEmpty()) Wmd.LOGGER.info("Service arm {}: no fuel point it can serve; nearest skipped: {}", worldPosition.toShortString(), miss.replace('|', ' '));
+        }
+        String w = out.isEmpty() ? miss : "";
+        if (!w.equals(whyText)) { whyText = w; setChanged(); sync(); }
         return out;
     }
+
+    private String whyText = "";
+
+    public String whyText() { return whyText; }
 
     private void setFound(List<Cand> l) {
         List<String> t = new ArrayList<>();
@@ -510,6 +545,7 @@ public class ServiceArmBlockEntity extends ProcessUnitBlockEntity implements Own
         Cand pick = null;
         for (Cand c : l) if (c.be().getBlockPos().asLong() == pinPos) { pick = c; break; }
         if (pick == null && !l.isEmpty()) pick = l.get(0);
+        if (pick == null && !targetText.isEmpty()) { targetText = ""; setChanged(); sync(); }
         if (pick == null) { seenShip = null; setStatus(mode == M_AUTO ? S_IDLE : S_STANDBY); if (mode != M_AUTO && now - seenTime > 200) go = false; return false; }
         targetText = label(pick);
         if (!pick.ship().equals(seenShip) || !pick.be().getBlockPos().equals(seenPos) || seenAt == null || seenAt.distanceTo(pick.local()) > Balance.SA_PARK_MOVE) {
@@ -601,11 +637,14 @@ public class ServiceArmBlockEntity extends ProcessUnitBlockEntity implements Own
             setComparator(sl, fill[1] > 0 ? 1 + Math.round(14.0F * fill[0] / fill[1]) : 1);
         }
         boolean moved = false;
+
+        boolean filling = false;
         FluidTank[] order = { jet, diesel };
         for (FluidTank t : order) {
             if (t.isEmpty()) continue;
-            int n = give(sl, be, tKind, t.getFluid().getFluid(), Math.min(Balance.SA_FUEL_RATE, t.getFluidAmount()), false);
-            if (n > 0) { t.drain(n, IFluidHandler.FluidAction.EXECUTE); jobMb += n; moved = true; break; }
+            int offer = Math.min(Balance.SA_FUEL_RATE, t.getFluidAmount());
+            int n = give(sl, be, tKind, t.getFluid().getFluid(), offer, false);
+            if (n > 0) { t.drain(n, IFluidHandler.FluidAction.EXECUTE); jobMb += n; moved = true; if (n >= offer) filling = true; break; }
         }
         int avail = energy().getEnergyStored() - Balance.SA_FE_PUMP * 2;
         if (avail > 0) {
@@ -613,10 +652,12 @@ public class ServiceArmBlockEntity extends ProcessUnitBlockEntity implements Own
             IEnergyStorage core = coreOf(be, tKind);
             if (core != null) took = core.receiveEnergy(ask, false);
             else if (tKind == 0 && be instanceof ServiceReceptacleBlockEntity r) took = r.acceptPower(sl, ask);
-            if (took > 0 && useExtraEnergy(took)) { jobFe += took; moved = true; }
+            if (took > 0 && useExtraEnergy(took)) { jobFe += took; moved = true; if (took >= ask) filling = true; }
         }
-        if (moved) { idleTicks = 0; setChanged(); if (sl.getGameTime() % 20 == 0) sync(); return; }
+        if (moved) { setChanged(); if (sl.getGameTime() % 20 == 0) sync(); }
+        if (filling) { idleTicks = 0; return; }
         if (++idleTicks < Balance.SA_FULL_TICKS) return;
+        doneShip = tShip; donePos = tPos;
         sl.playSound(null, tipWorld().x, tipWorld().y, tipWorld().z, WmdSounds.SA_DONE.get(), SoundSource.BLOCKS, Balance.SND_CLICK, 1.0F);
         status = jet.isEmpty() && diesel.isEmpty() ? S_NO_FUEL : S_DONE;
         finishJob();
@@ -761,8 +802,8 @@ public class ServiceArmBlockEntity extends ProcessUnitBlockEntity implements Own
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.service_arm", (int) Balance.SA_REACH, Balance.SA_FUEL_RATE * 20, Balance.SA_GROUND_FE * 20),
-                Component.translatable("gui.wmd.info.use", Balance.SA_FE_MOVE * 20));
+        return List.of(Component.translatable("gui.wmd.info.service_arm", (int) Balance.SA_REACH, Balance.SA_FUEL_RATE * 20, Balance.SA_GROUND_FE),
+                Component.translatable("gui.wmd.info.use", Balance.SA_FE_MOVE));
     }
 
     @Override
@@ -787,6 +828,7 @@ public class ServiceArmBlockEntity extends ProcessUnitBlockEntity implements Own
         tag.putInt("saFe", jobFe);
         tag.putBoolean("saPinned", pinPos != Long.MIN_VALUE);
         tag.putString("saList", String.join("|", foundText));
+        tag.putString("saWhy", whyText);
         tag.putInt("saPinIdx", pinIdx);
     }
 
@@ -828,6 +870,7 @@ public class ServiceArmBlockEntity extends ProcessUnitBlockEntity implements Own
         targetText = tag.getString("saTarget");
         jobMb = tag.getInt("saMb");
         jobFe = tag.getInt("saFe");
+        whyText = tag.getString("saWhy");
         String ls = tag.getString("saList");
         foundText = ls.isEmpty() ? new ArrayList<>() : new ArrayList<>(List.of(ls.split("\\|")));
         pinIdx = tag.contains("saPinIdx") ? tag.getInt("saPinIdx") : -1;

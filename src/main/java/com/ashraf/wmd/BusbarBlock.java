@@ -53,10 +53,14 @@ public class BusbarBlock extends BaseEntityBlock implements net.minecraft.world.
 
     public BusbarBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(LIT, false).setValue(NORTH, false).setValue(EAST, false).setValue(SOUTH, false)
-                .setValue(WEST, false).setValue(UP, false).setValue(DOWN, false)
-                .setValue(PLUG_N, false).setValue(PLUG_E, false).setValue(PLUG_S, false).setValue(PLUG_W, false).setValue(PLUG_U, false).setValue(PLUG_D, false)
-                .setValue(WATERLOGGED, false).setValue(WALLRUN, false));
+        BlockState d = stateDefinition.any().setValue(LIT, false);
+        if (d.hasProperty(NORTH)) {
+            d = d.setValue(NORTH, false).setValue(EAST, false).setValue(SOUTH, false)
+                    .setValue(WEST, false).setValue(UP, false).setValue(DOWN, false)
+                    .setValue(PLUG_N, false).setValue(PLUG_E, false).setValue(PLUG_S, false).setValue(PLUG_W, false).setValue(PLUG_U, false).setValue(PLUG_D, false)
+                    .setValue(WATERLOGGED, false).setValue(WALLRUN, false);
+        }
+        registerDefaultState(d);
     }
 
     public static BooleanProperty plugProp(Direction d) {
@@ -140,40 +144,54 @@ public class BusbarBlock extends BaseEntityBlock implements net.minecraft.world.
         if (!h && !s.getValue(UP) && !s.getValue(DOWN)) return null;
         if (h && sturdy(level, pos, Direction.DOWN)) return null;
         for (Direction w : Direction.Plane.HORIZONTAL) if (!s.getValue(prop(w.getOpposite())) && sturdy(level, pos, w)) return w;
+        if (h && !s.getValue(DOWN) && !s.getValue(UP) && sturdy(level, pos, Direction.UP)) return Direction.UP;
         return null;
     }
 
+    private static final Direction[] SURFACES = { Direction.DOWN, Direction.UP, Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST };
+
     static Direction[] inner(BlockGetter level, BlockPos pos, BlockState s) {
-        if (!plainBar(s) || s.getValue(PLUG_U) || s.getValue(PLUG_D) || sturdy(level, pos, Direction.DOWN)) return null;
-        for (Direction w1 : Direction.Plane.HORIZONTAL) {
-            if (s.getValue(prop(w1)) || !plain(s, w1.getOpposite()) || !sturdy(level, pos, w1)) continue;
-            for (Direction w2 : new Direction[] { w1.getClockWise(), w1.getCounterClockWise() })
-                if (!s.getValue(prop(w2)) && plain(s, w2.getOpposite()) && sturdy(level, pos, w2)) return new Direction[] { w1, w2 };
+        if (!plainBar(s)) return null;
+        boolean onFloor = horizontal(s) && sturdy(level, pos, Direction.DOWN);
+        for (Direction s1 : SURFACES) {
+            if (onFloor && s1 != Direction.DOWN) continue;
+            if (s.getValue(prop(s1))|| !plain(s, s1.getOpposite()) || !sturdy(level, pos, s1)) continue;
+            Direction s2 = surfaceOf(level, pos.relative(s1.getOpposite()), s1, false);
+            if (s2 == null || s2.getAxis() == s1.getAxis() || s.getValue(prop(s2)) || !sturdy(level, pos, s2)) continue;
+            return new Direction[] { s1, s2 };
         }
         return null;
     }
 
     static Direction[] outer(BlockGetter level, BlockPos pos, BlockState s) {
-        if (!plainBar(s) || s.getValue(UP) || s.getValue(DOWN) || sturdy(level, pos, Direction.DOWN)) return null;
+        if (!plainBar(s)) return null;
         Direction a = null, b = null;
-        for (Direction d : Direction.Plane.HORIZONTAL) {
+        for (Direction d : Direction.values()) {
             if (!s.getValue(prop(d))) continue;
             if (!plain(s, d)) return null;
             if (a == null) a = d; else if (b == null) b = d; else return null;
         }
         if (b == null || b.getAxis() == a.getAxis()) return null;
-        BlockPos na = pos.relative(a), nb = pos.relative(b);
-        if (mount(level, na, level.getBlockState(na)) != b || mount(level, nb, level.getBlockState(nb)) != a) return null;
+        if (a.getAxis().isHorizontal() && b.getAxis().isHorizontal() && sturdy(level, pos, Direction.DOWN)) return null;
+        if (surfaceOf(level, pos.relative(a), a.getOpposite(), true) != b || surfaceOf(level, pos.relative(b), b.getOpposite(), true) != a) return null;
         return new Direction[] { a, b };
     }
 
-    private static Direction wallOf(BlockGetter level, BlockPos np, Direction toUs) {
+    private static Direction surfaceOf(BlockGetter level, BlockPos np, Direction toUs, boolean deep) {
         BlockState ns = level.getBlockState(np);
+        if (!plainBar(ns) || !ns.getValue(prop(toUs))) return null;
         Direction m = mount(level, np, ns);
         if (m != null) return m;
-        Direction[] in = inner(level, np, ns);
-        if (in != null) return toUs == in[0].getOpposite() ? in[1] : in[0];
-        return null;
+        if (deep) {
+            Direction[] in = inner(level, np, ns);
+            if (in != null) return toUs == in[0].getOpposite() ? in[1] : in[0];
+        }
+        return toUs.getAxis().isHorizontal() ? Direction.DOWN : null;
+    }
+
+    private static Direction wallOf(BlockGetter level, BlockPos np, Direction toUs) {
+        Direction w = surfaceOf(level, np, toUs, true);
+        return w != null && w.getAxis().isHorizontal() ? w : null;
     }
 
     public record Part(int model, Direction mount, Direction point, float t0, float t1) {}
@@ -204,12 +222,16 @@ public class BusbarBlock extends BaseEntityBlock implements net.minecraft.world.
         }
         Direction[] in = inner(level, pos, s);
         if (in != null) {
-            Direction w1 = in[0], w2 = in[1];
-            add(l, P_CORE, w1, null);
-            for (Direction d : new Direction[] { Direction.UP, Direction.DOWN, w2.getOpposite() }) if (s.getValue(prop(d))) add(l, s.getValue(plugProp(d)) ? P_PLUG : P_ARM, w1, d);
-            add(l, P_ARM, w1, w2);
-            add(l, P_ARM, w2, w1.getOpposite());
-            add(l, P_ARM, w2, w1.getOpposite(), 4.0F, ARM_IN);
+            Direction s1 = in[0], s2 = in[1];
+            add(l, P_CORE, s1, null);
+            for (Direction d : Direction.values()) {
+                if (d == s1.getOpposite() || !s.getValue(prop(d))) continue;
+                if (s1 == Direction.DOWN && d.getAxis().isVertical()) continue;
+                add(l, s.getValue(plugProp(d)) ? P_PLUG : P_ARM, s1, d);
+            }
+            add(l, P_ARM, s1, s2);
+            add(l, P_ARM, s2, s1.getOpposite());
+            add(l, P_ARM, s2, s1.getOpposite(), 4.0F, ARM_IN);
             return l;
         }
         Direction[] out = outer(level, pos, s);
@@ -259,6 +281,7 @@ public class BusbarBlock extends BaseEntityBlock implements net.minecraft.world.
     static Direction floorPoint(Direction mount, Direction d) {
         if (d == null) return Direction.NORTH;
         if (mount == Direction.DOWN) return d.getAxis().isHorizontal() ? d : Direction.NORTH;
+        if (mount == Direction.UP) return d.getAxis() == Direction.Axis.X ? d.getOpposite() : d.getAxis() == Direction.Axis.Z ? d : Direction.NORTH;
         if (d == Direction.UP) return Direction.NORTH;
         if (d == Direction.DOWN) return Direction.SOUTH;
         if (d.getAxis() == mount.getAxis()) return Direction.NORTH;
@@ -269,10 +292,10 @@ public class BusbarBlock extends BaseEntityBlock implements net.minecraft.world.
 
     public static org.joml.Matrix4f partMatrix(Part p) {
         org.joml.Matrix4f m = new org.joml.Matrix4f().translate(0.5F, 0.5F, 0.5F);
-        if (p.mount() != Direction.DOWN) {
+        if (p.mount().getAxis().isHorizontal()) {
             m.rotateY((float) Math.toRadians(yaw(p.mount())));
             m.rotateX((float) (Math.PI / 2));
-        }
+        } else if (p.mount() == Direction.UP) m.rotateZ((float) Math.PI);
         m.rotateY((float) Math.toRadians(yaw(floorPoint(p.mount(), p.point()))));
         m.translate(-0.5F, -0.5F, -0.5F);
         if (p.model() == P_ARM && (p.t0() != ARM_IN || p.t1() != 16.0F)) {

@@ -21,13 +21,14 @@ public class AamItem extends Item {
 
     static Item of(int kind) {
         return kind == AirMissiles.HEAT ? AirBlocks.AAM_HEAT.get() : kind == AirMissiles.RADAR ? AirBlocks.AAM_RADAR.get() : kind == AirMissiles.ARM ? AirBlocks.AAM_ARM.get()
-                : kind == AirMissiles.AGM ? AirBlocks.AAM_AGM.get() : null;
+                : kind == AirMissiles.AGM ? AirBlocks.AAM_AGM.get() : kind == AirMissiles.METEOR ? AirBlocks.AAM_METEOR.get()
+                : kind == AirMissiles.HEAVY ? AirBlocks.AAM_HEAVY.get() : null;
     }
 
     static String mesh(int kind) { return kind == AirMissiles.HEAT ? "aam_heat" : kind == AirMissiles.RADAR ? "aam_radar" : kind == AirMissiles.ARM ? "aam_arm"
-            : kind == AirMissiles.AGM ? "aam_agm" : null; }
+            : kind == AirMissiles.AGM ? "aam_agm" : kind == AirMissiles.METEOR ? "aam_meteor" : kind == AirMissiles.HEAVY ? "aam_heavy" : null; }
 
-    static int paint(int kind) { return kind == AirMissiles.HEAT || kind == AirMissiles.AGM ? 2 : 3; }
+    static int paint(int kind) { return kind == AirMissiles.HEAT || kind == AirMissiles.AGM ? 2 : kind == AirMissiles.HEAVY ? 4 : 3; }
 
     static boolean refined(ItemStack s) { return s.getItem() instanceof AamItem && s.getOrDefault(WmdComponents.WARHEAD_GRADE.get(), 0) > 0; }
 

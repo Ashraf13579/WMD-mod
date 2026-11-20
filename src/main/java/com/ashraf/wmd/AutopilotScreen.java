@@ -26,9 +26,9 @@ public class AutopilotScreen extends Screen {
 
     private static final int W = 420, H = 240, MAP_W = 240, MAP_H = 190, SIDE_W = 156, MAP_R = 512, MAP_STEP = 4, SEND_GAP = 10;
     private static final String P = "gui.wmd.ap.";
-    private static final int[] ZOOMS = { 16, 8, 4, 2, 1 };
+    private static final int[] ZOOMS = { 128, 64, 32, 16, 8, 4, 2, 1 };
     private final BlockPos cockpit;
-    private int left, top, tab = Autopilot.ROUTE, zoomIdx = 2, sel = -1, dragWp = -1, ticks, lastSent = -100, legScroll;
+    private int left, top, tab = Autopilot.ROUTE, zoomIdx = 5, sel = -1, dragWp = -1, ticks, lastSent = -100, legScroll;
     private boolean dirty, panning, panMoved;
     private double vx, vz, panMx, panMy;
 
@@ -47,6 +47,8 @@ public class AutopilotScreen extends Screen {
     private ResourceLocation tex;
     private DynamicTexture dyn;
     private int texX0, texZ0;
+
+    private WorldMapLayer wmap;
 
     public AutopilotScreen(BlockPos cockpit) {
         super(Component.translatable(P + "title"));
@@ -104,6 +106,7 @@ public class AutopilotScreen extends Screen {
         left = (width - W) / 2; top = (height - H) / 2;
         ClientAutopilotBridge.onStateHook = () -> Minecraft.getInstance().execute(this::onState);
         if (tex == null) sample();
+        if (wmap == null) wmap = new WorldMapLayer("ap", MAP_W, MAP_H);
         int sx = left + W - SIDE_W - 6, y = top + 24;
         String[] tabs = { "hold", "route", "orbit", "home" };
         int tw = (SIDE_W - 6) / 4;
@@ -175,8 +178,17 @@ public class AutopilotScreen extends Screen {
         if (dirty) send(ApPayloads.SET, 0);
         ClientAutopilotBridge.onStateHook = null;
         if (dyn != null) { dyn.close(); dyn = null; }
+        if (wmap != null) { wmap.close(); wmap = null; }
         ClientAutopilot.back();
         super.onClose();
+    }
+
+    @Override
+    public void removed() {
+        ClientAutopilotBridge.onStateHook = null;
+        if (dyn != null) { dyn.close(); dyn = null; }
+        if (wmap != null) { wmap.close(); wmap = null; }
+        super.removed();
     }
 
     @Override public boolean isPauseScreen() { return false; }
@@ -326,6 +338,7 @@ public class AutopilotScreen extends Screen {
             int span = 2 * MAP_R, px = sx(texX0), py = sy(texZ0), ps = (int) Math.round(span / bpp()), n = span / MAP_STEP;
             g.blit(tex, px, py, ps, ps, 0.0F, 0.0F, n, n, n, n);
         }
+        if (wmap != null && wmap.update(vx, vz, bpp(), 0.8F)) { wmap.draw(g, x0, y0); wmap.drawStatus(g, font, x0 + 3, y0 + MAP_H - 11); }
         if (!Double.isNaN(markX)) {
             int ax = sx(markX), ay = sy(markZ), bx = sx(markEx), by = sy(markEz);
             double ml = Math.hypot(markEx - markX, markEz - markZ);

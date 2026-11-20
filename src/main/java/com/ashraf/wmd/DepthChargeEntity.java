@@ -83,7 +83,7 @@ public class DepthChargeEntity extends Entity {
             ProjectilePath.PathHit h = SableBridge.exactHit(sl, pos, next.add(vel.lengthSqr() > 1e-6 ? vel.normalize().scale(0.6) : Vec3.ZERO), cands);
             if (h != null) { detonate(sl, h.pos(), "ship"); return; }
         }
-        BlockHitResult hit = sl.clip(new ClipContext(pos, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+        BlockHitResult hit = SableBridge.clipWorld(sl, new ClipContext(pos, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this), ownShip);
         if (hit.getType() == HitResult.Type.BLOCK && age <= Balance.DC_SOURCE_PASS_TICKS && ownLauncher(sl, hit.getBlockPos())) hit = BlockHitResult.miss(next, hit.getDirection(), BlockPos.containing(next));
         if (LaidMineEntity.ownShipHit(sl, ownShip, hit, pos, next)) hit = BlockHitResult.miss(next, hit.getDirection(), BlockPos.containing(next));
         if (hit.getType() == HitResult.Type.BLOCK && wet) { detonate(sl, hit.getLocation(), "bottom"); return; }
@@ -103,6 +103,7 @@ public class DepthChargeEntity extends Entity {
     private void detonate(ServerLevel sl, Vec3 at, String why) {
         if (isRemoved()) return;
         discard();
+        MusicTriggersHook.fire(sl, "wmd:depth_charge", BlockPos.containing(at));
         int hull = ShipStrike.blast(sl, at, Balance.DC_REACH, Balance.DC_POWER, owner);
         UnderwaterBlast.go(sl, at, UnderwaterBlast.DEPTH_CHARGE, Balance.DC_POWER, owner, this);
         if (owner != null && sl.getServer().getPlayerList().getPlayer(owner) instanceof ServerPlayer p)

@@ -8,7 +8,7 @@
   ],
   "key": {
     "M": {
-      "item": "wmd:manganese_ingot"
+      "tag": "c:ingots/manganese"
     },
     "S": {
       "item": "wmd:steel_plate"

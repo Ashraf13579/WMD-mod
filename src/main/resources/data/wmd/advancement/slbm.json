@@ -1,0 +1,38 @@
+{
+  "parent": "wmd:torpedo",
+  "display": {
+    "icon": {
+      "id": "wmd:slbm"
+    },
+    "title": {
+      "translate": "advancements.wmd.slbm.title"
+    },
+    "description": {
+      "translate": "advancements.wmd.slbm.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_slbm": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wmd:slbm"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_slbm"
+    ]
+  ],
+  "rewards": {
+    "experience": 150
+  }
+}

@@ -1,0 +1,10 @@
+{
+    "vertex": "wmd:pod_thermal_view",
+    "fragment": "wmd:pod_thermal_view",
+    "attributes": [ "Position" ],
+    "samplers": [ { "name": "Sampler0" }, { "name": "Sampler1" } ],
+    "uniforms": [
+        { "name": "GameTime", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "HeatOn", "type": "int", "count": 1, "values": [ 0 ] }
+    ]
+}

@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:gravity_well"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SXS",
+    "MAM",
+    "TBT"
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:superconducting_coil"
+    },
+    "X": {
+      "item": "wmd:chip_defence_2"
+    },
+    "M": {
+      "tag": "c:storage_blocks/tungsten"
+    },
+    "A": {
+      "item": "wmd:advanced_circuit"
+    },
+    "T": {
+      "item": "wmd:tungsten_alloy_casing"
+    },
+    "B": {
+      "item": "wmd:busbar"
+    }
+  },
+  "result": {
+    "id": "wmd:gravity_well",
+    "count": 1
+  }
+}

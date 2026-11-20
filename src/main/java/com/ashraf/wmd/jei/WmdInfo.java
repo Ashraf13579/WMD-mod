@@ -1,5 +1,6 @@
 package com.ashraf.wmd.jei;
 
+import com.ashraf.wmd.AirMissiles;
 import com.ashraf.wmd.Balance;
 import com.ashraf.wmd.BombType;
 import com.ashraf.wmd.DroneCatapultBlockEntity;
@@ -106,7 +107,7 @@ public final class WmdInfo {
         info(reg, "runway_tile", Balance.RUNWAY_W, Balance.RUNWAY_L);
         info(reg, "gas_mask", Balance.GAS_MASK_FILTER);
 
-        info(reg, "fusion_reactor", Proc.n((long) Balance.FUSION_MAX_FE * 20), Proc.n((long) Balance.FUSION_IGNITION_FE), Proc.n(Balance.FUSION_RAMP_TICKS / 20));
+        info(reg, "fusion_reactor", Proc.n((long) Balance.FUSION_MAX_FE), Proc.n((long) Balance.FUSION_IGNITION_FE), Proc.n(Balance.FUSION_RAMP_TICKS / 20));
         info(reg, "lithium_dust", Balance.MGCELL_LI_EVERY);
         info(reg, "breeder_rod", Balance.BREEDER_TICKS / 1200, Balance.BREEDER_SLOTS);
         info(reg, "irradiated_breeder_rod", Proc.n(Balance.BREEDER_TRITIUM_MB));
@@ -121,12 +122,12 @@ public final class WmdInfo {
         info(reg, "warhead_cryo", Proc.n(Balance.CRYO_R), Proc.n(Balance.CRYO_TICKS / 20));
         info(reg, "forcefield_generator", Balance.FF_R_MIN, Balance.FF_R_MAX, Proc.n(Balance.FF_BUFFER_FE), Proc.n(Balance.FF_CHARGE_IN));
 
-        info(reg, "antimatter_collider", Proc.n((long) Balance.AM_FE_PER_TICK * 20), Balance.AM_CYCLE_TICKS / 1200);
-        info(reg, "antimatter_store", Balance.AM_STORE_CELLS, Proc.n(Balance.AM_STORE_FE * 20), Balance.AM_STORE_BACKUP_TICKS / 20);
+        info(reg, "antimatter_collider", Proc.n((long) Balance.AM_FE_PER_TICK), Balance.AM_CYCLE_TICKS / 1200);
+        info(reg, "antimatter_store", Balance.AM_STORE_CELLS, Proc.n(Balance.AM_STORE_FE), Balance.AM_STORE_BACKUP_TICKS / 20);
         info(reg, "empty_trap_cell");
         info(reg, "antimatter_cell", Balance.AM_CYCLE_TICKS / 1200);
 
-        info(reg, "railgun", Proc.n((long) Balance.RG_FE_PER_TICK * 20), Balance.RG_CHARGE_TICKS / 1200, (int) Balance.RG_ABORT_REACH);
+        info(reg, "railgun", Proc.n((long) Balance.RG_FE_PER_TICK), Balance.RG_CHARGE_TICKS / 1200, (int) Balance.RG_ABORT_REACH);
         info(reg, "railgun_slug");
         info(reg, "tungsten_tile");
         info(reg, "leaflet", Balance.LEAFLET_DROPS);
@@ -139,14 +140,19 @@ public final class WmdInfo {
         info(reg, "helm_station");
         info(reg, "jato_booster", Balance.JATO_BURN / 20);
         info(reg, "jet_power_core", Proc.n(Balance.CORE_BUFFER_FE));
-        info(reg, "rf_sender", Proc.n(Balance.RF_SEND_FE * 20L), Balance.RF_EFFICIENCY, Proc.n(Balance.RF_RANGE));
-        info(reg, "rf_receiver", Proc.n(Balance.RF_OUT_FE * 20L), Balance.RF_EFFICIENCY, Proc.n(Balance.RF_RANGE));
+        info(reg, "rf_sender", Proc.n(Balance.RF_SEND_FE), Balance.RF_EFFICIENCY, Proc.n(Balance.RF_RANGE));
+        info(reg, "rf_receiver", Proc.n(Balance.RF_OUT_FE), Balance.RF_EFFICIENCY, Proc.n(Balance.RF_RANGE));
         info(reg, "aam_heat", Proc.n((long) Balance.AAM_RANGE[0]));
         info(reg, "aam_radar", Proc.n((long) Balance.AAM_RANGE[1]), Proc.n((long) Balance.AAM_PITBULL));
         info(reg, "aam_arm", Proc.n((long) Balance.AAM_RANGE[2]));
         info(reg, "aam_agm", Proc.n((long) Balance.AAM_RANGE[3]));
+        info(reg, "aam_meteor", Proc.n((long) Balance.AAM_RANGE[AirMissiles.METEOR]), Proc.n((long) Balance.AIR_NOSE_LOCK_RANGE));
+        info(reg, "aam_heavy", Proc.n((long) Balance.AAM_RANGE[AirMissiles.HEAVY]));
+        info(reg, "datalink_seeker");
         info(reg, "wing_section");
         info(reg, "control_surface");
+        info(reg, "exo_chest");
+        info(reg, "tractor_beam"); info(reg, "plasma_cutter");
 
         for (com.ashraf.wmd.WmdFluids.Entry e : com.ashraf.wmd.WmdFluids.ALL)
             reg.addIngredientInfo(new net.neoforged.neoforge.fluids.FluidStack(e.source().get(), 1000), mezz.jei.api.neoforge.NeoForgeTypes.FLUID_STACK,

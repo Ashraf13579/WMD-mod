@@ -70,6 +70,8 @@ public final class ShipStrike {
 
     public static int chew(ServerLevel level, UUID shipId, Vec3 from, Vec3 to, int maxBlocks, float maxHardness, UUID shooter) {
         if (level == null || shipId == null || !SableBridge.active()) return 0;
+        if (CraftShield.chewStopped(level, shipId, from, to, maxBlocks)) return 0;
+        AirCrash.shotAt(shipId, level.getGameTime());
         AirEngineBlockEntity.rayAt(level, from, to, maxBlocks);
         TankDamage.rayAt(level, from, to, maxBlocks);
         try { return SableImpact.breakAlong(level, shipId, from, to, maxBlocks, maxHardness, shooter); }

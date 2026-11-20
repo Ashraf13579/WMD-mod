@@ -11,7 +11,7 @@
       "tag": "c:ingots/steel"
     },
     "B": {
-      "item": "wmd:bronze_ingot"
+      "tag": "c:ingots/bronze"
     },
     "C": {
       "item": "wmd:machine_casing"

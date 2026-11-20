@@ -15,6 +15,8 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 public class GantryRailBlockEntity extends ProcessUnitBlockEntity implements CcAnimated, CopycatState.Host {
 
+    @Override public boolean ownable() { return false; }
+
     private final CopycatState copycat = new CopycatState();
 
     public GantryRailBlockEntity(BlockPos pos, BlockState state) {

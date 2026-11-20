@@ -23,6 +23,8 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 public class ScrewPropellerBlockEntity extends ProcessUnitBlockEntity implements CcAnimated, ShipEngine, DriveEngine {
 
+    @Override public boolean ownable() { return false; }
+
     private static final PortMap PORT_MAP = new PortMap(0, 0, 2).power(0, 0, 0, Direction.UP, false);
 
     static final double DISC_Y = 0.5, DISC_Z = 2.725, TIP_R = 1.48;
@@ -331,8 +333,8 @@ public class ScrewPropellerBlockEntity extends ProcessUnitBlockEntity implements
 
     @Override
     public List<Component> guiInfo() {
-        int maxFe = (Balance.SCREW_FE + Balance.SCREW_FE_LOAD) * 20;
-        return List.of(Component.translatable("gui.wmd.info.screw_use", Balance.SCREW_FE * 20, maxFe),
+        int maxFe = Balance.SCREW_FE + Balance.SCREW_FE_LOAD;
+        return List.of(Component.translatable("gui.wmd.info.screw_use", Balance.SCREW_FE, maxFe),
                 Component.translatable("gui.wmd.screw.order", Component.translatable("gui.wmd.prop.step" + cStep), sourceName(cSourceShown)),
                 Component.translatable("gui.wmd.screw.state", Math.round(cPitch), Math.round(cSpool * 100.0F), Math.round(cRudder), Math.round(cPlanes)),
                 Component.translatable(!SableBridge.loaded() ? "gui.wmd.screw.no_sable" : cWet ? (cCav ? "gui.wmd.screw.cavitating" : "gui.wmd.screw.wet") : "gui.wmd.screw.dry"));

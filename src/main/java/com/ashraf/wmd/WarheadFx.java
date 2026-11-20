@@ -71,6 +71,19 @@ public final class WarheadFx {
         }
     }
 
+    static void empPulse(ServerLevel level, double x, double y, double z, double r, int ticks) {
+        empField(level, x, y, z, r, ticks);
+        send(level, x, y, z, 3, WarheadType.EMP, 0);
+    }
+
+    static void empField(ServerLevel level, double x, double y, double z, double r, int ticks) {
+        FlightManager mgr = FlightManager.get(level);
+        Task k = task(EMP, x, y, z, r, ticks, WarheadType.EMP, 3);
+        mgr.tasks.add(k);
+        mgr.setDirty();
+        drain(level, k);
+    }
+
     public static void tankTask(ServerLevel level, boolean gas, double x, double y, double z, double r, int ticks) {
         FlightManager mgr = FlightManager.get(level);
         mgr.tasks.add(task(gas ? GAS : IGNITE, x, y + (gas ? 1.0 : 0.0), z, r, ticks, gas ? WarheadType.CHEMICAL : WarheadType.INCENDIARY, 1));
@@ -106,8 +119,11 @@ public final class WarheadFx {
 
     public static void detonate(ServerLevel level, FlightManager mgr, int gx, int gy, int gz, int tier, WarheadType t, double dirX, double dirZ, boolean rf) {
         if (Forcefield.absorbs(level, gx + 0.5, gy, gz + 0.5, tier, t)) { mgr.release(level, gx, gz, holdRadius(tier, t), level.getGameTime() + 100); return; }
+        if (Forcefield.pierces(t, tier)) CraftShield.piercingNow(level);
+        WmdApiImpl.detonated(level, gx, gy, gz, tier, t);
         Planet.flash(level, gx + 0.5, gz + 0.5, tier);
         NuclearWinter.blast(level, t);
+        if (NuclearWinter.weight(t) > 0) WarTreaty.detonation(level, gx, gz, t);
         StationLife.blast(level, gx + 0.5, gy + 0.5, gz + 0.5, Missiles.craterRadius(tier) * Math.max(0.3, t.crater));
         double base = Missiles.craterRadius(tier);
         long now = level.getGameTime();
@@ -312,7 +328,7 @@ public final class WarheadFx {
         int r = Balance.RG_SHAFT_R, n = 0;
         int y0 = Math.max(level.getMinBuildHeight() + 1, gy - Balance.RG_SHAFT_DEPTH);
 
-        boolean guard = Config.Server.protectSpawnRadius() > 0 || Config.Server.respectClaims();
+        boolean guard = Config.Server.gateNeeded();
         java.util.Set<net.minecraft.world.level.chunk.LevelChunk> touched = new java.util.HashSet<>();
         BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
         for (int y = gy + 4; y >= y0; y--)
@@ -326,6 +342,7 @@ public final class WarheadFx {
                     if (s.isAir() || s.is(Blocks.BEDROCK) || s.getDestroySpeed(level, p) < 0 || s.hasBlockEntity()) continue;
                     if (guard && !Config.Server.canBreak(level, p)) continue;
                     ch.setBlockState(p, Blocks.AIR.defaultBlockState(), false);
+                    BlastWrites.section(level, p.getX(), p.getY(), p.getZ(), s, Blocks.AIR.defaultBlockState());
                     touched.add(ch);
                     n++;
                 }
@@ -342,7 +359,7 @@ public final class WarheadFx {
     private static void rodShaft(ServerLevel level, int gx, int gy, int gz) {
         int r = Balance.ROD_SHAFT_R, n = 0;
         int bottom = level.getMinBuildHeight() + 5;
-        boolean guard = Config.Server.protectSpawnRadius() > 0 || Config.Server.respectClaims();
+        boolean guard = Config.Server.gateNeeded();
         net.minecraft.util.RandomSource rnd = level.random;
         java.util.Set<net.minecraft.world.level.chunk.LevelChunk> touched = new java.util.HashSet<>();
         BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
@@ -362,6 +379,7 @@ public final class WarheadFx {
                     else if (y > gy - 4) continue;
                     else { float roll = rnd.nextFloat(); to = roll < 0.45F ? Blocks.TINTED_GLASS.defaultBlockState() : roll < 0.85F ? Blocks.OBSIDIAN.defaultBlockState() : Blocks.MAGMA_BLOCK.defaultBlockState(); }
                     ch.setBlockState(p, to, false);
+                    BlastWrites.section(level, p.getX(), p.getY(), p.getZ(), s, to);
                     touched.add(ch);
                     n++;
                 }
@@ -484,7 +502,7 @@ public final class WarheadFx {
             BlockState s = level.getBlockState(bp);
             if (s.isAir() || !s.getFluidState().isEmpty() || s.getDestroySpeed(level, bp) < 0.0F || !Config.Server.naniteMayEat(level, bp)) continue;
             if (DeadHandBlockEntity.isBunker(level, bp, s)) continue;
-            level.setBlock(bp, Blocks.AIR.defaultBlockState(), 2 | 16);
+            BlastWrites.set(level, bp, Blocks.AIR.defaultBlockState(), 2 | 16);
         }
 
         BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
@@ -547,6 +565,8 @@ public final class WarheadFx {
                     BlockState s = level.getBlockState(top);
                     if (!level.isLoaded(top) || !loose(level, top, s) || !Config.Server.canBreak(level, top)) continue;
                     net.minecraft.world.entity.item.FallingBlockEntity fb = net.minecraft.world.entity.item.FallingBlockEntity.fall(level, top, s);
+                    BlastWrites.fell(level, top, s);
+                    if (RollbackLog.willLog(level, top)) fb.disableDrop();
                     fb.setDeltaMovement(0.0, 0.6, 0.0);
                     fb.dropItem = false;
                     lift--;
@@ -595,13 +615,13 @@ public final class WarheadFx {
                 p.set(x, top, z);
                 if (!Config.Server.canBreak(level, p)) continue;
                 BlockState s = level.getBlockState(p);
-                if (s.is(Blocks.WATER)) level.setBlock(p, Blocks.ICE.defaultBlockState(), 2);
-                else if (s.is(Blocks.LAVA)) level.setBlock(p, s.getFluidState().isSource() ? Blocks.OBSIDIAN.defaultBlockState() : Blocks.COBBLESTONE.defaultBlockState(), 2);
-                else if (s.is(net.minecraft.tags.BlockTags.FIRE)) level.setBlock(p, Blocks.AIR.defaultBlockState(), 2);
+                if (s.is(Blocks.WATER)) BlastWrites.set(level, p, Blocks.ICE.defaultBlockState(), 2);
+                else if (s.is(Blocks.LAVA)) BlastWrites.set(level, p, s.getFluidState().isSource() ? Blocks.OBSIDIAN.defaultBlockState() : Blocks.COBBLESTONE.defaultBlockState(), 2);
+                else if (s.is(net.minecraft.tags.BlockTags.FIRE)) BlastWrites.set(level, p, Blocks.AIR.defaultBlockState(), 2);
                 else if (level.random.nextFloat() < 0.75F) {
                     BlockPos up = p.above();
                     BlockState snow = Blocks.SNOW.defaultBlockState();
-                    if (level.getBlockState(up).isAir() && snow.canSurvive(level, up)) level.setBlock(up, snow, 2);
+                    if (level.getBlockState(up).isAir() && snow.canSurvive(level, up)) BlastWrites.set(level, up, snow, 2);
                 }
             }
             if (age % 2 == 0) {
@@ -780,9 +800,12 @@ public final class WarheadFx {
         if (reach <= 0.0) return;
         ShockWave.start(level, pos, reach);
         Debris.blastHit(level, pos, radius);
+        WardenOverdrive.blastAt(level, pos, reach);
         for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(pos, pos).inflate(reach))) {
+            if (e instanceof WardenEntity w) { w.blast(blast, pos, reach, lethal, dmgMul); continue; }
             double d = e.position().distanceTo(pos);
             if (d > reach) continue;
+            if (CraftShield.shelters(level, e.position(), pos)) continue;
             int layers = Hardened.layers(level, pos.add(0.0, 1.0, 0.0), e.position().add(0.0, e.getBbHeight() * 0.5, 0.0));
             double shield = Hardened.shield(layers);
             if (d < lethal && layers <= 0) { e.hurt(blast, 10_000.0F); continue; }
@@ -808,7 +831,7 @@ public final class WarheadFx {
                 if (!level.hasChunkAt(p)) continue;
                 BlockState s = level.getBlockState(p);
                 if (s.isAir() || s.getDestroySpeed(level, p) < 0 || Hardened.rating(level, p, s) >= 2) continue;
-                if (Config.Server.canBreak(level, p)) level.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
+                if (Config.Server.canBreak(level, p)) BlastWrites.set(level, p, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
             }
         }
         level.sendParticles(ParticleTypes.POOF, gx + 0.5, gy + 1.0, gz + 0.5, 60, r, 2.0, r, 0.3);
@@ -892,7 +915,7 @@ public final class WarheadFx {
             if (!level.hasChunkAt(probe)) continue;
             int by = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, bx, bz);
             BlockPos pos = new BlockPos(bx, by, bz);
-            if (level.getBlockState(pos).isAir() && BaseFireBlock.canBePlacedAt(level, pos, Direction.UP) && Config.Server.canBreak(level, pos)) level.setBlock(pos, BaseFireBlock.getState(level, pos), Block.UPDATE_ALL);
+            if (level.getBlockState(pos).isAir() && BaseFireBlock.canBePlacedAt(level, pos, Direction.UP) && Config.Server.canBreak(level, pos)) BlastWrites.set(level, pos, BaseFireBlock.getState(level, pos), Block.UPDATE_ALL);
         }
         if (age % 20 == 0) {
             for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(k.x - k.r, k.y - 8, k.z - k.r, k.x + k.r, k.y + 24, k.z + k.r))) {
@@ -910,7 +933,7 @@ public final class WarheadFx {
         BlockPos probe = new BlockPos(bx, level.getMinBuildHeight() + 1, bz);
         if (!level.hasChunkAt(probe)) return;
         int by = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, bx, bz);
-        Vec3 pos = new Vec3(bx + 0.5, by, bz + 0.5);
+        Vec3 pos = WardenFight.onWarden(level, new Vec3(bx + 0.5, by, bz + 0.5));
         if (k.type == WarheadType.CARPET.ordinal() && level.random.nextDouble() < Balance.CARPET_DUD) {
             BombEntity.dud(level, pos, k.owner);
             return;
@@ -928,7 +951,7 @@ public final class WarheadFx {
             BlockPos fp = BlockPos.containing(pos.x + level.random.nextInt(5) - 2, pos.y, pos.z + level.random.nextInt(5) - 2);
             if (!level.hasChunk(fp.getX() >> 4, fp.getZ() >> 4)) return;
             fp = new BlockPos(fp.getX(), level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, fp.getX(), fp.getZ()), fp.getZ());
-            if (level.getBlockState(fp).isAir() && BaseFireBlock.canBePlacedAt(level, fp, Direction.UP) && Config.Server.canBreak(level, fp)) level.setBlock(fp, BaseFireBlock.getState(level, fp), Block.UPDATE_ALL);
+            if (level.getBlockState(fp).isAir() && BaseFireBlock.canBePlacedAt(level, fp, Direction.UP) && Config.Server.canBreak(level, fp)) BlastWrites.set(level, fp, BaseFireBlock.getState(level, fp), Block.UPDATE_ALL);
         }
     }
 
@@ -949,7 +972,7 @@ public final class WarheadFx {
                 p.set(bx, by, bz);
                 BlockState s = level.getBlockState(p);
                 if ((s.isAir() || s.canBeReplaced()) && s.getFluidState().isEmpty() && NapalmFireBlock.canSit(level, p) && Config.Server.canBreak(level, p))
-                    level.setBlock(p, fire, Block.UPDATE_ALL);
+                    BlastWrites.set(level, p, fire, Block.UPDATE_ALL);
             }
         }
         double mid = (f0 + f1) * 0.5;
@@ -972,7 +995,7 @@ public final class WarheadFx {
                 if (!level.hasChunkAt(p)) continue;
                 BlockState s = level.getBlockState(p);
                 if (s.isAir() || s.getDestroySpeed(level, p) < 0) continue;
-                if (Config.Server.canBreak(level, p)) level.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
+                if (Config.Server.canBreak(level, p)) BlastWrites.set(level, p, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
             }
         }
         level.sendParticles(ParticleTypes.POOF, gx + 0.5, gy + 1.0, gz + 0.5, 40, r, 2.0, r, 0.3);
@@ -1113,7 +1136,7 @@ public final class WarheadFx {
         for (int dy = 0; dy < 3; dy++) for (int dx = -7; dx <= 7; dx++) for (int dz = -7; dz <= 7; dz++) {
             if (dx * dx + dz * dz > 49) continue;
             p.set(gx + dx, gy - 110 + dy, gz + dz);
-            if (level.hasChunkAt(p) && level.getBlockState(p).isAir() && Config.Server.canBreak(level, p)) level.setBlock(p, Blocks.LAVA.defaultBlockState(), Block.UPDATE_CLIENTS);
+            if (level.hasChunkAt(p) && level.getBlockState(p).isAir() && Config.Server.canBreak(level, p)) BlastWrites.set(level, p, Blocks.LAVA.defaultBlockState(), Block.UPDATE_CLIENTS);
         }
         Crater crater = new Crater(gx, gy, gz, zone, 0.9, 3.0, 0.0, holdRadius(4, t));
         mgr.craters.add(crater);
@@ -1150,7 +1173,7 @@ public final class WarheadFx {
                         p.set(cx, top - 1 - d, cz);
                         BlockState s = level.getBlockState(p);
                         if (s.isAir() || !s.getFluidState().isEmpty() || s.getDestroySpeed(level, p) < 0 || Hardened.rating(level, p, s) > 0) continue;
-                        if (Config.Server.canBreak(level, p)) level.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+                        if (Config.Server.canBreak(level, p)) BlastWrites.set(level, p, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
                     }
                 }
             }
@@ -1288,7 +1311,7 @@ public final class WarheadFx {
             if (ray.getType() == net.minecraft.world.phys.HitResult.Type.BLOCK && !ray.getBlockPos().equals(hit)) continue;
             int rating = Hardened.rating(level, hit, s);
             if (rating > 0 && Hardened.survives(rating, Math.sqrt(d2) / reach)) continue;
-            if (Config.Server.canBreak(level, hit)) level.setBlock(hit, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            if (Config.Server.canBreak(level, hit)) BlastWrites.set(level, hit, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
             if (breaks++ < 40) level.levelEvent(2001, hit, Block.getId(s));
         }
     }
@@ -1368,10 +1391,11 @@ public final class WarheadFx {
         if (r < 0) return;
         fratricide(level, k, age, Math.max(0.0, waveRadius(age - 1, k.r, k.total)), r);
         java.util.Set<Integer> done = PUSHED.computeIfAbsent(k, x -> new java.util.HashSet<>());
-        List<LivingEntity> near = new ArrayList<>();
-        if (k.r <= 200) near.addAll(level.getEntitiesOfClass(LivingEntity.class, new AABB(k.x - r - 3, k.y - 20, k.z - r - 3, k.x + r + 3, k.y + 40, k.z + r + 3)));
-        else for (net.minecraft.world.entity.Entity e : level.getAllEntities()) if (e instanceof LivingEntity le) near.add(le);
-        for (LivingEntity e : near) {
+        Iterable<? extends net.minecraft.world.entity.Entity> scan = k.r <= 200
+                ? level.getEntitiesOfClass(LivingEntity.class, new AABB(k.x - r - 3, k.y - 20, k.z - r - 3, k.x + r + 3, k.y + 40, k.z + r + 3))
+                : level.getAllEntities();
+        for (net.minecraft.world.entity.Entity raw : scan) {
+            if (!(raw instanceof LivingEntity e)) continue;
             if (done.contains(e.getId())) continue;
             double dx = e.getX() - k.x, dz = e.getZ() - k.z, d = Math.sqrt(dx * dx + dz * dz);
             if (d > r || d < 0.5 || Math.abs(e.getY() - k.y) > 120) continue;
@@ -1470,13 +1494,16 @@ public final class WarheadFx {
         } finally { quietFlush(level, touched); WorkBudget.done(t0); }
     }
 
+    private static final Heightmap.Types[] QUIET_HEIGHTMAPS = { Heightmap.Types.MOTION_BLOCKING, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Heightmap.Types.OCEAN_FLOOR, Heightmap.Types.WORLD_SURFACE };
+
     private static void quietRemove(ServerLevel level, BlockPos p, BlockState s, java.util.Set<LevelChunk> touched) {
-        if (s.hasBlockEntity() || Crater.needsHooks(s)) { level.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS); return; }
+        if (s.hasBlockEntity() || Crater.needsHooks(s)) { BlastWrites.set(level, p, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS); return; }
         LevelChunk ch = level.getChunkAt(p);
         int lx = p.getX() & 15, ly = p.getY(), lz = p.getZ() & 15;
         ch.getSection(ch.getSectionIndex(ly)).setBlockState(lx, ly & 15, lz, Blocks.AIR.defaultBlockState(), false);
+        BlastWrites.section(level, p.getX(), ly, p.getZ(), s, Blocks.AIR.defaultBlockState());
         BlockState air = Blocks.AIR.defaultBlockState();
-        for (Heightmap.Types ht : new Heightmap.Types[] { Heightmap.Types.MOTION_BLOCKING, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Heightmap.Types.OCEAN_FLOOR, Heightmap.Types.WORLD_SURFACE })
+        for (Heightmap.Types ht : QUIET_HEIGHTMAPS)
             ch.getOrCreateHeightmapUnprimed(ht).update(lx, ly, lz, air);
         level.getChunkSource().blockChanged(p);
         level.getChunkSource().getLightEngine().checkBlock(p);
@@ -1543,7 +1570,7 @@ public final class WarheadFx {
             if (s.isAir()) continue;
             if (natural(s)) break;
             if (s.getDestroySpeed(level, p) < 0 || Hardened.rating(level, p, s) > 0) break;
-            if (Config.Server.canBreak(level, p)) level.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            if (Config.Server.canBreak(level, p)) BlastWrites.set(level, p, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
             removed++;
         }
     }
@@ -1563,7 +1590,7 @@ public final class WarheadFx {
                 p.set(bx, y + d, bz);
                 BlockState s = level.getBlockState(p);
                 if (s.isAir() || !s.getFluidState().isEmpty() || s.getDestroySpeed(level, p) < 0 || Hardened.rating(level, p, s) > 0) break;
-                if (Config.Server.canBreak(level, p)) level.setBlock(p, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+                if (Config.Server.canBreak(level, p)) BlastWrites.set(level, p, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
             }
             return;
         }

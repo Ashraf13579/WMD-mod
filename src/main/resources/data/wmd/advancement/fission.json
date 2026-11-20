@@ -1,0 +1,38 @@
+{
+  "parent": "wmd:research",
+  "display": {
+    "icon": {
+      "id": "wmd:enriched_uranium"
+    },
+    "title": {
+      "translate": "advancements.wmd.fission.title"
+    },
+    "description": {
+      "translate": "advancements.wmd.fission.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_enriched_uranium": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wmd:enriched_uranium"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_enriched_uranium"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  }
+}

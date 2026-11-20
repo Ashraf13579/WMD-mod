@@ -34,7 +34,7 @@ public final class ClientAam {
         final long id; final int kind;
         Vec3 pos, vel, drawn;
         boolean burning;
-        long seen;
+        long seen, born;
         Object loop;
         final Deque<Vec3> trail = new ArrayDeque<>();
         Shot(long id, int kind) { this.id = id; this.kind = kind; }
@@ -55,8 +55,9 @@ public final class ClientAam {
             if (s == null) {
                 s = new Shot(e.id(), e.kind());
                 s.drawn = at;
+                s.born = now;
                 SHOTS.put(e.id(), s);
-                launchFx(level, at, new Vec3(e.vx(), e.vy(), e.vz()));
+                launchFx(level, at, new Vec3(e.vx(), e.vy(), e.vz()), e.kind());
             }
             s.pos = at;
             s.vel = new Vec3(e.vx(), e.vy(), e.vz());
@@ -74,12 +75,13 @@ public final class ClientAam {
         Minecraft mc = Minecraft.getInstance();
         double d = mc.gameRenderer.getMainCamera().getPosition().distanceTo(c);
         if (p.kill()) {
-            VeilBridge.flash(c.x, c.y, c.z, 1.0F, 0.72F, 0.38F, 22.0F, 3.0F, 12);
-            level.addAlwaysVisibleParticle(ParticleTypes.EXPLOSION_EMITTER, true, c.x, c.y, c.z, 0.0, 0.0, 0.0);
-            for (int i = 0; i < 40; i++)
-                level.addAlwaysVisibleParticle(WmdParticles.ROCKET_FLAME.get(), true, c.x + r.nextGaussian() * 1.2, c.y + r.nextGaussian() * 1.2, c.z + r.nextGaussian() * 1.2,
-                        r.nextGaussian() * 0.25, r.nextGaussian() * 0.25, r.nextGaussian() * 0.25);
-            for (int i = 0; i < 24; i++)
+
+            boolean rod = s != null && s.kind == AirMissiles.HEAVY;
+            if (p.radius() > 0.0F) {
+                ClientAirFx.airBurst(c, s == null ? null : s.vel, rod ? p.radius() * Balance.AAM_ROD_BURST_VIS : p.radius());
+                if (rod) ClientAirFx.rodRing(c, s.vel, Balance.AAM_ROD_RADIUS);
+            } else VeilBridge.flash(c.x, c.y, c.z, 1.0F, 0.72F, 0.38F, 22.0F, 3.0F, 12);
+            for (int i = 0; i < 8; i++)
                 level.addAlwaysVisibleParticle(WmdParticles.TRAIL_SMOKE.get(), true, c.x + r.nextGaussian() * 1.6, c.y + r.nextGaussian() * 1.6, c.z + r.nextGaussian() * 1.6,
                         r.nextGaussian() * 0.08, r.nextGaussian() * 0.08, r.nextGaussian() * 0.08);
             if (d > Balance.AAM_BURST_VOLUME * 16.0)
@@ -110,10 +112,11 @@ public final class ClientAam {
         }
     }
 
-    private static void launchFx(ClientLevel level, Vec3 at, Vec3 v) {
+    private static void launchFx(ClientLevel level, Vec3 at, Vec3 v, int kind) {
         RandomSource r = level.random;
         if (Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().distanceTo(at) > Balance.SND_RELEASE * 16.0)
-            level.playLocalSound(at.x, at.y, at.z, WmdSounds.AAM_LAUNCH_FAR.get(), SoundSource.HOSTILE, Balance.AAM_FAR_VOLUME, 1.0F, false);
+            level.playLocalSound(at.x, at.y, at.z, kind == AirMissiles.HEAVY ? WmdSounds.AAM_HEAVY_LAUNCH_FAR.get() : WmdSounds.AAM_LAUNCH_FAR.get(), SoundSource.HOSTILE,
+                    Balance.AAM_FAR_VOLUME, 1.0F, false);
         Vec3 back = v.lengthSqr() < 1.0E-6 ? Vec3.ZERO : v.normalize().scale(-1.0);
 
         for (int i = 0; i < 8; i++)
@@ -152,19 +155,31 @@ public final class ClientAam {
             Vec3 back = s.vel.lengthSqr() < 1.0E-6 ? Vec3.ZERO : s.vel.normalize().scale(-1.0);
             Vec3 tail = p.add(back.scale(1.6));
             if (p.distanceTo(cam) > ClientConfig.trailRange()) continue;
-            int n = Math.max(1, (int) Math.ceil(from.distanceTo(p) / 1.2));
-            for (int i = 0; i < n; i++) {
-                Vec3 q = from.add(p.subtract(from).scale(i / (double) n)).add(back.scale(1.6));
-                level.addAlwaysVisibleParticle(WmdParticles.TRAIL_SMOKE.get(), true, q.x + r.nextGaussian() * 0.12, q.y + r.nextGaussian() * 0.12, q.z + r.nextGaussian() * 0.12,
-                        0.0, 0.0, 0.0);
-            }
+
+            boolean ramjet = s.kind == AirMissiles.METEOR && now - s.born >= Balance.AAM_RAMJET_BOOST;
+            double step = ramjet ? Balance.AAM_RAMJET_SMOKE_STEP : s.kind == AirMissiles.HEAVY ? Balance.AAM_HEAVY_SMOKE_STEP : 1.2;
+            float size = ramjet ? (float) Balance.AAM_RAMJET_SMOKE_SIZE : s.kind == AirMissiles.HEAVY ? (float) (s.burning ? Balance.AAM_HEAVY_SMOKE_SIZE : Balance.AAM_HEAVY_COAST_SIZE) : 1.0F;
+            int n = Math.max(1, (int) Math.ceil(from.distanceTo(p) / step));
+            WmdSmokeParticle.nextSize = size;
+            try {
+                for (int i = 0; i < n; i++) {
+                    Vec3 q = from.add(p.subtract(from).scale(i / (double) n)).add(back.scale(1.6));
+                    level.addAlwaysVisibleParticle(WmdParticles.TRAIL_SMOKE.get(), true, q.x + r.nextGaussian() * 0.12, q.y + r.nextGaussian() * 0.12, q.z + r.nextGaussian() * 0.12,
+                            0.0, 0.0, 0.0);
+                }
+            } finally { WmdSmokeParticle.nextSize = 1.0F; }
             if (s.burning) {
-                for (int i = 0; i < 3; i++)
+                int flames = ramjet ? 1 : s.kind == AirMissiles.HEAVY ? 5 : 3;
+                for (int i = 0; i < flames; i++)
                     level.addAlwaysVisibleParticle(WmdParticles.ROCKET_FLAME.get(), true, tail.x + r.nextGaussian() * 0.1, tail.y + r.nextGaussian() * 0.1, tail.z + r.nextGaussian() * 0.1,
                             back.x * 0.3, back.y * 0.3, back.z * 0.3);
-                VeilBridge.glow(KEY ^ s.id, tail.x, tail.y, tail.z, 1.0F, 0.66F, 0.3F, 9.0F, 1.6F, now);
+                if (ramjet) VeilBridge.glow(KEY ^ s.id, tail.x, tail.y, tail.z, 0.62F, 0.8F, 1.0F, 7.0F, 1.9F, now);
+                else if (s.kind == AirMissiles.HEAVY) VeilBridge.glow(KEY ^ s.id, tail.x, tail.y, tail.z, 1.0F, 0.6F, 0.25F, 13.0F, 2.0F, now);
+                else VeilBridge.glow(KEY ^ s.id, tail.x, tail.y, tail.z, 1.0F, 0.66F, 0.3F, 9.0F, 1.6F, now);
                 final Shot ss = s;
-                s.loop = LoopSound.keep(s.loop, now, WmdSounds.AAM_FLIGHT_LOOP.get(), Balance.SND_SMALL, 1.0F,
+                net.minecraft.sounds.SoundEvent loopEv = s.kind == AirMissiles.METEOR ? WmdSounds.AAM_RAMJET_LOOP.get()
+                        : s.kind == AirMissiles.HEAVY ? WmdSounds.AAM_HEAVY_LOOP.get() : WmdSounds.AAM_FLIGHT_LOOP.get();
+                s.loop = LoopSound.keep(s.loop, now, loopEv, Balance.SND_SMALL, 1.0F,
                         () -> ClientAam.position(ss, Minecraft.getInstance().level == null ? ss.seen : Minecraft.getInstance().level.getGameTime()),
                         () -> ss.burning && SHOTS.containsKey(ss.id));
             }

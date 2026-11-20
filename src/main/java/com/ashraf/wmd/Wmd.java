@@ -688,6 +688,19 @@ public class Wmd {
             BLOCK_ENTITY_TYPES.register("railgun", () -> BlockEntityType.Builder.of(RailgunBlockEntity::new, RAILGUN.get()).build(null));
     public static final DeferredItem<Item> RAILGUN_SLUG = ITEMS.registerSimpleItem("railgun_slug", new Item.Properties().stacksTo(4).rarity(net.minecraft.world.item.Rarity.EPIC));
 
+    public static final DeferredItem<Item> WARDEN_CORE = ITEMS.registerSimpleItem("warden_core", new Item.Properties().stacksTo(16).rarity(net.minecraft.world.item.Rarity.EPIC).fireResistant());
+
+    public static final DeferredBlock<WardenTerminalBlock> WARDEN_TERMINAL = BLOCKS.registerBlock("warden_terminal", WardenTerminalBlock::new,
+            net.minecraft.world.level.block.state.BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.METAL).strength(-1.0F, 3_600_000.0F)
+                    .sound(net.minecraft.world.level.block.SoundType.METAL).noOcclusion().noLootTable().lightLevel(s -> 7));
+    public static final DeferredBlock<WardenNodeBlock> WARDEN_NODE = BLOCKS.registerBlock("warden_node", WardenNodeBlock::new,
+            net.minecraft.world.level.block.state.BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.COLOR_LIGHT_BLUE).strength(20.0F, 6.0F)
+                    .sound(net.minecraft.world.level.block.SoundType.METAL).noOcclusion().noLootTable().lightLevel(s -> 12));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WardenTerminalBlockEntity>> WARDEN_TERMINAL_BE = BLOCK_ENTITY_TYPES.register("warden_terminal",
+            () -> BlockEntityType.Builder.of(WardenTerminalBlockEntity::new, WARDEN_TERMINAL.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WardenNodeBlockEntity>> WARDEN_NODE_BE = BLOCK_ENTITY_TYPES.register("warden_node",
+            () -> BlockEntityType.Builder.of(WardenNodeBlockEntity::new, WARDEN_NODE.get()).build(null));
+
     public static final DeferredBlock<GroundStationBlock> GROUND_STATION = BLOCKS.registerBlock("ground_station", GroundStationBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(6)));
     public static final DeferredItem<BlockItem> GROUND_STATION_ITEM = ITEMS.registerSimpleBlockItem("ground_station", GROUND_STATION);
@@ -1627,11 +1640,15 @@ public class Wmd {
 
     public static final DeferredItem<MissilePartItem> MOTOR_HYPERSONIC = ITEMS.registerItem("motor_hypersonic", p -> new MissilePartItem(p, 1, 3, "hypersonic"), new Item.Properties());
 
+    public static final DeferredItem<MissilePartItem> WARHEAD_ROD_RING = ITEMS.registerItem("warhead_rod_ring", p -> new MissilePartItem(p, 3, 2, "rod_ring"), new Item.Properties());
+    public static final DeferredItem<MissilePartItem> MOTOR_RAMJET = ITEMS.registerItem("motor_ramjet", p -> new MissilePartItem(p, 1, 3, MissilePartItem.RAMJET), new Item.Properties());
+    public static final DeferredItem<MissilePartItem> MOTOR_HEAVY = ITEMS.registerItem("motor_heavy", p -> new MissilePartItem(p, 1, 4, MissilePartItem.HEAVY), new Item.Properties());
+
     public static java.util.List<DeferredItem<MissilePartItem>> partItems() {
-        return java.util.List.of(AIRFRAME_T1, AIRFRAME_T2, AIRFRAME_T3, AIRFRAME_T4, MOTOR_T1, MOTOR_T2, MOTOR_T3, MOTOR_T4, MOTOR_DIVERT, MOTOR_HYPERSONIC,
+        return java.util.List.of(AIRFRAME_T1, AIRFRAME_T2, AIRFRAME_T3, AIRFRAME_T4, MOTOR_T1, MOTOR_T2, MOTOR_T3, MOTOR_T4, MOTOR_DIVERT, MOTOR_HYPERSONIC, MOTOR_RAMJET, MOTOR_HEAVY,
                 GUIDANCE_T1, GUIDANCE_T2, GUIDANCE_T3, GUIDANCE_T4, WARHEAD_HE_T1, WARHEAD_INTERCEPTOR, WARHEAD_INCENDIARY, WARHEAD_FRAG, WARHEAD_DECOY, WARHEAD_THERMOBARIC, WARHEAD_CLUSTER, WARHEAD_BREACHER, WARHEAD_CHAFF, WARHEAD_BUNKER, WARHEAD_EMP, WARHEAD_NUKE, WARHEAD_THERMO, WARHEAD_ROD, WARHEAD_HEMP, WARHEAD_SEISMIC, WARHEAD_ASAT, WARHEAD_CUBESAT,
                 WARHEAD_NEUTRON, WARHEAD_FLASH, WARHEAD_CONCUSSION, WARHEAD_CHEMICAL,
-                WARHEAD_ANTIMATTER, MIRV_BUS, WARHEAD_NANITE, WARHEAD_GRAVITY, WARHEAD_CRYO);
+                WARHEAD_ANTIMATTER, MIRV_BUS, WARHEAD_NANITE, WARHEAD_GRAVITY, WARHEAD_CRYO, WARHEAD_ROD_RING);
     }
     public static final DeferredHolder<MenuType<?>, MenuType<BayMenu>> BAY_MENU = MENU_TYPES.register("bay",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new BayMenu(id, inventory, buf)));
@@ -1701,6 +1718,13 @@ public class Wmd {
                     .updateInterval(2)
                     .build("sentry_dog"));
     public static final DeferredItem<SentryDogItem> SENTRY_DOG_ITEM = ITEMS.registerItem("sentry_dog", SentryDogItem::new, new Item.Properties());
+
+    public static final DeferredHolder<EntityType<?>, EntityType<WardenEntity>> WARDEN = ENTITY_TYPES.register("warden",
+            () -> EntityType.Builder.<WardenEntity>of(WardenEntity::new, MobCategory.MISC)
+                    .sized(9.0F, 14.0F)
+                    .clientTrackingRange(16)
+                    .updateInterval(2)
+                    .build("warden"));
 
     public static final DeferredHolder<EntityType<?>, EntityType<PartsRunnerEntity>> PARTS_RUNNER = ENTITY_TYPES.register("parts_runner",
             () -> EntityType.Builder.<PartsRunnerEntity>of(PartsRunnerEntity::new, MobCategory.MISC)
@@ -2039,6 +2063,7 @@ public class Wmd {
                 output.accept(SWARM_DRONE_PACK.get());
                 output.accept(RAILGUN_ITEM.get());
                 output.accept(RAILGUN_SLUG.get());
+                output.accept(WARDEN_CORE.get());
                 output.accept(MORTAR_ITEM.get());
                 output.accept(HOWITZER_ITEM.get());
                 output.accept(SHELL_PRESS_ITEM.get());
@@ -2108,6 +2133,10 @@ public class Wmd {
                 output.accept(DECOY_RADAR_ITEM.get());
                 output.accept(SENTRY_DOG_ITEM.get());
                 output.accept(SENTRY_TURRET_ITEM.get());
+                TeslaBlocks.tab(output);
+                StormBlocks.tab(output);
+                ExoSuitBlocks.tab(output);
+                HandTech.tab(output);
                 output.accept(CCTV_CAMERA_ITEM.get());
                 output.accept(C4_CHARGE_ITEM.get());
                 output.accept(DETONATOR.get());
@@ -2139,6 +2168,8 @@ public class Wmd {
                 output.accept(SATELLITE_FACILITY_ITEM.get());
                 output.accept(CC_BUILDING_ITEM.get());
                 output.accept(CC_MAP_TABLE_ITEM.get());
+                HoloBlocks.tab(output);
+                AccessBlocks.tab(output);
                 output.accept(CC_WARNING_BOARD_ITEM.get());
                 output.accept(CC_RECON_WALL_ITEM.get());
                 output.accept(CC_AIR_DEFENCE_ITEM.get());
@@ -2273,10 +2304,18 @@ public class Wmd {
         modEventBus.addListener(this::commonSetup);
 
         if (AirGate.AVAILABLE) AirBlocks.init();
+        TeslaBlocks.init();
+        StormBlocks.init();
+        HoloBlocks.init();
+        AccessBlocks.init();
+        ExoSuitBlocks.init();
+        HandTech.init();
 
         BLOCKS.register(modEventBus);
         NoduleRetrogen.register(modEventBus);
 
+        OpacBridge.registerHooks();
+        VnWars.register();
         if (net.neoforged.fml.ModList.get().isLoaded("create")) {
             try {
                 Class.forName("com.ashraf.wmd.CreateCompat").getMethod("init", IEventBus.class).invoke(null, modEventBus);
@@ -2288,8 +2327,11 @@ public class Wmd {
         }
 
         ITEMS.register(modEventBus);
+        WmdTrigger.TRIGGERS.register(modEventBus);
         GasMaskItem.MATERIALS.register(modEventBus);
         EvaSuitItem.MATERIALS.register(modEventBus);
+        ExoSuitBlocks.register(modEventBus);
+        HandTech.register(modEventBus);
         WmdComponents.COMPONENTS.register(modEventBus);
 
         CREATIVE_MODE_TABS.register(modEventBus);
@@ -2314,6 +2356,7 @@ public class Wmd {
         modEventBus.addListener(this::registerPayloads);
 
         modEventBus.addListener((net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent e) -> e.put(SENTRY_DOG.get(), SentryDogEntity.createAttributes().build()));
+        modEventBus.addListener((net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent e) -> e.put(WARDEN.get(), WardenEntity.createAttributes().build()));
 
         NeoForge.EVENT_BUS.register(this);
 
@@ -2454,6 +2497,10 @@ public class Wmd {
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BATTERY_T4_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CAMERA_RELAY_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, SENTRY_TURRET_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
+        TeslaBlocks.capabilities(event);
+        StormBlocks.capabilities(event);
+        ExoSuitBlocks.capabilities(event);
+        HandTech.capabilities(event);
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, FENCE_ENERGIZER_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BLAST_FURNACE_BE.get(), (be, side) -> ItemPorts.wmdOnly(be.itemPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BLAST_FURNACE_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
@@ -2598,6 +2645,13 @@ public class Wmd {
         registrar.playToServer(BombTargetPayload.TYPE, BombTargetPayload.STREAM_CODEC, BombTargetPayload::handle);
         registrar.playToServer(BombSightKeyPayload.TYPE, BombSightKeyPayload.STREAM_CODEC, BombSightKeyPayload::handle);
         registrar.playToServer(EvaThrustPayload.TYPE, EvaThrustPayload.STREAM_CODEC, EvaThrustPayload::handle);
+        registrar.playToServer(ExoJetPayload.TYPE, ExoJetPayload.STREAM_CODEC, ExoJetPayload::handle);
+        registrar.playToClient(ExoFxPayload.TYPE, ExoFxPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientExoSuit.fx(p)));
+        registrar.playToServer(HandToolKeyPayload.TYPE, HandToolKeyPayload.STREAM_CODEC, HandToolKeyPayload::handle);
+        registrar.playToClient(HandToolFxPayload.TYPE, HandToolFxPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientHandTools.fx(p)));
+        registrar.playToServer(ExoModPayload.TYPE, ExoModPayload.STREAM_CODEC, ExoModPayload::handle);
+        registrar.playToClient(ExoBeamPayload.TYPE, ExoBeamPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientExoMods.beam(p)));
+        registrar.playToClient(ExoRocketsPayload.TYPE, ExoRocketsPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientExoMods.rockets(p)));
         registrar.playToServer(BombSightPayload.TYPE, BombSightPayload.STREAM_CODEC, BombSightPayload::handle);
         registrar.playToServer(SetRadarBearingPayload.TYPE, SetRadarBearingPayload.STREAM_CODEC, SetRadarBearingPayload::handle);
         registrar.playToServer(SetRadarConfigPayload.TYPE, SetRadarConfigPayload.STREAM_CODEC, SetRadarConfigPayload::handle);
@@ -2605,6 +2659,8 @@ public class Wmd {
         registrar.playToServer(SetResearchPayload.TYPE, SetResearchPayload.STREAM_CODEC, SetResearchPayload::handle);
         registrar.playToServer(ArtGunPayload.TYPE, ArtGunPayload.STREAM_CODEC, ArtGunPayload::handle);
         registrar.playToServer(CruisePayload.TYPE, CruisePayload.STREAM_CODEC, CruisePayload::handle);
+        registrar.playToClient(VnMapPayload.TYPE, VnMapPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> VnMapPayload.onReceive(p)));
+        registrar.playToClient(WarZonePayload.TYPE, WarZonePayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientWarZone.onPayload(p)));
         registrar.playToClient(UnderwaterBlastPayload.TYPE, UnderwaterBlastPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> UnderwaterBlastView.onReceive(p)));
         registrar.playToClient(PeriscopeAirPayload.TYPE, PeriscopeAirPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientPeriscope.airMarks(p)));
         registrar.playToClient(PeriscopePayload.TYPE, PeriscopePayload.STREAM_CODEC, PeriscopePayload::handle);
@@ -2645,6 +2701,7 @@ public class Wmd {
         registrar.playToServer(CctvPayloads.View.TYPE, CctvPayloads.View.STREAM_CODEC, CctvPayloads::handleView);
         registrar.playToServer(CctvPayloads.MarkTarget.TYPE, CctvPayloads.MarkTarget.STREAM_CODEC, CctvPayloads::handleMark);
         registrar.playToServer(SecurityActionPayload.TYPE, SecurityActionPayload.STREAM_CODEC, SecurityActionPayload::handle);
+        registrar.playToServer(AccessTerminalPayloads.Act.TYPE, AccessTerminalPayloads.Act.STREAM_CODEC, AccessTerminalPayloads::handle);
         registrar.playToServer(UplinkPayload.TYPE, UplinkPayload.STREAM_CODEC, UplinkPayload::handle);
         registrar.playToServer(CcBPayload.TYPE, CcBPayload.STREAM_CODEC, CcBPayload::handle);
         registrar.playToServer(TripodAimPayload.TYPE, TripodAimPayload.STREAM_CODEC, TripodAimPayload::handle);
@@ -2662,7 +2719,6 @@ public class Wmd {
         registrar.playToClient(AreaMarkersPayload.TYPE, AreaMarkersPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> AreaViewClient.onMarkers(p)));
         registrar.playToServer(TabletFirePayload.TYPE, TabletFirePayload.STREAM_CODEC, TabletFirePayload::handle);
         registrar.playToServer(DroneControlPayload.TYPE, DroneControlPayload.STREAM_CODEC, DroneControlPayload::handle);
-        registrar.playToServer(DroneHiveTabletPayload.TYPE, DroneHiveTabletPayload.STREAM_CODEC, DroneHiveTabletPayload::handle);
         registrar.playToClient(DroneFlyPayload.TYPE, DroneFlyPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientDroneFly.onFly(p)));
         registrar.playToServer(BigDronePayload.TYPE, BigDronePayload.STREAM_CODEC, BigDronePayload::handle);
         registrar.playToServer(DroneLasePayload.TYPE, DroneLasePayload.STREAM_CODEC, DroneLasePayload::handle);
@@ -2675,6 +2731,7 @@ public class Wmd {
         registrar.playToClient(CcCamPayload.TYPE, CcCamPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientMissileCam.start(p.flight())));
         registrar.playToClient(CcCamPadPayload.TYPE, CcCamPadPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientMissileCam.startPad(p)));
         registrar.playToClient(SecurityStatePayload.TYPE, SecurityStatePayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> SecurityClientState.set(p)));
+        registrar.playToClient(AccessTerminalPayloads.State.TYPE, AccessTerminalPayloads.State.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> AccessTerminalScreen.receive(p)));
         registrar.playToServer(LaunchPayload.TYPE, LaunchPayload.STREAM_CODEC, LaunchPayload::handle);
 
         registrar.playToClient(FlightsPayload.TYPE, FlightsPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientPacketHandlers.flights(p)));
@@ -2682,6 +2739,11 @@ public class Wmd {
         registrar.playToClient(InterceptPayload.TYPE, InterceptPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientIntercepts.add(p)));
         registrar.playToClient(CiwsFirePayload.TYPE, CiwsFirePayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientCiws.fire(p)));
         registrar.playToClient(LaunchSoundPayload.TYPE, LaunchSoundPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> LaunchSounds.play(p)));
+        registrar.playToClient(JetVapourPayload.TYPE, JetVapourPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientVapourCone.add(p)));
+        registrar.playToClient(CloakPayload.TYPE, CloakPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientCloak.receive(p)));
+        registrar.playToClient(AirFxPayload.TYPE, AirFxPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientAirFx.add(p)));
+        registrar.playToClient(PulseEmpPayload.TYPE, PulseEmpPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientPulseEmp.pulse(p)));
+        registrar.playToClient(TeslaStrikePayload.TYPE, TeslaStrikePayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientTesla.strike(p)));
         registrar.playToClient(EvadePayload.TYPE, EvadePayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientIntercepts.evade(p)));
         registrar.playToClient(CounterPayload.TYPE, CounterPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientIntercepts.counter(p)));
         registrar.playToClient(AamPayload.TYPE, AamPayload.STREAM_CODEC, (p, ctx) -> ctx.enqueueWork(() -> ClientAam.update(p)));

@@ -58,7 +58,10 @@ public class CargoPalletBlock extends UnitBlock {
     }
 
     @Override
-    public void interact(Level level, BlockPos controller, Player player, BlockHitResult hit) { interact(level, controller, player); }
+    public void interact(Level level, BlockPos controller, Player player, BlockHitResult hit) {
+        if (level.getBlockEntity(controller) instanceof Owned o && !gate(level, controller, player, o)) return;
+        interact(level, controller, player);
+    }
 
     @Override
     public void interact(Level level, BlockPos controller, Player player) {

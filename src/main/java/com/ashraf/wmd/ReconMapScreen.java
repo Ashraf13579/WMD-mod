@@ -191,6 +191,7 @@ public class ReconMapScreen extends Screen {
         hover = null;
         if (m != null && m.n() > 0) {
             double span = m.n() * (double) m.step();
+            drawCountries(g, x0, y0, m, span, mx, my);
 
             if (p != null && p.hasTarget()) {
                 int tx = x0 + (int) Math.floor((p.tx() - m.x0()) / span * MAP), tz = y0 + (int) Math.floor((p.tz() - m.z0()) / span * MAP);
@@ -294,6 +295,28 @@ public class ReconMapScreen extends Screen {
             g.drawString(font, row, 0, 0, picked ? TEXT : d != null ? BAD : GREY, false);
             g.pose().popPose();
         }
+    }
+
+    private void drawCountries(GuiGraphics g, int x0, int y0, ReconMapPayload m, double span, int mx, int my) {
+        VnMapPayload v = VnMapPayload.last;
+        if (v == null || v.chunks() <= 0 || v.grid().length < v.chunks() * v.chunks()) return;
+        int c = v.chunks();
+        for (int j = 0; j < c; j++)
+            for (int i = 0; i < c; i++) {
+                int k = v.grid()[j * c + i] & 0xFF;
+                if (k == 0 || k > v.palette().size()) continue;
+                int col = VnMapPayload.colour(v.palette().get(k - 1));
+                int ax = x0 + (int) Math.floor((v.x0() + i * 16 - m.x0()) / span * MAP), az = y0 + (int) Math.floor((v.z0() + j * 16 - m.z0()) / span * MAP);
+                int bx = x0 + (int) Math.floor((v.x0() + (i + 1) * 16 - m.x0()) / span * MAP), bz = y0 + (int) Math.floor((v.z0() + (j + 1) * 16 - m.z0()) / span * MAP);
+                ax = Math.max(x0, ax); az = Math.max(y0, az); bx = Math.min(x0 + MAP, bx); bz = Math.min(y0 + MAP, bz);
+                if (bx <= ax || bz <= az) continue;
+                g.fill(ax, az, bx, bz, 0x40000000 | col);
+                if (i == 0 || (v.grid()[j * c + i - 1] & 0xFF) != k) g.fill(ax, az, ax + 1, bz, 0xD0000000 | col);
+                if (j == 0 || (v.grid()[(j - 1) * c + i] & 0xFF) != k) g.fill(ax, az, bx, az + 1, 0xD0000000 | col);
+                if (i == c - 1 || (v.grid()[j * c + i + 1] & 0xFF) != k) g.fill(bx - 1, az, bx, bz, 0xD0000000 | col);
+                if (j == c - 1 || (v.grid()[(j + 1) * c + i] & 0xFF) != k) g.fill(ax, bz - 1, bx, bz, 0xD0000000 | col);
+                if (mx >= ax && mx < bx && my >= az && my < bz) hover = VnBridge.name(v.palette().get(k - 1)).getString();
+            }
     }
 
     @Override

@@ -71,28 +71,36 @@ public class AirStationBlockEntity extends ProcessUnitBlockEntity implements Own
     boolean accepts(int kind) {
         if (!rail && heavyBeside()) return false;
         BombType b = AirStores.bomb(kind);
-        if (b != null) return !rail && (!b.heavy || AirStores.pylonHeavy(b) && heavyRoom(b));
-        return kind == AirMissiles.HEAT || kind == AirMissiles.RADAR || kind == AirMissiles.AGM || (!rail && kind == AirMissiles.ARM) || (!rail && AirStores.isDrop(kind));
+        if (b != null) return !rail && (!b.heavy || AirStores.pylonHeavy(b) && heavyRoom(heavyLen(kind)));
+        if (kind == AirMissiles.HEAVY) return !rail && heavyRoom(heavyLen(kind));
+        return kind == AirMissiles.HEAT || kind == AirMissiles.RADAR || kind == AirMissiles.METEOR || kind == AirMissiles.AGM || (!rail && kind == AirMissiles.ARM) || (!rail && AirStores.isDrop(kind));
     }
 
-    private java.util.List<BlockPos> heavyCells(BombType b) {
+    private java.util.List<BlockPos> heavyCells(double length) {
         BlockState st = getBlockState();
         Direction f = st.hasProperty(MachineBlock.FACING) ? st.getValue(MachineBlock.FACING) : Direction.NORTH;
         Direction side = f.getClockWise();
-        int along = Math.max(1, (int) Math.ceil((b.length / 2.0 - 8.0) / 16.0));
+        int along = Math.max(1, (int) Math.ceil((length / 2.0 - 8.0) / 16.0));
         java.util.List<BlockPos> out = new java.util.ArrayList<>();
         for (int a = -1; a <= 1; a++) for (int l = -along; l <= along; l++)
             if (a != 0 || l != 0) out.add(worldPosition.relative(side, a).relative(f, l));
         return out;
     }
 
-    boolean heavyRoom(BombType b) {
+    boolean heavyRoom(double length) {
         if (level == null || rail) return false;
         BlockState st = getBlockState();
         if (st.hasProperty(MachineBlock.MOUNT) && st.getValue(MachineBlock.MOUNT) != Direction.UP) return false;
-        for (BlockPos p : heavyCells(b))
+        if (length <= 0.0) return false;
+        for (BlockPos p : heavyCells(length))
             if (level.getBlockEntity(p) instanceof AirStationBlockEntity o && o.loaded >= 0) return false;
         return true;
+    }
+
+    static double heavyLen(int kind) {
+        BombType b = AirStores.bomb(kind);
+        if (b != null) return b.heavy ? b.length : -1.0;
+        return kind == AirMissiles.HEAVY ? AamMeshes.lengthPx("aam_heavy") : -1.0;
     }
 
     private boolean heavyBeside() {
@@ -101,8 +109,8 @@ public class AirStationBlockEntity extends ProcessUnitBlockEntity implements Own
             BlockPos p = sw == 0 ? worldPosition.offset(dx, 0, dz) : worldPosition.offset(dz, 0, dx);
             if (p.equals(worldPosition)) continue;
             if (level.getBlockEntity(p) instanceof AirStationBlockEntity o && o != this) {
-                BombType ob = AirStores.bomb(o.loaded);
-                if (ob != null && ob.heavy && o.heavyCells(ob).contains(worldPosition)) return true;
+                double ol = heavyLen(o.loaded);
+                if (ol > 0.0 && o.heavyCells(ol).contains(worldPosition)) return true;
             }
         }
         return false;
@@ -123,6 +131,16 @@ public class AirStationBlockEntity extends ProcessUnitBlockEntity implements Own
         sync();
         return true;
     }
+
+    int capacity(int kind) { return rail && kind >= 0 && !AirStores.isDrop(kind) && AirStores.bomb(kind) == null ? Balance.RAIL_TWIN : 1; }
+
+    int roomFor(int kind) {
+        if (kind < 0) return 0;
+        if (loaded < 0) return accepts(kind) ? capacity(kind) : 0;
+        return loaded == kind ? Math.max(0, capacity(kind) - count) : 0;
+    }
+
+    boolean full() { return loaded >= 0 && count >= capacity(loaded); }
 
     public int countShown() { return loaded < 0 ? 0 : count; }
     public int firedSlot() { return firedSlot; }
@@ -191,13 +209,14 @@ public class AirStationBlockEntity extends ProcessUnitBlockEntity implements Own
             String chk = AirStores.bombCheck(sl, loaded, getOwner(), ship, at, fwd, glide);
             if (chk != null) return chk;
             String why = AirStores.isAshm(loaded)
-                    ? AntiShipMissiles.launch(sl, getOwner(), ship, at, fwd, target, AirStores.refined(loaded, storeFreq), () -> ShipPower.draw(sl, ship, Balance.STATION_LAUNCH_FE))
+                    ? AntiShipMissiles.launch(sl, getOwner(), ship, at, fwd, target, AirStores.refined(loaded, storeFreq), () -> ShipPower.draw(this, sl, ship, Balance.STATION_LAUNCH_FE))
                     : AirStores.release(sl, loaded, storeFreq, at, si0 == null ? Vec3.ZERO : ShipDefence.velocity(sl, si0), getOwner(), ship, worldPosition, fwd, glide[0]);
             if (why != null) return why;
             firedKind = loaded;
             loaded = -1;
             fireAt = now;
             playOnce(sl, WmdSounds.PYLON_EJECT.get(), Balance.SND_MECH, 1.0F);
+            pylonFx(sl);
             sync();
             return null;
         }
@@ -212,8 +231,13 @@ public class AirStationBlockEntity extends ProcessUnitBlockEntity implements Own
         double[] a = worldPoint(c[0], c[1], c[2]), n = worldPoint(c[0], c[1], c[2] - 1.0);
         Vec3 from = new Vec3(a[0], a[1], a[2]), dir = new Vec3(n[0] - a[0], n[1] - a[1], n[2] - a[2]);
         if (loaded == AirMissiles.RADAR && lock == null) return "a radar missile needs a radar lock";
-        if (target != null && loaded != AirMissiles.ARM && AirPicture.get(sl, target) == null) {
-            if (loaded == AirMissiles.RADAR) return "the radar lock is not an aircraft (radar in SEA mode)";
+        if (AirMissiles.dlKind(loaded)) {
+            if (target == null) return "needs a radar lock or a datalink target (R)";
+            if (lock == null && !AirMissiles.datalink(sl, getOwner(), target, now)) return "your radars no longer track that target";
+        }
+        if (target != null && loaded != AirMissiles.ARM && AirPicture.get(sl, target) == null
+                && !(AirMissiles.dlKind(loaded) && AirMissiles.datalink(sl, getOwner(), target, now))) {
+            if (loaded == AirMissiles.RADAR || AirMissiles.dlKind(loaded)) return "the radar lock is not an aircraft (radar in SEA mode)";
             target = null;
             lock = null;
         }
@@ -223,7 +247,7 @@ public class AirStationBlockEntity extends ProcessUnitBlockEntity implements Own
             int spot = gps ? -1 : AirStations.agmSpot(sl, getOwner(), from, dir);
             Vec3 gp = gps ? AirStations.gpsPoint(sl, getOwner(), ship, from, dir, lbl) : null;
             if (gps ? gp == null : spot < 0) return gps ? "no GPS target (pod spot, laser spot or command center target)" : "no laser spot ahead (designate one: targeting pod, laser tripod)";
-            if (!ShipPower.draw(sl, ship, Balance.STATION_LAUNCH_FE)) return "no charge in the power core";
+            if (!ShipPower.draw(this, sl, ship, Balance.STATION_LAUNCH_FE)) return "no charge in the power core";
             SableBridge.ShipInfo si = SableBridge.shipInfo(sl, ship);
             Vec3 cv = si == null ? Vec3.ZERO : ShipDefence.velocity(sl, si);
             String r = AirMissiles.refinedShot(AirStores.refined(loaded, storeFreq), () -> gps ? AirMissiles.fireAgmGps(sl, getOwner(), from, dir, cv, ship, gp, lbl[0], null) : AirMissiles.fireAgm(sl, getOwner(), from, dir, cv, ship, spot, null));
@@ -232,7 +256,7 @@ public class AirStationBlockEntity extends ProcessUnitBlockEntity implements Own
 
             spendOne();
             fireAt = now;
-            if (!rail) playOnce(sl, WmdSounds.PYLON_EJECT.get(), Balance.SND_MECH, 1.0F);
+            if (!rail) { playOnce(sl, WmdSounds.PYLON_EJECT.get(), Balance.SND_MECH, 1.0F); pylonFx(sl); }
             sync();
             return null;
         }
@@ -255,7 +279,7 @@ public class AirStationBlockEntity extends ProcessUnitBlockEntity implements Own
             if (loaded == AirMissiles.HEAT && ac != null && !AirHeat.rearAspect(sl, target, ac.pos(), ac.vel(), from, now))
                 return "no tail aspect (a heat seeker locks only from behind)";
         }
-        if (!ShipPower.draw(sl, ship, Balance.STATION_LAUNCH_FE)) return "no charge in the power core";
+        if (!ShipPower.draw(this, sl, ship, Balance.STATION_LAUNCH_FE)) return "no charge in the power core";
         SableBridge.ShipInfo si = SableBridge.shipInfo(sl, ship);
         Vec3 carrier = si == null ? Vec3.ZERO : ShipDefence.velocity(sl, si);
         final UUID tgt = target; final BlockPos em = emitter; final AirMissiles.LockSource lk = lock; final String nm = name;
@@ -267,7 +291,7 @@ public class AirStationBlockEntity extends ProcessUnitBlockEntity implements Own
         firedKind = loaded;
         spendOne();
         fireAt = now;
-        if (!rail) playOnce(sl, WmdSounds.PYLON_EJECT.get(), Balance.SND_MECH, 1.0F);
+        if (!rail) { playOnce(sl, WmdSounds.PYLON_EJECT.get(), Balance.SND_MECH, 1.0F); pylonFx(sl); }
         sync();
         return null;
     }
@@ -368,4 +392,9 @@ public class AirStationBlockEntity extends ProcessUnitBlockEntity implements Own
     }
 
     static Level levelOf(AirStationBlockEntity be) { return be.level; }
+
+    private void pylonFx(ServerLevel sl) {
+        Vec3 w = SableBridge.toWorld(sl, Vec3.atCenterOf(worldPosition));
+        if (w != null) AirFxPayload.at(sl, AirFxPayload.PYLON, w, null, 1.0F, Balance.AIRFX_R);
+    }
 }

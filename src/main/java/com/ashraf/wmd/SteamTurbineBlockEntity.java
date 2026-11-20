@@ -135,7 +135,7 @@ public class SteamTurbineBlockEntity extends ProcessUnitBlockEntity implements C
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.steam_turbine", Balance.STEAM_TURBINE_MB, String.format("%,d", Balance.STEAM_TURBINE_MB * Balance.STEAM_TURBINE_FE_PER_MB * 20)),
+        return List.of(Component.translatable("gui.wmd.info.steam_turbine", Balance.STEAM_TURBINE_MB, String.format("%,d", Balance.STEAM_TURBINE_MB * Balance.STEAM_TURBINE_FE_PER_MB)),
                 Component.translatable("gui.wmd.info.steam_turbine_out"));
     }
 

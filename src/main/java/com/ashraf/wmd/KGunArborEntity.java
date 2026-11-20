@@ -76,7 +76,7 @@ public class KGunArborEntity extends Entity {
         }
         wasWet = wet;
         Vec3 next = pos.add(vel);
-        BlockHitResult hit = sl.clip(new ClipContext(pos, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+        BlockHitResult hit = SableBridge.clipWorld(sl, new ClipContext(pos, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this), null);
         if (hit.getType() == HitResult.Type.BLOCK && !ownGun(sl, hit.getBlockPos())) {
             Vec3 h = hit.getLocation();
             setPos(h.x, h.y, h.z);

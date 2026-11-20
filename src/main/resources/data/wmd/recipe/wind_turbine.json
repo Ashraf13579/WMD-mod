@@ -17,7 +17,7 @@
       "item": "wmd:machine_casing"
     },
     "S": {
-      "item": "wmd:steel_ingot"
+      "tag": "c:ingots/steel"
     }
   },
   "result": {

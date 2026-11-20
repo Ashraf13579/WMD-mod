@@ -46,7 +46,7 @@ public final class Debris {
 
     private Debris() {}
 
-    private record Job(List<BlockPos> blocks, BlockPos anchor, Vec3 vel, Vec3 off, BlockState look, boolean tree) {}
+    private record Job(List<BlockPos> blocks, BlockPos anchor, Vec3 vel, Vec3 off, BlockState look, boolean tree, java.util.UUID owner) {}
 
     private static long lastCalLog;
 
@@ -147,7 +147,7 @@ public final class Debris {
             h *= k;
             v *= k;
             Vec3 off = randomUnit(rnd).scale(0.15 + rnd.nextDouble() * 0.35);
-            st.queue.add(new Job(blob, seed, new Vec3(out.x * h, v, out.z * h), off, look, false));
+            st.queue.add(new Job(blob, seed, new Vec3(out.x * h, v, out.z * h), off, look, false, crater != null && crater.owner() != null ? crater.owner() : ShipStrike.shooter()));
             planned++;
         }
 
@@ -163,7 +163,7 @@ public final class Debris {
             double h = (inside ? 4.0 + rnd.nextDouble() * 6.0 : 2.0 + rnd.nextDouble() * 3.0) * k;
             double v = (inside ? 6.0 + rnd.nextDouble() * 6.0 : 1.0 + rnd.nextDouble() * 2.0) * k;
             Vec3 off = new Vec3(0.0, 2.0 + rnd.nextDouble() * 1.5, 0.0);
-            st.queue.add(new Job(tree, log, new Vec3(out.x * h, v, out.z * h), off, level.getBlockState(log), true));
+            st.queue.add(new Job(tree, log, new Vec3(out.x * h, v, out.z * h), off, level.getBlockState(log), true, crater != null && crater.owner() != null ? crater.owner() : ShipStrike.shooter()));
             planned++;
             made++;
         }
@@ -261,6 +261,7 @@ public final class Debris {
             BlockState s = level.getBlockState(p);
             if (!ground(level, p, s)) continue;
             FallingBlockEntity e = FallingBlockEntity.fall(level, p, s);
+            BlastWrites.fell(level, p, s);
             e.disableDrop();
             if (Config.Server.debrisHurts()) e.setHurtsEntities(1.0F, 10);
             Vec3 out = outward(gx, gz, x, z, rnd);
@@ -291,7 +292,11 @@ public final class Debris {
         if (st.queue.isEmpty() && st.live.isEmpty()) return;
 
         int perTick = Config.Server.debrisPerTick();
-        for (int n = 0; n < perTick && !st.queue.isEmpty(); n++) assemble(level, st, st.queue.poll(), now);
+        for (int n = 0; n < perTick && !st.queue.isEmpty(); n++) {
+            Job job = st.queue.poll();
+            java.util.UUID prevShooter = ShipStrike.begin(job.owner());
+            try { assemble(level, st, job, now); } finally { ShipStrike.end(prevShooter); }
+        }
 
         boolean hurts = Config.Server.debrisHurts();
         Iterator<Piece> it = st.live.iterator();
@@ -364,14 +369,14 @@ public final class Debris {
             removeBody(level, old.id);
         }
 
-        for (BlockPos p : from) level.setBlock(p, Blocks.AIR.defaultBlockState(), FLAGS);
+        for (BlockPos p : from) BlastWrites.set(level, p, Blocks.AIR.defaultBlockState(), FLAGS);
         int base = j.tree() ? 1 : y1 - y0 + 2, dy = base;
         for (int t = base; t <= base + 6; t++) if (allFree(level, from, t)) { dy = t; break; }
         List<BlockPos> to = new ArrayList<>(from.size());
         for (int i = 0; i < from.size(); i++) {
             BlockPos q = from.get(i).above(dy);
             if (level.isOutsideBuildHeight(q) || !level.hasChunkAt(q) || !level.getBlockState(q).isAir()) continue;
-            level.setBlock(q, states.get(i), FLAGS);
+            BlastWrites.set(level, q, states.get(i), FLAGS);
             to.add(q);
         }
         if (to.isEmpty()) return;
@@ -380,7 +385,7 @@ public final class Debris {
         BlockPos anchor = to.contains(j.anchor().above(dy)) ? j.anchor().above(dy) : to.get(0);
         UUID id = SableBridge.debrisSpawn(level, anchor, to, until);
         if (id == null) {
-            for (BlockPos q : to) level.setBlock(q, Blocks.AIR.defaultBlockState(), FLAGS);
+            for (BlockPos q : to) BlastWrites.set(level, q, Blocks.AIR.defaultBlockState(), FLAGS);
             return;
         }
         st.seen.add(id);
@@ -397,6 +402,27 @@ public final class Debris {
         if (cut > 0) vanish(level, p.look, Math.min(60, cut), b);
         AABB near = b.inflate(2.0);
         for (Piece q : st.live) if (q != p && q.box != null && q.box.intersects(near)) SableBridge.debrisWake(level, q.id);
+    }
+
+    static boolean throwPiece(ServerLevel level, List<BlockPos> cells, BlockState look, Vec3 vel, Vec3 spin) {
+        if (!SableBridge.debrisActive() || cells.isEmpty()) return false;
+        List<BlockPos> to = new ArrayList<>();
+        for (BlockPos q : cells) {
+            if (level.isOutsideBuildHeight(q) || !level.hasChunkAt(q) || !level.getBlockState(q).isAir() || !Config.Server.canBreak(level, q)) continue;
+            BlastWrites.set(level, q, look, FLAGS);
+            to.add(q);
+        }
+        if (to.isEmpty()) return false;
+        long now = level.getGameTime();
+        long until = now + Math.max(40L, Config.Server.debrisLifetimeSeconds() * 20L);
+        UUID id = SableBridge.debrisSpawn(level, to.get(0), to, until);
+        if (id == null) { for (BlockPos q : to) BlastWrites.set(level, q, Blocks.AIR.defaultBlockState(), FLAGS); return false; }
+        State st = state(level);
+        st.seen.add(id);
+        Piece p = new Piece(id, until, look, to.size(), vel, spin, Balance.DEBRIS_PUSH_TRIES);
+        p.pushAt = now + 1;
+        st.live.add(p);
+        return true;
     }
 
     static boolean anyLive(ServerLevel level) {

@@ -36,21 +36,31 @@ public final class MountedRenderer<T extends BlockEntity> implements BlockEntity
         ps.popPose();
     }
 
+    private static final java.util.Map<Long, long[]> WING_GAP_CACHE = Statics.client(new java.util.HashMap<>());
+
     static float wingGap(BlockEntity be) {
         if (be.getLevel() == null || be instanceof AirStationBlockEntity || be instanceof LandingGearBlockEntity) return 0.0F;
         net.minecraft.world.level.block.state.BlockState st = be.getBlockState();
         if (!st.hasProperty(MachineBlock.MOUNT)) return 0.0F;
+        long key = be.getBlockPos().asLong(), now = be.getLevel().getGameTime();
+        long[] cached = WING_GAP_CACHE.get(key);
+        if (cached != null && now - cached[0] >= 0 && now - cached[0] < 10) return Float.intBitsToFloat((int) cached[1]);
         Direction m = Machines.mount(st);
         net.minecraft.core.BlockPos at = be.getBlockPos().relative(m);
         net.minecraft.world.level.block.state.BlockState w = be.getLevel().getBlockState(at);
-        if (!(w.getBlock() instanceof WingSectionBlock)) return 0.0F;
-        AABB b = w.getShape(be.getLevel(), at).bounds();
-        double g = switch (m) {
-            case UP -> b.minY; case DOWN -> 1.0 - b.maxY;
-            case EAST -> b.minX; case WEST -> 1.0 - b.maxX;
-            case SOUTH -> b.minZ; default -> 1.0 - b.maxZ;
-        };
-        return g > 0.001 && g < 0.999 ? (float) g : 0.0F;
+        float res = 0.0F;
+        if (w.getBlock() instanceof WingSectionBlock) {
+            AABB b = w.getShape(be.getLevel(), at).bounds();
+            double g = switch (m) {
+                case UP -> b.minY; case DOWN -> 1.0 - b.maxY;
+                case EAST -> b.minX; case WEST -> 1.0 - b.maxX;
+                case SOUTH -> b.minZ; default -> 1.0 - b.maxZ;
+            };
+            res = g > 0.001 && g < 0.999 ? (float) g : 0.0F;
+        }
+        if (WING_GAP_CACHE.size() > 2048) WING_GAP_CACHE.clear();
+        WING_GAP_CACHE.put(key, new long[] { now, Float.floatToRawIntBits(res) });
+        return res;
     }
 
     @Override public boolean shouldRenderOffScreen(T be) { return inner.shouldRenderOffScreen(be) || spansCells(getRenderBoundingBox(be)); }

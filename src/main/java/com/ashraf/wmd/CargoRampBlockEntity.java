@@ -235,7 +235,7 @@ public class CargoRampBlockEntity extends ProcessUnitBlockEntity implements Owne
         if (!wasOpen) {
             int cost = w * h * Balance.RAMP_FE_PER_TILE;
             UUID ship = SableBridge.shipIdAt(sl, worldPosition);
-            boolean paid = ship != null && ShipPower.draw(sl, ship, cost);
+            boolean paid = ship != null && ShipPower.draw(this, sl, ship, cost);
             if (!paid) {
                 if (energy().getEnergyStored() < cost) return "message.wmd.ramp.no_power";
                 useExtraEnergy(cost);
@@ -466,7 +466,7 @@ public class CargoRampBlockEntity extends ProcessUnitBlockEntity implements Owne
             UUID cs = missing > 0 ? SableBridge.shipIdAt(sl, worldPosition) : null;
             if (cs != null) {
                 int n = Math.min(missing, Balance.RAMP_CORE_CHARGE);
-                if (ShipPower.draw(sl, cs, n)) chargeDirect(n);
+                if (ShipPower.draw(this, sl, cs, n)) chargeDirect(n);
             }
         }
         boolean s = sl.hasNeighborSignal(worldPosition);

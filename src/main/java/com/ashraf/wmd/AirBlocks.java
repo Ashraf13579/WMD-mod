@@ -100,6 +100,10 @@ public final class AirBlocks {
 
     public static final DeferredItem<SeekerModuleItem> RADAR_SEEKER = Wmd.ITEMS.register("radar_seeker", () -> new SeekerModuleItem(new net.minecraft.world.item.Item.Properties().stacksTo(16), MissileBuild.SEEK_RADAR));
 
+    public static final DeferredItem<AamItem> AAM_METEOR = Wmd.ITEMS.register("aam_meteor", () -> new AamItem(new net.minecraft.world.item.Item.Properties().stacksTo(4), AirMissiles.METEOR));
+    public static final DeferredItem<AamItem> AAM_HEAVY = Wmd.ITEMS.register("aam_heavy", () -> new AamItem(new net.minecraft.world.item.Item.Properties().stacksTo(2), AirMissiles.HEAVY));
+    public static final DeferredItem<SeekerModuleItem> DATALINK_SEEKER = Wmd.ITEMS.register("datalink_seeker", () -> new SeekerModuleItem(new net.minecraft.world.item.Item.Properties().stacksTo(16), MissileBuild.SEEK_DATALINK));
+
     public static final DeferredBlock<SamSiteBlock> SAM_SITE = Wmd.BLOCKS.registerBlock("sam_site", SamSiteBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 20.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(UnitBlock.light(2)));
     public static final DeferredItem<BlockItem> SAM_SITE_ITEM = Wmd.ITEMS.registerSimpleBlockItem("sam_site", SAM_SITE);
@@ -161,7 +165,7 @@ public final class AirBlocks {
             Wmd.BLOCK_ENTITY_TYPES.register("catapult_track", () -> BlockEntityType.Builder.of(CatapultTrackBlockEntity::new, CATAPULT_TRACK.get()).build(null));
 
     public static final DeferredBlock<DeckLightBlock> DECK_LIGHT = Wmd.BLOCKS.registerBlock("deck_light", DeckLightBlock::new,
-            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(4.0F, 10.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(s -> 10));
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(4.0F, 10.0F).sound(SoundType.METAL).pushReaction(PushReaction.BLOCK).noOcclusion().lightLevel(DeckLightBlock::lightOf));
     public static final DeferredItem<BlockItem> DECK_LIGHT_ITEM = Wmd.ITEMS.registerSimpleBlockItem("deck_light", DECK_LIGHT);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DeckLightBlockEntity>> DECK_LIGHT_BE =
             Wmd.BLOCK_ENTITY_TYPES.register("deck_light", () -> BlockEntityType.Builder.of(DeckLightBlockEntity::new, DECK_LIGHT.get()).build(null));
@@ -340,6 +344,13 @@ public final class AirBlocks {
         AnchorBlocks.init();
         ChartTableBlocks.init();
         RfPowerBlocks.init();
+        PulseEmpBlocks.init();
+        CloakBlocks.init();
+        IonBlocks.init();
+        GravityWellBlocks.init();
+        PlasmaMortarBlocks.init();
+        BlinkGateBlocks.init();
+        NaniteBlocks.init();
     }
 
     static void capabilities(RegisterCapabilitiesEvent event) {
@@ -351,6 +362,13 @@ public final class AirBlocks {
         AnchorBlocks.capabilities(event);
         ChartTableBlocks.capabilities(event);
         RfPowerBlocks.capabilities(event);
+        PulseEmpBlocks.capabilities(event);
+        CloakBlocks.capabilities(event);
+        IonBlocks.capabilities(event);
+        GravityWellBlocks.capabilities(event);
+        PlasmaMortarBlocks.capabilities(event);
+        NaniteBlocks.capabilities(event);
+        BlinkGateBlocks.capabilities(event);
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, AIR_SEARCH_RADAR_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, SAM_SITE_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, POWER_CORE_BE.get(), (be, side) -> Grid.gridOnly(be.energyPort(be.getBlockPos(), side)));
@@ -393,6 +411,13 @@ public final class AirBlocks {
         DeckConsoleBlocks.tab(output);
         TurntableBlocks.tab(output);
         RfPowerBlocks.tab(output);
+        PulseEmpBlocks.tab(output);
+        CloakBlocks.tab(output);
+        IonBlocks.tab(output);
+        GravityWellBlocks.tab(output);
+        PlasmaMortarBlocks.tab(output);
+        BlinkGateBlocks.tab(output);
+        NaniteBlocks.tab(output);
         output.accept(AIR_SEARCH_RADAR_ITEM.get());
         output.accept(SAM_SITE_ITEM.get());
         output.accept(AMMO_DEPOT_ITEM.get());
@@ -409,7 +434,10 @@ public final class AirBlocks {
         output.accept(AAM_RADAR.get());
         output.accept(AAM_ARM.get());
         output.accept(AAM_AGM.get());
+        output.accept(AAM_METEOR.get());
+        output.accept(AAM_HEAVY.get());
         output.accept(RADAR_SEEKER.get());
+        output.accept(DATALINK_SEEKER.get());
         output.accept(WEAPONS_BAY_ITEM.get());
         output.accept(JAMMER_POD_ITEM.get());
         output.accept(GUN_POD_ITEM.get());

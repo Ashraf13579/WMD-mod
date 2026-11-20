@@ -1,0 +1,35 @@
+{
+  "parent": "wmd:root",
+  "display": {
+    "icon": {
+      "id": "wmd:steel_ingot"
+    },
+    "title": {
+      "translate": "advancements.wmd.steel.title"
+    },
+    "description": {
+      "translate": "advancements.wmd.steel.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_steel_ingot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wmd:steel_ingot"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_steel_ingot"
+    ]
+  ]
+}

@@ -94,12 +94,12 @@ public final class SpecialShells {
             if (st.isAir()) { bottom = gy - dy; continue; }
 
             if (!BlockRules.blastRemovable(level, p, st)) break;
-            level.setBlock(p, Blocks.AIR.defaultBlockState(), 3);
+            BlastWrites.set(level, p, Blocks.AIR.defaultBlockState(), 3);
             bottom = gy - dy;
         }
         BlockPos fire = new BlockPos(gx, bottom, gz);
         if (BlockRules.blastMay(level, fire) && level.getBlockState(fire).isAir() && level.getBlockState(fire.below()).isFaceSturdy(level, fire.below(), net.minecraft.core.Direction.UP))
-            level.setBlock(fire, Blocks.FIRE.defaultBlockState(), 3);
+            BlastWrites.set(level, fire, Blocks.FIRE.defaultBlockState(), 3);
         level.sendParticles(ParticleTypes.LAVA, gx + 0.5, gy + 0.2, gz + 0.5, 12, 0.3, 0.1, 0.3, 0.0);
     }
 
@@ -218,12 +218,12 @@ public final class SpecialShells {
             double r = cone * Math.sqrt(level.random.nextDouble()), a = level.random.nextDouble() * Math.PI * 2.0;
             Vec3 d = dir.add(side.scale(Math.cos(a) * r)).add(up2.scale(Math.sin(a) * r)).normalize();
             Vec3 end = muzzle.add(d.scale(Balance.CANISTER_MAX));
-            BlockHitResult bh = level.clip(new ClipContext(muzzle, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, net.minecraft.world.phys.shapes.CollisionContext.empty()));
+            BlockHitResult bh = SableBridge.clipWorld(level, new ClipContext(muzzle, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, net.minecraft.world.phys.shapes.CollisionContext.empty()), null);
             if (bh.getType() == HitResult.Type.BLOCK) {
                 end = bh.getLocation();
                 BlockState st = level.getBlockState(bh.getBlockPos());
                 if ((st.is(net.neoforged.neoforge.common.Tags.Blocks.GLASS_BLOCKS) || st.is(net.neoforged.neoforge.common.Tags.Blocks.GLASS_PANES))
-                        && BlockRules.blastMay(level, bh.getBlockPos())) level.destroyBlock(bh.getBlockPos(), false);
+                        && BlockRules.blastMay(level, bh.getBlockPos())) BlastWrites.destroy(level, bh.getBlockPos(), false);
             }
             LivingEntity hit = null;
             double best = Double.MAX_VALUE;

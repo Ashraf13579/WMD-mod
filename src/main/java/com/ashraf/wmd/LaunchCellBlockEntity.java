@@ -298,7 +298,7 @@ public class LaunchCellBlockEntity extends ItemProcessBlockEntity implements Own
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse() * 20), Component.translatable("gui.wmd.info.launch_cell"));
+        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse()), Component.translatable("gui.wmd.info.launch_cell"));
     }
 
     @Override

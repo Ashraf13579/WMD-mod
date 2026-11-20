@@ -122,7 +122,7 @@ public class RocketPodBlockEntity extends ProcessUnitBlockEntity implements Owne
         int k = Math.min(n, available());
         if (k <= 0) return "the rocket pod is empty";
         if (loadClicks > 0) return "the rocket pod is being loaded";
-        if (prepaid == 0 && !ShipPower.draw(sl, ship, Balance.RPOD_FE)) return "no power for the rocket ignition (power core)";
+        if (prepaid == 0 && !ShipPower.draw(this, sl, ship, Balance.RPOD_FE)) return "no power for the rocket ignition (power core)";
         prepaid = 1;
         long now = sl.getGameTime();
         if (pending == 0) { rippleRun = k; nextShot = Math.max(nextShot, now + Math.max(0, delay)); }
@@ -188,7 +188,7 @@ public class RocketPodBlockEntity extends ProcessUnitBlockEntity implements Owne
         UUID s = SableBridge.shipIdAt(sl, worldPosition);
         if (s == null || !s.equals(ship) || SableBridge.shipInfo(sl, ship) == null) { cancelRun(); return; }
         boolean lead = rippleRun >= 3 ? pending == rippleRun : now - lastShotAt > Balance.RPOD_HOLD_TICKS * 2L;
-        if (prepaid == 0 && !ShipPower.draw(sl, ship, Balance.RPOD_FE)) { cancelRun(); return; }
+        if (prepaid == 0 && !ShipPower.draw(this, sl, ship, Balance.RPOD_FE)) { cancelRun(); return; }
         prepaid = 1;
         String why = AirRockets.fire(sl, getOwner(), ray[0], ray[1], carrierVel(sl), ship, lead, pending == 1);
         if (why != null) { cancelRun(); return; }

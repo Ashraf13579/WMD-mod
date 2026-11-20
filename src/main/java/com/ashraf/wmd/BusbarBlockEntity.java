@@ -58,6 +58,7 @@ public class BusbarBlockEntity extends BlockEntity implements CopycatState.Host 
         final List<BlockPos> epPos = new ArrayList<>();
         final List<Direction> epDir = new ArrayList<>();
         final List<Boolean> epWmd = new ArrayList<>();
+        final List<BlockPos> epOwner = new ArrayList<>();
         long pool, cap;
         long lastTick = Long.MIN_VALUE, endpointsAt = -1_000L;
         boolean dead;
@@ -71,17 +72,20 @@ public class BusbarBlockEntity extends BlockEntity implements CopycatState.Host 
         }
 
         void refreshEndpoints(Level level) {
-            epPos.clear(); epDir.clear(); epWmd.clear();
+            epPos.clear(); epDir.clear(); epWmd.clear(); epOwner.clear();
             for (BusbarBlockEntity b : members) {
                 if (b.isRemoved() || !level.isLoaded(b.worldPosition)) continue;
                 BlockState st = level.getBlockState(b.worldPosition);
                 if (!(st.getBlock() instanceof BusbarBlock)) continue;
                 for (Direction d : Direction.values()) {
-                    if (!st.getValue(BusbarBlock.prop(d))) continue;
                     BlockPos np = b.worldPosition.relative(d);
                     if (!level.isLoaded(np)) continue;
+                    if (st.hasProperty(BusbarBlock.prop(d))) {
+                        if (st.hasProperty(BusbarBlock.prop(d)) && !st.getValue(BusbarBlock.prop(d))) continue;
+                    } else if (level.getCapability(Capabilities.EnergyStorage.BLOCK, np, d.getOpposite()) == null) continue;
                     if (level.getBlockState(np).getBlock() instanceof BusbarBlock) continue;
                     epPos.add(np); epDir.add(d); epWmd.add(Grid.isWmd(level, np));
+                    epOwner.add(PowerMeter.owner(level, np));
                 }
             }
         }
@@ -110,7 +114,7 @@ public class BusbarBlockEntity extends BlockEntity implements CopycatState.Host 
                 for (int i = 0; i < k && pool < cap && inBudget > 0; i++) {
                     if (kind[i] != 1) continue;
                     int got = st[i].extractEnergy((int) Math.min(Integer.MAX_VALUE, Math.min(inBudget, cap - pool)), false);
-                    if (got > 0) { pool += got; inBudget -= got; moved += got; pulled[i] = true; }
+                    if (got > 0) { pool += got; inBudget -= got; moved += got; pulled[i] = true; PowerMeter.noteOut(level, epOwner.get(i), got); }
                 }
 
                 long demand = 0;
@@ -119,7 +123,7 @@ public class BusbarBlockEntity extends BlockEntity implements CopycatState.Host 
                 for (int i = 0; i < k && pool < demand && inBudget > 0; i++) {
                     if (kind[i] != 2) continue;
                     int got = st[i].extractEnergy((int) Math.min(Integer.MAX_VALUE, Math.min(inBudget, demand - pool)), false);
-                    if (got > 0) { pool += got; inBudget -= got; moved += got; pulled[i] = true; }
+                    if (got > 0) { pool += got; inBudget -= got; moved += got; pulled[i] = true; PowerMeter.noteOut(level, epOwner.get(i), got); }
                 }
 
                 long budget = Math.min(pool, Balance.BUS_NET_MAX_FLOW);
@@ -129,7 +133,7 @@ public class BusbarBlockEntity extends BlockEntity implements CopycatState.Host 
                         int i = (start + j) % k;
                         if (pulled[i] || kind[i] != (pass == 0 ? 3 : 2)) continue;
                         int sent = st[i].receiveEnergy((int) Math.min(Integer.MAX_VALUE, budget), false);
-                        if (sent > 0) { budget -= sent; pool -= sent; moved += sent; }
+                        if (sent > 0) { budget -= sent; pool -= sent; moved += sent; PowerMeter.noteIn(level, epOwner.get(i), sent); }
                     }
                 }
                 rr++;
@@ -197,7 +201,7 @@ public class BusbarBlockEntity extends BlockEntity implements CopycatState.Host 
             BlockState st = level.getBlockState(p);
             if (!(st.getBlock() instanceof BusbarBlock)) continue;
             for (Direction d : Direction.values()) {
-                if (!st.getValue(BusbarBlock.prop(d))) continue;
+                if (st.hasProperty(BusbarBlock.prop(d)) && !st.getValue(BusbarBlock.prop(d))) continue;
                 BlockPos np = p.relative(d);
                 if (seen.contains(np) || !level.isLoaded(np) || !(level.getBlockState(np).getBlock() instanceof BusbarBlock)) continue;
                 seen.add(np);
@@ -215,7 +219,9 @@ public class BusbarBlockEntity extends BlockEntity implements CopycatState.Host 
         long now = level.getGameTime();
         if (n.lastTick != now) { n.lastTick = now; n.exchange(level, now); }
         boolean lit = n.activity > 0;
-        if (state.getValue(BusbarBlock.LIT) != lit) level.setBlock(pos, state.setValue(BusbarBlock.LIT, lit), 2);
+        boolean fix = state.hasProperty(HullPenetratorBlock.SKINNED) && state.getValue(HullPenetratorBlock.SKINNED) != be.copycat.skinned();
+        if (fix) state = state.setValue(HullPenetratorBlock.SKINNED, be.copycat.skinned());
+        if (fix || state.getValue(BusbarBlock.LIT) != lit) level.setBlock(pos, state.setValue(BusbarBlock.LIT, lit), 2);
         if (now % 20 == 0) be.setChanged();
     }
 

@@ -338,6 +338,8 @@ public final class RodOfDeath {
         if (sl == null) return true;
         TargetSnapshot.stopIn(rodKey(slot), sl, Balance.ROD_CUT_AFTER + 200);
         FlightManager mgr = FlightManager.get(sl);
+        java.util.UUID prevShooter = ShipStrike.begin(Orbit.OrbitSlots.get(server).ownerOf(slot));
+        try {
         if (s.burned) {
             for (int i = 0; i < Balance.ROD_BREAK_PIECES; i++) {
                 int px = s.pieces[2 * i], pz = s.pieces[2 * i + 1];
@@ -356,6 +358,7 @@ public final class RodOfDeath {
         StrikeLog.report(sl, Orbit.OrbitSlots.get(server).ownerOf(slot), "log.wmd.strike.rod", s.tx, s.tz, rr, rr * WarheadType.ORBITAL_ROD.depth);
         MusicTriggersHook.fire(sl, "wmd:rod_impact", new net.minecraft.core.BlockPos(s.tx, y, s.tz));
         return true;
+        } finally { ShipStrike.end(prevShooter); }
     }
 
     private static void ground(MinecraftServer server, St s, int stage, long now) {

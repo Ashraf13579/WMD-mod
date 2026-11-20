@@ -22,6 +22,8 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 public class PumpJetBlockEntity extends ProcessUnitBlockEntity implements CcAnimated, ShipEngine, DriveEngine, CopycatHull.Owner {
 
+    @Override public boolean ownable() { return false; }
+
     private static final PortMap PORT_MAP = new PortMap(-1, 1, 3).power(0, 0, 0, Direction.NORTH, false);
 
     static final double AXIS_Y = 1.5, NOZZLE_Z = 35.0 / 16.0, EXIT_Z = 2.45, EXIT_R = 0.95, INLET_Z = 1.45;
@@ -294,8 +296,8 @@ public class PumpJetBlockEntity extends ProcessUnitBlockEntity implements CcAnim
 
     @Override
     public List<Component> guiInfo() {
-        int maxFe = (Balance.PJ_FE + Balance.PJ_FE_LOAD) * 20;
-        return List.of(Component.translatable("gui.wmd.info.screw_use", Balance.PJ_FE * 20, maxFe),
+        int maxFe = Balance.PJ_FE + Balance.PJ_FE_LOAD;
+        return List.of(Component.translatable("gui.wmd.info.screw_use", Balance.PJ_FE, maxFe),
                 Component.translatable("gui.wmd.screw.order", Component.translatable("gui.wmd.prop.step" + cStep), ScrewPropellerBlockEntity.sourceName(cSourceShown)),
                 Component.translatable("gui.wmd.pump_jet.state", Math.round(cRpm * 100.0F), Math.round(cVanes), Math.round(cRudder), Math.round(cPlanes)),
                 Component.translatable(!SableBridge.loaded() ? "gui.wmd.screw.no_sable" : cWet ? "gui.wmd.pump_jet.wet" : "gui.wmd.screw.dry"));

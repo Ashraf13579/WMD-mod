@@ -35,6 +35,8 @@ public class LinkCardItem extends Item {
         var level = ctx.getLevel();
         if (level.getBlockEntity(p) instanceof MachinePartBlockEntity part && part.getController() != null) p = part.getController();
         var be = level.getBlockEntity(p);
+        if (be instanceof BlinkGatePieceBlockEntity piece && piece.core() != null) { p = piece.core(); be = level.getBlockEntity(p); }
+        if (be instanceof BlinkGateCoreBlockEntity gate) return blinkGate(ctx, player, p, gate);
         if (!(be instanceof MissileTeleporterBlockEntity) && !(be instanceof LaunchTerminalBlockEntity)) return InteractionResult.PASS;
         if (!(level instanceof ServerLevel sl)) return InteractionResult.SUCCESS;
         ItemStack card = ctx.getItemInHand();
@@ -65,9 +67,41 @@ public class LinkCardItem extends Item {
         return InteractionResult.FAIL;
     }
 
+    private static InteractionResult blinkGate(UseOnContext ctx, Player player, BlockPos p, BlinkGateCoreBlockEntity gate) {
+        if (!(ctx.getLevel() instanceof ServerLevel sl)) return InteractionResult.SUCCESS;
+        if (!Access.mayUse(gate, player)) { Access.deny(gate, player); return InteractionResult.FAIL; }
+        ItemStack card = ctx.getItemInHand();
+        CompoundTag t = tag(card);
+        String dim = sl.dimension().location().toString();
+        if (t.contains("bg") && !BlockPos.of(t.getLong("bg")).equals(p)) {
+            BlockPos a = BlockPos.of(t.getLong("bg"));
+            if (!t.getString("bgDim").equals(dim)) { player.displayClientMessage(Component.translatable("message.wmd.link_card.blink_dimension"), true); return InteractionResult.FAIL; }
+            if (!sl.isLoaded(a) || !(sl.getBlockEntity(a) instanceof BlinkGateCoreBlockEntity other)) {
+                player.displayClientMessage(Component.translatable("message.wmd.link_card.blink_gone"), true);
+                return InteractionResult.FAIL;
+            }
+            if (!Access.mayUse(other, player)) { Access.deny(other, player); return InteractionResult.FAIL; }
+            int r = gate.pair(other);
+            player.displayClientMessage(Component.translatable("message.wmd.link_card.blink." + r, a.getX(), a.getY(), a.getZ()), true);
+            if (r != 0) return InteractionResult.FAIL;
+            if (!player.getAbilities().instabuild) card.shrink(1);
+            sl.playSound(null, p, SoundEvents.RESPAWN_ANCHOR_CHARGE, SoundSource.BLOCKS, 1.0F, 1.4F);
+            return InteractionResult.SUCCESS;
+        }
+        final BlockPos at = p;
+        CustomData.update(DataComponents.CUSTOM_DATA, card, c -> { c.putLong("bg", at.asLong()); c.putString("bgDim", dim); });
+        sl.playSound(null, p, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1.0F, 1.6F);
+        player.displayClientMessage(Component.translatable("message.wmd.link_card.blink_set", p.getX(), p.getY(), p.getZ()), true);
+        return InteractionResult.SUCCESS;
+    }
+
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         CompoundTag t = tag(stack);
+        if (t.contains("bg")) {
+            BlockPos b = BlockPos.of(t.getLong("bg"));
+            tooltip.add(Component.translatable("tooltip.wmd.link_card.blink", b.getX(), b.getY(), b.getZ()).withStyle(ChatFormatting.AQUA));
+        }
         if (t.contains("tp")) {
             BlockPos p = BlockPos.of(t.getLong("tp"));
             tooltip.add(Component.translatable("tooltip.wmd.link_card.linked", p.getX(), p.getY(), p.getZ()).withStyle(ChatFormatting.AQUA));
@@ -76,5 +110,5 @@ public class LinkCardItem extends Item {
     }
 
     @Override
-    public boolean isFoil(ItemStack stack) { return tag(stack).contains("tp"); }
+    public boolean isFoil(ItemStack stack) { return tag(stack).contains("tp") || tag(stack).contains("bg"); }
 }

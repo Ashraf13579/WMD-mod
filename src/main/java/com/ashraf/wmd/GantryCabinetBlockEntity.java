@@ -60,6 +60,16 @@ public class GantryCabinetBlockEntity extends ProcessUnitBlockEntity implements 
 
     private long recTime;
 
+    private BlockPos forgePos;
+    private float forgeU, forgeV, forgeY;
+    private boolean nanoRun, nanoLoaded, powerWait;
+    private final List<int[]> batch = new ArrayList<>();
+    private long autoSig, autoHoldRec = Long.MIN_VALUE;
+    private UUID autoHold;
+
+    private boolean cNano;
+    private int[] cBatch = new int[0];
+
     private float cU, cV, cMast, cArm, pU, pV, pMast, pArm;
     private int cPhase, cViewers;
     private BlockState cHeld;
@@ -165,6 +175,47 @@ public class GantryCabinetBlockEntity extends ProcessUnitBlockEntity implements 
         return false;
     }
 
+    NaniteForgeBlockEntity forge() {
+        if (level == null) return null;
+        for (int dx : new int[] { -2, 2 }) {
+            BlockPos p = Machines.toWorld(worldPosition, facing(), Direction.UP, dx, 0, 0);
+            if (!level.isLoaded(p)) continue;
+            if (level.getBlockEntity(p) instanceof NaniteForgeBlockEntity f && f.facingDir() == facing()
+                    && (f.getOwner() == null || getOwner() == null || f.getOwner().equals(getOwner()) || ShipStrike.sameSide(getOwner(), f.getOwner()))) return f;
+        }
+        return null;
+    }
+
+    private NaniteForgeBlockEntity linkedForge() {
+        if (forgePos == null || level == null || !level.isLoaded(forgePos)) return null;
+        return level.getBlockEntity(forgePos) instanceof NaniteForgeBlockEntity f ? f : null;
+    }
+
+    private void linkForge() {
+        NaniteForgeBlockEntity f = linked ? forge() : null;
+        NaniteForgeBlockEntity old = linkedForge();
+        if (old != null && old != f) old.link(false);
+        forgePos = f == null ? null : f.getBlockPos();
+        if (f == null) return;
+        f.link(true);
+        Vec3 hand = Vec3.atCenterOf(forgePos).add(dir(f.east()).scale(0.5)).add(dir(front()).scale(0.5 + Balance.GANTRY_HANDOVER_OUT)).add(0.0, 1.5, 0.0);
+        double[] h = frame(hand);
+        forgeU = (float) h[0]; forgeV = (float) h[1]; forgeY = (float) (forgePos.getY() + 2.0);
+    }
+
+    @Override
+    public void setRemoved() {
+        NaniteForgeBlockEntity f = level != null && !level.isClientSide ? linkedForge() : null;
+        super.setRemoved();
+        if (f != null) f.link(false);
+    }
+
+    private float speed() { return nanoRun ? Balance.NFORGE_SPEED : 1.0F; }
+
+    boolean clientNano() { return cNano; }
+
+    int[] clientBatch() { return cBatch; }
+
     private UUID findCraft(ServerLevel sl) {
         UUID owner = getOwner();
         if (owner == null || !SableBridge.active()) return null;
@@ -197,7 +248,8 @@ public class GantryCabinetBlockEntity extends ProcessUnitBlockEntity implements 
         lastRefresh = sl.getGameTime();
         boolean was = linked;
         linked = false;
-        if (!link(sl)) { status = ST_NO_RAIL; target = null; queue.clear(); if (was) sync(); return; }
+        if (!link(sl)) { status = ST_NO_RAIL; target = null; queue.clear(); linkForge(); if (was) sync(); return; }
+        linkForge();
         if (!was && phase == IDLE) {
             u = Math.max(0.0F, Math.min(len - 1, hatchU)); vMast = MAST_V_MIN; mast = 0.0F; arm = 90.0F;
         }
@@ -210,6 +262,13 @@ public class GantryCabinetBlockEntity extends ProcessUnitBlockEntity implements 
         target = t;
         buildQueue(sl);
         if (!running) status = toFix == 0 ? ST_DONE : ST_READY;
+
+        NaniteForgeBlockEntity f = linkedForge();
+        boolean hold = target.equals(autoHold) && recTime == autoHoldRec;
+        if (!running && !hold && f != null && f.auto() && f.ready() && toFix > 0) {
+            long sig = autoSigNow();
+            if (sig != autoSig) { autoSig = sig; begin(); }
+        }
         if (!was) sync();
     }
 
@@ -231,20 +290,35 @@ public class GantryCabinetBlockEntity extends ProcessUnitBlockEntity implements 
         toFix = queue.size();
     }
 
+    private long autoSigNow() { return target == null ? 0L : target.hashCode() * 31L + recTime * 7L + toFix; }
+
     void toggle(ServerLevel sl) {
-        if (running) { stop(); return; }
+        if (running) { autoHold = target; autoHoldRec = recTime; stop(); return; }
+        autoHold = null;
         refresh(sl);
         if (!linked || target == null || queue.isEmpty()) return;
+        begin();
+    }
+
+    private void begin() {
         running = true;
         status = ST_WORKING;
         missing = 0;
+        NaniteForgeBlockEntity f = linkedForge();
+        nanoRun = f != null && f.ready();
+        nanoLoaded = false;
+        batch.clear();
         sync();
     }
 
     private void stop() {
         running = false;
+        powerWait = false;
         job = -1;
         held = null;
+        if (nanoRun) { NaniteForgeBlockEntity f = linkedForge(); if (f != null) f.runDone(); }
+        nanoRun = false;
+        batch.clear();
         phase = RAISE;
         gMast = 0.0F; gArm = 90.0F;
         status = linked ? (target == null ? ST_NO_CRAFT : toFix == 0 ? ST_DONE : ST_READY) : ST_NO_RAIL;
@@ -294,40 +368,51 @@ public class GantryCabinetBlockEntity extends ProcessUnitBlockEntity implements 
         switch (phase) {
             case MOVE, R_MOVE -> {
                 if (!at(mast, 0.0F) || !at(arm, gArm == 0 ? 90.0F : Math.signum(gArm) * 90.0F)) {
-                    mast = step(mast, 0.0F, Balance.GANTRY_MAST_SPEED * 16.0F);
-                    arm = step(arm, gArm < 0 ? -90.0F : 90.0F, Balance.GANTRY_ARM_SPEED);
+                    mast = step(mast, 0.0F, Balance.GANTRY_MAST_SPEED * 16.0F * speed());
+                    arm = step(arm, gArm < 0 ? -90.0F : 90.0F, Balance.GANTRY_ARM_SPEED * speed());
                 } else {
-                    u = step(u, gU, (float) Balance.GANTRY_BRIDGE_SPEED);
-                    vMast = step(vMast, gV, (float) Balance.GANTRY_TROLLEY_SPEED);
+                    u = step(u, gU, (float) Balance.GANTRY_BRIDGE_SPEED * speed());
+                    vMast = step(vMast, gV, (float) Balance.GANTRY_TROLLEY_SPEED * speed());
                     if (at(u, gU) && at(vMast, gV)) setPhase(phase == MOVE ? LOWER : R_LOWER);
                 }
             }
             case LOWER, R_LOWER -> {
-                mast = step(mast, gMast, Balance.GANTRY_MAST_SPEED * 16.0F);
-                arm = step(arm, gArm, Balance.GANTRY_ARM_SPEED);
+                mast = step(mast, gMast, Balance.GANTRY_MAST_SPEED * 16.0F * speed());
+                arm = step(arm, gArm, Balance.GANTRY_ARM_SPEED * speed());
                 if (at(mast, gMast) && at(arm, gArm)) setPhase(phase == LOWER ? WELD : RELOAD);
             }
             case WELD -> {
                 moving = false;
-                if (phaseT == 4) placeJob(sl);
+
+                if (phaseT == 4 || (powerWait && now % 20 == 0)) powerWait = !placeJob(sl);
+                if (powerWait) { phaseT = 5; break; }
                 if (phaseT >= weldTicks()) { job = -1; setPhase(RAISE); }
             }
             case RELOAD -> {
                 moving = false;
-                if (phaseT >= Balance.GANTRY_RELOAD_TICKS) { tote = Balance.GANTRY_TOTE; setPhase(R_RAISE); }
+                if (phaseT >= (nanoRun ? Balance.NFORGE_LOAD_TICKS : Balance.GANTRY_RELOAD_TICKS)) {
+                    if (nanoRun) nanoLoaded = true;
+                    else tote = Balance.GANTRY_TOTE;
+                    setPhase(R_RAISE);
+                }
             }
             case RAISE, R_RAISE -> {
-                mast = step(mast, 0.0F, Balance.GANTRY_MAST_SPEED * 16.0F);
-                arm = step(arm, arm < 0 ? -90.0F : 90.0F, Balance.GANTRY_ARM_SPEED);
+                mast = step(mast, 0.0F, Balance.GANTRY_MAST_SPEED * 16.0F * speed());
+                arm = step(arm, arm < 0 ? -90.0F : 90.0F, Balance.GANTRY_ARM_SPEED * speed());
                 if (at(mast, 0.0F) && Math.abs(Math.abs(arm) - 90.0F) < 1.0E-3) { setPhase(IDLE); if (running) next(sl); }
             }
             default -> { moving = false; if (running) next(sl); }
         }
         if (moving && now % 4 == 0) sync();
+        if (nanoRun) {
+            NaniteForgeBlockEntity f = linkedForge();
+            if (f != null) f.busy(phase == WELD && !powerWait ? NaniteForgeBlockEntity.SPRAY : phase == R_LOWER || phase == RELOAD ? NaniteForgeBlockEntity.LOAD : NaniteForgeBlockEntity.RUN);
+        }
         return running || phase != IDLE;
     }
 
     private int weldTicks() {
+        if (nanoRun) return Balance.NFORGE_BATCH_TICKS;
         return job >= 0 && jobStatus == AirframeRecords.DAMAGED ? Balance.GANTRY_ENGINE_TICKS : Balance.GANTRY_WELD_TICKS;
     }
 
@@ -351,9 +436,11 @@ public class GantryCabinetBlockEntity extends ProcessUnitBlockEntity implements 
             if (st[i] == AirframeRecords.WRONG && sl.getBlockState(plot).hasBlockEntity()) continue;
             float[] g = goalFor(SableBridge.toWorld(sl, Vec3.atCenterOf(plot)));
             if (g == null) continue;
-            if (need != null && tote <= 0) {
+            boolean stocked = nanoRun ? nanoLoaded : tote > 0;
+            if (need != null && !stocked) {
                 queue.add(0, i);
-                float[] h = goal(hatchU, hatchV, (float) ((origin().y - hatchY) * 16.0));
+                float[] h = nanoRun && forgePos != null ? goal(forgeU, forgeV, (float) ((origin().y - forgeY) * 16.0))
+                        : goal(hatchU, hatchV, (float) ((origin().y - hatchY) * 16.0));
 
                 if (h == null) { stop(); status = ST_HATCH; sync(); return; }
                 gU = h[0]; gV = h[1]; gMast = h[2]; gArm = h[3];
@@ -363,15 +450,42 @@ public class GantryCabinetBlockEntity extends ProcessUnitBlockEntity implements 
             job = i; jobStatus = st[i];
             held = st[i] == AirframeRecords.MISSING || st[i] == AirframeRecords.WRONG ? r.state(i) : null;
             gU = g[0]; gV = g[1]; gMast = g[2]; gArm = g[3];
+            if (nanoRun) { held = null; pickBatch(sl, r, st, plot); }
             setPhase(MOVE);
             return;
         }
         running = false;
         held = null;
         buildQueue(sl);
+        if (nanoRun) { NaniteForgeBlockEntity f = linkedForge(); if (f != null) f.runDone(); }
+        nanoRun = false;
+        batch.clear();
+        autoSig = autoSigNow();
         status = missing > 0 ? ST_PARTS : ST_DONE;
         playOnce(sl, WmdSounds.SCANNER_PING.get(), Balance.SND_CLICK, missing > 0 ? 0.8F : 1.2F);
         setPhase(IDLE);
+    }
+
+    private void pickBatch(ServerLevel sl, AirframeRecords.Rec r, byte[] st, BlockPos jobPlot) {
+        batch.clear();
+        double[] j = frame(SableBridge.toWorld(sl, Vec3.atCenterOf(jobPlot)));
+        java.util.Map<Item, Integer> reserved = new java.util.HashMap<>();
+        Item jn = needs(r, job, jobStatus);
+        if (jn != null) reserved.merge(jn, 1, Integer::sum);
+        for (java.util.Iterator<Integer> it = queue.iterator(); it.hasNext() && batch.size() < Balance.NFORGE_BATCH - 1; ) {
+            int i = it.next();
+            if (i >= st.length || st[i] == AirframeRecords.OK) continue;
+            BlockPos p = new BlockPos(r.x(i), r.y(i), r.z(i));
+            double[] f = frame(SableBridge.toWorld(sl, Vec3.atCenterOf(p)));
+            if (Math.abs(f[0] - j[0]) > Balance.NFORGE_PATCH || Math.abs(f[1] - j[1]) > Balance.NFORGE_PATCH || Math.abs(f[2] - j[2]) > Balance.NFORGE_PATCH) continue;
+            Item need = needs(r, i, st[i]);
+            if (need == Items.BARRIER) continue;
+            if (st[i] == AirframeRecords.WRONG && sl.getBlockState(p).hasBlockEntity()) continue;
+            if (need != null && count(need) <= reserved.getOrDefault(need, 0)) continue;
+            if (need != null) reserved.merge(need, 1, Integer::sum);
+            batch.add(new int[] { i, st[i] });
+            it.remove();
+        }
     }
 
     private Item needs(AirframeRecords.Rec r, int i, byte st) {
@@ -379,7 +493,7 @@ public class GantryCabinetBlockEntity extends ProcessUnitBlockEntity implements 
         Item it = want.getBlock().asItem();
         return switch (st) {
             case AirframeRecords.MISSING, AirframeRecords.WRONG -> it == Items.AIR ? Items.BARRIER : it;
-            case AirframeRecords.DAMAGED -> Wmd.ENGINE_REPAIR_KIT.get();
+            case AirframeRecords.DAMAGED -> nanoRun ? null : Wmd.ENGINE_REPAIR_KIT.get();
             case AirframeRecords.SKIN -> skinItem(r, i);
             default -> null;
         };
@@ -414,17 +528,46 @@ public class GantryCabinetBlockEntity extends ProcessUnitBlockEntity implements 
         return left.isEmpty();
     }
 
-    private void placeJob(ServerLevel sl) {
+    private boolean placeJob(ServerLevel sl) {
         AirframeRecords.Rec r = target == null ? null : AirframeRecords.get(sl.getServer()).now(target);
-        if (r == null || job < 0 || job >= r.size()) return;
+        if (r == null || job < 0 || job >= r.size()) return true;
         BlockPos p = new BlockPos(r.x(job), r.y(job), r.z(job));
         if (r.time != recTime || !target.equals(SableBridge.shipIdAt(sl, p)) || !Crafts.parked(sl, target, null, Balance.GANTRY_PARKED)) {
             stop(); status = ST_MOVED; sync();
-            return;
+            return true;
         }
-        BlockState want = r.state(job), cur = sl.getBlockState(p);
-        boolean same = cur.getBlock() == want.getBlock();
-        switch (jobStatus) {
+        if (!nanoRun) { placeCell(sl, r, job, jobStatus, null); return true; }
+
+        NaniteForgeBlockEntity f = linkedForge();
+        List<int[]> cells = new ArrayList<>();
+        cells.add(new int[] { job, jobStatus });
+        cells.addAll(batch);
+        batch.clear();
+        if (f == null) { stop(); status = ST_NO_POWER; sync(); return true; }
+        for (int k = 0; k < cells.size(); k++) {
+            int[] c = cells.get(k);
+            BlockPos q = new BlockPos(r.x(c[0]), r.y(c[0]), r.z(c[0]));
+            if (!target.equals(SableBridge.shipIdAt(sl, q))) continue;
+            int cost = c[1] == AirframeRecords.DAMAGED ? Balance.NFORGE_ENGINE_FE : Balance.NFORGE_BLOCK_FE;
+            if (!f.canPay(cost)) {
+                for (int j = Math.max(1, k); j < cells.size(); j++) batch.add(cells.get(j));
+                if (status != ST_NO_POWER) { status = ST_NO_POWER; sync(); }
+                return false;
+            }
+            placeCell(sl, r, c[0], (byte) c[1], f);
+        }
+        if (status == ST_NO_POWER) status = ST_WORKING;
+        held = null;
+        playOnce(sl, WmdSounds.ARC_STRIKE.get(), Balance.SND_MECH, 1.8F);
+        sync();
+        return true;
+    }
+
+    private void placeCell(ServerLevel sl, AirframeRecords.Rec r, int idx, byte cellStatus, NaniteForgeBlockEntity forge) {
+        BlockPos p = new BlockPos(r.x(idx), r.y(idx), r.z(idx));
+        BlockState want = r.state(idx), cur = sl.getBlockState(p);
+        boolean same = cur.getBlock() == want.getBlock(), did = false;
+        switch (cellStatus) {
             case AirframeRecords.WRONG, AirframeRecords.MISSING -> {
                 if (same) break;
                 boolean there = AirframeRecords.solid(cur);
@@ -437,21 +580,32 @@ public class GantryCabinetBlockEntity extends ProcessUnitBlockEntity implements 
                     if (!old.isEmpty() && !store(old)) { missing++; break; }
                 }
                 ItemStack used = take(part);
-                tote--;
+                if (forge == null) tote--;
                 sl.setBlock(p, want, 3);
                 if (want.getBlock() instanceof MachineBlock mb) {
                     mb.setPlacedBy(sl, p, want, null, used);
                     giveOwner(sl, p, r.owner);
                 }
-                applySpec(sl, p, r.spec.get(job));
+                applySpec(sl, p, r.spec.get(idx));
+                did = true;
             }
-            case AirframeRecords.SHAPE -> { if (same) sl.setBlock(p, want, 3); }
+            case AirframeRecords.SHAPE -> { if (same && !cur.equals(want)) { sl.setBlock(p, want, 3); did = true; } }
             case AirframeRecords.DAMAGED -> {
-                if (sl.getBlockEntity(p) instanceof AirEngineBlockEntity ae && ae.damageable() && ae.hp() < Balance.ENGINE_HP
+                if (forge != null) {
+                    if (sl.getBlockEntity(p) instanceof AirEngineBlockEntity ae && ae.damageable() && ae.hp() < Balance.ENGINE_HP && ae.repair()) did = true;
+                } else if (sl.getBlockEntity(p) instanceof AirEngineBlockEntity ae && ae.damageable() && ae.hp() < Balance.ENGINE_HP
                         && count(Wmd.ENGINE_REPAIR_KIT.get()) > 0 && ae.repair()) { take(Wmd.ENGINE_REPAIR_KIT.get()); tote--; }
             }
-            case AirframeRecords.SKIN, AirframeRecords.SETTING -> { if (same) applySpec(sl, p, r.spec.get(job)); }
+            case AirframeRecords.SKIN, AirframeRecords.SETTING -> { if (same) did = applySpec(sl, p, r.spec.get(idx)); }
             default -> {}
+        }
+
+        if (forge != null) {
+            if (did) {
+                forge.pay(cellStatus == AirframeRecords.DAMAGED ? Balance.NFORGE_ENGINE_FE : Balance.NFORGE_BLOCK_FE);
+                forge.rebuilt();
+            }
+            return;
         }
         held = null;
         playOnce(sl, WmdSounds.ARC_STRIKE.get(), Balance.SND_MECH, 1.3F);
@@ -478,12 +632,13 @@ public class GantryCabinetBlockEntity extends ProcessUnitBlockEntity implements 
         be.setChanged();
     }
 
-    private void applySpec(ServerLevel sl, BlockPos p, CompoundTag spec) {
+    private boolean applySpec(ServerLevel sl, BlockPos p, CompoundTag spec) {
         BlockEntity be = sl.getBlockEntity(p);
-        if (be == null) return;
+        if (be == null) return false;
         HolderLookup.Provider reg = sl.registryAccess();
         CompoundTag cur = be.saveWithoutMetadata(reg);
         CompoundTag want = spec == null ? new CompoundTag() : spec;
+        boolean changed = false;
         for (String k : AirframeRecords.SKIN_KEYS) {
             String ik = "ccSkin".equals(k) ? "ccItem" : k + "Item";
             boolean had = cur.contains(k), wants = want.contains(k);
@@ -491,7 +646,7 @@ public class GantryCabinetBlockEntity extends ProcessUnitBlockEntity implements 
             if (!had && !wants) continue;
             if (cur.contains(ik)) {
                 ItemStack old = ItemStack.parseOptional(reg, cur.getCompound(ik));
-                if (!old.isEmpty() && !store(old)) return;
+                if (!old.isEmpty() && !store(old)) return false;
                 cur.remove(ik);
             }
             cur.remove(k);
@@ -502,12 +657,20 @@ public class GantryCabinetBlockEntity extends ProcessUnitBlockEntity implements 
                 cur.put(k, want.get(k).copy());
                 if (!used.isEmpty()) cur.put(ik, used.save(reg));
             }
+            changed = true;
         }
-        for (String k : AirframeRecords.SETTING_KEYS) if (want.contains(k)) cur.put(k, want.get(k).copy());
+        for (String k : AirframeRecords.SETTING_KEYS) {
+            if (want.contains(k) && !java.util.Objects.equals(cur.get(k), want.get(k))) {
+                cur.put(k, want.get(k).copy());
+                changed = true;
+            }
+        }
+        if (!changed) return false;
         be.loadWithComponents(cur, reg);
         be.setChanged();
         BlockState st = sl.getBlockState(p);
         sl.sendBlockUpdated(p, st, st, 3);
+        return true;
     }
 
     int statusCode() { return status; }
@@ -550,7 +713,9 @@ public class GantryCabinetBlockEntity extends ProcessUnitBlockEntity implements 
         cV0 = step(cV0, cV, (float) Balance.GANTRY_TROLLEY_SPEED * 1.5F);
         cMast0 = step(cMast0, cMast, Balance.GANTRY_MAST_SPEED * 24.0F);
         cArm0 = step(cArm0, cArm, Balance.GANTRY_ARM_SPEED * 1.5F);
-        pHatch = hatchOpen; pDoor = doorOpen;
+        pHatch = hatchOpen; pDoor = doorOpen; pVane = vane; pSpin = spin;
+        vane = step(vane, cNano && cPhase == WELD ? 1.0F : 0.0F, 0.25F);
+        spin += cNano ? (cPhase == WELD ? 40.0F : 6.0F) : 0.0F;
         boolean reload = cPhase == R_LOWER || cPhase == RELOAD || cPhase == R_RAISE;
         hatchOpen = step(hatchOpen, reload ? 1.0F : 0.0F, 0.1F);
         doorOpen = step(doorOpen, cViewers > 0 ? 1.0F : 0.0F, 0.15F);
@@ -565,6 +730,11 @@ public class GantryCabinetBlockEntity extends ProcessUnitBlockEntity implements 
     int clientPhase() { return cPhase; }
     BlockState clientHeld() { return cHeld; }
     float clientHatch(float pt) { return pHatch + (hatchOpen - pHatch) * pt; }
+
+    private float vane, pVane, spin, pSpin;
+
+    float clientVane(float pt) { return pVane + (vane - pVane) * pt; }
+    float clientSpin(float pt) { return pSpin + (spin - pSpin) * pt; }
 
     @Override
     public void ccAnimate(CcBones model, double tt, float pt) {
@@ -610,6 +780,23 @@ public class GantryCabinetBlockEntity extends ProcessUnitBlockEntity implements 
         tag.putInt("gtPh", phase);
         tag.putInt("gtView", viewers);
         if (held != null) tag.put("gtHeld", NbtUtils.writeBlockState(held));
+        tag.putBoolean("gtNano", nanoRun);
+        if (nanoRun && phase == WELD && level instanceof ServerLevel sl) tag.putIntArray("gtBatch", batchPoints(sl));
+    }
+
+    private int[] batchPoints(ServerLevel sl) {
+        AirframeRecords.Rec r = target == null ? null : AirframeRecords.get(sl.getServer()).now(target);
+        if (r == null || job < 0 || job >= r.size()) return new int[0];
+        List<Integer> idx = new ArrayList<>();
+        idx.add(job);
+        for (int[] c : batch) idx.add(c[0]);
+        int[] out = new int[idx.size() * 3];
+        int k = 0;
+        for (int i : idx) {
+            Vec3 w = SableBridge.toWorld(sl, Vec3.atCenterOf(new BlockPos(r.x(i), r.y(i), r.z(i))));
+            out[k++] = (int) Math.round(w.x * 16.0); out[k++] = (int) Math.round(w.y * 16.0); out[k++] = (int) Math.round(w.z * 16.0);
+        }
+        return out;
     }
 
     @Override
@@ -628,6 +815,8 @@ public class GantryCabinetBlockEntity extends ProcessUnitBlockEntity implements 
         cPhase = tag.getInt("gtPh");
         cViewers = tag.getInt("gtView");
         cHeld = tag.contains("gtHeld") ? NbtUtils.readBlockState(registries.lookupOrThrow(Registries.BLOCK), tag.getCompound("gtHeld")) : null;
+        cNano = tag.getBoolean("gtNano");
+        cBatch = tag.getIntArray("gtBatch");
         if (client) return;
         if (tag.contains("gtParts")) parts.deserializeNBT(registries, tag.getCompound("gtParts"));
         tote = tag.getInt("gtTote");

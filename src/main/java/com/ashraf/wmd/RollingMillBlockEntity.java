@@ -87,7 +87,7 @@ public class RollingMillBlockEntity extends ItemProcessBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.MILL_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.MILL_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.rolling_mill", Balance.MILL_PLATES, Balance.MILL_CYCLE_TICKS / 20),
                 Component.translatable("gui.wmd.info.items_hint"));
     }

@@ -202,7 +202,7 @@ public class BlastFurnaceBlockEntity extends ItemProcessBlockEntity {
         return List.of(Component.translatable("gui.wmd.info.blast_furnace", Balance.BF_STEEL_IRON, Balance.BF_STEEL_COAL, Balance.BF_STEEL_TICKS / 20),
                 Component.translatable("gui.wmd.info.blast_furnace_smelt", Balance.BF_SMELT_PER_COAL),
                 Component.translatable("gui.wmd.info.blast_furnace_bronze", Balance.BF_BRONZE_COPPER, Balance.BF_BRONZE_TIN, Balance.BF_BRONZE_OUT, Balance.BF_BRONZE_TICKS / 20),
-                Component.translatable("gui.wmd.info.blast_furnace_blower", Balance.BF_BLOWER_SPEED, Balance.BF_BLOWER_FE * 20),
+                Component.translatable("gui.wmd.info.blast_furnace_blower", Balance.BF_BLOWER_SPEED, Balance.BF_BLOWER_FE),
                 Component.translatable("gui.wmd.info.items_hint"));
     }
 

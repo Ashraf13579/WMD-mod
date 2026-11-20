@@ -155,7 +155,7 @@ public class PeriscopeBlockEntity extends ProcessUnitBlockEntity implements Nava
     @Override protected List<String> labelKeys() { return List.of(); }
     @Override protected int rateMbPerTick() { return 1; }
     @Override public PortMap guiPortMap() { return PORT_MAP; }
-    @Override public List<Component> guiInfo() { return List.of(Component.translatable("gui.wmd.info.use", Balance.PERI_FE * 20), Component.translatable("gui.wmd.info.periscope")); }
+    @Override public List<Component> guiInfo() { return List.of(Component.translatable("gui.wmd.info.use", Balance.PERI_FE), Component.translatable("gui.wmd.info.periscope")); }
     @Override protected SoundEvent runSound() { return WmdSounds.LIFT_MOTOR_LOOP.get(); }
     @Override protected float soundVolume() { return 0.0F; }
     @Override protected BlockPos soundLocal() { return BlockPos.ZERO; }

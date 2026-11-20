@@ -59,7 +59,7 @@ public class TurbopropBlockEntity extends P6DriveBlockEntity {
         }
         int fe = (int) Math.round(Balance.TP_FE * (contra() ? Balance.TP_CONTRA_FE : 1.0));
         boolean want = Math.abs(throttle) > 0.02 && damageStage() < 3 && ship != null;
-        turning = want && ShipPower.draw(sl, ship, fe);
+        turning = want && ShipPower.draw(this, sl, ship, fe);
         spoolTo(turning ? 1.0F : 0.0F);
         double t = Balance.TP_THRUST * bladeShare(blades()) * (contra() ? Balance.TP_CONTRA : 1.0) * spool * throttle;
         setForce(t * airShare(t), 0.0, 0.0);

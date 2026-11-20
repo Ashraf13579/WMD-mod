@@ -167,6 +167,10 @@ public final class TankDamage {
         for (Holder h : live(sl)) {
             double d = distance(pos, h.tankBox());
             if (d >= reach || seen(sl, h, pos)) continue;
+            if (CraftShield.anyUp() && h instanceof net.minecraft.world.level.block.entity.BlockEntity be) {
+                UUID ship = SableBridge.shipIdAt(sl, be.getBlockPos());
+                if (ship != null && CraftShield.blastStopped(sl, ship, pos, r)) continue;
+            }
             h.tankHit(sl, k * (1.0 - d / reach));
         }
     }
@@ -273,7 +277,7 @@ public final class TankDamage {
         if (!onShip) {
             FlightManager fm = FlightManager.get(sl);
             int gx = Mth.floor(at.x), gy = Mth.floor(at.y), gz = Mth.floor(at.z);
-            Crater crater = new Crater(gx, gy, gz, r, 0.5, 1.0, 0.0, Mlrs.HOLD);
+            Crater crater = new Crater(gx, gy, gz, r, 0.5, 1.0, 0.0, Mlrs.HOLD).owner(owner);
             fm.craters.add(crater);
             Debris.blast(sl, gx, gy, gz, r, crater);
             fm.setDirty();

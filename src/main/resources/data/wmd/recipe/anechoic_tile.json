@@ -14,7 +14,7 @@
       "item": "wmd:steel_plate"
     },
     "M": {
-      "item": "wmd:manganese_ingot"
+      "tag": "c:ingots/manganese"
     }
   },
   "result": {

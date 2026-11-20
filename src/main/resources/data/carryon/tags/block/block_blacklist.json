@@ -2,6 +2,14 @@
   "replace": false,
   "values": [
     {
+      "id": "wmd:access_terminal",
+      "required": false
+    },
+    {
+      "id": "wmd:active_cloak",
+      "required": false
+    },
+    {
       "id": "wmd:air_search_radar",
       "required": false
     },
@@ -135,6 +143,18 @@
     },
     {
       "id": "wmd:blast_glass",
+      "required": false
+    },
+    {
+      "id": "wmd:blink_gate_core",
+      "required": false
+    },
+    {
+      "id": "wmd:blink_gate_corner",
+      "required": false
+    },
+    {
+      "id": "wmd:blink_gate_segment",
       "required": false
     },
     {
@@ -386,6 +406,10 @@
       "required": false
     },
     {
+      "id": "wmd:craft_shield",
+      "required": false
+    },
+    {
       "id": "wmd:creative_battery",
       "required": false
     },
@@ -423,10 +447,6 @@
     },
     {
       "id": "wmd:deck_lift",
-      "required": false
-    },
-    {
-      "id": "wmd:turntable",
       "required": false
     },
     {
@@ -650,6 +670,10 @@
       "required": false
     },
     {
+      "id": "wmd:gravity_well",
+      "required": false
+    },
+    {
       "id": "wmd:grid_converter",
       "required": false
     },
@@ -706,6 +730,10 @@
       "required": false
     },
     {
+      "id": "wmd:holo_table",
+      "required": false
+    },
+    {
       "id": "wmd:howitzer",
       "required": false
     },
@@ -739,6 +767,10 @@
     },
     {
       "id": "wmd:interceptor_silo_t4",
+      "required": false
+    },
+    {
+      "id": "wmd:ion_thruster",
       "required": false
     },
     {
@@ -922,6 +954,10 @@
       "required": false
     },
     {
+      "id": "wmd:nanite_forge",
+      "required": false
+    },
+    {
       "id": "wmd:napalm_fire",
       "required": false
     },
@@ -978,6 +1014,10 @@
       "required": false
     },
     {
+      "id": "wmd:plasma_mortar",
+      "required": false
+    },
+    {
       "id": "wmd:platinum_block",
       "required": false
     },
@@ -1002,6 +1042,10 @@
       "required": false
     },
     {
+      "id": "wmd:pulse_emp",
+      "required": false
+    },
+    {
       "id": "wmd:pump_jet",
       "required": false
     },
@@ -1011,6 +1055,10 @@
     },
     {
       "id": "wmd:pylon",
+      "required": false
+    },
+    {
+      "id": "wmd:quantum_radar",
       "required": false
     },
     {
@@ -1322,7 +1370,15 @@
       "required": false
     },
     {
+      "id": "wmd:storm_generator",
+      "required": false
+    },
+    {
       "id": "wmd:sub_diesel",
+      "required": false
+    },
+    {
+      "id": "wmd:suit_rack",
       "required": false
     },
     {
@@ -1351,6 +1407,10 @@
     },
     {
       "id": "wmd:targeting_pod",
+      "required": false
+    },
+    {
+      "id": "wmd:tesla_tower",
       "required": false
     },
     {
@@ -1430,6 +1490,10 @@
       "required": false
     },
     {
+      "id": "wmd:turntable",
+      "required": false
+    },
+    {
       "id": "wmd:twin_jet",
       "required": false
     },
@@ -1439,6 +1503,14 @@
     },
     {
       "id": "wmd:vacuum_column",
+      "required": false
+    },
+    {
+      "id": "wmd:warden_node",
+      "required": false
+    },
+    {
+      "id": "wmd:warden_terminal",
       "required": false
     },
     {

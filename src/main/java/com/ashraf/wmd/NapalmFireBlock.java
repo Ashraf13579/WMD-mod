@@ -65,7 +65,7 @@ public class NapalmFireBlock extends Block {
             for (Direction e : Direction.values()) {
                 BlockPos air = n.relative(e);
                 if (air.equals(pos) || !level.getBlockState(air).isAir() || random.nextInt(3) != 0) continue;
-                if (BaseFireBlock.canBePlacedAt(level, air, e) && Config.Server.canBreak(level, air)) { level.setBlock(air, BaseFireBlock.getState(level, air), Block.UPDATE_ALL); break; }
+                if (BaseFireBlock.canBePlacedAt(level, air, e) && Config.Server.canBreak(level, air)) { BlastWrites.set(level, air, BaseFireBlock.getState(level, air), Block.UPDATE_ALL); break; }
             }
         }
         if (age >= 15) { level.removeBlock(pos, false); return; }

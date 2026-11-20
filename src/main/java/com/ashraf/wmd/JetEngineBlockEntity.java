@@ -139,7 +139,7 @@ public class JetEngineBlockEntity extends AirEngineBlockEntity implements Copyca
                 if (wantRun && dry && ship != null && ShipPower.fuelAboard(sl, ship)[0] > 0) state = STARTING;
             }
             case STARTING -> {
-                boolean starter = ShipPower.draw(sl, ship, Balance.JET_STARTER_FE);
+                boolean starter = ShipPower.draw(this, sl, ship, Balance.JET_STARTER_FE);
                 if (!starter || !dry || damageStage() >= 3) { state = OFF; break; }
                 n1 = Math.min(idle, n1 + idle / Balance.JET_START_TICKS);
                 if (n1 >= idle - 1.0E-4) state = RUNNING;
@@ -284,11 +284,13 @@ public class JetEngineBlockEntity extends AirEngineBlockEntity implements Copyca
 
     @Override
     protected SoundEvent runSound() {
-        if (afterburnerClient()) return WmdSounds.JET_AB_LOOP.get();
         return kind() == JetEngineBlock.Kind.SINGLE ? WmdSounds.JET1_LOOP.get() : kind() == JetEngineBlock.Kind.TWIN ? WmdSounds.JET2_LOOP.get() : WmdSounds.JETS_LOOP.get();
     }
-    @Override protected float soundVolume() { return (kind() == JetEngineBlock.Kind.TWIN ? Balance.SND_GIANT : kind() == JetEngineBlock.Kind.SINGLE ? Balance.SND_HEAVY : Balance.SND_MACHINE) * (0.35F + 0.65F * cN1) * (1.0F + 0.3F * cAbK); }
-    @Override protected float soundPitch() { return afterburnerClient() ? 1.0F : 0.8F + 0.3F * cN1; }
+    @Override protected float soundVolume() { return (kind() == JetEngineBlock.Kind.TWIN ? Balance.SND_GIANT : kind() == JetEngineBlock.Kind.SINGLE ? Balance.SND_HEAVY : Balance.SND_MACHINE) * (0.35F + 0.65F * cN1); }
+    @Override protected float soundPitch() { return 0.8F + 0.3F * cN1 + 0.08F * cAbK; }
+    @Override protected SoundEvent overlaySound() { return kind().afterburner() ? WmdSounds.JET_AB_LOOP.get() : null; }
+    @Override protected float overlayVolume() { return (kind() == JetEngineBlock.Kind.TWIN ? Balance.SND_GIANT : kind() == JetEngineBlock.Kind.SINGLE ? Balance.SND_HEAVY : Balance.SND_MACHINE) * cAbK; }
+    @Override protected float overlayPitch() { return 0.95F + 0.1F * cN1; }
     @Override protected boolean soundAlive() { return cState != OFF || cN1 > 0.05F; }
     @Override protected BlockPos soundLocal() { return new BlockPos(0, 0, 2); }
 

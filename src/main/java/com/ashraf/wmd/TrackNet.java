@@ -108,6 +108,7 @@ public final class TrackNet {
         double reach2 = reach * reach;
         for (Flight f : mgr.flights()) {
             if (now < f.start() || now > f.endTime() || f.isOwnedBy(owner, null)) continue;
+            if (VnBridge.present() && VnBridge.spares(owner, CcBattleLog.ownerOf(level.getServer(), f))) continue;
             if (Hypersonic.hidden(f, now)) continue;
             Vec3 p = f.position(now);
             if (mgr.chaffHides(p.x, p.z, p.x, p.z)) continue;
@@ -172,12 +173,55 @@ public final class TrackNet {
         m.put(aircraftId, now + SHIP_TTL);
     }
 
+    public static final int AIR_MISSILE_TTL = 20;
+
+    private static final Map<String, Map<Long, Long>> AIR_MISSILE_TRACKS = Statics.server(new HashMap<>()), ASHM_TRACKS = Statics.server(new HashMap<>());
+
+    public static void reportAirMissile(ServerLevel level, UUID owner, int frequency, long shotId, long now) {
+        if (!AirGate.on() || owner == null) return;
+        Map<Long, Long> m = AIR_MISSILE_TRACKS.computeIfAbsent(key(level, owner, frequency), k -> new HashMap<>());
+        if (m.size() > 128) m.clear();
+        m.put(shotId, now + AIR_MISSILE_TTL);
+    }
+
+    public static void reportAshm(ServerLevel level, UUID owner, int frequency, long flightId, long now) {
+        if (!AirGate.on() || owner == null) return;
+        Map<Long, Long> m = ASHM_TRACKS.computeIfAbsent(key(level, owner, frequency), k -> new HashMap<>());
+        if (m.size() > 128) m.clear();
+        m.put(flightId, now + AIR_MISSILE_TTL);
+    }
+
+    public static List<Long> airMissileTracks(ServerLevel level, UUID owner, int frequency, long now) { return live(AIR_MISSILE_TRACKS, level, owner, frequency, now); }
+
+    public static List<Long> ashmTracks(ServerLevel level, UUID owner, int frequency, long now) { return live(ASHM_TRACKS, level, owner, frequency, now); }
+
+    private static List<Long> live(Map<String, Map<Long, Long>> all, ServerLevel level, UUID owner, int frequency, long now) {
+        List<Long> out = new ArrayList<>();
+        Map<Long, Long> m = owner == null || !AirGate.on() ? null : all.get(key(level, owner, frequency));
+        if (m == null) return out;
+        m.entrySet().removeIf(e -> e.getValue() < now);
+        out.addAll(m.keySet());
+        return out;
+    }
+
     public static List<UUID> aircraftTracks(ServerLevel level, UUID owner, int frequency, long now) {
         List<UUID> out = new ArrayList<>();
         Map<UUID, Long> m = owner == null || !AirGate.on() ? null : AIR_TRACKS.get(key(level, owner, frequency));
         if (m == null) return out;
         m.entrySet().removeIf(e -> e.getValue() < now);
         out.addAll(m.keySet());
+        return out;
+    }
+
+    public static java.util.Set<UUID> trackedBy(ServerLevel level, UUID owner, long now) {
+        java.util.Set<UUID> out = new java.util.LinkedHashSet<>();
+        if (owner == null) return out;
+        String pre = level.dimension().location() + "|" + owner + "|";
+        for (Map<String, Map<UUID, Long>> src : java.util.List.of(AIR_TRACKS, SHIP_TRACKS))
+            for (Map.Entry<String, Map<UUID, Long>> e : src.entrySet()) {
+                if (!e.getKey().startsWith(pre)) continue;
+                for (Map.Entry<UUID, Long> t : e.getValue().entrySet()) if (t.getValue() >= now) out.add(t.getKey());
+            }
         return out;
     }
 

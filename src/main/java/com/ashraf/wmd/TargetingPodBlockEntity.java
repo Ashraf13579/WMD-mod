@@ -206,7 +206,7 @@ public class TargetingPodBlockEntity extends ProcessUnitBlockEntity implements O
         }
         Vec3 end = ground != null ? ground : from.add(d.scale(max));
         java.util.List<SableBridge.ShipInfo> cands = new java.util.ArrayList<>();
-        for (SableBridge.ShipInfo s : SableBridge.shipsAlongSegment(level, from, end)) if (!s.id().equals(ownShip)) cands.add(s);
+        for (SableBridge.ShipInfo s : SableBridge.shipsAlongSegment(level, from, end)) if (!s.id().equals(ownShip) && !Cloak.hidden(level, s.id())) cands.add(s);
         ProjectilePath.PathHit h = cands.isEmpty() ? null : SableBridge.exactHit(level, from, end, cands);
         if (h != null && h.shipId() != null) {
             Vec3 plot = SableBridge.toShip(level, h.shipId(), h.pos());
@@ -323,7 +323,7 @@ public class TargetingPodBlockEntity extends ProcessUnitBlockEntity implements O
         if (!lasing) return false;
         if (ship == null) { lose(sl, "message.wmd.tpod.lost"); return false; }
         if (EmpField.jammed(sl, worldPosition)) { lose(sl, "message.wmd.tpod.lost"); return false; }
-        if (!ShipPower.draw(sl, ship, Balance.TPOD_FE)) { lose(sl, "message.wmd.tpod.no_power"); return false; }
+        if (!ShipPower.draw(this, sl, ship, Balance.TPOD_FE)) { lose(sl, "message.wmd.tpod.no_power"); return false; }
         Vec3 w = spotWorld(sl);
         if (w == null) { lose(sl, "message.wmd.tpod.lost"); return false; }
         if (now >= nextLook) {

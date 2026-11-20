@@ -116,7 +116,7 @@ public class ReprocessingPlantBlockEntity extends ItemProcessBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.REPRO_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.REPRO_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.reprocessing_plant", Balance.REPRO_SPENT, Balance.REPRO_CAUSTIC, Balance.REPRO_WATER_MB, Balance.REPRO_PLUTONIUM,
                         Balance.REPRO_DEPLETED, Balance.REPRO_CYCLE_TICKS / 20),
                 Component.translatable("gui.wmd.info.repro_tritium", Balance.BREEDER_TRITIUM_MB, Balance.REPRO_CYCLE_TICKS / 20),

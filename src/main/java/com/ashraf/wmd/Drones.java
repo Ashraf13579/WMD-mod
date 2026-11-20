@@ -55,6 +55,9 @@ public class Drones extends SavedData {
 
         int kind, hiveX, hiveY, hiveZ, bay, battery, cool;
         boolean huntPlayers = true, huntMobs = true;
+
+        boolean pointed;
+        double ptx, ptz;
         UUID target, pilot;
         float ctlF, ctlS, ctlU, ctlYaw;
         boolean ctlFire, ctlLeave, ctlBoost;
@@ -93,6 +96,7 @@ public class Drones extends SavedData {
             if (kind != 0) {
                 t.putInt("kind", kind); t.putInt("hiveX", hiveX); t.putInt("hiveY", hiveY); t.putInt("hiveZ", hiveZ); t.putInt("bay", bay);
                 t.putInt("battery", battery); t.putBoolean("huntP", huntPlayers); t.putBoolean("huntM", huntMobs);
+                if (pointed) { t.putBoolean("pt", true); t.putDouble("ptx", ptx); t.putDouble("ptz", ptz); }
                 if (kind >= 3) {
                     t.putIntArray("wx", wx); t.putIntArray("wz", wz); t.putIntArray("bombs", bombs); t.putInt("wpI", wpI);
                     t.putDouble("fx", fx); t.putDouble("fz", fz); t.putDouble("roll", roll); t.putInt("timer", timer);
@@ -115,6 +119,7 @@ public class Drones extends SavedData {
             if (d.kind != 0) {
                 d.hiveX = t.getInt("hiveX"); d.hiveY = t.getInt("hiveY"); d.hiveZ = t.getInt("hiveZ"); d.bay = t.getInt("bay");
                 d.battery = t.getInt("battery"); d.huntPlayers = t.getBoolean("huntP"); d.huntMobs = t.getBoolean("huntM");
+                d.pointed = t.getBoolean("pt"); d.ptx = t.getDouble("ptx"); d.ptz = t.getDouble("ptz");
                 if (d.phase == StrikeDrones.PILOT) d.phase = StrikeDrones.HOME;
                 if (d.kind >= 3) {
                     d.wx = t.getIntArray("wx"); d.wz = t.getIntArray("wz"); d.bombs = t.getIntArray("bombs"); d.wpI = t.getInt("wpI");
@@ -302,6 +307,7 @@ public class Drones extends SavedData {
         if (d.kind != 0 && d.phase != FALLING) {
             Vec3 was = d.pos();
             if (StrikeDrones.step(this, level, d, now)) return true;
+            if (CraftShield.stopsFlight(level, was, d.pos(), null, Balance.CSH_SHELL_R, WarheadType.HE, 1, "a drone")) { shootDown(level, d, null, "craft shield"); return true; }
             Forcefield.Crossing c = ForcefieldBlockEntity.LOADED.isEmpty() ? null : Forcefield.crossing(level, was, d.pos());
             if (c != null && !Forcefield.mayCross(c.be(), d.owner) && Forcefield.shellHit(level, c, 1, WarheadType.HE)) { shootDown(level, d, null, "forcefield"); return true; }
             return false;
@@ -457,6 +463,7 @@ public class Drones extends SavedData {
 
     void shootDown(ServerLevel level, Drone d, UUID shooter, String shooterName) {
         MinecraftServer server = level.getServer();
+        if (shooter != null) WarScore.intercept(level, shooter, d.owner);
         if (d.kind != 0) StrikeDrones.endPilot(server, d);
         if (d.spotId >= 0) { LaserSpots.remove(d.spotId); d.spotId = -1; }
         d.phase = FALLING;
@@ -485,6 +492,7 @@ public class Drones extends SavedData {
         double bd = range * range;
         for (Drone d : ds.drones) {
             if (!d.airborne() || owner.equals(d.owner)) continue;
+            if (VnBridge.present() && VnBridge.spares(owner, d.owner)) continue;
             double q = gun.distanceToSqr(d.x, d.y, d.z);
             if (q > bd || d.y < gun.y + 2.0 || !TrackNet.seesPoint(level, owner, frequency, d.x, d.z, now)) continue;
             bd = q;

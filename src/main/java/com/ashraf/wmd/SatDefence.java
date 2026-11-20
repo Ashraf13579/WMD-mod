@@ -111,7 +111,7 @@ public final class SatDefence {
         if (f == null) return;
         long now = level.getGameTime();
         Vec3 at = f.position(now);
-        if (p.kill()) mgr.kill(level, f);
+        if (p.kill()) { mgr.kill(level, f); WarScore.intercept(level, p.owner(), f); }
         PacketDistributor.sendToPlayersNear(level, null, at.x, at.y, at.z, 6000, new InterceptFxPayload(at.x, at.y, at.z, p.kill(), 0));
         MinecraftServer server = level.getServer();
         CompoundTag e = new CompoundTag();

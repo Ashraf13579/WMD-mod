@@ -1,0 +1,34 @@
+{
+  "parent": "wmd:t3",
+  "display": {
+    "icon": {
+      "id": "wmd:warhead_nuke"
+    },
+    "title": {
+      "translate": "advancements.wmd.nuke.title"
+    },
+    "description": {
+      "translate": "advancements.wmd.nuke.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "done": {
+      "trigger": "wmd:event",
+      "conditions": {
+        "id": "nuke"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "rewards": {
+    "experience": 150
+  }
+}

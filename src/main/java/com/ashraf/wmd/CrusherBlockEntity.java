@@ -108,7 +108,7 @@ public class CrusherBlockEntity extends ItemProcessBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.CRUSH_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.CRUSH_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.crusher", Balance.CRUSH_YIELD, Balance.CRUSH_CYCLE_TICKS / 20),
                 Component.translatable("gui.wmd.info.items_hint"));
     }

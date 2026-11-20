@@ -98,6 +98,7 @@ public final class MissileParts {
         if (b.isMirv()) return MeshModel.named("part_warhead_mirv").has("part") ? "warhead_mirv" : "warhead_he";
         String wt = b.warheadType();
         if ("nanite".equals(wt) || "gravity".equals(wt) || "cryo".equals(wt)) return MeshModel.named("part_warhead_" + wt).has("part") ? "warhead_" + wt : "warhead_he";
+        if ("rod_ring".equals(wt)) return MeshModel.named("part_warhead_rod_ring").has("part") ? "warhead_rod_ring" : "warhead_frag";
         return "warhead_" + (WARHEADS.contains(b.warheadType()) ? b.warheadType() : "he");
     }
 

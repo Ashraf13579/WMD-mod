@@ -1,0 +1,34 @@
+{
+  "parent": "wmd:war_declared",
+  "display": {
+    "icon": {
+      "id": "minecraft:golden_helmet"
+    },
+    "title": {
+      "translate": "advancements.wmd.war_won.title"
+    },
+    "description": {
+      "translate": "advancements.wmd.war_won.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "done": {
+      "trigger": "wmd:event",
+      "conditions": {
+        "id": "war_won"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "rewards": {
+    "experience": 150
+  }
+}

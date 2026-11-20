@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:nanite_forge"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SAS",
+    "CKC",
+    "TBT"
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:superconducting_coil"
+    },
+    "A": {
+      "item": "wmd:antimatter_cell"
+    },
+    "C": {
+      "item": "wmd:advanced_circuit"
+    },
+    "K": {
+      "item": "wmd:engine_repair_kit"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "B": {
+      "item": "wmd:busbar"
+    }
+  },
+  "result": {
+    "id": "wmd:nanite_forge",
+    "count": 1
+  }
+}

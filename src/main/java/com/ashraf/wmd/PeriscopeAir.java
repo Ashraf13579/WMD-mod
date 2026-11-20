@@ -48,7 +48,7 @@ public final class PeriscopeAir {
             int n = 0;
             UUID own = SableBridge.shipIdAt(level, c);
             for (AirPicture.Aircraft a : AirPicture.all(level)) {
-                if (n >= PeriscopeAirPayload.MAX || a.id().equals(own) || a.pos().distanceTo(head) > Balance.PERI_AIR_RANGE) continue;
+                if (n >= PeriscopeAirPayload.MAX || a.id().equals(own) || a.pos().distanceTo(head) > Balance.PERI_AIR_RANGE || Cloak.hidden(level, a.id())) continue;
                 m[n * 4] = (float) a.pos().x; m[n * 4 + 1] = (float) a.pos().y; m[n * 4 + 2] = (float) a.pos().z;
                 m[n * 4 + 3] = ShipFaction.isHostileTo(sp.getUUID(), level, a.id()) ? 1.0F : 0.0F;
                 n++;

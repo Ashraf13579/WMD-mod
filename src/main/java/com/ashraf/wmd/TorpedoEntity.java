@@ -96,7 +96,9 @@ public class TorpedoEntity extends Entity {
         level.addFreshEntity(e);
         level.playSound(null, at.x, at.y, at.z, WmdSounds.TP_TUBE_FIRE.get(), SoundSource.BLOCKS, 3.0F, 0.95F + level.random.nextFloat() * 0.1F);
         level.sendParticles(ParticleTypes.BUBBLE, at.x, at.y, at.z, 40, 0.4, 0.4, 0.4, 0.2);
+        AirFxPayload.at(level, AirFxPayload.TORPEDO, at, dir.normalize(), 1.0F, Balance.AIRFX_R);
         NoiseNet.pulse(level, at, Balance.TORP_DB + 10.0, NoiseNet.Kind.LAUNCH, owner, 40);
+        MusicTriggersHook.kind(level, "torpedo_launch", kind.id, BlockPos.containing(at));
         if (kind == TorpedoKind.T4) SeaSound.nf(level, WmdSounds.T4_LAUNCH.get(), WmdSounds.T4_LAUNCH_FAR.get(), 64.0, at, 6.0F, 1.0F);
         return e;
     }
@@ -115,6 +117,7 @@ public class TorpedoEntity extends Entity {
         e.ownShip = ownShip;
         e.start = at;
         level.addFreshEntity(e);
+        MusicTriggersHook.kind(level, "torpedo_launch", kind.id, BlockPos.containing(at));
         return e;
     }
 
@@ -148,7 +151,7 @@ public class TorpedoEntity extends Entity {
             ProjectilePath.PathHit h = cands.isEmpty() ? null : SableBridge.exactHit(sl, pos, next, cands);
             if (h != null) { dud(sl, h.pos()); return true; }
         }
-        BlockHitResult hit = sl.clip(new ClipContext(pos, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+        BlockHitResult hit = SableBridge.clipWorld(sl, new ClipContext(pos, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this), airTicks > 40 ? null : ownShip);
         if (hit.getType() == HitResult.Type.BLOCK) { dud(sl, hit.getLocation()); return true; }
         if (airTicks > Balance.ATORP_MAX_AIR_TICKS || next.y < sl.getMinBuildHeight()) { discard(); return true; }
         setPos(next.x, next.y, next.z);
@@ -252,7 +255,7 @@ public class TorpedoEntity extends Entity {
         }
         if (shipBehindNet != null) { detonate(sl, shipBehindAt, shipBehindNet, "hit"); return; }
 
-        BlockHitResult hit = sl.clip(new ClipContext(pos, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+        BlockHitResult hit = SableBridge.clipWorld(sl, new ClipContext(pos, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this), null);
         if (hit.getType() == HitResult.Type.BLOCK) {
             if (armed) detonate(sl, hit.getLocation(), null, "ground"); else dud(sl, hit.getLocation());
             return;
@@ -286,6 +289,7 @@ public class TorpedoEntity extends Entity {
                 double bd = Double.MAX_VALUE;
                 for (SableBridge.ShipInfo s : SableBridge.shipsIntersecting(sl, new AABB(pos, pos).inflate(Balance.TORP_ACTIVE_RANGE))) {
                     if (s.id().equals(ownShip) || !NavalLayer.inWater(sl, s)) continue;
+                    if (Cloak.hidden(sl, s.id())) continue;
                     Vec3 c = s.worldBounds().getCenter();
                     double d = c.distanceTo(pos);
                     if (d < bd && inCone(pos, c) && d <= Balance.TORP_ACTIVE_RANGE * Anechoic.pingFactor(sl, s.id())) { bd = d; best = c; }
@@ -293,6 +297,7 @@ public class TorpedoEntity extends Entity {
                 if (now % 40 < Balance.TORP_SEEK_TICKS) {
                     NoiseNet.pulse(sl, pos, Balance.TORP_PING_DB, NoiseNet.Kind.PING, owner, 20);
                     sl.playSound(null, pos.x, pos.y, pos.z, WmdSounds.TP_SEEKER.get(), SoundSource.BLOCKS, 2.0F, 1.0F);
+                    AirFxPayload.at(sl, AirFxPayload.PING, pos, null, 1.0F, Balance.AIRFX_PING_R);
                 }
             }
             if (best != null) {
@@ -315,6 +320,7 @@ public class TorpedoEntity extends Entity {
                 t4SearchAt = now;
                 NoiseNet.pulse(sl, pos, Balance.T4_PING_DB, NoiseNet.Kind.PING, owner, 20);
                 sl.playSound(null, pos.x, pos.y, pos.z, WmdSounds.TP_SEEKER.get(), SoundSource.BLOCKS, 4.0F, 0.8F);
+                AirFxPayload.at(sl, AirFxPayload.PING, pos, null, 2.0F, Balance.AIRFX_PING_R);
             } else goal = t4Point;
         }
         if (t4Phase == 1) {
@@ -323,6 +329,7 @@ public class TorpedoEntity extends Entity {
                 double bd = Double.MAX_VALUE;
                 for (SableBridge.ShipInfo s : SableBridge.shipsIntersecting(sl, new AABB(pos, pos).inflate(Balance.T4_SEEK_RANGE))) {
                     if (s.id().equals(ownShip) || !NavalLayer.inWater(sl, s)) continue;
+                    if (Cloak.hidden(sl, s.id())) continue;
                     Vec3 c = s.worldBounds().getCenter();
                     double dx = c.x - pos.x, dz = c.z - pos.z, l = Math.hypot(dx, dz), d = c.distanceTo(pos);
                     if (l > 1.0 && (dx * heading.x + dz * heading.z) / l < Math.cos(Math.toRadians(Balance.T4_SEEK_CONE))) continue;
@@ -433,6 +440,7 @@ public class TorpedoEntity extends Entity {
         if (isRemoved()) return;
         TorpedoKind k = kind();
         discard();
+        MusicTriggersHook.kind(sl, "torpedo_hit", k.id, BlockPos.containing(at));
         int hull = ShipStrike.blast(sl, at, Balance.TORP_REACH, k.power(), owner);
 
         UnderwaterBlast.go(sl, at, k == TorpedoKind.T4 ? UnderwaterBlast.T4 : UnderwaterBlast.TORPEDO, k.power(), owner, this);

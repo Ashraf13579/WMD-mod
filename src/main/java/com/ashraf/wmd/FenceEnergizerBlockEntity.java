@@ -96,7 +96,7 @@ public class FenceEnergizerBlockEntity extends ProcessUnitBlockEntity implements
     @Override
     public List<Component> guiInfo() {
         return List.of(Component.translatable(shortOfPower ? "gui.wmd.info.fence_energizer.short" : "gui.wmd.info.fence_energizer.live", pieces, Balance.EF_MAX_PIECES),
-                Component.translatable("gui.wmd.info.fence_energizer.cost", Balance.EF_FE_PER_PIECE * 20 / Balance.EF_PULSE_TICKS));
+                Component.translatable("gui.wmd.info.fence_energizer.cost", String.format(java.util.Locale.ROOT, "%.1f", Balance.EF_FE_PER_PIECE / (double) Balance.EF_PULSE_TICKS)));
     }
 
     @Override

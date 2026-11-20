@@ -68,6 +68,8 @@ public final class Rwr {
         Event old = s.events.get(key);
         if (old == null && s.events.size() >= Balance.RWR_MAX_EVENTS) return;
         s.events.put(key, new Event(kind, key, from, owner, source == null ? "" : source, old == null ? now : old.first(), now, now + ttl, active || (old != null && old.active())));
+
+        if (old == null && kind != SEARCH) MusicTriggersHook.crew(level, kind == LOCK ? "wmd:rwr_lock" : "wmd:rwr_missile", aircraft, net.minecraft.core.BlockPos.containing(from));
     }
 
     public static List<Event> of(ServerLevel level, UUID aircraft, long now) {

@@ -17,7 +17,7 @@
       "item": "wmd:solar_cell"
     },
     "C": {
-      "item": "minecraft:chest"
+      "tag": "c:chests/wooden"
     }
   },
   "result": {

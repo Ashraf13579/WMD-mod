@@ -31,15 +31,18 @@ public class HullPenetratorBlock extends BusbarBlock {
     public static final net.minecraft.world.level.block.state.properties.BooleanProperty SKINNED =
             net.minecraft.world.level.block.state.properties.BooleanProperty.create("skinned");
 
-    public HullPenetratorBlock(Properties properties) { super(properties); }
+    public HullPenetratorBlock(Properties properties) {
+        super(properties);
+        registerDefaultState(defaultBlockState().setValue(SKINNED, false));
+    }
 
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
 
     @Override
     protected void createBlockStateDefinition(net.minecraft.world.level.block.state.StateDefinition.Builder<net.minecraft.world.level.block.Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder);
-        builder.add(SKINNED);
+        builder.add(LIT, SKINNED);
+
     }
 
     @Override
@@ -71,7 +74,7 @@ public class HullPenetratorBlock extends BusbarBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return linkedAt(context.getLevel(), context.getClickedPos()).setValue(WATERLOGGED, false);
+        return defaultBlockState();
     }
 
     @Override
@@ -88,7 +91,14 @@ public class HullPenetratorBlock extends BusbarBlock {
 
     @Override
     protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-        return super.updateShape(state.setValue(WATERLOGGED, false), direction, neighborState, level, pos, neighborPos);
+        return state;
+    }
+
+    @Override
+    public BlockState linkedAt(net.minecraft.world.level.LevelReader level, BlockPos pos) { return defaultBlockState(); }
+
+    @Override
+    protected void neighborChanged(BlockState state, net.minecraft.world.level.Level level, BlockPos pos, net.minecraft.world.level.block.Block block, BlockPos fromPos, boolean movedByPiston) {
     }
 
     @Override

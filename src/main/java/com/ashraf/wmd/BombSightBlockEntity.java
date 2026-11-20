@@ -293,7 +293,7 @@ public class BombSightBlockEntity extends ProcessUnitBlockEntity implements Owne
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.sight.info_use", Balance.SIGHT_FE * 20, Balance.SIGHT_LINK),
+        return List.of(Component.translatable("gui.wmd.sight.info_use", Balance.SIGHT_FE, Balance.SIGHT_LINK),
                 Component.translatable("gui.wmd.sight.info_out"));
     }
 

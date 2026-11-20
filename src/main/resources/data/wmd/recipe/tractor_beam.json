@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "wmd:tractor_beam"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "SCS",
+    "TPT",
+    " X "
+  ],
+  "key": {
+    "S": {
+      "item": "wmd:superconducting_coil"
+    },
+    "C": {
+      "item": "wmd:chip_space_2"
+    },
+    "T": {
+      "item": "wmd:titanium_casing"
+    },
+    "P": {
+      "item": "wmd:power_core"
+    },
+    "X": {
+      "item": "wmd:advanced_circuit"
+    }
+  },
+  "result": {
+    "id": "wmd:tractor_beam",
+    "count": 1
+  }
+}

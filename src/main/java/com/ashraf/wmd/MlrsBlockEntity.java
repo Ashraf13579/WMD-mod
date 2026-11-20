@@ -229,7 +229,7 @@ public class MlrsBlockEntity extends ArtilleryGunBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse() * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", guiFeUse()),
                 Component.translatable("gui.wmd.info.mlrs", minRange(), range(), Balance.MLRS_RELOAD_TICKS / 20));
     }
 

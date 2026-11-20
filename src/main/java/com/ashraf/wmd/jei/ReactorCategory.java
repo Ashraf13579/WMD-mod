@@ -65,7 +65,7 @@ public final class ReactorCategory implements IRecipeCategory<WmdJeiPlugin.Machi
         g.drawString(font, "->", 48, 10, GREY, false);
         g.drawString(font, Component.translatable("jei.wmd.reactor.rod", r.ticks() / 1200), 4, 30, GREY, false);
         g.drawString(font, Component.translatable("jei.wmd.reactor.steam", Balance.REACTOR_STEAM_MB), 4, 42, GREY, false);
-        g.drawString(font, Component.translatable("jei.wmd.reactor.pumps", String.format("%,d", r.fePerTick() * 20)), 4, 54, GREY, false);
+        g.drawString(font, Component.translatable("jei.wmd.reactor.pumps", String.format("%,d", r.fePerTick())), 4, 54, GREY, false);
         g.drawString(font, Component.translatable("jei.wmd.reactor.heat_steam"), 4, 66, GREY, false);
     }
 }

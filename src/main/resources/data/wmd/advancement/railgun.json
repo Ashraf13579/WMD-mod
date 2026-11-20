@@ -1,0 +1,34 @@
+{
+  "parent": "wmd:warden_kill",
+  "display": {
+    "icon": {
+      "id": "wmd:railgun"
+    },
+    "title": {
+      "translate": "advancements.wmd.railgun.title"
+    },
+    "description": {
+      "translate": "advancements.wmd.railgun.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "done": {
+      "trigger": "wmd:event",
+      "conditions": {
+        "id": "railgun"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "done"
+    ]
+  ],
+  "rewards": {
+    "experience": 150
+  }
+}

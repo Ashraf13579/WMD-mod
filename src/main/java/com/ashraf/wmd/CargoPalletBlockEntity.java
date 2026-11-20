@@ -20,7 +20,13 @@ import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class CargoPalletBlockEntity extends BlockEntity implements CargoPalletMenu.Opener {
+public class CargoPalletBlockEntity extends BlockEntity implements CargoPalletMenu.Opener, Owned {
+
+    private final OwnerData ownerData = new OwnerData();
+    @Override public java.util.UUID getOwner() { return ownerData.id(); }
+    @Override public String getOwnerName() { return ownerData.name(); }
+    @Override public void claim(net.minecraft.world.entity.player.Player player) { ownerData.claim(player); setChanged(); }
+    @Override public SecurityData security() { return ownerData.security(); }
 
     private final SimpleContainer store;
     private boolean released;
@@ -74,6 +80,7 @@ public class CargoPalletBlockEntity extends BlockEntity implements CargoPalletMe
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
+        ownerData.write(tag);
         NonNullList<ItemStack> l = NonNullList.withSize(store.getContainerSize(), ItemStack.EMPTY);
         for (int i = 0; i < l.size(); i++) l.set(i, store.getItem(i));
         ContainerHelper.saveAllItems(tag, l, registries);
@@ -83,6 +90,7 @@ public class CargoPalletBlockEntity extends BlockEntity implements CargoPalletMe
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
+        if (tag.hasUUID("owner")) ownerData.read(tag);
         NonNullList<ItemStack> l = NonNullList.withSize(store.getContainerSize(), ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, l, registries);
         for (int i = 0; i < l.size(); i++) store.setItem(i, l.get(i));

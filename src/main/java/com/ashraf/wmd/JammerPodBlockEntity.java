@@ -120,7 +120,7 @@ public class JammerPodBlockEntity extends ProcessUnitBlockEntity implements Owne
         boolean s = sl.hasNeighborSignal(worldPosition);
         if (s && !sig) setOn(!on);
         sig = s;
-        boolean j = on && ship != null && ShipPower.draw(sl, ship, Balance.JAM_POD_FE);
+        boolean j = on && ship != null && ShipPower.crewed(sl, ship) && ShipPower.draw(this, sl, ship, Balance.JAM_POD_FE);
         if (j) AirJam.jamming(sl, ship, now);
         setJamming(j);
         return j;

@@ -4,7 +4,7 @@
   "pattern": [
     "FXF",
     "BPB",
-    "FXF"
+    "FWF"
   ],
   "key": {
     "F": {
@@ -14,10 +14,13 @@
       "item": "wmd:weapon_core"
     },
     "B": {
-      "item": "wmd:tungsten_block"
+      "tag": "c:storage_blocks/tungsten"
     },
     "P": {
       "item": "wmd:power_core"
+    },
+    "W": {
+      "item": "wmd:warden_core"
     }
   },
   "result": {

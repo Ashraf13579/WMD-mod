@@ -193,10 +193,24 @@ public final class ClientBlastGeo {
 
     static void beginFrame() { LIM = Minecraft.getInstance().gameRenderer.getDepthFar() * 0.9; }
 
+    private static final Vector3f UNIT_X = new Vector3f(1.0F, 0.0F, 0.0F), UNIT_Z = new Vector3f(0.0F, 0.0F, 1.0F);
+    private static final double[][] DISC_COS = new double[25][], DISC_SIN = new double[25][];
+    static {
+        for (int n : new int[] { 6, 8, 10, 12, 16, 24 }) {
+            DISC_COS[n] = new double[n + 1];
+            DISC_SIN[n] = new double[n + 1];
+            for (int i = 0; i <= n; i++) {
+                double ang = Math.PI * 2 * i / n;
+                DISC_COS[n][i] = Math.cos(ang);
+                DISC_SIN[n][i] = Math.sin(ang);
+            }
+        }
+    }
+
     static void v(BufferBuilder bb, Vec3 cam, double x, double y, double z, float r, float g, float b, float a) {
         if (ShaderFx.on && !RAW) { ShaderFx.vert(bb, cam, x, y, z, r, g, b, a); return; }
-        double dx = x - cam.x, dy = y - cam.y, dz = z - cam.z, l = Math.sqrt(dx * dx + dy * dy + dz * dz);
-        double k = l > LIM ? LIM / l : 1.0;
+        double dx = x - cam.x, dy = y - cam.y, dz = z - cam.z, l2 = dx * dx + dy * dy + dz * dz;
+        double k = l2 > LIM * LIM ? LIM / Math.sqrt(l2) : 1.0;
         bb.addVertex((float) (dx * k), (float) (dy * k), (float) (dz * k)).setColor(r, g, b, a);
     }
 
@@ -206,18 +220,22 @@ public final class ClientBlastGeo {
 
     static void disc(BufferBuilder bb, Vec3 cam, Vector3f left, Vector3f up, double x, double y, double z, double rad, float r, float g, float b, float a, int n) {
         if (ShaderFx.on && !RAW) { ShaderFx.disc(bb, cam, left, up, x, y, z, rad, r, g, b, a); return; }
+        double[] cs = n > 0 && n < DISC_COS.length ? DISC_COS[n] : null;
+        double[] sn = cs != null ? DISC_SIN[n] : null;
+        float lx = left.x(), ly = left.y(), lz = left.z(), ux = up.x(), uy = up.y(), uz = up.z();
         for (int i = 0; i < n; i++) {
-            double a0 = Math.PI * 2 * i / n, a1 = Math.PI * 2 * (i + 1) / n;
-            double c0 = Math.cos(a0) * rad, s0 = Math.sin(a0) * rad, c1 = Math.cos(a1) * rad, s1 = Math.sin(a1) * rad;
+            double c0, s0, c1, s1;
+            if (cs != null) { c0 = cs[i] * rad; s0 = sn[i] * rad; c1 = cs[i + 1] * rad; s1 = sn[i + 1] * rad; }
+            else { double a0 = Math.PI * 2 * i / n, a1 = Math.PI * 2 * (i + 1) / n; c0 = Math.cos(a0) * rad; s0 = Math.sin(a0) * rad; c1 = Math.cos(a1) * rad; s1 = Math.sin(a1) * rad; }
             v(bb, cam, x, y, z, r, g, b, a);
             v(bb, cam, x, y, z, r, g, b, a);
-            v(bb, cam, x + left.x() * c1 + up.x() * s1, y + left.y() * c1 + up.y() * s1, z + left.z() * c1 + up.z() * s1, r, g, b, 0.0F);
-            v(bb, cam, x + left.x() * c0 + up.x() * s0, y + left.y() * c0 + up.y() * s0, z + left.z() * c0 + up.z() * s0, r, g, b, 0.0F);
+            v(bb, cam, x + lx * c1 + ux * s1, y + ly * c1 + uy * s1, z + lz * c1 + uz * s1, r, g, b, 0.0F);
+            v(bb, cam, x + lx * c0 + ux * s0, y + ly * c0 + uy * s0, z + lz * c0 + uz * s0, r, g, b, 0.0F);
         }
     }
 
     static void flatDisc(BufferBuilder bb, Vec3 cam, double x, double y, double z, double rad, float r, float g, float b, float a, int n) {
-        disc(bb, cam, new Vector3f(1.0F, 0.0F, 0.0F), new Vector3f(0.0F, 0.0F, 1.0F), x, y, z, rad, r, g, b, a, n);
+        disc(bb, cam, UNIT_X, UNIT_Z, x, y, z, rad, r, g, b, a, n);
     }
 
     @SubscribeEvent
@@ -230,13 +248,18 @@ public final class ClientBlastGeo {
         Vector3f left = camera.getLeftVector(), up = camera.getUpVector();
         double now = level.getGameTime() + event.getPartialTick().getGameTimeDeltaPartialTick(false);
         LIM = Minecraft.getInstance().gameRenderer.getDepthFar() * 0.9;
+        var fr = event.getFrustum();
         BufferBuilder smoke = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         boolean any = false;
         for (Fuel f : FUELS) {
-            if (cam.distanceTo(f.pos) <= FAR_VIEW) any |= fuelMist(smoke, level, cam, left, up, f, now - f.start);
+            double reach = f.r * 1.8 + 16.0;
+            if (cam.distanceTo(f.pos) <= FAR_VIEW && (fr == null || fr.isVisible(new net.minecraft.world.phys.AABB(f.pos.x - reach, f.pos.y - 40, f.pos.z - reach, f.pos.x + reach, f.pos.y + 80, f.pos.z + reach))))
+                any |= fuelMist(smoke, level, cam, left, up, f, now - f.start);
         }
         for (Blast b : BLASTS) {
             if (cam.distanceTo(b.pos) > FAR_VIEW) continue;
+            double reach = Math.max(b.reach, b.r * 4.5) + 32.0;
+            if (fr != null && !fr.isVisible(new net.minecraft.world.phys.AABB(b.pos.x - reach, b.pos.y - 64, b.pos.z - reach, b.pos.x + reach, b.pos.y + reach, b.pos.z + reach))) continue;
             double age = now - b.start;
             if (b.type == WarheadType.HE) any |= cloud(smoke, level, cam, left, up, b, age, b.r, 1.0F, 45.0, b.colLife);
             else if (b.type == WarheadType.THERMOBARIC) any |= cloud(smoke, level, cam, left, up, b, age - 10, b.r * 0.55, 0.5F, 120.0, b.colLife);
@@ -256,6 +279,8 @@ public final class ClientBlastGeo {
         any = false;
         for (Blast b : BLASTS) {
             if (cam.distanceTo(b.pos) > FAR_VIEW) continue;
+            double reach = Math.max(b.reach, b.r * 4.5) + 32.0;
+            if (fr != null && !fr.isVisible(new net.minecraft.world.phys.AABB(b.pos.x - reach, b.pos.y - 64, b.pos.z - reach, b.pos.x + reach, b.pos.y + reach, b.pos.z + reach))) continue;
             double age = now - b.start;
             if (b.type == WarheadType.HE) any |= fireball(glow, cam, left, up, b, age);
             else if (b.type == WarheadType.THERMOBARIC) any |= tbxFire(glow, level, cam, left, up, b, age);

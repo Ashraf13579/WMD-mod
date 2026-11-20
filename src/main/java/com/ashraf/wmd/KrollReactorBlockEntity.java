@@ -69,7 +69,7 @@ public class KrollReactorBlockEntity extends ItemProcessBlockEntity {
 
     @Override
     public List<Component> guiInfo() {
-        return List.of(Component.translatable("gui.wmd.info.use", Balance.KROLL_FE_PER_TICK * 20),
+        return List.of(Component.translatable("gui.wmd.info.use", Balance.KROLL_FE_PER_TICK),
                 Component.translatable("gui.wmd.info.kroll", Balance.KROLL_TICL_MB, Balance.KROLL_MG, Balance.KROLL_SPONGE, Balance.KROLL_MGCL_MB, Balance.KROLL_CYCLE_TICKS / 20));
     }
 
